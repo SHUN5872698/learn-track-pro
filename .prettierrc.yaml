@@ -1,0 +1,6 @@
+# .prettierrc.yaml
+singleQuote: true       # 文字列をシングルクォーテーションで囲む
+tabWidth: 2             # インデント幅を2スペースに設定
+semi: true              # ステートメントの末尾にセミコロンを付ける
+trailingComma: "es5"    # 配列やオブジェクトの末尾にカンマを付ける（ES5に準拠）
+printWidth: 300         # 行の長さを300に設定
