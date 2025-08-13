@@ -96,7 +96,7 @@ AIに特定の専門家としての役割を与えることで、回答の視点
 ### `workflow:move-documents`
 **目的**: 指定されたファイルを適切なディレクトリに移動させます。
 **アクション**:
-1.  プロンプト [.gemini/prompts/move-documents-prompt.md](./promini/prompts/move-documents-prompt.md) を読み込み、その指示に従ってファイルの移動を実行します。
+1.  プロンプト [.gemini/prompts/move-documents-prompt.md](./prompts/move-documents-prompt.md) を読み込み、その指示に従ってファイルの移動を実行します。
 
 ---
 
