@@ -56,8 +56,16 @@ AIに特定の専門家としての役割を与えることで、回答の視点
 - **理由**: Web開発の標準的な慣習に従い、URLとの親和性やプロジェクト全体の一貫性を高めるため。
 
 ## ワークフロー
-### `workflow:commit`
-**目的**: Gitのステージングされた変更に基づき、Conventional Commits仕様に準拠したコミットメッセージを生成し、指定されたファイルに出力します。
+### `workflow:separate-concerns`
+**目的**: Gitのステージングされた変更を分析し、Conventional Commits仕様に基づいた論理的な関心事の塊に分離します。
+**アクション**:
+1.  プロンプト [.gemini/prompts/separate-concerns-prompt.md](./prompts/separate-concerns-prompt.md) を読み込み、その指示に従って関心の分離と出力を行います。
+
+### `workflow:generate-commit-message`
+**目的**: 指定された論理的な関心事の塊に基づき、Conventional Commits仕様に準拠したコミットメッセージを生成し、指定されたファイルに出力します。
+
+以下の「関心事の塊」セクションに、`workflow:separate-concerns`で分離された論理的な関心事の塊（タイプ、説明、関連ファイルを含む）を貼り付けてください。
+
 **アクション**:
 1.  プロンプト [.gemini/prompts/commit-message-prompt.md](./prompts/commit-message-prompt.md) を読み込み、その指示に従ってコミットメッセージの生成とファイル出力を実行します。
 
