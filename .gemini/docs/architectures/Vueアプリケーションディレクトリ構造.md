@@ -1,6 +1,6 @@
 ## 相互リンク
 
-[Vueアプリケーションディレクトリ構造](https://www.notion.so/Vue-25a9d86c12e8805483b2e52ec251ff87?pvs=21) 
+[Vueアプリケーションディレクトリ構造](https://www.notion.so/Vue-25a9d86c12e8805483b2e52ec251ff87?pvs=21)
 
 .gemini/docs/architectures/Vueアプリケーションディレクトリ構造.md
 
@@ -19,13 +19,16 @@ src/
 ├── views/              # ルーティング対象のページ
 │   ├── auth/          # 認証関連ページ
 │   │   ├── Login.vue
-│   │   ├── Register.vue
-│   │   └── PasswordReset.vue
+│   │   ├── PasswordReset.vue
+│   │   └── Register.vue
 │   │
 │   ├── Dashboard.vue   # メインダッシュボード
 │   ├── learning/      # 学習管理関連ページ
+│   │   ├── LearningContentDetail.vue
+│   │   ├── SectionStudyRecords.vue
 │   │   └── StudySessionForm.vue
 │   │
+│   ├── NotFound.vue    # 404ページ
 │   # ├── Reports.vue     # レポート画面（将来実装）
 │
 ├── components/         # 再利用可能なコンポーネント
@@ -37,7 +40,8 @@ src/
 │   │
 │   ├── learning/      # 学習管理関連コンポーネント
 │   │   ├── LearningContentCard.vue
-│   │   └── StatsOverview.vue
+│   │   ├── StatsOverview.vue
+│   │   └── StudyRecordDeleteModal.vue
 │   │   # ├── SectionList.vue # セクションリスト（将来実装）
 │
 │   └── common/        # 汎用コンポーネント
@@ -72,7 +76,6 @@ src/
 ├── router.js          # ルーティング設定
 ├── App.vue           # ルートコンポーネント
 └── main.js          # エントリーポイント
-
 ```
 
 ---
