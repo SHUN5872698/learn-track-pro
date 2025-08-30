@@ -1,6 +1,6 @@
 ## 相互リンク
 
-[Vueアプリケーションディレクトリ構造](https://www.notion.so/Vue-25a9d86c12e8805483b2e52ec251ff87?pvs=21)
+[Vueアプリケーションディレクトリ構造](https://www.notion.so/Vue-25a9d86c12e8805483b2e52ec251ff87?pvs=21) 
 
 .gemini/docs/architectures/Vueアプリケーションディレクトリ構造.md
 
@@ -12,7 +12,7 @@
 
 ---
 
-## 推奨ディレクトリ構造
+## 現在のディレクトリ構造
 
 ```bash
 src/
@@ -25,14 +25,17 @@ src/
 │   ├── Dashboard.vue   # メインダッシュボード
 │   ├── learning/      # 学習管理関連ページ
 │   │   ├── LearningContentCreate.vue # 学習内容作成ページ
-│   │   ├── LearningContentDetail.vue
-│   │   ├── SectionStudyRecords.vue
-│   │   └── StudySessionForm.vue
+│   │   ├── LearningContentDetail.vue # 学習内容詳細ページ
+│   │   ├── LearningContentEdit.vue   # 学習内容編集ページ
+│   │   ├── SectionStudyRecords.vue   # セクション別学習記録一覧ページ
+│   │   └── StudySessionForm.vue      # 学習記録作成ページ
 │   │
 │   ├── NotFound.vue    # 404ページ
 │   # ├── Reports.vue     # レポート画面（将来実装）
 │
-├── components/         # 再利用可能なコンポーネント
+├── components/         # 再利用可能なUIコンポーネント
+│   ├── auth/          # 認証関連コンポーネント
+│   │   # ├── LoginForm.vue # ログインフォーム（将来実装）
 │   │
 │   ├── learning/      # 学習管理関連コンポーネント
 │   │   ├── LearningContentCard.vue # 学習コンテンツをカード形式で表示するコンポーネント
@@ -78,7 +81,23 @@ src/
 │
 ├── router.js          # ルーティング設定
 ├── App.vue           # ルートコンポーネント
-└── main.js          # エントリーポイント
+├── main.js          # エントリーポイント
+└── style.css        # グローバルスタイル
+```
+
+### 構造更新プロンプト
+
+```markdown
+.gemini/docs/architectures/Vueアプリケーションディレクトリ構造.md
+
+## 指示
+推奨ディレクトリ構造を、現在のディレクトリ構造と突き合わせて更新してください。
+
+### 注意点
+- 現時点で未作成のディレクトリやファイルはコメントアウトのまま残してください
+- 新しく追加した項目には、必ずそのファイルやディレクトリの役割を簡潔にコメントとして追記してください
+- 既存の項目もコメントが不足している場合は補足してください
+
 ```
 
 ---
