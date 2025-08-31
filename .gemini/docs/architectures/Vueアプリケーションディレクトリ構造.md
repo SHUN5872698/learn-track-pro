@@ -40,7 +40,6 @@ src/
 │   ├── learning/      # 学習管理関連コンポーネント
 │   │   ├── LearningContentCard.vue # 学習コンテンツをカード形式で表示するコンポーネント
 │   │   ├── StatsOverview.vue # 学習統計の概要を表示するコンポーネント
-│   │   ├── StudyRecordDeleteModal.vue # 学習記録の削除確認モーダルコンポーネント
 │   │   └── wizard/ # ウィザード関連コンポーネント
 │   │       ├── SectionListEditor.vue # セクションリストエディタ
 │   │       ├── TechnologySelector.vue # 学習内容作成ウィザードのステップ1で使用される技術選択コンポーネント
@@ -51,10 +50,14 @@ src/
 │   └── common/        # 汎用コンポーネント
 │       ├── AppHeader.vue # アプリケーションのヘッダーコンポーネント
 │       ├── AppSidebar.vue # アプリケーションのサイドバーコンポーネント
+│       ├── BaseButton.vue # 汎用的なボタンコンポーネント
 │       ├── DatePickerModal.vue # 日付選択モーダルコンポーネント
 │       ├── DeleteConfirmModal.vue # 削除確認モーダルコンポーネント
-│       ├── TimeInputModal.vue # 時間入力モーダルコンポーネント
-│       └── UnsavedChangesModal.vue # 未保存の変更がある場合の確認モーダルコンポーネント
+│       ├── TimeInputModal.vue # 時間入力モーダルコンポーネント)
+│       └── buttons/ # ボタン関連コンポーネント
+│           ├── BackButton.vue # 戻るボタン
+│           ├── CancelButton.vue # キャンセルボタン
+│           └── DeleteButton.vue # 削除ボタン
 │       # └── LoadingSpinner.vue # ローディングスピナー（将来実装）
 │
 ├── composables/       # 共有ロジック・状態管理
