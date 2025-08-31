@@ -28,6 +28,7 @@ src/
 │   │   ├── LearningContentDetail.vue # 学習内容詳細ページ
 │   │   ├── LearningContentEdit.vue   # 学習内容編集ページ
 │   │   ├── SectionStudyRecords.vue   # セクション別学習記録一覧ページ
+│   │   ├── StudySessionEdit.vue      # 学習記録編集ページ
 │   │   └── StudySessionForm.vue      # 学習記録作成ページ
 │   │
 │   ├── NotFound.vue    # 404ページ
@@ -40,20 +41,22 @@ src/
 │   ├── learning/      # 学習管理関連コンポーネント
 │   │   ├── LearningContentCard.vue # 学習コンテンツをカード形式で表示するコンポーネント
 │   │   ├── StatsOverview.vue # 学習統計の概要を表示するコンポーネント
+│   │   ├── StudySessionFormFields.vue # 学習記録フォームの共通フィールドコンポーネント
 │   │   └── wizard/ # ウィザード関連コンポーネント
 │   │       ├── SectionListEditor.vue # セクションリストエディタ
 │   │       ├── TechnologySelector.vue # 学習内容作成ウィザードのステップ1で使用される技術選択コンポーネント
 │   │       ├── WizardNavigation.vue # 学習内容作成ウィザードのナビゲーションボタンコンポーネント
 │   │       └── WizardStepIndicator.vue # 学習内容作成ウィザードのステップ表示コンポーネント
-│   │   # ├── SectionList.vue # セクションリスト（将来実装）
-│
+│   │     # └── SectionList.vue # セクションリスト（将来実装）
+│   │
 │   └── common/        # 汎用コンポーネント
 │       ├── AppHeader.vue # アプリケーションのヘッダーコンポーネント
 │       ├── AppSidebar.vue # アプリケーションのサイドバーコンポーネント
 │       ├── BaseButton.vue # 汎用的なボタンコンポーネント
+│       ├── ConfirmModal.vue # 汎用的な確認モーダルコンポーネント
 │       ├── DatePickerModal.vue # 日付選択モーダルコンポーネント
-│       ├── DeleteConfirmModal.vue # 削除確認モーダルコンポーネント
-│       ├── TimeInputModal.vue # 時間入力モーダルコンポーネント)
+│       ├── SectionSelector.vue # セクション選択ドロップダウンコンポーネント
+│       ├── TimeInputModal.vue # 時間入力モーダルコンポーネント
 │       └── buttons/ # ボタン関連コンポーネント
 │           ├── BackButton.vue # 戻るボタン
 │           ├── CancelButton.vue # キャンセルボタン
@@ -64,6 +67,7 @@ src/
 │   ├── useAuth.js # 認証関連のロジックと状態管理
 │   ├── useLearningContentForm.js # 学習内容作成フォームのロジックと状態管理
 │   ├── useLearningData.js # 学習データ（学習コンテンツ、セクション、学習記録など）の管理
+│   ├── useStudySessionForm.js # 学習記録フォームのロジックと状態管理
 │   ├── useWizardForm.js # ウィザードフォームのステップ管理とバリデーションロジック
 │   # ├── useValidation.js # バリデーションロジック（将来実装）
 │   # └── useLocalStorage.js # ローカルストレージ操作（将来実装）
@@ -76,6 +80,9 @@ src/
 │   # 現在は空ですが、将来的に共通関数を配置
 │   # ├── formatDate.js # 日付フォーマット（将来実装）
 │   # └── validationRules.js # バリデーションルール（将来実装）
+│
+├── validators/        # バリデーションロジック
+│   └── studySessionValidator.js # 学習記録のバリデーションロジック
 │
 ├── assets/            # 静的アセット
 │   ├── vue.svg
