@@ -31,6 +31,10 @@ src/
 │   │   ├── StudySessionEdit.vue      # 学習記録編集ページ
 │   │   └── StudySessionForm.vue      # 学習記録作成ページ
 │   │
+│   ├── user/          # ユーザー関連ページ
+│   │   ├── Profile.vue               # プロフィール表示ページ
+│   │   └── ProfileEdit.vue           # プロフィール編集ページ
+│   │
 │   ├── NotFound.vue    # 404ページ
 │   # ├── Reports.vue     # レポート画面（将来実装）
 │
@@ -57,6 +61,7 @@ src/
 │       ├── DatePickerModal.vue # 日付選択モーダルコンポーネント
 │       ├── SectionSelector.vue # セクション選択ドロップダウンコンポーネント
 │       ├── TimeInputModal.vue # 時間入力モーダルコンポーネント
+│       ├── UserAvatar.vue # ユーザーアバター表示コンポーネント
 │       └── buttons/ # ボタン関連コンポーネント
 │           ├── BackButton.vue # 戻るボタン
 │           ├── CancelButton.vue # キャンセルボタン
@@ -68,6 +73,7 @@ src/
 │   ├── useLearningContentForm.js # 学習内容作成フォームのロジックと状態管理
 │   ├── useLearningData.js # 学習データ（学習コンテンツ、セクション、学習記録など）の管理
 │   ├── useStudySessionForm.js # 学習記録フォームのロジックと状態管理
+│   ├── useUser.js # ユーザー情報管理のロジックと状態管理
 │   ├── useWizardForm.js # ウィザードフォームのステップ管理とバリデーションロジック
 │   # ├── useValidation.js # バリデーションロジック（将来実装）
 │   # └── useLocalStorage.js # ローカルストレージ操作（将来実装）
@@ -82,6 +88,7 @@ src/
 │   # └── validationRules.js # バリデーションルール（将来実装）
 │
 ├── validators/        # バリデーションロジック
+│   ├── profileValidator.js # プロフィール関連のバリデーションロジック
 │   └── studySessionValidator.js # 学習記録のバリデーションロジック
 │
 ├── assets/            # 静的アセット
