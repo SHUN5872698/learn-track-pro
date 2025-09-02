@@ -29,18 +29,24 @@ src/
 │   │   ├── LearningContentEdit.vue   # 学習内容編集ページ
 │   │   ├── SectionStudyRecords.vue   # セクション別学習記録一覧ページ
 │   │   ├── StudySessionEdit.vue      # 学習記録編集ページ
-│   │   └── StudySessionForm.vue      # 学習記録作成ページ
+│   │   ├── StudySessionForm.vue      # 学習記録作成ページ
+│   │   └── StudyProgress.vue         # 個別学習進捗レポートページ
 │   │
 │   ├── user/          # ユーザー関連ページ
 │   │   ├── Profile.vue               # プロフィール表示ページ
 │   │   └── ProfileEdit.vue           # プロフィール編集ページ
 │   │
 │   ├── NotFound.vue    # 404ページ
-│   # ├── Reports.vue     # レポート画面（将来実装）
+│   ├── Reports.vue     # 全体学習レポート画面
 │
 ├── components/         # 再利用可能なUIコンポーネント
 │   ├── auth/          # 認証関連コンポーネント
 │   │   # ├── LoginForm.vue # ログインフォーム（将来実装）
+│   │
+│   ├── charts/        # グラフ関連コンポーネント
+│   │   ├── BarChart.vue    # 棒グラフ表示コンポーネント
+│   │   ├── LineChart.vue   # 折れ線グラフ表示コンポーネント
+│   │   └── PieChart.vue    # 円グラフ表示コンポーネント
 │   │
 │   ├── learning/      # 学習管理関連コンポーネント
 │   │   ├── LearningContentCard.vue # 学習コンテンツをカード形式で表示するコンポーネント
@@ -59,6 +65,7 @@ src/
 │       ├── BaseButton.vue # 汎用的なボタンコンポーネント
 │       ├── ConfirmModal.vue # 汎用的な確認モーダルコンポーネント
 │       ├── DatePickerModal.vue # 日付選択モーダルコンポーネント
+│       ├── Pagination.vue # ページネーションコンポーネント
 │       ├── SectionSelector.vue # セクション選択ドロップダウンコンポーネント
 │       ├── TimeInputModal.vue # 時間入力モーダルコンポーネント
 │       ├── UserAvatar.vue # ユーザーアバター表示コンポーネント
@@ -83,7 +90,7 @@ src/
 │   └── AuthLayout.vue      # 認証画面用レイアウト
 │
 ├── utils/             # ユーティリティ関数
-│   # 現在は空ですが、将来的に共通関数を配置
+│   ├── chartColors.js # チャートの色定義ユーティリティ
 │   # ├── formatDate.js # 日付フォーマット（将来実装）
 │   # └── validationRules.js # バリデーションルール（将来実装）
 │
