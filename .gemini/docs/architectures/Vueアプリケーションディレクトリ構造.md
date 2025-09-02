@@ -1,6 +1,6 @@
 ## 相互リンク
 
-[Vueアプリケーションディレクトリ構造](https://www.notion.so/Vue-25a9d86c12e8805483b2e52ec251ff87?pvs=21) 
+[Vueアプリケーションディレクトリ構造](https://www.notion.so/Vue-25a9d86c12e8805483b2e52ec251ff87?pvs=21)
 
 .gemini/docs/architectures/Vueアプリケーションディレクトリ構造.md
 
@@ -9,6 +9,27 @@
 ## 基本方針
 
 このプロジェクトの規模（MVP + 拡張機能）を考慮し、シンプルさと整理のバランスを重視した構造を採用します。
+
+---
+
+## 構造更新プロンプト
+
+```markdown
+.gemini/docs/architectures/Vueアプリケーションディレクトリ構造.md
+
+## 指示
+`## 現在のディレクトリ構造`と`インポート関係図 `を、現在のディレクトリ構造と突き合わせて更新してください。
+
+### 現在のディレクトリ構造の注意点
+- 現時点で未作成のディレクトリやファイルはコメントアウトのまま残してください
+- 新しく追加した項目には、必ずそのファイルやディレクトリの役割を簡潔にコメントとして追記してください
+- 既存の項目もコメントが不足している場合は補足してください
+
+### **インポート関係図
+- composables と validators を中心に、views/components/layouts との依存関係を明示してください
+- ダミーデータや将来実装予定の部分は、コメントアウトまたはラベルで区別してください
+
+```
 
 ---
 
@@ -21,106 +42,125 @@ src/
 │   │   ├── Login.vue
 │   │   ├── PasswordReset.vue
 │   │   └── Register.vue
-│   │
-│   ├── Dashboard.vue   # メインダッシュボード
 │   ├── learning/      # 学習管理関連ページ
-│   │   ├── LearningContentCreate.vue # 学習内容作成ページ
-│   │   ├── LearningContentDetail.vue # 学習内容詳細ページ
-│   │   ├── LearningContentEdit.vue   # 学習内容編集ページ
-│   │   ├── SectionStudyRecords.vue   # セクション別学習記録一覧ページ
-│   │   ├── StudySessionEdit.vue      # 学習記録編集ページ
-│   │   ├── StudySessionForm.vue      # 学習記録作成ページ
-│   │   └── StudyProgress.vue         # 個別学習進捗レポートページ
-│   │
+│   │   ├── LearningContentCreate.vue
+│   │   ├── LearningContentDetail.vue
+│   │   ├── LearningContentEdit.vue
+│   │   ├── SectionStudyRecords.vue
+│   │   ├── StudySessionEdit.vue
+│   │   ├── StudySessionForm.vue
+│   │   └── StudyProgress.vue
 │   ├── user/          # ユーザー関連ページ
-│   │   ├── Profile.vue               # プロフィール表示ページ
-│   │   └── ProfileEdit.vue           # プロフィール編集ページ
-│   │
-│   ├── NotFound.vue    # 404ページ
-│   ├── Reports.vue     # 全体学習レポート画面
+│   │   ├── Profile.vue
+│   │   └── ProfileEdit.vue
+│   ├── Dashboard.vue
+│   ├── NotFound.vue
+│   └── Reports.vue
 │
 ├── components/         # 再利用可能なUIコンポーネント
 │   ├── auth/          # 認証関連コンポーネント
-│   │   # ├── LoginForm.vue # ログインフォーム（将来実装）
-│   │
 │   ├── charts/        # グラフ関連コンポーネント
-│   │   ├── BarChart.vue    # 棒グラフ表示コンポーネント
-│   │   ├── LineChart.vue   # 折れ線グラフ表示コンポーネント
-│   │   └── PieChart.vue    # 円グラフ表示コンポーネント
-│   │
-│   ├── learning/      # 学習管理関連コンポーネント
-│   │   ├── LearningContentCard.vue # 学習コンテンツをカード形式で表示するコンポーネント
-│   │   ├── StatsOverview.vue # 学習統計の概要を表示するコンポーネント
-│   │   ├── StudySessionFormFields.vue # 学習記録フォームの共通フィールドコンポーネント
-│   │   └── wizard/ # ウィザード関連コンポーネント
-│   │       ├── SectionListEditor.vue # セクションリストエディタ
-│   │       ├── TechnologySelector.vue # 学習内容作成ウィザードのステップ1で使用される技術選択コンポーネント
-│   │       ├── WizardNavigation.vue # 学習内容作成ウィザードのナビゲーションボタンコンポーネント
-│   │       └── WizardStepIndicator.vue # 学習内容作成ウィザードのステップ表示コンポーネント
-│   │     # └── SectionList.vue # セクションリスト（将来実装）
-│   │
-│   └── common/        # 汎用コンポーネント
-│       ├── AppHeader.vue # アプリケーションのヘッダーコンポーネント
-│       ├── AppSidebar.vue # アプリケーションのサイドバーコンポーネント
-│       ├── BaseButton.vue # 汎用的なボタンコンポーネント
-│       ├── ConfirmModal.vue # 汎用的な確認モーダルコンポーネント
-│       ├── DatePickerModal.vue # 日付選択モーダルコンポーネント
-│       ├── Pagination.vue # ページネーションコンポーネント
-│       ├── SectionSelector.vue # セクション選択ドロップダウンコンポーネント
-│       ├── TimeInputModal.vue # 時間入力モーダルコンポーネント
-│       ├── UserAvatar.vue # ユーザーアバター表示コンポーネント
-│       └── buttons/ # ボタン関連コンポーネント
-│           ├── BackButton.vue # 戻るボタン
-│           ├── CancelButton.vue # キャンセルボタン
-│           └── DeleteButton.vue # 削除ボタン
-│       # └── LoadingSpinner.vue # ローディングスピナー（将来実装）
+│   │   ├── BarChart.vue
+│   │   ├── LineChart.vue
+│   │   └── PieChart.vue
+│   ├── common/        # 汎用コンポーネント
+│   │   ├── AppHeader.vue
+│   │   ├── AppSidebar.vue
+│   │   ├── BaseButton.vue
+│   │   ├── ConfirmModal.vue
+│   │   ├── DatePickerModal.vue
+│   │   ├── Pagination.vue
+│   │   ├── SectionSelector.vue
+│   │   ├── TimeInputModal.vue
+│   │   ├── UserAvatar.vue
+│   │   └── buttons/
+│   │       ├── BackButton.vue
+│   │       ├── CancelButton.vue
+│   │       └── DeleteButton.vue
+│   └── learning/      # 学習管理関連コンポーネント
+│       ├── LearningContentCard.vue
+│       ├── StatsOverview.vue
+│       ├── StudySessionFormFields.vue
+│       └── wizard/
+│           ├── SectionListEditor.vue
+│           ├── TechnologySelector.vue
+│           ├── WizardNavigation.vue
+│           └── WizardStepIndicator.vue
 │
-├── composables/       # 共有ロジック・状態管理
-│   ├── useAuth.js # 認証関連のロジックと状態管理
-│   ├── useLearningContentForm.js # 学習内容作成フォームのロジックと状態管理
-│   ├── useLearningData.js # 学習データ（学習コンテンツ、セクション、学習記録など）の管理
-│   ├── useStudySessionForm.js # 学習記録フォームのロジックと状態管理
-│   ├── useUser.js # ユーザー情報管理のロジックと状態管理
-│   ├── useWizardForm.js # ウィザードフォームのステップ管理とバリデーションロジック
-│   # ├── useValidation.js # バリデーションロジック（将来実装）
-│   # └── useLocalStorage.js # ローカルストレージ操作（将来実装）
+├── composables/       # 共有ロジック・状態管理 (リファクタリング後)
+│   ├── data/          # モックデータ管理
+│   │   ├── mockLearningContents.js
+│   │   ├── mockSections.js
+│   │   ├── mockSessions.js
+│   │   └── mockTechnologies.js
+│   ├── learning/      # 学習ドメインのコアロジック
+│   │   ├── useLearningContents.js
+│   │   ├── useLearningSessions.js
+│   │   └── useSections.js
+│   ├── ui/            # UI状態とヘルパー
+│   │   ├── useMenuState.js
+│   │   └── useUIHelpers.js
+│   ├── useAuth.js     # 認証関連のロジック
+│   ├── useLearningContentForm.js # 学習内容フォームのロジック
+│   ├── useLearningData.js # 全ての学習データを集約・提供するFacade
+│   ├── useStudySessionForm.js # 学習記録フォームのロジック
+│   ├── useUser.js     # ユーザー情報の状態管理
+│   └── useWizardForm.js # ウィザードフォームのロジック
 │
 ├── layouts/           # レイアウトコンポーネント
-│   ├── DefaultLayout.vue   # 認証後のレイアウト
-│   └── AuthLayout.vue      # 認証画面用レイアウト
+│   ├── AuthLayout.vue
+│   └── DefaultLayout.vue
 │
 ├── utils/             # ユーティリティ関数
-│   ├── chartColors.js # チャートの色定義ユーティリティ
-│   # ├── formatDate.js # 日付フォーマット（将来実装）
-│   # └── validationRules.js # バリデーションルール（将来実装）
+│   └── chartColors.js
 │
 ├── validators/        # バリデーションロジック
-│   ├── profileValidator.js # プロフィール関連のバリデーションロジック
-│   └── studySessionValidator.js # 学習記録のバリデーションロジック
+│   ├── profileValidator.js
+│   └── studySessionValidator.js
 │
-├── assets/            # 静的アセット
-│   ├── vue.svg
-│   # └── styles/ # スタイルファイル（将来的に配置）
-│   #     └── main.css
-│
-├── router.js          # ルーティング設定
-├── App.vue           # ルートコンポーネント
-├── main.js          # エントリーポイント
-└── style.css        # グローバルスタイル
+├── assets/
+├── router.js
+├── App.vue
+├── main.js
+└── style.css
 ```
 
-### 構造更新プロンプト
+---
 
-```markdown
-.gemini/docs/architectures/Vueアプリケーションディレクトリ構造.md
+## インポート関係図
 
-## 指示
-推奨ディレクトリ構造を、現在のディレクトリ構造と突き合わせて更新してください。
+```mermaid
+graph TD
+    subgraph Composables
+        A[useLearningData] --> B[useUser]
+        A --> C[ui/useMenuState]
+        A --> D[ui/useUIHelpers]
+        A --> E[learning/useLearningContents]
+        A --> F[learning/useSections]
+        A --> G[learning/useLearningSessions]
+        A --> H[data/mockTechnologies]
 
-### 注意点
-- 現時点で未作成のディレクトリやファイルはコメントアウトのまま残してください
-- 新しく追加した項目には、必ずそのファイルやディレクトリの役割を簡潔にコメントとして追記してください
-- 既存の項目もコメントが不足している場合は補足してください
+        E --> H
+        E --> I[data/mockLearningContents]
+        E --> J[data/mockSessions]
+
+        F --> K[data/mockSections]
+
+        G --> J
+
+        L[useAuth] --> B
+        M[useStudySessionForm] --> N[validators/studySessionValidator]
+    end
+
+    subgraph Views & Components
+        O[Views] --> A
+        O --> L
+        O --> M
+    end
+
+    style A fill:#c9d1f3,stroke:#333,stroke-width:2px
+    style L fill:#d5e8d4,stroke:#333,stroke-width:2px
+    style M fill:#d5e8d4,stroke:#333,stroke-width:2px
 
 ```
 
