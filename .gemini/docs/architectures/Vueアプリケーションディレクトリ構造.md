@@ -39,67 +39,67 @@
 src/
 ├── views/              # ルーティング対象のページ
 │   ├── auth/          # 認証関連ページ
-│   │   ├── Login.vue
-│   │   ├── PasswordReset.vue
-│   │   └── Register.vue
+│   │   ├── Login.vue          # ログイン画面
+│   │   ├── PasswordReset.vue  # パスワードリセット画面
+│   │   └── Register.vue       # 新規登録画面
 │   ├── learning/      # 学習管理関連ページ
-│   │   ├── LearningContentCreate.vue
-│   │   ├── LearningContentDetail.vue
-│   │   ├── LearningContentEdit.vue
-│   │   ├── SectionStudyRecords.vue
-│   │   ├── StudySessionEdit.vue
-│   │   ├── StudySessionForm.vue
-│   │   └── StudyProgress.vue
+│   │   ├── LearningContentCreate.vue  # 学習内容新規作成画面
+│   │   ├── LearningContentDetail.vue  # 学習内容詳細画面
+│   │   ├── LearningContentEdit.vue    # 学習内容編集画面
+│   │   ├── SectionStudyRecords.vue    # セクション別学習記録一覧画面
+│   │   ├── StudyProgress.vue          # 個別レポート画面
+│   │   ├── StudySessionEdit.vue       # 学習記録編集画面
+│   │   └── StudySessionForm.vue       # 学習記録作成画面
 │   ├── user/          # ユーザー関連ページ
-│   │   ├── Profile.vue
-│   │   └── ProfileEdit.vue
-│   ├── Dashboard.vue
-│   ├── NotFound.vue
-│   └── Reports.vue
+│   │   ├── Profile.vue        # プロフィール表示画面
+│   │   └── ProfileEdit.vue    # プロフィール編集画面
+│   ├── Dashboard.vue   # ダッシュボード画面
+│   ├── NotFound.vue    # 404 Not Found画面
+│   └── Reports.vue     # 全体レポート画面
 │
 ├── components/         # 再利用可能なUIコンポーネント
 │   ├── auth/          # 認証関連コンポーネント
 │   ├── charts/        # グラフ関連コンポーネント
-│   │   ├── BarChart.vue
-│   │   ├── LineChart.vue
-│   │   └── PieChart.vue
+│   │   ├── BarChart.vue   # 棒グラフコンポーネント
+│   │   ├── LineChart.vue  # 折れ線グラフコンポーネント
+│   │   └── PieChart.vue   # 円グラフコンポーネント
 │   ├── common/        # 汎用コンポーネント
-│   │   ├── AppHeader.vue
-│   │   ├── AppSidebar.vue
-│   │   ├── BaseButton.vue
-│   │   ├── ConfirmModal.vue
-│   │   ├── DatePickerModal.vue
-│   │   ├── Pagination.vue
-│   │   ├── SectionSelector.vue
-│   │   ├── TimeInputModal.vue
-│   │   ├── UserAvatar.vue
-│   │   └── buttons/
-│   │       ├── BackButton.vue
-│   │       ├── CancelButton.vue
-│   │       └── DeleteButton.vue
+│   │   ├── AppHeader.vue      # アプリケーションヘッダー
+│   │   ├── AppSidebar.vue     # アプリケーションサイドバー
+│   │   ├── BaseButton.vue     # 基本ボタンコンポーネント
+│   │   ├── ConfirmModal.vue   # 確認モーダルコンポーネント
+│   │   ├── DatePickerModal.vue # 日付選択モーダルコンポーネント
+│   │   ├── Pagination.vue     # ページネーションコンポーネント
+│   │   ├── SectionSelector.vue # セクション選択ドロップダウン
+│   │   ├── TimeInputModal.vue # 時間入力モーダルコンポーネント
+│   │   ├── UserAvatar.vue     # ユーザーアバターコンポーネント
+│   │   └── buttons/           # ボタン群
+│   │       ├── BackButton.vue   # 戻るボタン
+│   │       ├── CancelButton.vue # キャンセルボタン
+│   │       └── DeleteButton.vue # 削除ボタン
 │   └── learning/      # 学習管理関連コンポーネント
-│       ├── LearningContentCard.vue
-│       ├── StatsOverview.vue
-│       ├── StudySessionFormFields.vue
-│       └── wizard/
-│           ├── SectionListEditor.vue
-│           ├── TechnologySelector.vue
-│           ├── WizardNavigation.vue
-│           └── WizardStepIndicator.vue
+│       ├── LearningContentCard.vue    # 学習コンテンツカード
+│       ├── StatsOverview.vue          # 統計概要コンポーネント
+│       ├── StudySessionFormFields.vue # 学習記録フォームフィールド
+│       └── wizard/                    # ウィザード形式のコンポーネント
+│           ├── SectionListEditor.vue    # セクションリスト編集
+│           ├── TechnologySelector.vue   # 技術選択ドロップダウン
+│           ├── WizardNavigation.vue     # ウィザードナビゲーションボタン
+│           └── WizardStepIndicator.vue  # ウィザードステップインジケーター
 │
 ├── composables/       # 共有ロジック・状態管理 (リファクタリング後)
 │   ├── data/          # モックデータ管理
-│   │   ├── mockLearningContents.js
-│   │   ├── mockSections.js
-│   │   ├── mockSessions.js
-│   │   └── mockTechnologies.js
+│   │   ├── mockLearningContents.js # モック学習コンテンツデータ
+│   │   ├── mockSections.js         # モックセクションデータ
+│   │   ├── mockSessions.js         # モック学習セッションデータ
+│   │   └── mockTechnologies.js     # モック技術データ
 │   ├── learning/      # 学習ドメインのコアロジック
-│   │   ├── useLearningContents.js
-│   │   ├── useLearningSessions.js
-│   │   └── useSections.js
+│   │   ├── useLearningContents.js  # 学習コンテンツ関連ロジック
+│   │   ├── useLearningSessions.js  # 学習セッション関連ロジック
+│   │   └── useSections.js          # セクション関連ロジック
 │   ├── ui/            # UI状態とヘルパー
-│   │   ├── useMenuState.js
-│   │   └── useUIHelpers.js
+│   │   ├── useMenuState.js # メニュー状態管理ロジック
+│   │   └── useUIHelpers.js # UIヘルパー関数
 │   ├── useAuth.js     # 認証関連のロジック
 │   ├── useLearningContentForm.js # 学習内容フォームのロジック
 │   ├── useLearningData.js # 全ての学習データを集約・提供するFacade
@@ -108,21 +108,23 @@ src/
 │   └── useWizardForm.js # ウィザードフォームのロジック
 │
 ├── layouts/           # レイアウトコンポーネント
-│   ├── AuthLayout.vue
-│   └── DefaultLayout.vue
+│   ├── AuthLayout.vue      # 認証画面用レイアウト
+│   ├── DashboardLayout.vue # ダッシュボード画面用レイアウト
+│   ├── DefaultLayout.vue   # デフォルトレイアウト
+│   └── DetailLayout.vue    # 詳細画面用レイアウト
 │
 ├── utils/             # ユーティリティ関数
-│   └── chartColors.js
+│   └── chartColors.js # チャートの色定義
 │
 ├── validators/        # バリデーションロジック
-│   ├── profileValidator.js
-│   └── studySessionValidator.js
+│   ├── profileValidator.js    # プロフィール関連のバリデーション
+│   └── studySessionValidator.js # 学習セッション関連のバリデーション
 │
-├── assets/
-├── router.js
-├── App.vue
-├── main.js
-└── style.css
+├── assets/            # 静的アセット
+├── router.js          # Vue Router設定
+├── App.vue            # ルートコンポーネント
+├── main.js            # エントリーポイント
+└── style.css          # グローバルスタイル
 ```
 
 ---
