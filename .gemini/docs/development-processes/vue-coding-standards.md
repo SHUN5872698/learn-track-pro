@@ -24,6 +24,35 @@
 - 定数オブジェクト：UPPER_SNAKE_CASE
 - ブール値：is/has/can接頭辞使用
 
+### Vue Router
+- **ルートのnameプロパティ：kebab-case（例：learning-detail、profile-edit）**
+- **コンポーネントのインポート：ファイル上部で事前インポート**
+
+```javascript
+// router.js の例
+import Home from './views/Home.vue';
+import LearningDetail from './views/learning/LearningDetail.vue';
+import ProfileEdit from './views/profile/ProfileEdit.vue';
+
+const routes = [
+  {
+    path: '/',
+    name: 'home',
+    component: Home
+  },
+  {
+    path: '/learning/:id',
+    name: 'learning-detail',
+    component: LearningDetail
+  },
+  {
+    path: '/profile/edit',
+    name: 'profile-edit',
+    component: ProfileEdit
+  }
+];
+```
+
 ## JavaScript規約
 - アロー関数を優先使用
 - constを基本とし、必要時のみlet使用
@@ -31,7 +60,7 @@
 - テンプレートリテラル使用
 
 ## Vue 3ベストプラクティス
-- <script setup>構文使用
+- `<script setup>`構文使用
 - ref、reactive、computed適切に使い分け
 - provide/inject適切に活用
 - カスタムcomposables作成
