@@ -58,7 +58,7 @@ src/
 │   └── Reports.vue     # 全体レポート画面
 │
 ├── components/         # 再利用可能なUIコンポーネント
-│   ├── auth/          # 認証関連コンポーネント
+│   ├── auth/          # 認証関連コンポーネント (未実装)
 │   ├── charts/        # グラフ関連コンポーネント
 │   │   ├── BarChart.vue   # 棒グラフコンポーネント
 │   │   ├── LineChart.vue  # 折れ線グラフコンポーネント
@@ -87,7 +87,7 @@ src/
 │           ├── WizardNavigation.vue     # ウィザードナビゲーションボタン
 │           └── WizardStepIndicator.vue  # ウィザードステップインジケーター
 │
-├── composables/       # 共有ロジック・状態管理 (リファクタリング後)
+├── composables/       # 共有ロジック・状態管理
 │   ├── data/          # モックデータ管理
 │   │   ├── mockLearningContents.js # モック学習コンテンツデータ
 │   │   ├── mockSections.js         # モックセクションデータ
@@ -100,12 +100,12 @@ src/
 │   ├── ui/            # UI状態とヘルパー
 │   │   ├── useMenuState.js # メニュー状態管理ロジック
 │   │   └── useUIHelpers.js # UIヘルパー関数
-│   ├── useAuth.js     # 認証関連のロジック
-│   ├── useLearningContentForm.js # 学習内容フォームのロジック
-│   ├── useLearningData.js # 全ての学習データを集約・提供するFacade
-│   ├── useStudySessionForm.js # 学習記録フォームのロジック
-│   ├── useUser.js     # ユーザー情報の状態管理
-│   └── useWizardForm.js # ウィザードフォームのロジック
+│   ├── useAuth.js     # 認証関連のロジック（ログイン、ログアウト、ユーザー登録など）
+│   ├── useLearningContentForm.js # 学習内容フォームのロジックとバリデーション
+│   ├── useLearningData.js # 全ての学習データを集約・提供するFacade（データ操作のハブ）
+│   ├── useStudySessionForm.js # 学習記録フォームのロジックとバリデーション
+│   ├── useUser.js     # ユーザー情報の状態管理とプロフィール更新ロジック
+│   └── useWizardForm.js # ウィザード形式のフォームのステップ管理とバリデーション
 │
 ├── layouts/           # レイアウトコンポーネント
 │   ├── AuthLayout.vue      # 認証画面用レイアウト
@@ -114,7 +114,8 @@ src/
 │   └── DetailLayout.vue    # 詳細画面用レイアウト
 │
 ├── utils/             # ユーティリティ関数
-│   └── chartColors.js # チャートの色定義
+│   ├── chartColors.js # チャートの色定義
+│   └── dateFormatters.js # 日付と時刻のフォーマット関数
 │
 ├── validators/        # バリデーションロジック
 │   ├── profileValidator.js    # プロフィール関連のバリデーション
