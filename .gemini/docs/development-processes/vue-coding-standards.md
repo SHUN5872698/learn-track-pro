@@ -17,136 +17,91 @@
 ```javascript
 <script setup>
 // ========================================
-// 1. 外部ライブラリのインポート
+// 外部インポート
 // ========================================
-import { ref, computed, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 // ========================================
-// 2. 内部モジュールのインポート
+// 内部インポート
 // ========================================
-// 2.1 コンポーザブル
-import { useLearningData } from '@/composables/useLearningData';
-import { useAuth } from '@/composables/useAuth';
+// コンポーザブル
+import { useLearningData } from '../../composables/useLearningData'
 
-// 2.2 コンポーネント（レイアウト → 共通 → 機能別）
-import DetailLayout from '@/layouts/DetailLayout.vue';
-import BaseButton from '@/components/common/BaseButton.vue';
-import SectionSelector from '@/components/common/SectionSelector.vue';
-import LearningCard from '@/components/learning/LearningCard.vue';
-
-// 2.3 ユーティリティ・ヘルパー
-import { formatDate } from '@/utils/dateHelpers';
-import { validateEmail } from '@/validators/userValidators';
+// コンポーネント
+import DetailLayout from '../../layouts/DetailLayout.vue'
 
 // ========================================
-// 3. Props定義
+// ユーティリティ関数（純粋関数）
 // ========================================
-const props = defineProps({
-  modelValue: Object,
-  sections: Array,
-  hasError: Boolean,
-});
+function formatDate(date) {
+  // Vueに依存しない純粋な関数
+}
 
 // ========================================
-// 4. Emits定義
+// 初期設定
 // ========================================
-const emit = defineEmits(['update:modelValue', 'submit', 'cancel']);
+const route = useRoute()
+const router = useRouter()
+
+// コンポーザブル実行
+const { data, methods } = useLearningData()
 
 // ========================================
-// 5. ルーター・ルート
+// 状態管理
 // ========================================
-const route = useRoute();
-const router = useRouter();
+// フォームデータ
+const form = ref({})
+const errors = ref({})
+
+// UI状態
+const isLoading = ref(false)
+const isModalOpen = ref(false)
 
 // ========================================
-// 6. コンポーザブルの実行
+// 算出プロパティ
 // ========================================
-const { user, isAuthenticated } = useAuth();
-const { learningContents, addContent } = useLearningData();
+const isValid = computed(() => {
+  return form.value.title && form.value.title.length > 0
+})
 
 // ========================================
-// 7. リアクティブな変数（ref/reactive）
-// ========================================
-const isLoading = ref(false);
-const formData = reactive({
-  title: '',
-  description: '',
-});
-
-// ========================================
-// 8. 算出プロパティ（computed）
-// ========================================
-const canSubmit = computed(() => {
-  return formData.title && !isLoading.value;
-});
-
-const filteredContents = computed(() => {
-  // 複雑な計算ロジック
-});
-
-// ========================================
-// 9. Watch
-// ========================================
-watch(() => props.modelValue, (newValue) => {
-  // 処理
-});
-
-watchEffect(() => {
-  // 処理
-});
-
-// ========================================
-// 10. メソッド（イベントハンドラ → ヘルパー関数）
-// ========================================
-// 10.1 イベントハンドラ（handle〜）
-const handleSubmit = async () => {
-  // 処理
-};
-
-const handleCancel = () => {
-  // 処理
-};
-
-// 10.2 ヘルパー関数
-const validateForm = () => {
-  // 処理
-};
-
-const formatData = (data) => {
-  // 処理
-};
-
-// ========================================
-// 11. ライフサイクルフック
+// ライフサイクル
 // ========================================
 onMounted(() => {
-  // 初期化処理
-});
-
-onUnmounted(() => {
-  // クリーンアップ処理
-});
+  loadData()
+})
 
 // ========================================
-// 12. Provide（親コンポーネントの場合）
+// メソッド
 // ========================================
-provide('validationContext', {
-  errors: validationErrors,
-  clearErrors,
-});
+// イベントハンドラ
+const handleSubmit = async () => {
+  // 送信処理
+}
 
-// ========================================
-// 13. Inject（子コンポーネントの場合）
-// ========================================
-const { errors, clearErrors } = inject('validationContext');
+// ヘルパー関数
+const loadData = () => {
+  // データ読み込み
+}
 </script>
+
 ```
 
 ### セクションコメントのガイドライン：
 - 主要なセクションは`// ========================================`で区切る
 - サブセクションは`// --------`または番号付きコメントで区切る
 - 各セクションにわかりやすい日本語コメントを付ける
+
+### 順序チェックリスト
+- [ ] 1. 外部インポート
+- [ ] 2. 内部インポート（コンポーザブル、コンポーネント...etc）
+- [ ] 3. ユーティリティ関数（Vueに依存しない純粋な関数）
+- [ ] 4. 初期設定（ルーター・ルート、コンポーザブル実行...etc）
+- [ ] 5. 状態管理（フォームデータ、UI状態、編集状態...etc）
+- [ ] 6. 算出プロパティ（バリデーション、変更検知...etc）
+- [ ] 7. ライフサイクル
+- [ ] 8. メソッド（イベントハンドラ、ヘルパー関数、バリデーション...etc）
 
 ## 命名規則
 

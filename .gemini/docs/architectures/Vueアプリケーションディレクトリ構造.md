@@ -104,6 +104,7 @@ src/
 │   ├── useLearningContentForm.js # 学習内容フォームのロジックとバリデーション
 │   ├── useLearningData.js # 全ての学習データを集約・提供するFacade（データ操作のハブ）
 │   ├── useStudySessionForm.js # 学習記録フォームのロジックとバリデーション
+│   ├── useSectionStatus.js # セクションのステータス管理と計算ロジック
 │   ├── useUser.js     # ユーザー情報の状態管理とプロフィール更新ロジック
 │   └── useWizardForm.js # ウィザード形式のフォームのステップ管理とバリデーション
 │
@@ -142,17 +143,22 @@ graph TD
         A --> F[learning/useSections]
         A --> G[learning/useLearningSessions]
         A --> H[data/mockTechnologies]
+        P[useSectionStatus]
 
         E --> H
         E --> I[data/mockLearningContents]
         E --> J[data/mockSessions]
+        E --> P
 
         F --> K[data/mockSections]
+        F --> P
 
         G --> J
 
         L[useAuth] --> B
         M[useStudySessionForm] --> N[validators/studySessionValidator]
+
+        A --> P
     end
 
     subgraph Views & Components
@@ -164,7 +170,7 @@ graph TD
     style A fill:#c9d1f3,stroke:#333,stroke-width:2px
     style L fill:#d5e8d4,stroke:#333,stroke-width:2px
     style M fill:#d5e8d4,stroke:#333,stroke-width:2px
-
+    style P fill:#c9d1f3,stroke:#333,stroke-width:2px
 ```
 
 ---
