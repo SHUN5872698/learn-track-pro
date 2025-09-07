@@ -66,7 +66,6 @@ src/
 │   └── Reports.vue     # 全体レポート画面
 │
 ├── components/         # 再利用可能なUIコンポーネント
-│   ├── auth/          # 認証関連コンポーネント (未実装)
 │   ├── charts/        # グラフ関連コンポーネント
 │   │   ├── BarChart.vue   # 棒グラフコンポーネント
 │   │   ├── LineChart.vue  # 折れ線グラフコンポーネント
@@ -97,10 +96,12 @@ src/
 │
 ├── composables/       # 共有ロジック・状態管理
 │   ├── data/          # モックデータ管理
+│   │   ├── mockCategories.js       # モックカテゴリデータ
 │   │   ├── mockLearningContents.js # モック学習コンテンツデータ
 │   │   ├── mockSections.js         # モックセクションデータ
 │   │   ├── mockSessions.js         # モック学習セッションデータ
-│   │   └── mockTechnologies.js     # モック技術データ
+│   │   ├── mockTechnologies.js     # モック技術データ
+│   │   └── mockUsers.js            # モックユーザーデータ
 │   ├── learning/      # 学習ドメインのコアロジック
 │   │   ├── useLearningContents.js  # 学習コンテンツ関連ロジック
 │   │   ├── useLearningSessions.js  # 学習セッション関連ロジック
@@ -150,35 +151,64 @@ graph TD
         A --> E[learning/useLearningContents]
         A --> F[learning/useSections]
         A --> G[learning/useLearningSessions]
-        A --> H[data/mockTechnologies]
-        P[useSectionStatus]
+        A --> P[useSectionStatus]
 
-        E --> H
+        E --> H[data/mockTechnologies]
         E --> I[data/mockLearningContents]
         E --> J[data/mockSessions]
-        E --> P
 
         F --> K[data/mockSections]
-        F --> P
 
         G --> J
 
         L[useAuth] --> B
         M[useStudySessionForm] --> N[validators/studySessionValidator]
+        O[useLearningContentForm]
+        Q[useWizardForm]
 
-        A --> P
+        B --> R[data/mockUsers]
+        H --> S[data/mockCategories]
+    end
+
+    subgraph Data
+        H
+        I
+        J
+        K
+        R
+        S
+    end
+
+    subgraph Validators
+        N[studySessionValidator]
+        T[profileValidator]
     end
 
     subgraph Views & Components
-        O[Views] --> A
-        O --> L
-        O --> M
+        V[Views & Components] --> A
+        V --> L
+        V --> M
+        V --> O
+        V --> Q
+        V --> P
+        V --> D
+        V --> T
     end
 
     style A fill:#c9d1f3,stroke:#333,stroke-width:2px
     style L fill:#d5e8d4,stroke:#333,stroke-width:2px
     style M fill:#d5e8d4,stroke:#333,stroke-width:2px
     style P fill:#c9d1f3,stroke:#333,stroke-width:2px
+    style O fill:#d5e8d4,stroke:#333,stroke-width:2px
+    style Q fill:#d5e8d4,stroke:#333,stroke-width:2px
+    style N fill:#f8d5d5,stroke:#333,stroke-width:2px
+    style T fill:#f8d5d5,stroke:#333,stroke-width:2px
+    style H fill:#e0e0e0,stroke:#333,stroke-width:1px
+    style I fill:#e0e0e0,stroke:#333,stroke-width:1px
+    style J fill:#e0e0e0,stroke:#333,stroke-width:1px
+    style K fill:#e0e0e0,stroke:#333,stroke-width:1px
+    style R fill:#e0e0e0,stroke:#333,stroke-width:1px
+    style S fill:#e0e0e0,stroke:#333,stroke-width:1px
 ```
 
 ---
