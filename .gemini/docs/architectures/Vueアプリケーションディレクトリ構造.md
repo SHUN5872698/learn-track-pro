@@ -107,8 +107,7 @@ src/
 │   │   ├── useLearningSessions.js  # 学習セッション関連ロジック
 │   │   └── useSections.js          # セクション関連ロジック
 │   ├── ui/            # UI状態とヘルパー
-│   │   ├── useMenuState.js # メニュー状態管理ロジック
-│   │   └── useUIHelpers.js # UIヘルパー関数
+│   │   └── useMenuState.js # メニュー状態管理ロジック
 │   ├── useAuth.js     # 認証関連のロジック（ログイン、ログアウト、ユーザー登録など）
 │   ├── useLearningContentForm.js # 学習内容フォームのロジックとバリデーション
 │   ├── useLearningData.js # 全ての学習データを集約・提供するFacade（データ操作のハブ）
@@ -132,6 +131,9 @@ src/
 │   └── studySessionValidator.js # 学習セッション関連のバリデーション
 │
 ├── assets/            # 静的アセット
+│   ├── vue.svg
+│   └── icons/
+│       └── technologies/ # 技術アイコン画像
 ├── router.js          # Vue Router設定
 ├── App.vue            # ルートコンポーネント
 ├── main.js            # エントリーポイント
