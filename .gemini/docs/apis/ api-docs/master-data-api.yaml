@@ -1,0 +1,392 @@
+openapi: 3.0.1
+info:
+  title: 学習管理システムAPI - マスターデータ
+  description: 学習管理システムのマスターデータ（カテゴリー、技術）を管理するAPI
+  version: 1.0.0
+tags:
+  - name: Master Data
+    description: マスターデータの取得
+
+paths:
+  /api/categories:
+    get:
+      summary: カテゴリー一覧取得
+      deprecated: false
+      description: 全カテゴリーの一覧を取得します
+      operationId: getCategories
+      tags:
+        - Master Data
+      parameters:
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - カテゴリー一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+              examples:
+                success:
+                  summary: 成功時のレスポンス例
+                  value:
+                    - id: 1
+                      name: "Programming"
+                      icon: "..."
+                      description: "プログラミング言語、フレームワーク、ライブラリ"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                    - id: 2
+                      name: "Infrastructure"
+                      icon: "..."
+                      description: "サーバー、ネットワーク、クラウド、コンテナ技術"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                    - id: 3
+                      name: "Service"
+                      icon: "..."
+                      description: "Webサービス、開発ツール、生産性向上ツール"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                    - id: 4
+                      name: "Development"
+                      icon: "..."
+                      description: "設計、開発手法、プロジェクト管理、実践的な開発"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                    - id: 5
+                      name: "AI"
+                      icon: "..."
+                      description: "AI、機械学習、LLM、プロンプトエンジニアリング"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                    - id: 6
+                      name: "Other"
+                      icon: "..."
+                      description: "ビジネススキル、マインドセット、その他の学習"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+      security: []
+
+  /api/technologies:
+    get:
+      summary: 技術一覧取得
+      deprecated: false
+      description: 技術の一覧を取得します。カテゴリーIDでフィルタリング可能です
+      operationId: getTechnologies
+      tags:
+        - Master Data
+      parameters:
+        - name: category_id
+          in: query
+          description: カテゴリーIDでフィルタ
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 技術一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Technology'
+              examples:
+                allTechnologies:
+                  summary: 全件取得の例（一部抜粋）
+                  value:
+                    - id: 1
+                      category_id: 1
+                      name: "Laravel"
+                      icon: "/src/assets/icons/technologies/laravel-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 2
+                      category_id: 1
+                      name: "Vue.js"
+                      icon: "/src/assets/icons/technologies/vue-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 3
+                      category_id: 1
+                      name: "React"
+                      icon: "/src/assets/icons/technologies/react-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 18
+                      category_id: 2
+                      name: "Docker"
+                      icon: "/src/assets/icons/technologies/docker-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 2
+                        name: "Infrastructure"
+                    - id: 19
+                      category_id: 2
+                      name: "AWS"
+                      icon: "/src/assets/icons/technologies/aws-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 2
+                        name: "Infrastructure"
+                    - id: 21
+                      category_id: 3
+                      name: "Git"
+                      icon: "/src/assets/icons/technologies/git-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 3
+                        name: "Service"
+                filteredByCategory:
+                  summary: カテゴリーID=1でフィルタした例
+                  value:
+                    - id: 1
+                      category_id: 1
+                      name: "Laravel"
+                      icon: "/src/assets/icons/technologies/laravel-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 2
+                      category_id: 1
+                      name: "Vue.js"
+                      icon: "/src/assets/icons/technologies/vue-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 3
+                      category_id: 1
+                      name: "React"
+                      icon: "/src/assets/icons/technologies/react-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 4
+                      category_id: 1
+                      name: "PHP"
+                      icon: "/src/assets/icons/technologies/php-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 5
+                      category_id: 1
+                      name: "JavaScript"
+                      icon: "/src/assets/icons/technologies/javascript-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 6
+                      category_id: 1
+                      name: "TypeScript"
+                      icon: "/src/assets/icons/technologies/typescript-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 7
+                      category_id: 1
+                      name: "Python"
+                      icon: "/src/assets/icons/technologies/python-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 8
+                      category_id: 1
+                      name: "Ruby"
+                      icon: "/src/assets/icons/technologies/ruby-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 9
+                      category_id: 1
+                      name: "Java"
+                      icon: "/src/assets/icons/technologies/java-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 10
+                      category_id: 1
+                      name: "HTML"
+                      icon: "/src/assets/icons/technologies/html-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 11
+                      category_id: 1
+                      name: "CSS"
+                      icon: "/src/assets/icons/technologies/css-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 12
+                      category_id: 1
+                      name: "Next.js"
+                      icon: "/src/assets/icons/technologies/next-js-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+                    - id: 13
+                      category_id: 1
+                      name: "TailwindCSS"
+                      icon: "/src/assets/icons/technologies/tailwindcss-icon.png"
+                      created_at: "2023-01-01T00:00:00.000000Z"
+                      updated_at: "2023-01-01T00:00:00.000000Z"
+                      category:
+                        id: 1
+                        name: "Programming"
+      security: []
+
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: カテゴリーID
+          example: 1
+        name:
+          type: string
+          description: カテゴリー名
+          example: "Programming"
+        icon:
+          type: string
+          description: アイコンURL又はBase64データ
+          example: "..."
+        description:
+          type: string
+          description: カテゴリーの説明
+          example: "プログラミング言語、フレームワーク、ライブラリ"
+        created_at:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: "2023-01-01T00:00:00.000000Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: "2023-01-01T00:00:00.000000Z"
+
+    Technology:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 技術ID
+          example: 1
+        category_id:
+          type: integer
+          description: カテゴリーID
+          example: 1
+        name:
+          type: string
+          description: 技術名
+          example: "Laravel"
+        icon:
+          type: string
+          description: アイコンのパス
+          example: "/src/assets/icons/technologies/laravel-icon.png"
+        created_at:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: "2023-01-01T00:00:00.000000Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: "2023-01-01T00:00:00.000000Z"
+        category:
+          type: object
+          description: 関連カテゴリー情報
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: "Programming"
+
+  securitySchemes:
+    sanctum:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+      description: Laravel Sanctum認証
+
+servers: []
+security: []

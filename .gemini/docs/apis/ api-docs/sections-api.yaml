@@ -1,0 +1,834 @@
+openapi: 3.0.1
+info:
+  title: 学習管理システムAPI - セクション管理
+  description: 学習内容のセクションを管理するWebアプリケーションのセクション管理API
+  version: 1.0.0
+tags:
+  - name: Sections
+    description: セクションの管理
+
+paths:
+  /api/learning-contents/{id}/sections:
+    get:
+      summary: セクション一覧取得
+      deprecated: false
+      description: 指定した学習内容のセクション一覧を取得します
+      operationId: getSections
+      tags:
+        - Sections
+      parameters:
+        - name: id
+          in: path
+          description: 学習内容ID
+          required: true
+          schema:
+            type: integer
+            example: 2
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - セクション一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Section'
+              examples:
+                success:
+                  summary: 成功時のレスポンス例（learning_content_id=2）
+                  value:
+                    - id: 21
+                      learning_content_id: 2
+                      title: 'Vue.jsの基本'
+                      order: 1
+                      status: 'completed'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2024-08-18T13:00:00.000000Z'
+                    - id: 22
+                      learning_content_id: 2
+                      title: 'Composition API'
+                      order: 2
+                      status: 'completed'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2024-08-19T10:00:00.000000Z'
+                    - id: 23
+                      learning_content_id: 2
+                      title: 'Vue Router'
+                      order: 3
+                      status: 'completed'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2024-08-20T14:30:00.000000Z'
+                    - id: 24
+                      learning_content_id: 2
+                      title: 'Vuex/Pinia'
+                      order: 4
+                      status: 'completed'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2024-08-21T09:00:00.000000Z'
+                    - id: 25
+                      learning_content_id: 2
+                      title: 'コンポーネント設計'
+                      order: 5
+                      status: 'completed'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2024-08-22T13:30:00.000000Z'
+                    - id: 26
+                      learning_content_id: 2
+                      title: 'TypeScript統合'
+                      order: 6
+                      status: 'completed'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2024-08-23T10:00:00.000000Z'
+                    - id: 27
+                      learning_content_id: 2
+                      title: 'テスト戦略'
+                      order: 7
+                      status: 'completed'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2024-08-24T14:00:00.000000Z'
+                    - id: 28
+                      learning_content_id: 2
+                      title: 'パフォーマンス最適化'
+                      order: 8
+                      status: 'completed'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2024-08-25T11:00:00.000000Z'
+                    - id: 29
+                      learning_content_id: 2
+                      title: 'SSRとNuxt.js'
+                      order: 9
+                      status: 'completed'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2024-08-26T09:30:00.000000Z'
+                    - id: 30
+                      learning_content_id: 2
+                      title: 'カスタムディレクティブ'
+                      order: 10
+                      status: 'not_started'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2023-11-15T00:00:00.000000Z'
+                    - id: 31
+                      learning_content_id: 2
+                      title: 'プラグイン開発'
+                      order: 11
+                      status: 'not_started'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2023-11-15T00:00:00.000000Z'
+                    - id: 32
+                      learning_content_id: 2
+                      title: 'アニメーション'
+                      order: 12
+                      status: 'not_started'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2023-11-15T00:00:00.000000Z'
+                    - id: 33
+                      learning_content_id: 2
+                      title: '国際化（i18n）'
+                      order: 13
+                      status: 'not_started'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2023-11-15T00:00:00.000000Z'
+                    - id: 34
+                      learning_content_id: 2
+                      title: 'PWA対応'
+                      order: 14
+                      status: 'not_started'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2023-11-15T00:00:00.000000Z'
+                    - id: 35
+                      learning_content_id: 2
+                      title: 'デプロイ戦略'
+                      order: 15
+                      status: 'not_started'
+                      created_at: '2023-11-15T00:00:00.000000Z'
+                      updated_at: '2023-11-15T00:00:00.000000Z'
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'Unauthenticated.'
+        '404':
+          description: Not Found - 学習内容が見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: '学習内容が見つかりません。'
+      security:
+        - sanctum: []
+
+  /api/sections:
+    post:
+      summary: セクション追加
+      deprecated: false
+      description: 新しいセクションを追加します
+      operationId: createSection
+      tags:
+        - Sections
+      parameters:
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - learning_content_id
+                - title
+                - order
+              properties:
+                learning_content_id:
+                  type: integer
+                  description: 学習内容ID
+                  example: 2
+                title:
+                  type: string
+                  description: セクションタイトル
+                  example: 'Vue3の新機能'
+                order:
+                  type: integer
+                  description: 並び順
+                  minimum: 1
+                  example: 16
+      responses:
+        '201':
+          description: Created - セクション追加成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Section'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+              example:
+                id: 130
+                learning_content_id: 2
+                title: 'Vue3の新機能'
+                order: 16
+                status: 'not_started'
+                created_at: '2025-09-08T12:00:00.000000Z'
+                updated_at: '2025-09-08T12:00:00.000000Z'
+                message: 'セクションを追加しました。'
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'Unauthenticated.'
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: 'The given data was invalid.'
+                errors:
+                  title:
+                    - 'セクションタイトルは必須です。'
+                  learning_content_id:
+                    - '学習内容IDは必須です。'
+                  order:
+                    - '並び順は1以上の整数である必要があります。'
+      security:
+        - sanctum: []
+
+  /api/sections/{id}:
+    put:
+      summary: セクション編集
+      deprecated: false
+      description: 指定したIDのセクションを更新します
+      operationId: updateSection
+      tags:
+        - Sections
+      parameters:
+        - name: id
+          in: path
+          description: セクションID
+          required: true
+          schema:
+            type: integer
+            example: 30
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: セクションタイトル
+                  example: 'カスタムディレクティブ（応用編）'
+                order:
+                  type: integer
+                  description: 並び順
+                  minimum: 1
+                  example: 10
+      responses:
+        '200':
+          description: OK - セクション更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Section'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+              example:
+                id: 30
+                learning_content_id: 2
+                title: 'カスタムディレクティブ（応用編）'
+                order: 10
+                status: 'not_started'
+                created_at: '2023-11-15T00:00:00.000000Z'
+                updated_at: '2025-09-08T12:15:00.000000Z'
+                message: 'セクションを更新しました。'
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'Unauthenticated.'
+        '404':
+          description: Not Found - セクションが見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'セクションが見つかりません。'
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: 'The given data was invalid.'
+                errors:
+                  title:
+                    - 'セクションタイトルは必須です。'
+                  order:
+                    - '並び順は1以上の整数である必要があります。'
+      security:
+        - sanctum: []
+
+    delete:
+      summary: セクション削除
+      deprecated: false
+      description: 指定したIDのセクションを削除します
+      operationId: deleteSection
+      tags:
+        - Sections
+      parameters:
+        - name: id
+          in: path
+          description: セクションID
+          required: true
+          schema:
+            type: integer
+            example: 130
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - セクション削除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'セクションを削除しました。'
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'Unauthenticated.'
+        '404':
+          description: Not Found - セクションが見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'セクションが見つかりません。'
+        '422':
+          description: Unprocessable Entity - 削除できない条件
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                hasLearningRecords:
+                  summary: 学習記録が存在する場合
+                  value:
+                    message: '学習記録が存在するセクションは削除できません。'
+                lastSection:
+                  summary: 最後のセクション
+                  value:
+                    message: '最後のセクションは削除できません。学習内容には最低1つのセクションが必要です。'
+      security:
+        - sanctum: []
+
+  /api/sections/{id}/status:
+    put:
+      summary: セクションステータス変更
+      deprecated: false
+      description: 指定したIDのセクションのステータスを変更します
+      operationId: updateSectionStatus
+      tags:
+        - Sections
+      parameters:
+        - name: id
+          in: path
+          description: セクションID
+          required: true
+          schema:
+            type: integer
+            example: 30
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  description: ステータス（not_started, in_progress, completed）
+                  enum: [not_started, in_progress, completed]
+                  example: 'in_progress'
+      responses:
+        '200':
+          description: OK - ステータス更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Section'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+              examples:
+                inProgress:
+                  summary: 学習中に変更（id=30）
+                  value:
+                    id: 30
+                    learning_content_id: 2
+                    title: 'カスタムディレクティブ'
+                    order: 10
+                    status: 'in_progress'
+                    created_at: '2023-11-15T00:00:00.000000Z'
+                    updated_at: '2025-09-08T12:30:00.000000Z'
+                    message: 'セクションのステータスを更新しました。'
+                completed:
+                  summary: 完了に変更（id=80）
+                  value:
+                    id: 80
+                    learning_content_id: 4
+                    title: 'セキュリティとベストプラクティス'
+                    order: 10
+                    status: 'completed'
+                    created_at: '2025-09-10T09:00:00.000000Z'
+                    updated_at: '2025-09-08T13:00:00.000000Z'
+                    message: 'セクションのステータスを更新しました。'
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'Unauthenticated.'
+        '404':
+          description: Not Found - セクションが見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'セクションが見つかりません。'
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: 'The given data was invalid.'
+                errors:
+                  status:
+                    - 'ステータスは not_started, in_progress, completed のいずれかである必要があります。'
+      security:
+        - sanctum: []
+
+  /api/learning-contents/{id}/sections/bulk:
+    put:
+      summary: セクション一括更新
+      deprecated: false
+      description: 学習内容のセクションを一括で更新（追加・更新・削除）します
+      operationId: bulkUpdateSections
+      tags:
+        - Sections
+      parameters:
+        - name: id
+          in: path
+          description: 学習内容ID
+          required: true
+          schema:
+            type: integer
+            example: 2
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sections
+              properties:
+                sections:
+                  type: array
+                  description: 更新・追加するセクションの配列
+                  items:
+                    type: object
+                    required:
+                      - title
+                      - order
+                    properties:
+                      id:
+                        type: integer
+                        nullable: true
+                        description: セクションID（nullの場合は新規追加）
+                        example: 21
+                      title:
+                        type: string
+                        description: セクションタイトル
+                        example: '環境構築（更新）'
+                      order:
+                        type: integer
+                        description: 並び順
+                        example: 1
+                deleted_section_ids:
+                  type: array
+                  description: 削除するセクションIDの配列
+                  items:
+                    type: integer
+                  example: [23, 24]
+            example:
+              sections:
+                - id: 21
+                  title: '環境構築（更新）'
+                  order: 1
+                - id: 22
+                  title: '認証機能実装'
+                  order: 2
+                - id: null
+                  title: 'テスト実装'
+                  order: 3
+                - id: null
+                  title: 'デプロイ'
+                  order: 4
+              deleted_section_ids: [23, 24]
+      responses:
+        '200':
+          description: OK - セクション一括更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sections:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Section'
+                  deleted_count:
+                    type: integer
+                    description: 削除されたセクション数
+                  message:
+                    type: string
+              example:
+                sections:
+                  - id: 21
+                    learning_content_id: 2
+                    title: '環境構築（更新）'
+                    order: 1
+                    status: 'completed'
+                    created_at: '2023-11-15T00:00:00.000000Z'
+                    updated_at: '2025-09-08T12:00:00.000000Z'
+                  - id: 22
+                    learning_content_id: 2
+                    title: '認証機能実装'
+                    order: 2
+                    status: 'in_progress'
+                    created_at: '2023-11-15T00:00:00.000000Z'
+                    updated_at: '2025-09-08T12:00:00.000000Z'
+                  - id: 134
+                    learning_content_id: 2
+                    title: 'テスト実装'
+                    order: 3
+                    status: 'not_started'
+                    created_at: '2025-09-08T12:00:00.000000Z'
+                    updated_at: '2025-09-08T12:00:00.000000Z'
+                  - id: 135
+                    learning_content_id: 2
+                    title: 'デプロイ'
+                    order: 4
+                    status: 'not_started'
+                    created_at: '2025-09-08T12:00:00.000000Z'
+                    updated_at: '2025-09-08T12:00:00.000000Z'
+                deleted_count: 2
+                message: 'セクションを更新しました。'
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'Unauthenticated.'
+        '404':
+          description: Not Found - 学習内容が見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: '学習内容が見つかりません。'
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: 'The given data was invalid.'
+                errors:
+                  sections:
+                    - 'セクションは最低1つ必要です。'
+      security:
+        - sanctum: []
+
+components:
+  schemas:
+    Section:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: セクションID
+          example: 21
+        learning_content_id:
+          type: integer
+          description: 学習内容ID
+          example: 2
+        title:
+          type: string
+          description: セクションタイトル
+          example: 'Vue.jsの基本'
+        order:
+          type: integer
+          description: 並び順
+          example: 1
+        status:
+          type: string
+          description: ステータス
+          enum: [not_started, in_progress, completed]
+          example: 'completed'
+        created_at:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2023-11-15T00:00:00.000000Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: '2024-08-18T13:00:00.000000Z'
+
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'The given data was invalid.'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+  securitySchemes:
+    sanctum:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+      description: Laravel Sanctum認証
+
+servers: []
+security: []

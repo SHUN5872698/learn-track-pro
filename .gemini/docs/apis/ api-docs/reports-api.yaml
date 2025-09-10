@@ -1,0 +1,641 @@
+openapi: 3.0.1
+info:
+  title: 学習管理システムAPI - レポート・統計
+  description: 学習管理システムのレポートと統計情報を提供するAPI
+  version: 1.0.0
+tags:
+  - name: Reports
+    description: レポートと統計情報の取得
+
+paths:
+  /api/reports/dashboard-stats:
+    get:
+      summary: ダッシュボード統計取得
+      deprecated: false
+      description: ダッシュボードに表示する統計情報を取得します
+      operationId: getDashboardStats
+      tags:
+        - Reports
+      parameters:
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - ダッシュボード統計取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardStats'
+              example:
+                active_courses: 3
+                completed_sections: 15
+                total_study_minutes: 2450
+                average_progress: 62.5
+                recent_activities:
+                  - id: 1
+                    title: 'Laravel学習'
+                    last_studied_at: '2025-08-21T15:30:00.000000Z'
+                    progress_percentage: 30.0
+                  - id: 2
+                    title: 'Vue.js実践'
+                    last_studied_at: '2025-08-20T18:00:00.000000Z'
+                    progress_percentage: 100.0
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'Unauthenticated.'
+      security:
+        - sanctum: []
+
+  /api/reports/weekly-chart:
+    get:
+      summary: 週間学習時間チャート取得
+      deprecated: false
+      description: 指定期間の学習時間チャートデータを取得します
+      operationId: getWeeklyChart
+      tags:
+        - Reports
+      parameters:
+        - name: period
+          in: query
+          description: 期間指定
+          required: false
+          schema:
+            type: string
+            enum: [week, month, all]
+            default: week
+            example: week
+        - name: date
+          in: query
+          description: 基準日（YYYY-MM-DD）
+          required: false
+          schema:
+            type: string
+            format: date
+            example: '2025-08-21'
+        - name: content_id
+          in: query
+          description: 学習内容ID（オプション）
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 学習時間チャート取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeeklyChart'
+              example:
+                period: 'week'
+                start_date: '2025-08-15'
+                end_date: '2025-08-21'
+                data:
+                  - date: '2025-08-15'
+                    study_minutes: 120
+                  - date: '2025-08-16'
+                    study_minutes: 90
+                  - date: '2025-08-17'
+                    study_minutes: 0
+                  - date: '2025-08-18'
+                    study_minutes: 150
+                  - date: '2025-08-19'
+                    study_minutes: 180
+                  - date: '2025-08-20'
+                    study_minutes: 210
+                  - date: '2025-08-21'
+                    study_minutes: 270
+                total_minutes: 1020
+                daily_average: 145.7
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'Unauthenticated.'
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: 'The given data was invalid.'
+                errors:
+                  period:
+                    - '期間は week, month, all のいずれかである必要があります。'
+                  date:
+                    - '日付の形式が正しくありません。'
+      security:
+        - sanctum: []
+
+  /api/reports/technology-summary:
+    get:
+      summary: 技術別学習時間サマリー取得
+      deprecated: false
+      description: 技術別の学習時間サマリーを取得します
+      operationId: getTechnologySummary
+      tags:
+        - Reports
+      parameters:
+        - name: period
+          in: query
+          description: 期間指定
+          required: false
+          schema:
+            type: string
+            enum: [week, month, all]
+            default: month
+            example: month
+        - name: date
+          in: query
+          description: 基準日（YYYY-MM-DD）
+          required: false
+          schema:
+            type: string
+            format: date
+            example: '2025-08-31'
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 技術別サマリー取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TechnologySummary'
+              example:
+                period: 'month'
+                start_date: '2025-08-01'
+                end_date: '2025-08-31'
+                data:
+                  - technology_id: 3
+                    technology_name: 'Laravel'
+                    category_name: 'フレームワーク'
+                    total_minutes: 1250
+                    percentage: 45.5
+                    learning_contents_count: 2
+                  - technology_id: 4
+                    technology_name: 'Vue.js'
+                    category_name: 'フレームワーク'
+                    total_minutes: 980
+                    percentage: 35.6
+                    learning_contents_count: 1
+                  - technology_id: 1
+                    technology_name: 'JavaScript'
+                    category_name: 'プログラミング言語'
+                    total_minutes: 520
+                    percentage: 18.9
+                    learning_contents_count: 1
+                total_minutes: 2750
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'Unauthenticated.'
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: 'The given data was invalid.'
+                errors:
+                  period:
+                    - '期間は week, month, all のいずれかである必要があります。'
+                  date:
+                    - '日付の形式が正しくありません。'
+      security:
+        - sanctum: []
+
+  /api/reports/learning-history:
+    get:
+      summary: 学習履歴取得
+      deprecated: false
+      description: 指定期間の学習履歴を日別に取得します
+      operationId: getLearningHistory
+      tags:
+        - Reports
+      parameters:
+        - name: period
+          in: query
+          description: 期間指定
+          required: false
+          schema:
+            type: string
+            enum: [week, month, all]
+            default: week
+            example: week
+        - name: content_id
+          in: query
+          description: 学習内容ID（オプション）
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: page
+          in: query
+          description: ページ番号
+          required: false
+          schema:
+            type: integer
+            default: 1
+            example: 1
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 学習履歴取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningHistory'
+              example:
+                data:
+                  - date: '2025-08-21'
+                    sessions:
+                      - id: 10
+                        learning_content_title: 'Laravel学習'
+                        section_title: 'データベース'
+                        study_minutes: 90
+                        note: 'データベース設計について学習した'
+                      - id: 9
+                        learning_content_title: 'Laravel学習'
+                        section_title: 'ルーティング'
+                        study_minutes: 60
+                        note: 'RESTful APIの設計'
+                    daily_total_minutes: 150
+                  - date: '2025-08-20'
+                    sessions:
+                      - id: 8
+                        learning_content_title: 'Vue.js実践'
+                        section_title: 'Composition API'
+                        study_minutes: 120
+                        note: 'リアクティブシステムの理解'
+                    daily_total_minutes: 120
+                meta:
+                  current_page: 1
+                  last_page: 3
+                  per_page: 7
+                  total: 21
+                summary:
+                  period_total_minutes: 1020
+                  period_average_minutes: 145.7
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: 'Unauthenticated.'
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: 'The given data was invalid.'
+                errors:
+                  period:
+                    - '期間は week, month, all のいずれかである必要があります。'
+                  page:
+                    - 'ページ番号は1以上の整数である必要があります。'
+      security:
+        - sanctum: []
+
+components:
+  schemas:
+    DashboardStats:
+      type: object
+      properties:
+        active_courses:
+          type: integer
+          description: アクティブなコース数
+          example: 3
+        completed_sections:
+          type: integer
+          description: 完了したセクション数
+          example: 15
+        total_study_minutes:
+          type: integer
+          description: 総学習時間（分）
+          example: 2450
+        average_progress:
+          type: number
+          format: float
+          description: 平均進捗率（%）
+          example: 62.5
+        recent_activities:
+          type: array
+          description: 最近のアクティビティ
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: 学習内容ID
+                example: 1
+              title:
+                type: string
+                description: 学習内容タイトル
+                example: 'Laravel学習'
+              last_studied_at:
+                type: string
+                format: date-time
+                description: 最終学習日時
+                example: '2025-08-21T15:30:00.000000Z'
+              progress_percentage:
+                type: number
+                format: float
+                description: 進捗率（%）
+                example: 30.0
+
+    WeeklyChart:
+      type: object
+      properties:
+        period:
+          type: string
+          description: 期間タイプ
+          enum: [week, month, all]
+          example: 'week'
+        start_date:
+          type: string
+          format: date
+          description: 開始日
+          example: '2025-08-15'
+        end_date:
+          type: string
+          format: date
+          description: 終了日
+          example: '2025-08-21'
+        data:
+          type: array
+          description: 日別学習時間データ
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+                description: 日付
+                example: '2025-08-15'
+              study_minutes:
+                type: integer
+                description: 学習時間（分）
+                example: 120
+        total_minutes:
+          type: integer
+          description: 期間内総学習時間（分）
+          example: 1020
+        daily_average:
+          type: number
+          format: float
+          description: 1日平均学習時間（分）
+          example: 145.7
+
+    TechnologySummary:
+      type: object
+      properties:
+        period:
+          type: string
+          description: 期間タイプ
+          enum: [week, month, all]
+          example: 'month'
+        start_date:
+          type: string
+          format: date
+          description: 開始日
+          example: '2025-08-01'
+        end_date:
+          type: string
+          format: date
+          description: 終了日
+          example: '2025-08-31'
+        data:
+          type: array
+          description: 技術別学習時間データ
+          items:
+            type: object
+            properties:
+              technology_id:
+                type: integer
+                description: 技術ID
+                example: 3
+              technology_name:
+                type: string
+                description: 技術名
+                example: 'Laravel'
+              category_name:
+                type: string
+                description: カテゴリー名
+                example: 'フレームワーク'
+              total_minutes:
+                type: integer
+                description: 総学習時間（分）
+                example: 1250
+              percentage:
+                type: number
+                format: float
+                description: 割合（%）
+                example: 45.5
+              learning_contents_count:
+                type: integer
+                description: 学習内容数
+                example: 2
+        total_minutes:
+          type: integer
+          description: 期間内総学習時間（分）
+          example: 2750
+
+    LearningHistory:
+      type: object
+      properties:
+        data:
+          type: array
+          description: 日別学習履歴
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+                description: 日付
+                example: '2025-08-21'
+              sessions:
+                type: array
+                description: 学習セッション
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: セッションID
+                      example: 10
+                    learning_content_title:
+                      type: string
+                      description: 学習内容タイトル
+                      example: 'Laravel学習'
+                    section_title:
+                      type: string
+                      description: セクションタイトル
+                      example: 'データベース'
+                    study_minutes:
+                      type: integer
+                      description: 学習時間（分）
+                      example: 90
+                    note:
+                      type: string
+                      nullable: true
+                      description: 学習メモ
+                      example: 'データベース設計について学習した'
+              daily_total_minutes:
+                type: integer
+                description: 日別総学習時間（分）
+                example: 150
+        meta:
+          type: object
+          description: ページネーション情報
+          properties:
+            current_page:
+              type: integer
+              description: 現在のページ
+              example: 1
+            last_page:
+              type: integer
+              description: 最終ページ
+              example: 3
+            per_page:
+              type: integer
+              description: 1ページあたりの件数
+              example: 7
+            total:
+              type: integer
+              description: 総件数
+              example: 21
+        summary:
+          type: object
+          description: サマリー情報
+          properties:
+            period_total_minutes:
+              type: integer
+              description: 期間内総学習時間（分）
+              example: 1020
+            period_average_minutes:
+              type: number
+              format: float
+              description: 期間内1日平均学習時間（分）
+              example: 145.7
+
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'The given data was invalid.'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+  securitySchemes:
+    sanctum:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+      description: Laravel Sanctum認証
+
+servers: []
+security: []

@@ -1,0 +1,1095 @@
+openapi: 3.0.1
+info:
+  title: 学習管理システムAPI - 学習内容管理
+  description: 学習内容と進捗を管理するWebアプリケーションの学習内容管理API
+  version: 1.0.0
+tags:
+  - name: Learning Contents
+    description: 学習内容の管理
+
+paths:
+  /api/learning-contents:
+    get:
+      summary: 学習内容一覧取得
+      deprecated: false
+      description: ログインユーザーの学習内容一覧を取得します
+      operationId: getLearningContents
+      tags:
+        - Learning Contents
+      parameters:
+        - name: status
+          in: query
+          description: ステータスでフィルタリング
+          required: false
+          schema:
+            type: string
+            enum: [not_started, in_progress, completed]
+            example: in_progress
+        - name: technology_id
+          in: query
+          description: 技術分野でのフィルタ
+          required: false
+          schema:
+            type: integer
+            example: 1
+        - name: sort
+          in: query
+          description: ソート項目
+          required: false
+          schema:
+            type: string
+            enum: [updated_at, created_at, title]
+            default: updated_at
+            example: updated_at
+        - name: order
+          in: query
+          description: ソート順
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+            example: desc
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 学習内容一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LearningContent'
+              examples:
+                success:
+                  summary: 成功時のレスポンス例
+                  value:
+                    - id: 1
+                      user_id: 1
+                      technology_id: 1
+                      title: "Laravel完全マスター"
+                      description: "Laravelの基礎から応用まで、実践的なWebアプリケーション開発を学習"
+                      total_sections: 20
+                      completed_sections: 20
+                      status: "completed"
+                      completed_at: "2024-08-25T00:00:00.000000Z"
+                      created_at: "2023-12-01T00:00:00.000000Z"
+                      updated_at: "2024-08-25T00:00:00.000000Z"
+                      technology:
+                        id: 1
+                        name: "Laravel"
+                        icon: "/src/assets/icons/technologies/laravel-icon.png"
+                        category:
+                          id: 1
+                          name: "Programming"
+                    - id: 2
+                      user_id: 1
+                      technology_id: 2
+                      title: "Vue.js 3 実践ガイド"
+                      description: "Vue.js 3のComposition APIとTypeScriptを使ったモダンなフロントエンド開発"
+                      total_sections: 15
+                      completed_sections: 9
+                      status: "in_progress"
+                      completed_at: null
+                      created_at: "2023-11-15T00:00:00.000000Z"
+                      updated_at: "2024-01-14T18:00:00.000000Z"
+                      technology:
+                        id: 2
+                        name: "Vue.js"
+                        icon: "/src/assets/icons/technologies/vue-icon.png"
+                        category:
+                          id: 1
+                          name: "Programming"
+                    - id: 3
+                      user_id: 1
+                      technology_id: 3
+                      title: "React基礎からNext.jsまで"
+                      description: "Reactの基礎概念からNext.jsを使った本格的なWebアプリケーション開発まで"
+                      total_sections: 10
+                      completed_sections: 6
+                      status: "in_progress"
+                      completed_at: null
+                      created_at: "2024-01-05T00:00:00.000000Z"
+                      updated_at: "2024-01-10T09:00:00.000000Z"
+                      technology:
+                        id: 3
+                        name: "React"
+                        icon: "/src/assets/icons/technologies/react-icon.png"
+                        category:
+                          id: 1
+                          name: "Programming"
+                    - id: 4
+                      user_id: 1
+                      technology_id: 18
+                      title: "Dockerの基礎学習"
+                      description: "コンテナ化の基礎とDockerの再確認"
+                      total_sections: 10
+                      completed_sections: 9
+                      status: "in_progress"
+                      completed_at: null
+                      created_at: "2024-01-10T00:00:00.000000Z"
+                      updated_at: "2024-01-10T09:00:00.000000Z"
+                      technology:
+                        id: 18
+                        name: "Docker"
+                        icon: "/src/assets/icons/technologies/docker-icon.png"
+                        category:
+                          id: 2
+                          name: "Infrastructure"
+                    - id: 5
+                      user_id: 1
+                      technology_id: 4
+                      title: "PHP8.5の内容確認"
+                      description: "PHP8.5で実装されるRFCの確認"
+                      total_sections: 10
+                      completed_sections: 10
+                      status: "in_progress"
+                      completed_at: null
+                      created_at: "2024-01-10T00:00:00.000000Z"
+                      updated_at: "2024-01-10T09:00:00.000000Z"
+                      technology:
+                        id: 4
+                        name: "PHP"
+                        icon: "/src/assets/icons/technologies/php-icon.png"
+                        category:
+                          id: 1
+                          name: "Programming"
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+      security:
+        - sanctum: []
+
+    post:
+      summary: 学習内容作成
+      deprecated: false
+      description: 新しい学習内容を作成します
+      operationId: createLearningContent
+      tags:
+        - Learning Contents
+      parameters:
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - technology_id
+                - title
+                - description
+                - sections
+              properties:
+                technology_id:
+                  type: integer
+                  description: 技術ID
+                  example: 1
+                title:
+                  type: string
+                  description: タイトル
+                  example: "Laravel REST API開発"
+                description:
+                  type: string
+                  description: 説明
+                  example: "RESTful APIの設計から実装まで、実践的なスキルを習得"
+                sections:
+                  type: array
+                  description: セクション一覧
+                  items:
+                    type: object
+                    required:
+                      - title
+                      - order
+                    properties:
+                      title:
+                        type: string
+                        example: "環境構築"
+                      order:
+                        type: integer
+                        example: 1
+      responses:
+        '201':
+          description: Created - 学習内容作成成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/LearningContentDetail'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+              example:
+                id: 6
+                user_id: 1
+                technology_id: 1
+                title: "Laravel REST API開発"
+                description: "RESTful APIの設計から実装まで、実践的なスキルを習得"
+                total_sections: 3
+                completed_sections: 0
+                status: not_started
+                completed_at: null
+                created_at: "2025-09-08T10:00:00.000000Z"
+                updated_at: "2025-09-08T10:00:00.000000Z"
+                technology:
+                  id: 1
+                  name: "Laravel"
+                  icon: "/src/assets/icons/technologies/laravel-icon.png"
+                  category:
+                    id: 1
+                    name: "Programming"
+                sections:
+                  - id: 131
+                    learning_content_id: 6
+                    title: "環境構築"
+                    order: 1
+                    status: not_started
+                    created_at: "2025-09-08T10:00:00.000000Z"
+                    updated_at: "2025-09-08T10:00:00.000000Z"
+                  - id: 132
+                    learning_content_id: 6
+                    title: "ルーティング設定"
+                    order: 2
+                    status: not_started
+                    created_at: "2025-09-08T10:00:00.000000Z"
+                    updated_at: "2025-09-08T10:00:00.000000Z"
+                  - id: 133
+                    learning_content_id: 6
+                    title: "認証機能実装"
+                    order: 3
+                    status: not_started
+                    created_at: "2025-09-08T10:00:00.000000Z"
+                    updated_at: "2025-09-08T10:00:00.000000Z"
+                message: "学習内容を作成しました。"
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                invalidTechnology:
+                  summary: 無効な技術ID
+                  value:
+                    message: "The given data was invalid."
+                    errors:
+                      technology_id:
+                        - "指定された技術が見つかりません。"
+                emptySections:
+                  summary: セクションが空
+                  value:
+                    message: "The given data was invalid."
+                    errors:
+                      sections:
+                        - "セクションは最低1つ必要です。"
+      security:
+        - sanctum: []
+
+  /api/learning-contents/{id}:
+    get:
+      summary: 学習内容詳細取得
+      deprecated: false
+      description: 指定したIDの学習内容の詳細を取得します
+      operationId: getLearningContent
+      tags:
+        - Learning Contents
+      parameters:
+        - name: id
+          in: path
+          description: 学習内容ID
+          required: true
+          schema:
+            type: integer
+            example: 2
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 学習内容取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningContentDetail'
+              example:
+                id: 2
+                user_id: 1
+                technology_id: 2
+                title: "Vue.js 3 実践ガイド"
+                description: "Vue.js 3のComposition APIとTypeScriptを使ったモダンなフロントエンド開発"
+                total_sections: 15
+                completed_sections: 9
+                status: in_progress
+                completed_at: null
+                created_at: "2023-11-15T00:00:00.000000Z"
+                updated_at: "2024-01-14T18:00:00.000000Z"
+                technology:
+                  id: 2
+                  name: "Vue.js"
+                  icon: "/src/assets/icons/technologies/vue-icon.png"
+                  category:
+                    id: 1
+                    name: "Programming"
+                sections:
+                  - id: 21
+                    learning_content_id: 2
+                    title: "Vue.jsの基本"
+                    order: 1
+                    status: completed
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2024-08-18T13:00:00.000000Z"
+                  - id: 22
+                    learning_content_id: 2
+                    title: "Composition API"
+                    order: 2
+                    status: completed
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2024-08-19T10:00:00.000000Z"
+                  - id: 23
+                    learning_content_id: 2
+                    title: "Vue Router"
+                    order: 3
+                    status: completed
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2024-08-20T14:30:00.000000Z"
+                  - id: 24
+                    learning_content_id: 2
+                    title: "Vuex/Pinia"
+                    order: 4
+                    status: completed
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2024-08-21T09:00:00.000000Z"
+                  - id: 25
+                    learning_content_id: 2
+                    title: "コンポーネント設計"
+                    order: 5
+                    status: completed
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2024-08-22T13:30:00.000000Z"
+                  - id: 26
+                    learning_content_id: 2
+                    title: "TypeScript統合"
+                    order: 6
+                    status: completed
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2024-08-23T10:00:00.000000Z"
+                  - id: 27
+                    learning_content_id: 2
+                    title: "テスト戦略"
+                    order: 7
+                    status: completed
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2024-08-24T14:00:00.000000Z"
+                  - id: 28
+                    learning_content_id: 2
+                    title: "パフォーマンス最適化"
+                    order: 8
+                    status: completed
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2024-08-25T11:00:00.000000Z"
+                  - id: 29
+                    learning_content_id: 2
+                    title: "SSRとNuxt.js"
+                    order: 9
+                    status: completed
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2024-08-26T09:30:00.000000Z"
+                  - id: 30
+                    learning_content_id: 2
+                    title: "カスタムディレクティブ"
+                    order: 10
+                    status: not_started
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2023-11-15T00:00:00.000000Z"
+                  - id: 31
+                    learning_content_id: 2
+                    title: "プラグイン開発"
+                    order: 11
+                    status: not_started
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2023-11-15T00:00:00.000000Z"
+                  - id: 32
+                    learning_content_id: 2
+                    title: "アニメーション"
+                    order: 12
+                    status: not_started
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2023-11-15T00:00:00.000000Z"
+                  - id: 33
+                    learning_content_id: 2
+                    title: "国際化（i18n）"
+                    order: 13
+                    status: not_started
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2023-11-15T00:00:00.000000Z"
+                  - id: 34
+                    learning_content_id: 2
+                    title: "PWA対応"
+                    order: 14
+                    status: not_started
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2023-11-15T00:00:00.000000Z"
+                  - id: 35
+                    learning_content_id: 2
+                    title: "デプロイ戦略"
+                    order: 15
+                    status: not_started
+                    created_at: "2023-11-15T00:00:00.000000Z"
+                    updated_at: "2023-11-15T00:00:00.000000Z"
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+        '403':
+          description: Forbidden - アクセス権限がありません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "この学習内容へのアクセス権限がありません。"
+        '404':
+          description: Not Found - 学習内容が見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "学習内容が見つかりません。"
+      security:
+        - sanctum: []
+
+    put:
+      summary: 学習内容編集
+      deprecated: false
+      description: 指定したIDの学習内容を更新します
+      operationId: updateLearningContent
+      tags:
+        - Learning Contents
+      parameters:
+        - name: id
+          in: path
+          description: 学習内容ID
+          required: true
+          schema:
+            type: integer
+            example: 2
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                technology_id:
+                  type: integer
+                  description: 技術ID
+                  example: 2
+                title:
+                  type: string
+                  description: タイトル
+                  example: "Vue.js 3 実践ガイド（改訂版）"
+                description:
+                  type: string
+                  description: 説明
+                  example: "Vue.js 3のComposition APIとTypeScriptを使ったモダンなフロントエンド開発（2025年版）"
+      responses:
+        '200':
+          description: OK - 学習内容更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/LearningContent'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+              example:
+                id: 2
+                user_id: 1
+                technology_id: 2
+                title: "Vue.js 3 実践ガイド（改訂版）"
+                description: "Vue.js 3のComposition APIとTypeScriptを使ったモダンなフロントエンド開発（2025年版）"
+                total_sections: 15
+                completed_sections: 9
+                status: in_progress
+                completed_at: null
+                created_at: "2023-11-15T00:00:00.000000Z"
+                updated_at: "2025-09-08T11:00:00.000000Z"
+                technology:
+                  id: 2
+                  name: "Vue.js"
+                  icon: "/src/assets/icons/technologies/vue-icon.png"
+                  category:
+                    id: 1
+                    name: "Programming"
+                message: "学習内容を更新しました。"
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+        '403':
+          description: Forbidden - アクセス権限がありません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "この学習内容を更新する権限がありません。"
+        '404':
+          description: Not Found - 学習内容が見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "学習内容が見つかりません。"
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                invalidTechnology:
+                  summary: 無効な技術ID
+                  value:
+                    message: "The given data was invalid."
+                    errors:
+                      technology_id:
+                        - "指定された技術が見つかりません。"
+      security:
+        - sanctum: []
+
+    delete:
+      summary: 学習内容削除
+      deprecated: false
+      description: 指定したIDの学習内容を削除します
+      operationId: deleteLearningContent
+      tags:
+        - Learning Contents
+      parameters:
+        - name: id
+          in: path
+          description: 学習内容ID
+          required: true
+          schema:
+            type: integer
+            example: 6
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 学習内容削除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "学習内容を削除しました。"
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+        '403':
+          description: Forbidden - アクセス権限がありません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "この学習内容を削除する権限がありません。"
+        '404':
+          description: Not Found - 学習内容が見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "学習内容が見つかりません。"
+      security:
+        - sanctum: []
+
+  /api/learning-contents/{id}/complete:
+    put:
+      summary: 学習内容完了
+      deprecated: false
+      description: 指定したIDの学習内容を完了状態にします
+      operationId: completeLearningContent
+      tags:
+        - Learning Contents
+      parameters:
+        - name: id
+          in: path
+          description: 学習内容ID
+          required: true
+          schema:
+            type: integer
+            example: 5
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 学習内容完了成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/LearningContent'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+              example:
+                id: 5
+                user_id: 1
+                technology_id: 4
+                title: "PHP8.5の内容確認"
+                description: "PHP8.5で実装されるRFCの確認"
+                total_sections: 10
+                completed_sections: 10
+                status: completed
+                completed_at: "2025-09-08T11:30:00.000000Z"
+                created_at: "2024-01-10T00:00:00.000000Z"
+                updated_at: "2025-09-08T11:30:00.000000Z"
+                technology:
+                  id: 4
+                  name: "PHP"
+                  icon: "/src/assets/icons/technologies/php-icon.png"
+                  category:
+                    id: 1
+                    name: "Programming"
+                message: "学習内容を完了しました。"
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+        '403':
+          description: Forbidden - アクセス権限がありません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "この学習内容を更新する権限がありません。"
+        '404':
+          description: Not Found - 学習内容が見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "学習内容が見つかりません。"
+      security:
+        - sanctum: []
+
+  /api/learning-contents/{id}/reopen:
+    put:
+      summary: 学習内容再開
+      deprecated: false
+      description: 完了した学習内容を再開します
+      operationId: reopenLearningContent
+      tags:
+        - Learning Contents
+      parameters:
+        - name: id
+          in: path
+          description: 学習内容ID
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 学習再開成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/LearningContent'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+              example:
+                id: 1
+                user_id: 1
+                technology_id: 1
+                title: "Laravel完全マスター"
+                description: "Laravelの基礎から応用まで、実践的なWebアプリケーション開発を学習"
+                total_sections: 20
+                completed_sections: 20
+                status: in_progress
+                completed_at: null
+                created_at: "2023-12-01T00:00:00.000000Z"
+                updated_at: "2025-09-08T11:45:00.000000Z"
+                technology:
+                  id: 1
+                  name: "Laravel"
+                  icon: "/src/assets/icons/technologies/laravel-icon.png"
+                  category:
+                    id: 1
+                    name: "Programming"
+                message: "学習を再開しました。"
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+        '403':
+          description: Forbidden - アクセス権限がありません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "この学習内容を更新する権限がありません。"
+        '404':
+          description: Not Found - 学習内容が見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "学習内容が見つかりません。"
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "完了していない学習内容は再開できません。"
+      security:
+        - sanctum: []
+
+components:
+  schemas:
+    LearningContent:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        user_id:
+          type: integer
+          example: 1
+        technology_id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Laravel完全マスター"
+        description:
+          type: string
+          example: "Laravelの基礎から応用まで、実践的なWebアプリケーション開発を学習"
+        total_sections:
+          type: integer
+          example: 20
+        completed_sections:
+          type: integer
+          example: 20
+        status:
+          type: string
+          enum: [not_started, in_progress, completed]
+          example: completed
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2024-08-25T00:00:00.000000Z"
+        created_at:
+          type: string
+          format: date-time
+          example: "2023-12-01T00:00:00.000000Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2024-08-25T00:00:00.000000Z"
+        technology:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: "Laravel"
+            icon:
+              type: string
+              example: "/src/assets/icons/technologies/laravel-icon.png"
+            category:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                name:
+                  type: string
+                  example: "Programming"
+
+    LearningContentDetail:
+      allOf:
+        - $ref: '#/components/schemas/LearningContent'
+        - type: object
+          properties:
+            sections:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 21
+                  learning_content_id:
+                    type: integer
+                    example: 2
+                  title:
+                    type: string
+                    example: "Vue.jsの基本"
+                  order:
+                    type: integer
+                    example: 1
+                  status:
+                    type: string
+                    enum: [not_started, completed]
+                    example: completed
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: "2023-11-15T00:00:00.000000Z"
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: "2024-08-18T13:00:00.000000Z"
+
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "The given data was invalid."
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+  securitySchemes:
+    sanctum:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+      description: Laravel Sanctum認証
+
+servers: []
+security: []

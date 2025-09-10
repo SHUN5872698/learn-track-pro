@@ -1,0 +1,934 @@
+openapi: 3.0.1
+info:
+  title: 学習管理システムAPI - 学習記録
+  description: 学習記録を管理するWebアプリケーションの学習記録API
+  version: 1.0.0
+tags:
+  - name: Learning Sessions
+    description: 学習記録の管理
+
+paths:
+  /api/learning-sessions:
+    get:
+      summary: 学習記録一覧取得
+      deprecated: false
+      description: ログインユーザーの学習記録一覧を取得します
+      operationId: getLearningSessions
+      tags:
+        - Learning Sessions
+      parameters:
+        - name: section_id
+          in: query
+          description: セクションIDでフィルタ
+          required: false
+          schema:
+            type: integer
+            example: 21
+        - name: learning_content_id
+          in: query
+          description: 学習内容IDでフィルタ
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: date_from
+          in: query
+          description: 開始日（YYYY-MM-DD）
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2024-08-01"
+        - name: date_to
+          in: query
+          description: 終了日（YYYY-MM-DD）
+          required: false
+          schema:
+            type: string
+            format: date
+            example: "2024-08-31"
+        - name: limit
+          in: query
+          description: 取得件数
+          required: false
+          schema:
+            type: integer
+            default: 20
+            example: 20
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 学習記録一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LearningSession'
+              examples:
+                success:
+                  summary: 成功時のレスポンス例
+                  value:
+                    - id: 1
+                      user_id: 1
+                      section_id: 21
+                      started_at: "2024-08-18T09:00:00.000000Z"
+                      ended_at: "2024-08-18T11:00:00.000000Z"
+                      duration_minutes: 120
+                      notes: "Vue.jsの基本概念について学習。リアクティブシステムの仕組みを理解。"
+                      created_at: "2024-08-18T09:00:00.000000Z"
+                      updated_at: "2024-08-18T11:00:00.000000Z"
+                      section:
+                        id: 21
+                        title: "Vue.jsの基本"
+                        learning_content:
+                          id: 2
+                          title: "Vue.js 3 実践ガイド"
+                          technology:
+                            id: 2
+                            name: "Vue.js"
+                    - id: 2
+                      user_id: 1
+                      section_id: 22
+                      started_at: "2024-08-19T08:30:00.000000Z"
+                      ended_at: "2024-08-19T10:00:00.000000Z"
+                      duration_minutes: 90
+                      notes: "Composition APIの基本的な使い方を習得。"
+                      created_at: "2024-08-19T08:30:00.000000Z"
+                      updated_at: "2024-08-19T10:00:00.000000Z"
+                      section:
+                        id: 22
+                        title: "Composition API"
+                        learning_content:
+                          id: 2
+                          title: "Vue.js 3 実践ガイド"
+                          technology:
+                            id: 2
+                            name: "Vue.js"
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+      security:
+        - sanctum: []
+
+    post:
+      summary: 学習記録作成
+      deprecated: false
+      description: 新しい学習記録を作成します
+      operationId: createLearningSession
+      tags:
+        - Learning Sessions
+      parameters:
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - section_id
+                - started_at
+                - ended_at
+                - duration_minutes
+              properties:
+                section_id:
+                  type: integer
+                  description: セクションID
+                  example: 30
+                started_at:
+                  type: string
+                  format: date-time
+                  description: 開始時刻
+                  example: "2025-09-08T15:00:00"
+                ended_at:
+                  type: string
+                  format: date-time
+                  description: 終了時刻
+                  example: "2025-09-08T17:00:00"
+                duration_minutes:
+                  type: integer
+                  description: 学習時間（分）
+                  example: 120
+                notes:
+                  type: string
+                  description: 学習メモ
+                  example: "カスタムディレクティブの実装方法を学習"
+      responses:
+        '201':
+          description: Created - 学習記録作成成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/LearningSessionDetail'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+              example:
+                id: 4
+                user_id: 1
+                section_id: 30
+                started_at: "2025-09-08T15:00:00.000000Z"
+                ended_at: "2025-09-08T17:00:00.000000Z"
+                duration_minutes: 120
+                notes: "カスタムディレクティブの実装方法を学習"
+                created_at: "2025-09-08T17:00:00.000000Z"
+                updated_at: "2025-09-08T17:00:00.000000Z"
+                section:
+                  id: 30
+                  title: "カスタムディレクティブ"
+                  learning_content:
+                    id: 2
+                    title: "Vue.js 3 実践ガイド"
+                message: "学習記録を作成しました。"
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: "The given data was invalid."
+                errors:
+                  section_id:
+                    - "セクションIDは必須です。"
+                  started_at:
+                    - "開始時刻は必須です。"
+                  ended_at:
+                    - "終了時刻は必須です。"
+                  duration_minutes:
+                    - "学習時間は必須です。"
+      security:
+        - sanctum: []
+
+  /api/learning-sessions/{id}:
+    get:
+      summary: 学習記録詳細取得
+      deprecated: false
+      description: 指定したIDの学習記録の詳細を取得します
+      operationId: getLearningSession
+      tags:
+        - Learning Sessions
+      parameters:
+        - name: id
+          in: path
+          description: 学習記録ID
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 学習記録取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningSessionDetail'
+              example:
+                id: 1
+                user_id: 1
+                section_id: 21
+                started_at: "2024-08-18T09:00:00.000000Z"
+                ended_at: "2024-08-18T11:00:00.000000Z"
+                duration_minutes: 120
+                notes: "Vue.jsの基本概念について学習。リアクティブシステムの仕組みを理解。"
+                created_at: "2024-08-18T09:00:00.000000Z"
+                updated_at: "2024-08-18T11:00:00.000000Z"
+                section:
+                  id: 21
+                  title: "Vue.jsの基本"
+                  order: 1
+                  status: "completed"
+                  learning_content:
+                    id: 2
+                    title: "Vue.js 3 実践ガイド"
+                    technology:
+                      id: 2
+                      name: "Vue.js"
+                      icon: "/src/assets/icons/technologies/vue-icon.png"
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+        '404':
+          description: Not Found - 学習記録が見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "学習記録が見つかりません。"
+      security:
+        - sanctum: []
+
+    put:
+      summary: 学習記録更新
+      deprecated: false
+      description: 指定したIDの学習記録を更新します
+      operationId: updateLearningSession
+      tags:
+        - Learning Sessions
+      parameters:
+        - name: id
+          in: path
+          description: 学習記録ID
+          required: true
+          schema:
+            type: integer
+            example: 1
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                started_at:
+                  type: string
+                  format: date-time
+                  description: 開始時刻
+                  example: "2024-08-18T09:00:00"
+                ended_at:
+                  type: string
+                  format: date-time
+                  description: 終了時刻
+                  example: "2024-08-18T11:30:00"
+                duration_minutes:
+                  type: integer
+                  description: 学習時間（分）
+                  example: 150
+                notes:
+                  type: string
+                  description: 学習メモ
+                  example: "Vue.jsの基本概念について学習。リアクティブシステムの仕組みを理解。v-modelディレクティブの動作原理も把握。"
+      responses:
+        '200':
+          description: OK - 学習記録更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/LearningSessionBase'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+              example:
+                id: 1
+                user_id: 1
+                section_id: 21
+                started_at: "2024-08-18T09:00:00.000000Z"
+                ended_at: "2024-08-18T11:30:00.000000Z"
+                duration_minutes: 150
+                notes: "Vue.jsの基本概念について学習。リアクティブシステムの仕組みを理解。v-modelディレクティブの動作原理も把握。"
+                created_at: "2024-08-18T09:00:00.000000Z"
+                updated_at: "2025-09-08T15:30:00.000000Z"
+                message: "学習記録を更新しました。"
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+        '404':
+          description: Not Found - 学習記録が見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "学習記録が見つかりません。"
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: "The given data was invalid."
+                errors:
+                  started_at:
+                    - "開始時刻は必須です。"
+                  ended_at:
+                    - "終了時刻は開始時刻より後である必要があります。"
+      security:
+        - sanctum: []
+
+    delete:
+      summary: 学習記録削除
+      deprecated: false
+      description: 指定したIDの学習記録を削除します
+      operationId: deleteLearningSession
+      tags:
+        - Learning Sessions
+      parameters:
+        - name: id
+          in: path
+          description: 学習記録ID
+          required: true
+          schema:
+            type: integer
+            example: 4
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 学習記録削除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "学習記録を削除しました。"
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+        '404':
+          description: Not Found - 学習記録が見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "学習記録が見つかりません。"
+      security:
+        - sanctum: []
+
+  /api/sections/{id}/learning-sessions:
+    get:
+      summary: セクション別学習記録取得
+      deprecated: false
+      description: 指定したセクションの学習記録一覧を取得します
+      operationId: getSectionLearningSessions
+      tags:
+        - Learning Sessions
+      parameters:
+        - name: id
+          in: path
+          description: セクションID
+          required: true
+          schema:
+            type: integer
+            example: 21
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - セクション別学習記録取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LearningSessionBase'
+              examples:
+                success:
+                  summary: 成功時のレスポンス例
+                  value:
+                    - id: 1
+                      user_id: 1
+                      section_id: 21
+                      started_at: "2024-08-18T09:00:00.000000Z"
+                      ended_at: "2024-08-18T11:00:00.000000Z"
+                      duration_minutes: 120
+                      notes: "Vue.jsの基本概念について学習。リアクティブシステムの仕組みを理解。"
+                      created_at: "2024-08-18T09:00:00.000000Z"
+                      updated_at: "2024-08-18T11:00:00.000000Z"
+                    - id: 5
+                      user_id: 1
+                      section_id: 21
+                      started_at: "2024-08-18T13:00:00.000000Z"
+                      ended_at: "2024-08-18T14:30:00.000000Z"
+                      duration_minutes: 90
+                      notes: "復習：コンポーネントの基本構造とprops/emitの使い方"
+                      created_at: "2024-08-18T13:00:00.000000Z"
+                      updated_at: "2024-08-18T14:30:00.000000Z"
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+        '404':
+          description: Not Found - セクションが見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "セクションが見つかりません。"
+      security:
+        - sanctum: []
+
+  /api/learning-sessions/statistics:
+    get:
+      summary: 学習統計情報取得
+      deprecated: false
+      description: ログインユーザーの学習統計情報を取得します
+      operationId: getLearningStatistics
+      tags:
+        - Learning Sessions
+      parameters:
+        - name: period
+          in: query
+          description: 集計期間
+          required: false
+          schema:
+            type: string
+            enum: [today, week, month, year, all]
+            default: month
+            example: month
+        - name: Accept
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          required: true
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          required: true
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 学習統計情報取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningStatistics'
+              example:
+                total_study_time_minutes: 1250
+                total_sessions: 42
+                completed_sections: 29
+                active_days: 15
+                average_session_minutes: 30
+                daily_statistics:
+                  - date: "2025-09-01"
+                    study_minutes: 120
+                    sessions_count: 3
+                  - date: "2025-09-02"
+                    study_minutes: 90
+                    sessions_count: 2
+                  - date: "2025-09-03"
+                    study_minutes: 0
+                    sessions_count: 0
+                  - date: "2025-09-04"
+                    study_minutes: 150
+                    sessions_count: 4
+                  - date: "2025-09-05"
+                    study_minutes: 60
+                    sessions_count: 1
+                  - date: "2025-09-06"
+                    study_minutes: 180
+                    sessions_count: 3
+                  - date: "2025-09-07"
+                    study_minutes: 0
+                    sessions_count: 0
+                  - date: "2025-09-08"
+                    study_minutes: 120
+                    sessions_count: 2
+                technology_breakdown:
+                  - technology_id: 2
+                    technology_name: "Vue.js"
+                    study_minutes: 450
+                    sessions_count: 15
+                  - technology_id: 1
+                    technology_name: "Laravel"
+                    study_minutes: 380
+                    sessions_count: 12
+                  - technology_id: 3
+                    technology_name: "React"
+                    study_minutes: 240
+                    sessions_count: 8
+                  - technology_id: 18
+                    technology_name: "Docker"
+                    study_minutes: 180
+                    sessions_count: 7
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Unauthenticated."
+      security:
+        - sanctum: []
+
+components:
+  schemas:
+    LearningSessionBase:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 学習記録ID
+          example: 1
+        user_id:
+          type: integer
+          description: ユーザーID
+          example: 1
+        section_id:
+          type: integer
+          description: セクションID
+          example: 21
+        started_at:
+          type: string
+          format: date-time
+          description: 開始時刻
+          example: "2024-08-18T09:00:00.000000Z"
+        ended_at:
+          type: string
+          format: date-time
+          description: 終了時刻
+          example: "2024-08-18T11:00:00.000000Z"
+        duration_minutes:
+          type: integer
+          description: 学習時間（分）
+          example: 120
+        notes:
+          type: string
+          nullable: true
+          description: 学習メモ
+          example: "Vue.jsの基本概念について学習。リアクティブシステムの仕組みを理解。"
+        created_at:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: "2024-08-18T09:00:00.000000Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: "2024-08-18T11:00:00.000000Z"
+
+    LearningSession:
+      allOf:
+        - $ref: '#/components/schemas/LearningSessionBase'
+        - type: object
+          properties:
+            section:
+              type: object
+              description: セクション情報
+              properties:
+                id:
+                  type: integer
+                  example: 21
+                title:
+                  type: string
+                  example: "Vue.jsの基本"
+                learning_content:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 2
+                    title:
+                      type: string
+                      example: "Vue.js 3 実践ガイド"
+                    technology:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 2
+                        name:
+                          type: string
+                          example: "Vue.js"
+
+    LearningSessionDetail:
+      allOf:
+        - $ref: '#/components/schemas/LearningSessionBase'
+        - type: object
+          properties:
+            section:
+              type: object
+              description: セクション詳細情報
+              properties:
+                id:
+                  type: integer
+                  example: 21
+                title:
+                  type: string
+                  example: "Vue.jsの基本"
+                order:
+                  type: integer
+                  example: 1
+                status:
+                  type: string
+                  example: "completed"
+                learning_content:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 2
+                    title:
+                      type: string
+                      example: "Vue.js 3 実践ガイド"
+                    technology:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 2
+                        name:
+                          type: string
+                          example: "Vue.js"
+                        icon:
+                          type: string
+                          example: "/src/assets/icons/technologies/vue-icon.png"
+
+    LearningStatistics:
+      type: object
+      properties:
+        total_study_time_minutes:
+          type: integer
+          description: 総学習時間（分）
+          example: 1250
+        total_sessions:
+          type: integer
+          description: 総学習セッション数
+          example: 42
+        completed_sections:
+          type: integer
+          description: 完了セクション数
+          example: 29
+        active_days:
+          type: integer
+          description: アクティブ日数
+          example: 15
+        average_session_minutes:
+          type: integer
+          description: 平均学習時間（分/セッション）
+          example: 30
+        daily_statistics:
+          type: array
+          description: 日別統計
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+                example: "2025-09-01"
+              study_minutes:
+                type: integer
+                example: 120
+              sessions_count:
+                type: integer
+                example: 3
+        technology_breakdown:
+          type: array
+          description: 技術別内訳
+          items:
+            type: object
+            properties:
+              technology_id:
+                type: integer
+                example: 2
+              technology_name:
+                type: string
+                example: "Vue.js"
+              study_minutes:
+                type: integer
+                example: 450
+              sessions_count:
+                type: integer
+                example: 15
+
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "The given data was invalid."
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+  securitySchemes:
+    sanctum:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+      description: Laravel Sanctum認証
+
+servers: []
+security: []
