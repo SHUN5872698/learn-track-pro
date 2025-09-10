@@ -5,12 +5,8 @@ info:
   version: 1.0.0
 tags:
   - name: Authentication
-    description: 認証関連のエンドポイント
   - name: User Management
-    description: ユーザー情報管理のエンドポイント
   - name: Password Reset
-    description: パスワードリセット関連のエンドポイント
-
 paths:
   /sanctum/csrf-cookie:
     get:
@@ -23,21 +19,25 @@ paths:
       parameters:
         - name: Accept
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Content-Type
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
       responses:
         '204':
           description: No Content - CSRF Cookie設定成功
+          headers: {}
       security: []
-
   /api/register:
     post:
       summary: ユーザー登録
@@ -49,18 +49,21 @@ paths:
       parameters:
         - name: Accept
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Content-Type
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
       requestBody:
-        required: true
         content:
           application/json:
             schema:
@@ -74,22 +77,23 @@ paths:
                 name:
                   type: string
                   description: ユーザー名
-                  example: "田中太郎"
+                  example: 田中太郎
                 email:
                   type: string
                   format: email
                   description: メールアドレス
-                  example: "tanaka@example.com"
+                  example: tanaka@example.com
                 password:
                   type: string
                   format: password
                   description: パスワード
-                  example: "password123"
+                  example: password123
                 password_confirmation:
                   type: string
                   format: password
                   description: パスワード確認
-                  example: "password123"
+                  example: password123
+        required: true
       responses:
         '201':
           description: Created - ユーザー登録成功
@@ -104,11 +108,12 @@ paths:
                         type: string
               example:
                 id: 1
-                name: "田中太郎"
-                email: "tanaka@example.com"
-                created_at: "2025-08-21T10:00:00.000000Z"
-                updated_at: "2025-08-21T10:00:00.000000Z"
-                message: "ユーザー登録が完了しました。"
+                name: 田中太郎
+                email: tanaka@example.com
+                created_at: '2025-08-21T10:00:00.000000Z'
+                updated_at: '2025-08-21T10:00:00.000000Z'
+                message: ユーザー登録が完了しました。
+          headers: {}
         '422':
           description: Unprocessable Entity - バリデーションエラー
           content:
@@ -116,14 +121,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
               example:
-                message: "The given data was invalid."
+                message: The given data was invalid.
                 errors:
                   email:
-                    - "このメールアドレスは既に使用されています。"
+                    - このメールアドレスは既に使用されています。
                   password:
-                    - "パスワードは8文字以上である必要があります。"
+                    - パスワードは8文字以上である必要があります。
+          headers: {}
       security: []
-
   /fortify/login:
     post:
       summary: ログイン
@@ -135,18 +140,21 @@ paths:
       parameters:
         - name: Accept
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Content-Type
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
       requestBody:
-        required: true
         content:
           application/json:
             schema:
@@ -159,12 +167,13 @@ paths:
                   type: string
                   format: email
                   description: メールアドレス
-                  example: "tanaka@example.com"
+                  example: tanaka@example.com
                 password:
                   type: string
                   format: password
                   description: パスワード
-                  example: "password123"
+                  example: password123
+        required: true
       responses:
         '200':
           description: OK - ログイン成功
@@ -179,11 +188,12 @@ paths:
                         type: string
               example:
                 id: 1
-                name: "田中太郎"
-                email: "tanaka@example.com"
-                created_at: "2025-08-21T10:00:00.000000Z"
-                updated_at: "2025-08-21T10:00:00.000000Z"
-                message: "ログインしました。"
+                name: 田中太郎
+                email: tanaka@example.com
+                created_at: '2025-08-21T10:00:00.000000Z'
+                updated_at: '2025-08-21T10:00:00.000000Z'
+                message: ログインしました。
+          headers: {}
         '401':
           description: Unauthorized - 認証失敗
           content:
@@ -194,9 +204,48 @@ paths:
                   message:
                     type: string
               example:
-                message: "認証情報が正しくありません。"
+                message: 認証情報が正しくありません。
+          headers: {}
       security: []
-
+  /fortify/logout:
+    post:
+      summary: ログアウト
+      deprecated: false
+      description: ユーザーをログアウトします
+      operationId: logoutUser
+      tags:
+        - Authentication
+      parameters:
+        - name: Accept
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          description: ''
+          required: true
+          example: ''
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '204':
+          description: No Content - ログアウト成功
+          headers: {}
+      security:
+        - sanctum1: []
   /api/user:
     get:
       summary: ユーザー情報取得
@@ -208,19 +257,25 @@ paths:
       parameters:
         - name: Accept
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Content-Type
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Referer
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: <http://localhost:5173>
@@ -233,10 +288,11 @@ paths:
                 $ref: '#/components/schemas/User'
               example:
                 id: 1
-                name: "田中太郎"
-                email: "tanaka@example.com"
-                created_at: "2025-08-21T10:00:00.000000Z"
-                updated_at: "2025-08-21T10:00:00.000000Z"
+                name: 田中太郎
+                email: tanaka@example.com
+                created_at: '2025-08-21T10:00:00.000000Z'
+                updated_at: '2025-08-21T10:00:00.000000Z'
+          headers: {}
         '401':
           description: Unauthorized - 認証が必要です
           content:
@@ -247,43 +303,10 @@ paths:
                   message:
                     type: string
               example:
-                message: "Unauthenticated."
+                message: Unauthenticated.
+          headers: {}
       security:
-        - sanctum: []
-
-  /fortify/logout:
-    post:
-      summary: ログアウト
-      deprecated: false
-      description: ユーザーをログアウトします
-      operationId: logoutUser
-      tags:
-        - Authentication
-      parameters:
-        - name: Accept
-          in: header
-          required: true
-          schema:
-            type: string
-            default: application/json
-        - name: Content-Type
-          in: header
-          required: true
-          schema:
-            type: string
-            default: application/json
-        - name: Referer
-          in: header
-          required: true
-          schema:
-            type: string
-            default: <http://localhost:5173>
-      responses:
-        '204':
-          description: No Content - ログアウト成功
-      security:
-        - sanctum: []
-
+        - sanctum1: []
   /api/user/profile:
     put:
       summary: プロフィール更新
@@ -295,24 +318,29 @@ paths:
       parameters:
         - name: Accept
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Content-Type
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Referer
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: <http://localhost:5173>
       requestBody:
-        required: true
         content:
           application/json:
             schema:
@@ -321,12 +349,13 @@ paths:
                 name:
                   type: string
                   description: ユーザー名
-                  example: "田中次郎"
+                  example: 田中次郎
                 email:
                   type: string
                   format: email
                   description: メールアドレス
-                  example: "tanaka.new@example.com"
+                  example: tanaka.new@example.com
+        required: true
       responses:
         '200':
           description: OK - プロフィール更新成功
@@ -341,11 +370,12 @@ paths:
                         type: string
               example:
                 id: 1
-                name: "田中次郎"
-                email: "tanaka.new@example.com"
-                created_at: "2025-08-21T10:00:00.000000Z"
-                updated_at: "2025-08-21T11:00:00.000000Z"
-                message: "プロフィールを更新しました。"
+                name: 田中次郎
+                email: tanaka.new@example.com
+                created_at: '2025-08-21T10:00:00.000000Z'
+                updated_at: '2025-08-21T11:00:00.000000Z'
+                message: プロフィールを更新しました。
+          headers: {}
         '401':
           description: Unauthorized - 認証が必要です
           content:
@@ -356,7 +386,8 @@ paths:
                   message:
                     type: string
               example:
-                message: "Unauthenticated."
+                message: Unauthenticated.
+          headers: {}
         '422':
           description: Unprocessable Entity - バリデーションエラー
           content:
@@ -364,13 +395,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
               example:
-                message: "The given data was invalid."
+                message: The given data was invalid.
                 errors:
                   email:
-                    - "このメールアドレスは既に使用されています。"
+                    - このメールアドレスは既に使用されています。
+          headers: {}
       security:
-        - sanctum: []
-
+        - sanctum1: []
   /api/user/password:
     put:
       summary: パスワード変更
@@ -382,24 +413,29 @@ paths:
       parameters:
         - name: Accept
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Content-Type
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Referer
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: <http://localhost:5173>
       requestBody:
-        required: true
         content:
           application/json:
             schema:
@@ -413,17 +449,18 @@ paths:
                   type: string
                   format: password
                   description: 現在のパスワード
-                  example: "password123"
+                  example: password123
                 password:
                   type: string
                   format: password
                   description: 新しいパスワード
-                  example: "newpassword456"
+                  example: newpassword456
                 password_confirmation:
                   type: string
                   format: password
                   description: 新しいパスワード（確認）
-                  example: "newpassword456"
+                  example: newpassword456
+        required: true
       responses:
         '200':
           description: OK - パスワード変更成功
@@ -435,7 +472,8 @@ paths:
                   message:
                     type: string
               example:
-                message: "パスワードを変更しました。"
+                message: パスワードを変更しました。
+          headers: {}
         '401':
           description: Unauthorized - 認証が必要です
           content:
@@ -446,7 +484,8 @@ paths:
                   message:
                     type: string
               example:
-                message: "Unauthenticated."
+                message: Unauthenticated.
+          headers: {}
         '422':
           description: Unprocessable Entity - バリデーションエラー
           content:
@@ -454,15 +493,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
               example:
-                message: "The given data was invalid."
+                message: The given data was invalid.
                 errors:
                   current_password:
-                    - "現在のパスワードが正しくありません。"
+                    - 現在のパスワードが正しくありません。
                   password:
-                    - "パスワードは8文字以上である必要があります。"
+                    - パスワードは8文字以上である必要があります。
+          headers: {}
       security:
-        - sanctum: []
-
+        - sanctum1: []
   /api/forgot-password:
     post:
       summary: パスワードリセット要求
@@ -474,18 +513,21 @@ paths:
       parameters:
         - name: Accept
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Content-Type
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
       requestBody:
-        required: true
         content:
           application/json:
             schema:
@@ -497,7 +539,8 @@ paths:
                   type: string
                   format: email
                   description: メールアドレス
-                  example: "tanaka@example.com"
+                  example: tanaka@example.com
+        required: true
       responses:
         '200':
           description: OK - パスワードリセットメール送信成功
@@ -509,7 +552,8 @@ paths:
                   message:
                     type: string
               example:
-                message: "パスワードリセット用のメールを送信しました。"
+                message: パスワードリセット用のメールを送信しました。
+          headers: {}
         '422':
           description: Unprocessable Entity - バリデーションエラー
           content:
@@ -517,12 +561,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
               example:
-                message: "The given data was invalid."
+                message: The given data was invalid.
                 errors:
                   email:
-                    - "このメールアドレスは登録されていません。"
+                    - このメールアドレスは登録されていません。
+          headers: {}
       security: []
-
   /api/reset-password:
     post:
       summary: パスワードリセット実行
@@ -534,18 +578,21 @@ paths:
       parameters:
         - name: Accept
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Content-Type
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
       requestBody:
-        required: true
         content:
           application/json:
             schema:
@@ -559,22 +606,23 @@ paths:
                 token:
                   type: string
                   description: リセットトークン
-                  example: "sample_reset_token"
+                  example: sample_reset_token
                 email:
                   type: string
                   format: email
                   description: メールアドレス
-                  example: "tanaka@example.com"
+                  example: tanaka@example.com
                 password:
                   type: string
                   format: password
                   description: 新しいパスワード
-                  example: "newpassword456"
+                  example: newpassword456
                 password_confirmation:
                   type: string
                   format: password
                   description: 新しいパスワード（確認）
-                  example: "newpassword456"
+                  example: newpassword456
+        required: true
       responses:
         '200':
           description: OK - パスワードリセット成功
@@ -586,7 +634,8 @@ paths:
                   message:
                     type: string
               example:
-                message: "パスワードをリセットしました。"
+                message: パスワードをリセットしました。
+          headers: {}
         '422':
           description: Unprocessable Entity - バリデーションエラー
           content:
@@ -594,14 +643,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
               example:
-                message: "The given data was invalid."
+                message: The given data was invalid.
                 errors:
                   token:
-                    - "トークンが無効です。"
+                    - トークンが無効です。
                   password:
-                    - "パスワードは8文字以上である必要があります。"
+                    - パスワードは8文字以上である必要があります。
+          headers: {}
       security: []
-
 components:
   schemas:
     User:
@@ -612,39 +661,37 @@ components:
           example: 1
         name:
           type: string
-          example: "田中太郎"
+          example: 田中太郎
         email:
           type: string
           format: email
-          example: "tanaka@example.com"
+          example: tanaka@example.com
         created_at:
           type: string
           format: date-time
-          example: "2025-08-21T10:00:00.000000Z"
+          example: '2025-08-21T10:00:00.000000Z'
         updated_at:
           type: string
           format: date-time
-          example: "2025-08-21T10:00:00.000000Z"
-
+          example: '2025-08-21T10:00:00.000000Z'
     ValidationError:
       type: object
       properties:
         message:
           type: string
-          example: "The given data was invalid."
+          example: The given data was invalid.
         errors:
           type: object
           additionalProperties:
             type: array
             items:
               type: string
-
+          properties: {}
   securitySchemes:
-    sanctum:
+    sanctum1:
       type: apiKey
       in: cookie
       name: laravel_session
       description: Laravel Sanctum認証
-
 servers: []
 security: []

@@ -5,8 +5,6 @@ info:
   version: 1.0.0
 tags:
   - name: Reports
-    description: レポートと統計情報の取得
-
 paths:
   /api/reports/dashboard-stats:
     get:
@@ -19,19 +17,25 @@ paths:
       parameters:
         - name: Accept
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Content-Type
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Referer
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: <http://localhost:5173>
@@ -49,13 +53,14 @@ paths:
                 average_progress: 62.5
                 recent_activities:
                   - id: 1
-                    title: 'Laravel学習'
+                    title: Laravel学習
                     last_studied_at: '2025-08-21T15:30:00.000000Z'
-                    progress_percentage: 30.0
+                    progress_percentage: 30
                   - id: 2
-                    title: 'Vue.js実践'
+                    title: Vue.js実践
                     last_studied_at: '2025-08-20T18:00:00.000000Z'
-                    progress_percentage: 100.0
+                    progress_percentage: 100
+          headers: {}
         '401':
           description: Unauthorized - 認証が必要です
           content:
@@ -66,10 +71,10 @@ paths:
                   message:
                     type: string
               example:
-                message: 'Unauthenticated.'
+                message: Unauthenticated.
+          headers: {}
       security:
-        - sanctum: []
-
+        - sanctum5: []
   /api/reports/weekly-chart:
     get:
       summary: 週間学習時間チャート取得
@@ -85,7 +90,10 @@ paths:
           required: false
           schema:
             type: string
-            enum: [week, month, all]
+            enum:
+              - week
+              - month
+              - all
             default: week
             example: week
         - name: date
@@ -105,19 +113,25 @@ paths:
             example: 2
         - name: Accept
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Content-Type
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Referer
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: <http://localhost:5173>
@@ -129,7 +143,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/WeeklyChart'
               example:
-                period: 'week'
+                period: week
                 start_date: '2025-08-15'
                 end_date: '2025-08-21'
                 data:
@@ -149,6 +163,7 @@ paths:
                     study_minutes: 270
                 total_minutes: 1020
                 daily_average: 145.7
+          headers: {}
         '401':
           description: Unauthorized - 認証が必要です
           content:
@@ -159,7 +174,8 @@ paths:
                   message:
                     type: string
               example:
-                message: 'Unauthenticated.'
+                message: Unauthenticated.
+          headers: {}
         '422':
           description: Unprocessable Entity - バリデーションエラー
           content:
@@ -167,15 +183,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
               example:
-                message: 'The given data was invalid.'
+                message: The given data was invalid.
                 errors:
                   period:
-                    - '期間は week, month, all のいずれかである必要があります。'
+                    - 期間は week, month, all のいずれかである必要があります。
                   date:
-                    - '日付の形式が正しくありません。'
+                    - 日付の形式が正しくありません。
+          headers: {}
       security:
-        - sanctum: []
-
+        - sanctum5: []
   /api/reports/technology-summary:
     get:
       summary: 技術別学習時間サマリー取得
@@ -191,7 +207,10 @@ paths:
           required: false
           schema:
             type: string
-            enum: [week, month, all]
+            enum:
+              - week
+              - month
+              - all
             default: month
             example: month
         - name: date
@@ -204,19 +223,25 @@ paths:
             example: '2025-08-31'
         - name: Accept
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Content-Type
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Referer
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: <http://localhost:5173>
@@ -228,29 +253,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/TechnologySummary'
               example:
-                period: 'month'
+                period: month
                 start_date: '2025-08-01'
                 end_date: '2025-08-31'
                 data:
                   - technology_id: 3
-                    technology_name: 'Laravel'
-                    category_name: 'フレームワーク'
+                    technology_name: Laravel
+                    category_name: フレームワーク
                     total_minutes: 1250
                     percentage: 45.5
                     learning_contents_count: 2
                   - technology_id: 4
-                    technology_name: 'Vue.js'
-                    category_name: 'フレームワーク'
+                    technology_name: Vue.js
+                    category_name: フレームワーク
                     total_minutes: 980
                     percentage: 35.6
                     learning_contents_count: 1
                   - technology_id: 1
-                    technology_name: 'JavaScript'
-                    category_name: 'プログラミング言語'
+                    technology_name: JavaScript
+                    category_name: プログラミング言語
                     total_minutes: 520
                     percentage: 18.9
                     learning_contents_count: 1
                 total_minutes: 2750
+          headers: {}
         '401':
           description: Unauthorized - 認証が必要です
           content:
@@ -261,7 +287,8 @@ paths:
                   message:
                     type: string
               example:
-                message: 'Unauthenticated.'
+                message: Unauthenticated.
+          headers: {}
         '422':
           description: Unprocessable Entity - バリデーションエラー
           content:
@@ -269,15 +296,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
               example:
-                message: 'The given data was invalid.'
+                message: The given data was invalid.
                 errors:
                   period:
-                    - '期間は week, month, all のいずれかである必要があります。'
+                    - 期間は week, month, all のいずれかである必要があります。
                   date:
-                    - '日付の形式が正しくありません。'
+                    - 日付の形式が正しくありません。
+          headers: {}
       security:
-        - sanctum: []
-
+        - sanctum5: []
   /api/reports/learning-history:
     get:
       summary: 学習履歴取得
@@ -293,7 +320,10 @@ paths:
           required: false
           schema:
             type: string
-            enum: [week, month, all]
+            enum:
+              - week
+              - month
+              - all
             default: week
             example: week
         - name: content_id
@@ -313,19 +343,25 @@ paths:
             example: 1
         - name: Accept
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Content-Type
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: application/json
         - name: Referer
           in: header
+          description: ''
           required: true
+          example: ''
           schema:
             type: string
             default: <http://localhost:5173>
@@ -341,23 +377,23 @@ paths:
                   - date: '2025-08-21'
                     sessions:
                       - id: 10
-                        learning_content_title: 'Laravel学習'
-                        section_title: 'データベース'
+                        learning_content_title: Laravel学習
+                        section_title: データベース
                         study_minutes: 90
-                        note: 'データベース設計について学習した'
+                        note: データベース設計について学習した
                       - id: 9
-                        learning_content_title: 'Laravel学習'
-                        section_title: 'ルーティング'
+                        learning_content_title: Laravel学習
+                        section_title: ルーティング
                         study_minutes: 60
-                        note: 'RESTful APIの設計'
+                        note: RESTful APIの設計
                     daily_total_minutes: 150
                   - date: '2025-08-20'
                     sessions:
                       - id: 8
-                        learning_content_title: 'Vue.js実践'
-                        section_title: 'Composition API'
+                        learning_content_title: Vue.js実践
+                        section_title: Composition API
                         study_minutes: 120
-                        note: 'リアクティブシステムの理解'
+                        note: リアクティブシステムの理解
                     daily_total_minutes: 120
                 meta:
                   current_page: 1
@@ -367,6 +403,7 @@ paths:
                 summary:
                   period_total_minutes: 1020
                   period_average_minutes: 145.7
+          headers: {}
         '401':
           description: Unauthorized - 認証が必要です
           content:
@@ -377,7 +414,8 @@ paths:
                   message:
                     type: string
               example:
-                message: 'Unauthenticated.'
+                message: Unauthenticated.
+          headers: {}
         '422':
           description: Unprocessable Entity - バリデーションエラー
           content:
@@ -385,15 +423,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationError'
               example:
-                message: 'The given data was invalid.'
+                message: The given data was invalid.
                 errors:
                   period:
-                    - '期間は week, month, all のいずれかである必要があります。'
+                    - 期間は week, month, all のいずれかである必要があります。
                   page:
-                    - 'ページ番号は1以上の整数である必要があります。'
+                    - ページ番号は1以上の整数である必要があります。
+          headers: {}
       security:
-        - sanctum: []
-
+        - sanctum5: []
 components:
   schemas:
     DashboardStats:
@@ -429,7 +467,7 @@ components:
               title:
                 type: string
                 description: 学習内容タイトル
-                example: 'Laravel学習'
+                example: Laravel学習
               last_studied_at:
                 type: string
                 format: date-time
@@ -439,16 +477,18 @@ components:
                 type: number
                 format: float
                 description: 進捗率（%）
-                example: 30.0
-
+                example: 30
     WeeklyChart:
       type: object
       properties:
         period:
           type: string
           description: 期間タイプ
-          enum: [week, month, all]
-          example: 'week'
+          enum:
+            - week
+            - month
+            - all
+          example: week
         start_date:
           type: string
           format: date
@@ -483,15 +523,17 @@ components:
           format: float
           description: 1日平均学習時間（分）
           example: 145.7
-
     TechnologySummary:
       type: object
       properties:
         period:
           type: string
           description: 期間タイプ
-          enum: [week, month, all]
-          example: 'month'
+          enum:
+            - week
+            - month
+            - all
+          example: month
         start_date:
           type: string
           format: date
@@ -515,11 +557,11 @@ components:
               technology_name:
                 type: string
                 description: 技術名
-                example: 'Laravel'
+                example: Laravel
               category_name:
                 type: string
                 description: カテゴリー名
-                example: 'フレームワーク'
+                example: フレームワーク
               total_minutes:
                 type: integer
                 description: 総学習時間（分）
@@ -537,7 +579,6 @@ components:
           type: integer
           description: 期間内総学習時間（分）
           example: 2750
-
     LearningHistory:
       type: object
       properties:
@@ -565,20 +606,20 @@ components:
                     learning_content_title:
                       type: string
                       description: 学習内容タイトル
-                      example: 'Laravel学習'
+                      example: Laravel学習
                     section_title:
                       type: string
                       description: セクションタイトル
-                      example: 'データベース'
+                      example: データベース
                     study_minutes:
                       type: integer
                       description: 学習時間（分）
                       example: 90
                     note:
                       type: string
-                      nullable: true
                       description: 学習メモ
-                      example: 'データベース設計について学習した'
+                      nullable: true
+                      example: データベース設計について学習した
               daily_total_minutes:
                 type: integer
                 description: 日別総学習時間（分）
@@ -616,26 +657,24 @@ components:
               format: float
               description: 期間内1日平均学習時間（分）
               example: 145.7
-
     ValidationError:
       type: object
       properties:
         message:
           type: string
-          example: 'The given data was invalid.'
+          example: The given data was invalid.
         errors:
           type: object
           additionalProperties:
             type: array
             items:
               type: string
-
+          properties: {}
   securitySchemes:
-    sanctum:
+    sanctum5:
       type: apiKey
       in: cookie
       name: laravel_session
       description: Laravel Sanctum認証
-
 servers: []
 security: []
