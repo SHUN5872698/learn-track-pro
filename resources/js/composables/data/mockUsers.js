@@ -5,7 +5,7 @@ export const mockUsers = ref([
     id: 1,
     name: 'TaroYamada',
     email: 'taro.yamada@example.com',
-    avatar: 'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
+    avatar: 'images/avatars/pexels-photo-614810.png',
     // avatar: null,
     email_verified_at: '2024-01-15T00:00',
     created_at: '2024-01-15T00:00',
