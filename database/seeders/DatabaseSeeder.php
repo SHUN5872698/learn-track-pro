@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         if (app()->environment('local', 'staging')) {
             $this->call([
                 UserSeeder::class,
+                CategorySeeder::class,
             ]);
         }
     }
