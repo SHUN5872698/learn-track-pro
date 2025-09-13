@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
                 CategorySeeder::class,
                 TechnologySeeder::class,
                 LearningContentSeeder::class,
+                SectionSeeder::class,
             ]);
         }
     }
