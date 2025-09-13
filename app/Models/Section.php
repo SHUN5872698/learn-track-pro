@@ -2,14 +2,20 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Section extends Model
 {
+    use HasFactory;
+
     /**
-     * The attributes that are mass assignable.
+     * 複数代入可能な属性
      *
-     * @var array<int, string>
+     * @var array<string>
      */
     protected $fillable = [
         'learning_content_id',
@@ -20,22 +26,60 @@ class Section extends Model
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'learning_content_id' => 'integer',
-        'order' => 'integer',
-        'completed_at' => 'datetime',
-    ];
-
-    /**
-     * The model's default values for attributes.
+     * 属性のデフォルト値
      *
      * @var array
      */
     protected $attributes = [
         'status' => 'not_started',
     ];
+
+    /**
+     * 属性の型キャスト定義
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'learning_content_id' => 'integer',
+            'title' => 'string',
+            'order' => 'integer',
+            'status' => 'string',
+            'completed_at' => 'datetime',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
+    }
+
+    /**
+     * このセクションに関連する学習コンテンツを取得
+     *
+     * @return BelongsTo
+     */
+    public function learningContent(): BelongsTo
+    {
+        return $this->belongsTo(LearningContent::class);
+    }
+
+    /**
+     * このセクションの学習記録を取得
+     *
+     * @return HasMany
+     */
+    public function learningSessions(): HasMany
+    {
+        return $this->hasMany(LearningSession::class);
+    }
+
+    /**
+     * 日付を配列/JSON用にフォーマット
+     *
+     * @param DateTimeInterface $date
+     * @return string
+     */
+    protected function serializeDate(DateTimeInterface $date): string
+    {
+        return $date->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
+    }
 }
