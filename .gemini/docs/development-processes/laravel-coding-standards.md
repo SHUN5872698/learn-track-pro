@@ -1,6 +1,6 @@
 ## 相互リンク
 
-[**Laravel コーディング規約**](https://www.notion.so/Laravel-26b9d86c12e8803285f9d1d78ed1a1eb?pvs=21) 
+[**Laravel コーディング規約**](https://www.notion.so/Laravel-26b9d86c12e8803285f9d1d78ed1a1eb?pvs=21)
 
 .gemini/docs/development-processes/laravel-coding-standards.md
 
