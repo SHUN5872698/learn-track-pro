@@ -53,14 +53,13 @@ resources/js/
 │   │   └── PieChart.vue                  # 円グラフコンポーネント
 │   │
 │   ├── common/                           # 汎用コンポーネント
-│   │   ├── AppHeader.vue                 # アプリケーションヘッダー
-│   │   ├── AppSidebar.vue                # アプリケーションサイドバー
-│   │   ├── BaseButton.vue                # 基本ボタンコンポーネント
 │   │   ├── buttons/                      # ボタン群
 │   │   │   ├── BackButton.vue            # 戻るボタン
 │   │   │   ├── CancelButton.vue          # キャンセルボタン
 │   │   │   └── DeleteButton.vue          # 削除ボタン
-│   │   │
+│   │   ├── AppHeader.vue                 # アプリケーションヘッダー
+│   │   ├── AppSidebar.vue                # アプリケーションサイドバー
+│   │   ├── BaseButton.vue                # 基本ボタンコンポーネント
 │   │   ├── ConfirmModal.vue              # 確認モーダルコンポーネント
 │   │   ├── DatePickerModal.vue           # 日付選択モーダルコンポーネント
 │   │   ├── Pagination.vue                # ページネーションコンポーネント
@@ -69,14 +68,14 @@ resources/js/
 │   │   └── UserAvatar.vue                # ユーザーアバターコンポーネント
 │   │
 │   └── learning/                         # 学習管理関連コンポーネント
+│       ├── wizard/                       # ウィザード形式のコンポーネント
+│       │   ├── SectionListEditor.vue     # セクションリスト編集
+│       │   ├── TechnologySelector.vue    # 技術選択ドロップダウン
+│       │   ├── WizardNavigation.vue      # ウィザードナビゲーションボタン
+│       │   └── WizardStepIndicator.vue   # ウィザードステップインジケーター
 │       ├── LearningContentCard.vue       # 学習コンテンツカード
 │       ├── StatsOverview.vue             # 統計概要コンポーネント
-│       ├── StudySessionFormFields.vue    # 学習記録フォームフィールド
-│       └── wizard/                       # ウィザード形式のコンポーネント
-│           ├── SectionListEditor.vue     # セクションリスト編集
-│           ├── TechnologySelector.vue    # 技術選択ドロップダウン
-│           ├── WizardNavigation.vue      # ウィザードナビゲーションボタン
-│           └── WizardStepIndicator.vue   # ウィザードステップインジケーター
+│       └── StudySessionFormFields.vue    # 学習記録フォームフィールド
 │
 ├── composables/                          # 共有ロジック・状態管理（Vue Composition APIを活用）
 │   ├── data/                             # アプリケーションのモックデータ管理
@@ -108,6 +107,9 @@ resources/js/
 │   ├── DefaultLayout.vue                 # デフォルトレイアウト
 │   └── DetailLayout.vue                  # 詳細画面用レイアウト
 │
+├── stores/                               # Piniaストア
+│   └── auth.js                           # 認証状態管理ストア
+│
 ├── utils/                                # ユーティリティ関数
 │   ├── chartColors.js                    # チャートの色定義
 │   └── dateFormatters.js                 # 日付と時刻のフォーマット関数
@@ -117,32 +119,33 @@ resources/js/
 │   └── studySessionValidator.js          # 学習セッション（記録）関連の入力値バリデーション
 │
 ├── views/                                # ルーティング対象のページ
-│    ├── auth/                            # 認証関連ページ
-│    │   ├── Login.vue                    # ログイン画面
-│    │   ├── PasswordReset.vue            # パスワードリセット画面
-│    │   └── Register.vue                 # 新規登録画面
-│    │
-│    ├── learning/                        # 学習管理関連ページ
-│    │   ├── LearningContentCreate.vue    # 学習内容新規作成画面
-│    │   ├── LearningContentDetail.vue    # 学習内容詳細画面
-│    │   ├── LearningContentEdit.vue      # 学習内容編集画面
-│    │   ├── SectionStudyRecords.vue      # セクション別学習記録一覧画面
-│    │   ├── StudyProgress.vue            # 個別レポート画面
-│    │   ├── StudySessionEdit.vue         # 学習記録編集画面
-│    │   └── StudySessionForm.vue         # 学習記録作成画面
-│    │
-│    ├── user/                            # ユーザー関連ページ
-│    │   ├── Profile.vue                  # プロフィール表示画面
-│    │   └── ProfileEdit.vue              # プロフィール編集画面
-│    │
-│    ├── Dashboard.vue                    # ダッシュボード画面
-│    ├── NotFound.vue                     # 404 Not Found画面
-│    └── Reports.vue                      # 全体レポート画面
+│   ├── auth/                            # 認証関連ページ
+│   │   ├── Login.vue                    # ログイン画面
+│   │   ├── PasswordReset.vue            # パスワードリセット画面
+│   │   └── Register.vue                 # 新規登録画面
+│   │
+│   ├── learning/                        # 学習管理関連ページ
+│   │   ├── LearningContentCreate.vue    # 学習内容新規作成画面
+│   │   ├── LearningContentDetail.vue    # 学習内容詳細画面
+│   │   ├── LearningContentEdit.vue      # 学習内容編集画面
+│   │   ├── SectionStudyRecords.vue      # セクション別学習記録一覧画面
+│   │   ├── StudyProgress.vue            # 個別レポート画面
+│   │   ├── StudySessionEdit.vue         # 学習記録編集画面
+│   │   └── StudySessionForm.vue         # 学習記録作成画面
+│   │
+│   ├── user/                            # ユーザー関連ページ
+│   │   ├── Profile.vue                  # プロフィール表示画面
+│   │   └── ProfileEdit.vue              # プロフィール編集画面
+│   │
+│   ├── Dashboard.vue                    # ダッシュボード画面
+│   ├── NotFound.vue                     # 404 Not Found画面
+│   └── Reports.vue                      # 全体レポート画面
 │
 ├── app.js                                # Vueアプリケーションのエントリーポイント
 ├── App.vue                               # ルートコンポーネント
 ├── bootstrap.js                          # アプリケーションの初期設定（Axiosなど）
 └── router.js                             # Vue Router設定
+```
 ```
 
 ---
