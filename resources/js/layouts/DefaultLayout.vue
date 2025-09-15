@@ -1,10 +1,10 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100">
     <!-- ヘッダー -->
-    <AppHeader :user="user" @toggle-mobile-menu="toggleMobileMenu" />
+    <AppHeader @toggle-mobile-menu="toggleMobileMenu" />
 
     <!-- サイドバー -->
-    <AppSidebar :user="user" :is-open="isMobileMenuOpen" @close-mobile-menu="closeMobileMenu" />
+    <AppSidebar :is-open="isMobileMenuOpen" @close-mobile-menu="closeMobileMenu" />
 
     <!-- メインコンテンツ -->
     <main class="min-h-screen pt-20 duration-300 md:pt-24 md:pl-16 transition-padding">
@@ -19,7 +19,7 @@
 // ========================================
 // 外部インポート
 // ========================================
-import { ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
 // ========================================
 // 内部インポート
@@ -28,20 +28,33 @@ import { ref } from 'vue';
 import AppHeader from '../components/common/AppHeader.vue';
 import AppSidebar from '../components/common/AppSidebar.vue';
 
-// コンポーザブル
-import { useUser } from '../composables/useUser';
+// Piniaストア（変更: useUser → useAuthStore）
+import { useAuthStore } from '@/stores/auth';
 
 // ========================================
 // 初期設定
 // ========================================
-// コンポーザブル実行
-const { user } = useUser();
+// Piniaストア実行（変更）
+const authStore = useAuthStore();
 
 // ========================================
 // 状態管理
 // ========================================
+// ユーザー情報（変更: useUserから取得 → Piniaストアから取得）
+const user = computed(() => authStore.authUser);
+
 // モバイルメニューの開閉状態を管理
 const isMobileMenuOpen = ref(false);
+
+// ========================================
+// ライフサイクル
+// ========================================
+// ユーザー情報の取得を確実に行う（追加）
+onMounted(async () => {
+  if (!authStore.authUser) {
+    await authStore.fetchUser();
+  }
+});
 
 // ========================================
 // メソッド

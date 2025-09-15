@@ -111,8 +111,8 @@ import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/solid';
 // ========================================
 // 内部インポート
 // ========================================
-// コンポーザブル
-import { useUser } from '../../composables/useUser';
+// Piniaストア（変更: useUser → useAuthStore）
+import { useAuthStore } from '@/stores/auth';
 
 // バリデーション
 import { validateProfile, validateField } from '../../validators/profileValidator';
@@ -126,8 +126,8 @@ import BaseButton from '../../components/common/BaseButton.vue';
 // ========================================
 const router = useRouter();
 
-// コンポーザブル実行
-const { user, updateUserProfile, updatePassword } = useUser();
+// Piniaストア実行（変更）
+const authStore = useAuthStore();
 
 // ========================================
 // 状態管理
@@ -143,30 +143,6 @@ const formData = reactive({
 });
 
 const imageError = ref(false);
-
-// ========================================
-// 算出プロパティ
-// ========================================
-// ユーザー名のイニシャルを生成: ユーザーアバターの代替表示として利用するため
-const userInitials = computed(() => {
-  if (!formData.name) return '?';
-  const names = formData.name.split(' ');
-  // 複数の単語からなる名前の場合、各単語の頭文字を結合して表示
-  if (names.length >= 2) {
-    return names[0][0] + names[1][0];
-  }
-  // 単一の単語からなる名前の場合、最初の2文字を大文字で表示
-  return formData.name.substring(0, 2).toUpperCase();
-});
-
-// ========================================
-// メソッド
-// ========================================
-// イベントハンドラ
-// 画像読み込みエラー時は非表示にする
-const handleImageError = (e) => {
-  imageError.value = true;
-};
 
 // バリデーションエラーメッセージを保持するためのリアクティブなオブジェクト
 const errors = reactive({
@@ -186,6 +162,18 @@ const showNewPasswordConfirmation = ref(false);
 // ========================================
 // 算出プロパティ
 // ========================================
+// ユーザー名のイニシャルを生成: ユーザーアバターの代替表示として利用するため
+const userInitials = computed(() => {
+  if (!formData.name) return '?';
+  const names = formData.name.split(' ');
+  // 複数の単語からなる名前の場合、各単語の頭文字を結合して表示
+  if (names.length >= 2) {
+    return names[0][0] + names[1][0];
+  }
+  // 単一の単語からなる名前の場合、最初の2文字を大文字で表示
+  return formData.name.substring(0, 2).toUpperCase();
+});
+
 // 全てのバリデーションエラーメッセージを結合して表示するための算出プロパティ
 const validationErrors = computed(() => {
   const messages = [];
@@ -202,18 +190,32 @@ const validationErrors = computed(() => {
 // ライフサイクル
 // ========================================
 // コンポーネントがマウントされた時にユーザーデータをフォームに初期設定
-onMounted(() => {
-  formData.name = user.name;
-  formData.email = user.email;
-  formData.avatar = user.avatar;
+onMounted(async () => {
+  // ユーザー情報がなければ取得（追加）
+  if (!authStore.authUser) {
+    await authStore.fetchUser();
+  }
+
+  // Piniaストアから初期値を設定（変更）
+  if (authStore.authUser) {
+    formData.name = authStore.authUser.name || '';
+    formData.email = authStore.authUser.email || '';
+    formData.avatar = authStore.authUser.avatar || '';
+  }
 });
 
 // ========================================
 // メソッド
 // ========================================
 // イベントハンドラ
+// 画像読み込みエラー時は非表示にする
+const handleImageError = (e) => {
+  imageError.value = true;
+};
+
 // フォーム送信時の処理: エラーのクリア、バリデーション、プロファイルとパスワードの更新
-const handleSubmit = () => {
+const handleSubmit = async () => {
+  // 変更: async追加
   // 以前のエラーメッセージを全てクリア
   errors.name = '';
   errors.email = '';
@@ -239,22 +241,14 @@ const handleSubmit = () => {
     email: formData.email,
     avatar: formData.avatar,
   };
-  // プロフィール更新処理を実行
-  const profileResult = updateUserProfile(profileUpdateData);
+  // プロフィール更新処理を実行（変更: Piniaストアのメソッドを使用）
+  const profileResult = await authStore.updateUserProfile(profileUpdateData);
 
   // パスワード関連のフィールドが入力されている場合のみパスワード更新を試みる
   if (formData.current_password || formData.new_password || formData.new_password_confirmation) {
-    const passwordUpdateData = {
-      current_password: formData.current_password,
-      new_password: formData.new_password,
-      new_password_confirmation: formData.new_password_confirmation,
-    };
-    // パスワード更新処理を実行
-    const passwordResult = updatePassword(passwordUpdateData);
-    if (!passwordResult.success) {
-      alert(passwordResult.message || 'パスワードの更新に失敗しました');
-      return;
-    }
+    // TODO: パスワード更新APIの実装待ち
+    alert('パスワード更新機能は準備中です');
+    return;
   }
 
   // プロフィール更新が成功した場合、成功メッセージを表示し、プロフィールページへ遷移

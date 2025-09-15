@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -86,6 +87,20 @@ class User extends Authenticatable
     public function getHasAvatarAttribute(): bool
     {
         return !empty($this->avatar);
+    }
+
+    /**
+     * アバターのURLを取得
+     *
+     * @return string|null
+     */
+    public function getAvatarAttribute(?string $value): ?string
+    {
+        if (empty($value)) {
+            return null;
+        }
+        // publicディレクトリからの相対パスでURLを生成
+        return Storage::disk('public')->url('images/avatars/' . $value);
     }
 
     /**

@@ -15,7 +15,7 @@
     <div class="space-y-2 text-center">
       <h3 class="text-2xl font-bold text-slate-900">{{ user.name }}</h3>
       <p class="text-gray-600">{{ user.email }}</p>
-      <p class="text-sm text-gray-500">登録日: 2024年1月15日</p>
+      <p class="text-sm text-gray-500">登録日: {{ user.created_at ? new Date(user.created_at).toLocaleDateString('ja-JP') : '2024年1月15日' }}</p>
     </div>
 
     <template #actions>
@@ -28,15 +28,15 @@
 // ========================================
 // 外部インポート
 // ========================================
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { PencilIcon } from '@heroicons/vue/24/outline';
 
 // ========================================
 // 内部インポート
 // ========================================
-// コンポーザブル
-import { useUser } from '../../composables/useUser.js';
+// Piniaストア（変更: useUser → useAuthStore）
+import { useAuthStore } from '@/stores/auth';
 
 // コンポーネント
 import BaseButton from '../../components/common/BaseButton.vue';
@@ -47,22 +47,38 @@ import DetailLayout from '../../layouts/DetailLayout.vue';
 // ========================================
 const router = useRouter();
 
-// コンポーザブル実行
-const { user } = useUser();
+// Piniaストア実行（変更）
+const authStore = useAuthStore();
+
+// ========================================
+// 状態管理
+// ========================================
+// ユーザー情報（変更: useUserから取得 → Piniaストアから取得）
+const user = computed(() => authStore.authUser || {});
+
+// ========================================
+// ライフサイクル
+// ========================================
+// ユーザー情報の取得を確実に行う（追加）
+onMounted(async () => {
+  if (!authStore.authUser) {
+    await authStore.fetchUser();
+  }
+});
 
 // ========================================
 // 算出プロパティ
 // ========================================
 // ユーザー名のイニシャルを生成: ユーザーアバターの代替表示として利用するため
 const userInitials = computed(() => {
-  if (!user.name) return '?';
-  const names = user.name.split(' ');
+  if (!user.value?.name) return '?'; // 変更: user.name → user.value?.name
+  const names = user.value.name.split(' ');
   // 複数の単語からなる名前の場合、各単語の頭文字を結合して表示
   if (names.length >= 2) {
     return names[0][0] + names[1][0];
   }
   // 単一の単語からなる名前の場合、最初の2文字を大文字で表示
-  return user.name.substring(0, 2).toUpperCase();
+  return user.value.name.substring(0, 2).toUpperCase();
 });
 
 // ========================================

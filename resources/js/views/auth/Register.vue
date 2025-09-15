@@ -127,13 +127,13 @@ import { EyeIcon, EyeSlashIcon, UserPlusIcon } from '@heroicons/vue/24/solid';
 // 内部インポート
 // ========================================
 import { validateName, validateEmail, validatePassword, validatePasswordConfirmation } from '../../validators/profileValidator';
-import { useAuth } from '../../composables/useAuth';
+import { useAuthStore } from '@/stores/auth';
 import BaseButton from '../../components/common/BaseButton.vue';
 
 // ========================================
 // コンポーザブル
 // ========================================
-const { register } = useAuth();
+const authStore = useAuthStore();
 
 // ========================================
 // フォーム状態管理
@@ -211,6 +211,9 @@ const handleRegister = async () => {
   passwordModified.value = false;
   passwordConfirmModified.value = false;
 
+  name.value = name.value.trim();
+  email.value = email.value.trim();
+
   // フィールドバリデーション
   const nameResult = validateName(name.value);
   const emailResult = validateEmail(email.value);
@@ -229,16 +232,22 @@ const handleRegister = async () => {
 
   // 登録実行
   isSubmitting.value = true;
-  const result = await register({
-    name: name.value,
-    email: email.value,
-    password: password.value,
-  });
-  isSubmitting.value = false;
-
-  // エラーハンドリング
-  if (!result.success) {
-    authError.value = result.message;
+  try {
+    await authStore.register({
+      name: name.value,
+      email: email.value,
+      password: password.value,
+      password_confirmation: passwordConfirm.value,
+    });
+    router.push('/dashboard'); // 成功時はダッシュボードへ遷移
+  } catch (error) {
+    if (authStore.hasAuthErrors) {
+      authError.value = Object.values(authStore.authErrors).flat().join(', ');
+    } else {
+      authError.value = 'ユーザー登録に失敗しました';
+    }
+  } finally {
+    isSubmitting.value = false;
   }
 };
 </script>

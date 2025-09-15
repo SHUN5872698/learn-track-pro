@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 import Login from './views/auth/Login.vue';
 import Register from './views/auth/Register.vue';
 import PasswordReset from './views/auth/PasswordReset.vue';
@@ -126,16 +127,25 @@ const router = createRouter({
   },
 });
 
-// ナビゲーションガード: ルート遷移前に認証状態をチェックし、適切なページへリダイレクトする
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('authToken'); // 認証トークンの有無で認証状態を判定
+// ナビゲーションガード
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore();
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next('/login'); // 認証が必要なページで未認証の場合、ログインページへ
-  } else if (to.meta.requiresGuest && isAuthenticated) {
-    next('/dashboard'); // ゲストユーザーのみアクセス可能なページで認証済みの場合、ダッシュボードへ
+  // 初回アクセス時に認証状態を確認
+  if (!authStore.authUser && localStorage.getItem('isLoggedIn') === 'true') {
+    await authStore.fetchUser();
+  }
+
+  const isAuthenticated = authStore.isLoggedIn;
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const requiresGuest = to.matched.some((record) => record.meta.requiresGuest);
+
+  if (requiresAuth && !isAuthenticated) {
+    next('/login');
+  } else if (requiresGuest && isAuthenticated) {
+    next('/dashboard');
   } else {
-    next(); // それ以外の場合はそのまま遷移
+    next();
   }
 });
 

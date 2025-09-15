@@ -33,15 +33,35 @@
 // ========================================
 // 外部インポート
 // ========================================
+import { computed, onMounted } from 'vue';
 import { Bars3Icon } from '@heroicons/vue/24/solid';
+
 // ========================================
 // 内部インポート
 // ========================================
+// Piniaストア
+import { useAuthStore } from '@/stores/auth';
+
 // コンポーネント
 import UserAvatar from './UserAvatar.vue';
 
-defineProps({
-  user: Object,
+// ========================================
+// 初期設定
+// ========================================
+const authStore = useAuthStore();
+
+// ========================================
+// 状態管理
+// ========================================
+const user = computed(() => authStore.authUser || {});
+
+// ========================================
+// ライフサイクル
+// ========================================
+onMounted(async () => {
+  if (!authStore.authUser) {
+    await authStore.fetchUser();
+  }
 });
 
 defineEmits(['toggle-mobile-menu']);

@@ -70,11 +70,13 @@ import { EnvelopeIcon } from '@heroicons/vue/24/solid';
 // ========================================
 import { validateEmail } from '../../validators/profileValidator';
 import BaseButton from '../../components/common/BaseButton.vue';
+import { useAuthStore } from '@/stores/auth'; // Piniaストアをインポート
 
 // ========================================
 // 初期設定
 // ========================================
 const router = useRouter();
+const authStore = useAuthStore(); // Piniaストアを使用
 
 // ========================================
 // フォーム状態管理
@@ -108,6 +110,12 @@ const showEmailBorder = computed(() => {
 const validationErrors = computed(() => {
   const messages = [];
   if (errors.email) messages.push(errors.email);
+  // Piniaストアからのエラーも表示
+  if (authStore.hasAuthErrors) {
+    Object.values(authStore.authErrors)
+      .flat()
+      .forEach((msg) => messages.push(msg));
+  }
   return messages;
 });
 
@@ -120,6 +128,7 @@ const handlePasswordReset = async () => {
   authError.value = '';
   successMessage.value = '';
   emailModified.value = false;
+  authStore.clearAuthErrors(); // Piniaストアのエラーもクリア
 
   // バリデーション実行
   const emailResult = validateEmail(email.value);
@@ -128,15 +137,25 @@ const handlePasswordReset = async () => {
     return;
   }
 
-  // メール送信処理をシミュレート
+  // メール送信処理
   isSubmitting.value = true;
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  successMessage.value = 'パスワードリセットのメールを送信しました。';
+  try {
+    const message = await authStore.forgotPassword(email.value);
+    successMessage.value = message; // Piniaストアから返されたメッセージを表示
 
-  // 3秒後にログイン画面へ遷移
-  setTimeout(() => {
-    router.push('/login');
+    // 3秒後にログイン画面へ遷移
+    setTimeout(() => {
+      router.push('/login');
+    }, 3000);
+  } catch (error) {
+    // Piniaストアからのエラーを表示
+    if (authStore.hasAuthErrors) {
+      authError.value = Object.values(authStore.authErrors).flat().join(', ');
+    } else {
+      authError.value = error.message || 'パスワードリセットメールの送信に失敗しました';
+    }
+  } finally {
     isSubmitting.value = false;
-  }, 3000);
+  }
 };
 </script>

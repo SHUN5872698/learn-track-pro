@@ -87,19 +87,21 @@
 // 外部インポート
 // ========================================
 import { ref, reactive, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { EyeIcon, EyeSlashIcon, LockClosedIcon } from '@heroicons/vue/24/solid';
 
 // ========================================
 // 内部インポート
 // ========================================
 import { validateEmail, validatePassword } from '../../validators/profileValidator';
-import { useAuth } from '../../composables/useAuth';
+import { useAuthStore } from '@/stores/auth'; // 変更: useAuth → useAuthStore
 import BaseButton from '../../components/common/BaseButton.vue';
 
 // ========================================
 // コンポーザブル
 // ========================================
-const { login } = useAuth();
+const router = useRouter();
+const authStore = useAuthStore(); // 変更: Piniaストアを使用
 
 // ========================================
 // フォーム状態管理
@@ -174,15 +176,25 @@ const handleLogin = async () => {
 
   // ログイン実行
   isSubmitting.value = true;
-  const result = await login({
-    email: email.value,
-    password: password.value,
-  });
-  isSubmitting.value = false;
 
-  // エラーハンドリング
-  if (!result.success) {
-    authError.value = result.message;
+  try {
+    // 変更: Piniaストアのloginアクションを使用
+    await authStore.login({
+      email: email.value,
+      password: password.value,
+    });
+
+    // 成功時はダッシュボードへ遷移
+    router.push('/dashboard');
+  } catch (error) {
+    // 変更: Piniaストアのエラー情報を使用
+    if (authStore.hasAuthErrors) {
+      authError.value = Object.values(authStore.authErrors).flat().join(', ');
+    } else {
+      authError.value = 'ログインに失敗しました';
+    }
+  } finally {
+    isSubmitting.value = false;
   }
 };
 </script>

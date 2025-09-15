@@ -70,22 +70,23 @@
 // ========================================
 // 外部インポート
 // ========================================
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { BookOpenIcon, DocumentChartBarIcon, UserCircleIcon, ArrowLeftStartOnRectangleIcon, XMarkIcon } from '@heroicons/vue/24/solid';
 
 // ========================================
 // 内部インポート
 // ========================================
+// Piniaストア
+import { useAuthStore } from '@/stores/auth';
+
 // コンポーザブル
-import { useAuth } from '../../composables/useAuth';
 import { useLearningData } from '../../composables/useLearningData';
 
 // ========================================
 // Props & Emits
 // ========================================
 const props = defineProps({
-  user: Object,
   isOpen: Boolean, // モバイルメニューの開閉状態
 });
 
@@ -94,11 +95,20 @@ const emit = defineEmits(['close-mobile-menu']);
 // ========================================
 // 初期設定
 // ========================================
-// コンポーザブル実行
-const { logout } = useAuth();
+// Piniaストア実行
+const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 const { learningContents } = useLearningData();
+
+// ========================================
+// ライフサイクル
+// ========================================
+onMounted(async () => {
+  if (!authStore.authUser) {
+    await authStore.fetchUser();
+  }
+});
 
 // ========================================
 // 状態管理
@@ -133,9 +143,10 @@ const menuItems = ref([
     id: 'logout',
     name: 'ログアウト',
     iconComponent: ArrowLeftStartOnRectangleIcon,
-    path: '/logout',
     active: false,
-    action: logout,
+    action: async () => {
+      await authStore.logout();
+    },
   },
 ]);
 
