@@ -1,23 +1,25 @@
-import { reactive } from 'vue';
-import { mockUsers, currentUserId } from '../composables/data/mockUsers';
-
-const userData = mockUsers.value.find((u) => u.id === currentUserId.value);
-const user = reactive({ ...userData });
+import { computed } from 'vue';
+import { useAuthStore } from '@/stores/auth';
 
 export const useUser = () => {
-  // プロフィール更新機能
-  const updateUserProfile = (updatedData) => {
+  const authStore = useAuthStore();
+
+  const user = computed(
+    () =>
+      authStore.authUser || {
+        id: 1,
+        name: 'ゲストユーザー',
+        email: 'guest@example.com',
+        avatar: null,
+      }
+  );
+
+  // プロフィール更新機能（authStoreへ転送）
+  const updateUserProfile = async (updatedData) => {
     try {
       console.log('Updating user profile with:', updatedData);
-      Object.assign(user, updatedData);
-
-      // モックデータも更新
-      const userIndex = mockUsers.value.findIndex((u) => u.id === currentUserId.value);
-      if (userIndex !== -1) {
-        Object.assign(mockUsers.value[userIndex], updatedData);
-      }
-
-      return { success: true };
+      const result = await authStore.updateProfile(updatedData);
+      return result;
     } catch (error) {
       console.error('Failed to update user profile:', error);
       return { success: false, message: 'プロフィールの更新に失敗しました。' };
@@ -44,23 +46,9 @@ export const useUser = () => {
     }
   };
 
-  // パスワード更新機能（モック）
-  const updatePassword = (passwordData) => {
-    try {
-      console.log('Updating password with:', passwordData);
-      // ここに実際のAPIコールロジックを追加
-      // 例: await api.post('/user/password', passwordData);
-      return { success: true, message: 'パスワードを更新しました。' };
-    } catch (error) {
-      console.error('Failed to update password:', error);
-      return { success: false, message: 'パスワードの更新に失敗しました。' };
-    }
-  };
-
   return {
-    user,
+    user: user.value,
     updateUserProfile,
     getUserInitials,
-    updatePassword,
   };
 };
