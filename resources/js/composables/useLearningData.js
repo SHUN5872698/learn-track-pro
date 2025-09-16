@@ -1,14 +1,18 @@
+import { computed } from 'vue';
 import { useUser } from './useUser';
-import { mockTechnologies } from './data/mockTechnologies';
 import { useMenuState } from './ui/useMenuState';
 import { useLearningContents } from './learning/useLearningContents';
 import { useSections } from './learning/useSections';
 import { useLearningSessions } from './learning/useLearningSessions';
+import { useMasterDataStore } from '../stores/masterData';
 
 export const useLearningData = () => {
   const { user } = useUser();
   const { activeMenuId, setActiveMenu } = useMenuState();
-  const technologies = mockTechnologies;
+  const masterDataStore = useMasterDataStore();
+
+  const technologies = computed(() => masterDataStore.technologies);
+  const categories = computed(() => masterDataStore.categories);
 
   // 各コンポーザブルをインスタンス化
   const { learningContentsRaw, learningContents, addLearningContent: _addLearningContent, updateLearningContent: _updateLearningContent, deleteLearningContent: _deleteLearningContent, completeContent, reopenContent, _updateLearningContentStats } = useLearningContents();

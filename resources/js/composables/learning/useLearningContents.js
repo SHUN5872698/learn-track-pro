@@ -1,20 +1,20 @@
 import { computed } from 'vue';
+import { useMasterDataStore } from '../../stores/masterData';
 import { mockLearningContentsRaw } from '../data/mockLearningContents';
-import { mockTechnologies } from '../data/mockTechnologies';
 import { mockSessions } from '../data/mockSessions';
 import { useSectionStatus } from '../useSectionStatus';
 
-// このモジュールはリアクティブな参照を直接エクスポートします
 export const learningContentsRaw = mockLearningContentsRaw;
-const technologies = mockTechnologies;
 const learningSessions = mockSessions; // learningContentsの算出プロパティで使用
 
 export const useLearningContents = () => {
+  const masterDataStore = useMasterDataStore();
+
   // 生の学習コンテンツデータに技術名や進捗率などの付加情報を加えて提供する
   const learningContents = computed(() => {
     return learningContentsRaw.value
       .map((content) => {
-        const technology = technologies.value.find((t) => t.id === content.technology_id);
+        const technology = masterDataStore.getTechnologyById(content.technology_id);
         const progress = content.total_sections > 0 ? Math.round((content.completed_sections / content.total_sections) * 100) : 0;
         const totalStudyMinutes = learningSessions.value.filter((session) => session.learning_content_id === content.id).reduce((sum, session) => sum + session.study_minutes, 0);
 
