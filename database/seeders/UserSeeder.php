@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'TaroYamada',
+                'name' => 'Taro Yamada',
                 'email' => 'taro.yamada@example.com',
                 'password' => Hash::make('password'),
                 'avatar' => 'pexels-photo-614810.png',
@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'name' => 'HanakoSuzuki',
+                'name' => 'Hanako Suzuki',
                 'email' => 'hanako.suzuki@example.com',
                 'password' => Hash::make('password'),
                 'avatar' => null,
