@@ -56,9 +56,12 @@
 │   │   │   ├── LearningContentController.php     # 学習コンテンツ関連のHTTPリクエストを処理
 │   │   │   ├── LearningSessionController.php     # 学習セッション関連のHTTPリクエストを処理
 │   │   │   ├── SectionController.php             # セクション関連のHTTPリクエストを処理
-│   │   │   └── TechnologyController.php          # 技術関連のHTTPリクエストを処理
+│   │   │   ├── TechnologyController.php          # 技術関連のHTTPリクエストを処理
+│   │   │   └── UserController.php                # ユーザー関連のHTTPリクエストを処理
 │   │   │
 │   │   └── Requests/                             # フォームリクエストのバリデーションルールを定義
+│   │       ├── User/                             # ユーザー関連のリクエスト
+│   │       │   └── ProfileRequest.php            # プロフィール更新時のバリデーション
 │   │       ├── StoreLearningContentRequest.php   # 学習コンテンツ作成時のバリデーション
 │   │       ├── StoreLearningSessionRequest.php   # 学習セッション作成時のバリデーション
 │   │       ├── StoreSectionRequest.php           # セクション作成時のバリデーション
@@ -113,20 +116,28 @@
 │   │   ├── 2025_09_12_101358_create_sections_table.php                  # セクションテーブル作成マイグレーション
 │   │   └── 2025_09_12_112014_create_learning_sessions_table.php         # 学習セッションテーブル作成マイグレーション
 │   │
-│   └── seeders/                                  # データベースに初期データやテストデータを投入するシーダー
-│       ├── CategorySeeder.php                    # カテゴリーデータのシーダー
-│       ├── DatabaseSeeder.php                    # 全てのシーダーを呼び出すメインシーダー
-│       ├── LearningContentSeeder.php             # 学習コンテンツデータのシーダー
-│       ├── LearningSessionSeeder.php             # 学習セッションデータのシーダー
-│       ├── SectionSeeder.php                     # セクションデータのシーダー
-│       ├── TechnologySeeder.php                  # 技術データのシーダー
-│       └── UserSeeder.php                        # ユーザーデータのシーダー
+│   ├── seeders/                                  # データベースに初期データやテストデータを投入するシーダー
+│   │   ├── CategorySeeder.php                    # カテゴリーデータのシーダー
+│   │   ├── DatabaseSeeder.php                    # 全てのシーダーを呼び出すメインシーダー
+│   │   ├── LearningContentSeeder.php             # 学習コンテンツデータのシーダー
+│   │   ├── LearningSessionSeeder.php             # 学習セッションデータのシーダー
+│   │   ├── SectionSeeder.php                     # セクションデータのシーダー
+│   │   ├── TechnologySeeder.php                  # 技術データのシーダー
+│   │   └── UserSeeder.php                        # ユーザーデータのシーダー
+│   └── database.sqlite                           # SQLiteデータベースファイル
 │
+├── public/                                       # 公開アセット
+│   ├── hot                                       # Vite開発サーバーのホットリロードファイル
+│   └── storage -> /var/www/html/storage/app/public # シンボリックリンクで公開されるストレージ
+│
+
 ├── resources/                                    # フロントエンドのアセットやビューファイル
 │   ├── css/                                      # CSSスタイルシート
 │   │   └── app.css                               # アプリケーションのメインCSSファイル
 │   │
 │   └── js/                                       # JavaScriptファイル ※詳細は別ドキュメントに記載
+│       └── stores/                               # Piniaストア
+│           └── auth.js                           # 認証状態管理ストア
 │
 ├── routes/                                       # アプリケーションのルーティング定義
 │   ├── api.php                                   # APIルート定義
