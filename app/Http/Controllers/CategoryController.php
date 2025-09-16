@@ -8,15 +8,15 @@ use Illuminate\Http\Request;
 class CategoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * リソースの一覧を表示
      */
     public function index()
     {
-        //
+        return response()->json(Category::all());
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 新しく作成されたリソースをストレージに保存
      */
     public function store(StoreCategoryRequest $request)
     {
@@ -24,7 +24,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * 指定されたリソースを表示
      */
     public function show(Category $category)
     {
@@ -32,7 +32,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 指定されたリソースをストレージで更新
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
@@ -40,7 +40,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 指定されたリソースをストレージから削除
      */
     public function destroy(Category $category)
     {

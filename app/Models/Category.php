@@ -68,4 +68,19 @@ class Category extends Model
     {
         return $date->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
     }
+
+    /**
+     * アイコンのフルパスを取得
+     *
+     * @param string|null $value
+     * @return string|null
+     */
+    public function getIconAttribute(?string $value): ?string
+    {
+        if (empty($value)) {
+            return null;
+        }
+        // publicディレクトリからの相対パスでURLを生成
+        return asset('assets/icons/technologies/' . $value);
+    }
 }

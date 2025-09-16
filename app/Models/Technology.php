@@ -73,12 +73,27 @@ class Technology extends Model
     /**
      * カテゴリー別の技術を取得するスコープ
      *
-     * @param \\Illuminate\\Database\\Eloquent\\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder $query
      * @param int $categoryId
-     * @return \\Illuminate\\Database\\Eloquent\\Builder
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeByCategory($query, $categoryId)
     {
         return $query->where('category_id', $categoryId);
+    }
+
+    /**
+     * アイコンのフルパスを取得
+     *
+     * @param string|null $value
+     * @return string|null
+     */
+    public function getIconAttribute(?string $value): ?string
+    {
+        if (empty($value)) {
+            return null;
+        }
+        // publicディレクトリからの相対パスでURLを生成
+        return asset('assets/icons/technologies/' . $value);
     }
 }
