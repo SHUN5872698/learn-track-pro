@@ -95,7 +95,6 @@ const emit = defineEmits(['close-mobile-menu']);
 // ========================================
 // 初期設定
 // ========================================
-// Piniaストア実行
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();

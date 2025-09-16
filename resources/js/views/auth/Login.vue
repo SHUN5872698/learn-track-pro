@@ -94,8 +94,11 @@ import { EyeIcon, EyeSlashIcon, LockClosedIcon } from '@heroicons/vue/24/solid';
 // 内部インポート
 // ========================================
 import { validateEmail, validatePassword } from '../../validators/profileValidator';
-import { useAuthStore } from '@/stores/auth'; // 変更: useAuth → useAuthStore
+// コンポーネント
 import BaseButton from '../../components/common/BaseButton.vue';
+
+// Piniaストア
+import { useAuthStore } from '@/stores/auth';
 
 // ========================================
 // コンポーザブル
@@ -178,7 +181,6 @@ const handleLogin = async () => {
   isSubmitting.value = true;
 
   try {
-    // 変更: Piniaストアのloginアクションを使用
     await authStore.login({
       email: email.value,
       password: password.value,
@@ -187,7 +189,6 @@ const handleLogin = async () => {
     // 成功時はダッシュボードへ遷移
     router.push('/dashboard');
   } catch (error) {
-    // 変更: Piniaストアのエラー情報を使用
     if (authStore.hasAuthErrors) {
       authError.value = Object.values(authStore.authErrors).flat().join(', ');
     } else {

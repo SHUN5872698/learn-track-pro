@@ -28,19 +28,17 @@ import { ref, computed, onMounted } from 'vue';
 import AppHeader from '../components/common/AppHeader.vue';
 import AppSidebar from '../components/common/AppSidebar.vue';
 
-// Piniaストア（変更: useUser → useAuthStore）
+// Piniaストア
 import { useAuthStore } from '@/stores/auth';
 
 // ========================================
 // 初期設定
 // ========================================
-// Piniaストア実行（変更）
 const authStore = useAuthStore();
 
 // ========================================
 // 状態管理
 // ========================================
-// ユーザー情報（変更: useUserから取得 → Piniaストアから取得）
 const user = computed(() => authStore.authUser);
 
 // モバイルメニューの開閉状態を管理

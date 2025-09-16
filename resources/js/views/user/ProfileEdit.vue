@@ -71,8 +71,6 @@ import UserAvatar from '../../components/common/UserAvatar.vue';
 // 初期設定
 // ========================================
 const router = useRouter();
-
-// Piniaストア実行（変更）
 const authStore = useAuthStore();
 
 // ========================================
