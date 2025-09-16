@@ -198,31 +198,6 @@ export const validateProfile = (profileData) => {
     isValid = false;
   }
 
-  // パスワード変更時のバリデーション（いずれかが入力されている場合）
-  const hasPasswordFields = profileData.new_password || profileData.current_password || profileData.new_password_confirmation;
-
-  if (hasPasswordFields) {
-    // 現在のパスワード
-    if (!profileData.current_password) {
-      errors.current_password = ERROR_MESSAGES.PASSWORD_REQUIRED;
-      isValid = false;
-    }
-
-    // 新しいパスワード
-    const newPasswordResult = validatePassword(profileData.new_password);
-    if (!newPasswordResult.isValid) {
-      errors.new_password = newPasswordResult.message;
-      isValid = false;
-    }
-
-    // パスワード確認
-    const confirmResult = validatePasswordConfirmation(profileData.new_password_confirmation, profileData.new_password);
-    if (!confirmResult.isValid) {
-      errors.new_password_confirmation = confirmResult.message;
-      isValid = false;
-    }
-  }
-
   // アバターURLのバリデーション
   const avatarResult = validateAvatarUrl(profileData.avatar);
   if (!avatarResult.isValid) {
@@ -244,9 +219,6 @@ export const validateField = (fieldName, value, allFormData = {}) => {
   const validators = {
     name: () => validateName(value),
     email: () => validateEmail(value),
-    current_password: () => validatePassword(value),
-    new_password: () => validatePassword(value),
-    new_password_confirmation: () => validatePasswordConfirmation(value, allFormData.new_password),
     avatar: () => validateAvatarUrl(value),
   };
 

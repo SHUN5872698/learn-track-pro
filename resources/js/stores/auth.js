@@ -7,6 +7,7 @@ export const useAuthStore = defineStore('auth', {
     isLoggedIn: false,
     loading: false,
     errors: {},
+    initialized: false,
   }),
 
   getters: {
@@ -15,6 +16,7 @@ export const useAuthStore = defineStore('auth', {
     authErrors: (state) => state.errors,
     hasAuthErrors: (state) => Object.keys(state.errors).length > 0,
     isLoading: (state) => state.loading,
+    isInitialized: (state) => state.initialized,
   },
 
   actions: {
@@ -33,6 +35,22 @@ export const useAuthStore = defineStore('auth', {
 
     clearAuthErrors() {
       this.errors = {};
+    },
+
+    // 初期化完了を設定
+    setInitialized(value) {
+      this.initialized = value;
+    },
+
+    // 認証状態の初期化
+    async initializeAuth() {
+      if (this.initialized) return;
+
+      if (localStorage.getItem('isLoggedIn') === 'true') {
+        await this.fetchUser();
+      } else {
+        this.setInitialized(true);
+      }
     },
 
     // ログイン処理: ユーザー認証と状態更新を行う
@@ -99,6 +117,8 @@ export const useAuthStore = defineStore('auth', {
         } else {
           console.error('❌ Pinia: ユーザー情報取得で予期せぬエラーが発生しました', error);
         }
+      } finally {
+        this.setInitialized(true); // 初期化完了を設定
       }
     },
 
@@ -182,6 +202,71 @@ export const useAuthStore = defineStore('auth', {
             general: [error?.message || 'パスワードリセットメールの送信に失敗しました'],
           };
           this.setAuthErrors(errorData);
+        }
+        throw error;
+      } finally {
+        this.setAuthLoading(false);
+      }
+    },
+
+    // プロフィール更新
+    async updateProfile(payload) {
+      this.setAuthLoading(true);
+      this.clearAuthErrors();
+      try {
+        const response = await axios.put('/api/user/profile', payload);
+        this.setAuthUser(response.data.user); // 最新のユーザー情報でストアを更新
+        return { success: true, message: response.data.message };
+      } catch (error) {
+        if (error?.response?.status === 422) {
+          this.setAuthErrors(error.response.data.errors);
+        } else {
+          console.error('❌ Pinia: プロフィール更新失敗', error);
+          this.setAuthErrors({ general: [error?.response?.data?.message || error?.message || 'プロフィール更新に失敗しました'] });
+        }
+        throw error;
+      } finally {
+        this.setAuthLoading(false);
+      }
+    },
+
+    // パスワード変更
+    async updatePassword(payload) {
+      this.setAuthLoading(true);
+      this.clearAuthErrors();
+
+      try {
+        // Fortifyの標準エンドポイントを使用
+        const response = await axios.put('/fortify/user/password', {
+          current_password: payload.current_password,
+          password: payload.password,
+          password_confirmation: payload.password_confirmation,
+        });
+
+        return { success: true, message: 'パスワードを更新しました' };
+      } catch (error) {
+        if (error?.response?.status === 422) {
+          this.setAuthErrors(error.response.data.errors);
+        }
+        throw error;
+      } finally {
+        this.setAuthLoading(false);
+      }
+    },
+
+    // パスワードリセット実行
+    async resetPassword(payload) {
+      this.setAuthLoading(true);
+      this.clearAuthErrors();
+      try {
+        const response = await axios.post('/fortify/reset-password', payload);
+        return { success: true, message: response.data.message };
+      } catch (error) {
+        if (error?.response?.status === 422) {
+          this.setAuthErrors(error.response.data.errors);
+        } else {
+          console.error('❌ Pinia: パスワードリセット実行失敗', error);
+          this.setAuthErrors({ general: [error?.response?.data?.message || error?.message || 'パスワードリセットに失敗しました'] });
         }
         throw error;
       } finally {
