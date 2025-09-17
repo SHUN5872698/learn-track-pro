@@ -26,3 +26,6 @@ Thumbs.db
 # Gemini
 .gemini/outputs/
 .gemini/settings.json
+
+# MCP
+.playwright-mcp/
