@@ -18,7 +18,7 @@
 .gemini/docs/architectures/Vueアプリケーションディレクトリ構造.md
 
 ## 指示
-1. `tree -L 3 -I --dirsfirst ./resources/js/`コマンドを実行してください。
+1. `tree ./resources/js/ -a -L 3 --dirsfirst -I 'node_modules|.git|*.backup'`コマンドを実行してください。
 2. `## 現在のディレクトリ構造`を、treeコマンドの結果と突き合わせて更新してください。
 3. 追加ファイルとディレクトリがない場合は報告してください。
 
@@ -46,106 +46,106 @@
 
 ```bash
 resources/js/
-├── components/                           # 再利用可能なUIコンポーネント
-│   ├── charts/                           # グラフ関連コンポーネント
-│   │   ├── BarChart.vue                  # 棒グラフコンポーネント
-│   │   ├── LineChart.vue                 # 折れ線グラフコンポーネント
-│   │   └── PieChart.vue                  # 円グラフコンポーネント
+├── components/                              # 再利用可能なUIコンポーネント
+│   ├── charts/                              # グラフ関連コンポーネント
+│   │   ├── BarChart.vue                     # 棒グラフコンポーネント
+│   │   ├── LineChart.vue                    # 折れ線グラフコンポーネント
+│   │   └── PieChart.vue                     # 円グラフコンポーネント
 │   │
-│   ├── common/                           # 汎用コンポーネント
-│   │   ├── buttons/                      # ボタン群
-│   │   │   ├── BackButton.vue            # 戻るボタン
-│   │   │   ├── CancelButton.vue          # キャンセルボタン
-│   │   │   └── DeleteButton.vue          # 削除ボタン
-│   │   ├── AppHeader.vue                 # アプリケーションヘッダー
-│   │   ├── AppSidebar.vue                # アプリケーションサイドバー
-│   │   ├── BaseButton.vue                # 基本ボタンコンポーネント
-│   │   ├── ConfirmModal.vue              # 確認モーダルコンポーネント
-│   │   ├── DatePickerModal.vue           # 日付選択モーダルコンポーネント
-│   │   ├── Pagination.vue                # ページネーションコンポーネント
-│   │   ├── SectionSelector.vue           # セクション選択ドロップダウン
-│   │   ├── TimeInputModal.vue            # 時間入力モーダルコンポーネント
-│   │   └── UserAvatar.vue                # ユーザーアバターコンポーネント
+│   ├── common/                              # 汎用コンポーネント
+│   │   ├── buttons/                         # ボタン群
+│   │   │   ├── BackButton.vue               # 戻るボタン
+│   │   │   ├── CancelButton.vue             # キャンセルボタン
+│   │   │   └── DeleteButton.vue             # 削除ボタン
+│   │   ├── AppHeader.vue                    # アプリケーションヘッダー
+│   │   ├── AppSidebar.vue                   # アプリケーションサイドバー
+│   │   ├── BaseButton.vue                   # 基本ボタンコンポーネント
+│   │   ├── ConfirmModal.vue                 # 確認モーダルコンポーネント
+│   │   ├── DatePickerModal.vue              # 日付選択モーダルコンポーネント
+│   │   ├── Pagination.vue                   # ページネーションコンポーネント
+│   │   ├── SectionSelector.vue              # セクション選択ドロップダウン
+│   │   ├── TimeInputModal.vue               # 時間入力モーダルコンポーネント
+│   │   └── UserAvatar.vue                   # ユーザーアバターコンポーネント
 │   │
-│   └── learning/                         # 学習管理関連コンポーネント
-│       ├── wizard/                       # ウィザード形式のコンポーネント
-│       │   ├── SectionListEditor.vue     # セクションリスト編集
-│       │   ├── TechnologySelector.vue    # 技術選択ドロップダウン
-│       │   ├── WizardNavigation.vue      # ウィザードナビゲーションボタン
-│       │   └── WizardStepIndicator.vue   # ウィザードステップインジケーター
-│       ├── LearningContentCard.vue       # 学習コンテンツカード
-│       ├── StatsOverview.vue             # 統計概要コンポーネント
-│       └── StudySessionFormFields.vue    # 学習記録フォームフィールド
+│   └── learning/                            # 学習管理関連コンポーネント
+│       ├── wizard/                          # ウィザード形式のコンポーネント
+│       │   ├── SectionListEditor.vue        # セクションリスト編集
+│       │   ├── TechnologySelector.vue       # 技術選択ドロップダウン
+│       │   ├── WizardNavigation.vue         # ウィザードナビゲーションボタン
+│       │   └── WizardStepIndicator.vue      # ウィザードステップインジケーター
+│       ├── LearningContentCard.vue          # 学習コンテンツカード
+│       ├── StatsOverview.vue                # 統計概要コンポーネント
+│       └── StudySessionFormFields.vue       # 学習記録フォームフィールド
 │
-├── composables/                          # 共有ロジック・状態管理（Vue Composition APIを活用）
-│   ├── data/                             # アプリケーションのモックデータ管理
-│   │   ├── mockCategories.js             # カテゴリーのモックデータ定義
-│   │   ├── mockLearningContents.js       # 学習コンテンツのモックデータ定義
-│   │   ├── mockSections.js               # セクションのモックデータ定義
-│   │   ├── mockSessions.js               # 学習セッションのモックデータ定義
-│   │   ├── mockTechnologies.js           # 技術のモックデータ定義
-│   │   └── mockUsers.js                  # ユーザーのモックデータ定義
+├── composables/                             # 共有ロジック・状態管理（Vue Composition APIを活用）
+│   ├── data/                                # アプリケーションのモックデータ管理
+│   │   ├── mockCategories.js                # カテゴリーのモックデータ定義
+│   │   ├── mockLearningContents.js          # 学習コンテンツのモックデータ定義
+│   │   ├── mockSections.js                  # セクションのモックデータ定義
+│   │   ├── mockSessions.js                  # 学習セッションのモックデータ定義
+│   │   └── mockTechnologies.js              # 技術のモックデータ定義
 │   │
-│   ├── learning/                         # 学習ドメイン固有のコアロジック
-│   │   ├── useLearningContents.js        # 学習コンテンツのCRUD操作と関連ロジック
-│   │   ├── useLearningSessions.js        # 学習セッション（記録）のCRUD操作と関連ロジック
-│   │   └── useSections.js                # セクションのCRUD操作と関連ロジック
+│   ├── learning/                            # 学習ドメイン固有のコアロジック
+│   │   ├── useLearningContents.js           # 学習コンテンツのCRUD操作と関連ロジック
+│   │   ├── useLearningSessions.js           # 学習セッション（記録）のCRUD操作と関連ロジック
+│   │   └── useSections.js                   # セクションのCRUD操作と関連ロジック
 │   │
-│   ├── ui/                               # UIの状態管理とヘルパー関数
-│   │   └── useMenuState.js               # グローバルなメニュー開閉状態管理ロジック
-│   ├── useAuth.js                        # 認証（ログイン、ログアウト、登録）と認証状態管理ロジック
-│   ├── useLearningContentForm.js         # 学習内容フォームのデータ管理、初期化、バリデーションロジック
-│   ├── useLearningData.js                # 全ての学習関連データを集約・提供するファサード（データ操作のハブ）
-│   ├── useSectionStatus.js               # セクションのステータス管理、完了判定、統計計算ロジック
-│   ├── useStudySessionForm.js            # 学習記録フォームのデータ管理、初期化、バリデーションロジック
-│   ├── useUser.js                        # ユーザー情報の状態管理、プロフィール更新、イニシャル生成ロジック
-│   └── useWizardForm.js                  # ウィザード形式フォームのステップ管理とバリデーション実行ロジック
+│   ├── ui/                                  # UIの状態管理とヘルパー関数
+│   │   └── useMenuState.js                  # グローバルなメニュー開閉状態管理ロジック
+│   ├── useAuth.js                           # 認証（ログイン、ログアウト、登録）と認証状態管理ロジック
+│   ├── useLearningContentForm.js            # 学習内容フォームのデータ管理、初期化、バリデーションロジック
+│   ├── useLearningData.js                   # 全ての学習関連データを集約・提供するファサード（データ操作のハブ）
+│   ├── useSectionStatus.js                  # セクションのステータス管理、完了判定、統計計算ロジック
+│   ├── useStudySessionForm.js               # 学習記録フォームのデータ管理、初期化、バリデーションロジック
+│   ├── useUser.js                           # ユーザー情報の状態管理、プロフィール更新、イニシャル生成ロジック
+│   └── useWizardForm.js                     # ウィザード形式フォームのステップ管理とバリデーション実行ロジック
 │
-├── layouts/                              # レイアウトコンポーネント
-│   ├── AuthLayout.vue                    # 認証画面用レイアウト
-│   ├── DashboardLayout.vue               # ダッシュボード画面用レイアウト
-│   ├── DefaultLayout.vue                 # デフォルトレイアウト
-│   └── DetailLayout.vue                  # 詳細画面用レイアウト
+├── layouts/                                 # レイアウトコンポーネント
+│   ├── AuthLayout.vue                       # 認証画面用レイアウト
+│   ├── DashboardLayout.vue                  # ダッシュボード画面用レイアウト
+│   ├── DefaultLayout.vue                    # デフォルトレイアウト
+│   └── DetailLayout.vue                     # 詳細画面用レイアウト
 │
-├── stores/                               # Piniaストア
-│   └── auth.js                           # 認証状態管理ストア
+├── stores/                                  # Piniaストア
+│   ├── auth.js                              # 認証状態管理ストア
+│   └── masterData.js                        # マスターデータ（カテゴリー、技術）の状態管理ストア
 │
-├── utils/                                # ユーティリティ関数
-│   ├── chartColors.js                    # チャートの色定義
-│   └── dateFormatters.js                 # 日付と時刻のフォーマット関数
+├── utils/                                   # ユーティリティ関数
+│   ├── chartColors.js                       # チャートの色定義
+│   └── dateFormatters.js                    # 日付と時刻のフォーマット関数
 │
-├── validators/                           # フォーム入力のバリデーションロジック
-│   ├── profileValidator.js               # ユーザープロフィール関連の入力値バリデーション
-│   └── studySessionValidator.js          # 学習セッション（記録）関連の入力値バリデーション
+├── validators/                              # フォーム入力のバリデーションロジック
+│   ├── profileValidator.js                  # ユーザープロフィール関連の入力値バリデーション
+│   └── studySessionValidator.js             # 学習セッション（記録）関連の入力値バリデーション
 │
-├── views/                                # ルーティング対象のページ
-│   ├── auth/                            # 認証関連ページ
-│   │   ├── Login.vue                    # ログイン画面
-│   │   ├── PasswordReset.vue            # パスワードリセット画面
-│   │   └── Register.vue                 # 新規登録画面
+├── views/                                   # ルーティング対象のページ
+│   ├── auth/                                # 認証関連ページ
+│   │   ├── Login.vue                        # ログイン画面
+│   │   ├── PasswordReset.vue                # パスワードリセット画面
+│   │   └── Register.vue                     # 新規登録画面
 │   │
-│   ├── learning/                        # 学習管理関連ページ
-│   │   ├── LearningContentCreate.vue    # 学習内容新規作成画面
-│   │   ├── LearningContentDetail.vue    # 学習内容詳細画面
-│   │   ├── LearningContentEdit.vue      # 学習内容編集画面
-│   │   ├── SectionStudyRecords.vue      # セクション別学習記録一覧画面
-│   │   ├── StudyProgress.vue            # 個別レポート画面
-│   │   ├── StudySessionEdit.vue         # 学習記録編集画面
-│   │   └── StudySessionForm.vue         # 学習記録作成画面
+│   ├── learning/                            # 学習管理関連ページ
+│   │   ├── LearningContentCreate.vue        # 学習内容新規作成画面
+│   │   │   ├── LearningContentCreate.vue    # 学習内容新規作成画面
+│   │   ├── LearningContentDetail.vue        # 学習内容詳細画面
+│   │   ├── LearningContentEdit.vue          # 学習内容編集画面
+│   │   ├── SectionStudyRecords.vue          # セクション別学習記録一覧画面
+│   │   ├── StudyProgress.vue                # 個別レポート画面
+│   │   ├── StudySessionEdit.vue             # 学習記録編集画面
+│   │   └── StudySessionForm.vue             # 学習記録作成画面
 │   │
-│   ├── user/                            # ユーザー関連ページ
-│   │   ├── Profile.vue                  # プロフィール表示画面
-│   │   └── ProfileEdit.vue              # プロフィール編集画面
+│   ├── user/                                # ユーザー関連ページ
+│   │   ├── Profile.vue                      # プロフィール表示画面
+│   │   └── ProfileEdit.vue                  # プロフィール編集画面
 │   │
-│   ├── Dashboard.vue                    # ダッシュボード画面
-│   ├── NotFound.vue                     # 404 Not Found画面
-│   └── Reports.vue                      # 全体レポート画面
+│   ├── Dashboard.vue                        # ダッシュボード画面
+│   ├── NotFound.vue                         # 404 Not Found画面
+│   └── Reports.vue                          # 全体レポート画面
 │
-├── app.js                                # Vueアプリケーションのエントリーポイント
-├── App.vue                               # ルートコンポーネント
-├── bootstrap.js                          # アプリケーションの初期設定（Axiosなど）
-└── router.js                             # Vue Router設定
-```
+├── app.js                                   # Vueアプリケーションのエントリーポイント
+├── App.vue                                  # ルートコンポーネント
+├── bootstrap.js                             # アプリケーションの初期設定（Axiosなど）
+└── router.js                                # Vue Router設定
 ```
 
 ---

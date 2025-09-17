@@ -130,14 +130,14 @@
 │   ├── hot                                       # Vite開発サーバーのホットリロードファイル
 │   └── storage -> /var/www/html/storage/app/public # シンボリックリンクで公開されるストレージ
 │
-
 ├── resources/                                    # フロントエンドのアセットやビューファイル
 │   ├── css/                                      # CSSスタイルシート
 │   │   └── app.css                               # アプリケーションのメインCSSファイル
 │   │
 │   └── js/                                       # JavaScriptファイル ※詳細は別ドキュメントに記載
 │       └── stores/                               # Piniaストア
-│           └── auth.js                           # 認証状態管理ストア
+│           ├── auth.js                           # 認証状態管理ストア
+│           └── masterData.js                     # マスターデータ（カテゴリー、技術）の状態管理ストア
 │
 ├── routes/                                       # アプリケーションのルーティング定義
 │   ├── api.php                                   # APIルート定義
@@ -168,5 +168,3 @@
 ├── tailwind.config.js                            # Tailwind CSSの設定ファイル
 └── vite.config.js                                # Viteの設定ファイル
 ```
-
----
