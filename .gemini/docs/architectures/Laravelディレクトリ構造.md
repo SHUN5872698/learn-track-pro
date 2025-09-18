@@ -59,15 +59,21 @@
 │   │   │   ├── TechnologyController.php          # 技術関連のHTTPリクエストを処理
 │   │   │   └── UserController.php                # ユーザー関連のHTTPリクエストを処理
 │   │   │
-│   │   └── Requests/                             # フォームリクエストのバリデーションルールを定義
-│   │       ├── User/                             # ユーザー関連のリクエスト
-│   │       │   └── ProfileRequest.php            # プロフィール更新時のバリデーション
-│   │       ├── StoreLearningContentRequest.php   # 学習コンテンツ作成時のバリデーション
-│   │       ├── StoreLearningSessionRequest.php   # 学習セッション作成時のバリデーション
-│   │       ├── StoreSectionRequest.php           # セクション作成時のバリデーション
-│   │       ├── UpdateLearningContentRequest.php  # 学習コンテンツ更新時のバリデーション
-│   │       ├── UpdateLearningSessionRequest.php  # 学習セッション更新時のバリデーション
-│   │       └── UpdateSectionRequest.php          # セクション更新時のバリデーション
+│   │   ├── Requests/                             # フォームリクエストのバリデーションルールを定義
+│   │   │   ├── User/                             # ユーザー関連のリクエスト
+│   │   │   │   └── ProfileRequest.php            # プロフィール更新時のバリデーション
+│   │   │   ├── StoreLearningContentRequest.php   # 学習コンテンツ作成時のバリデーション
+│   │   │   ├── StoreLearningSessionRequest.php   # 学習セッション作成時のバリデーション
+│   │   │   ├── StoreSectionRequest.php           # セクション作成時のバリデーション
+│   │   │   ├── UpdateLearningContentRequest.php  # 学習コンテンツ更新時のバリデーション
+│   │   │   ├── UpdateLearningSessionRequest.php  # 学習セッション更新時のバリデーション
+│   │   │   └── UpdateSectionRequest.php          # セクション更新時のバリデーション
+│   │   │
+│   │   └── Resources/                            # APIレスポンスのデータ変換と整形
+│   │       ├── CategoryResource.php              # カテゴリーデータのリソース変換
+│   │       ├── LearningContentResource.php       # 学習コンテンツデータのリソース変換
+│   │       ├── SectionResource.php               # セクションデータのリソース変換
+│   │       └── TechnologyResource.php            # 技術データのリソース変換
 │   │
 │   ├── Models/                                   # データベーステーブルと対話するためのEloquentモデル
 │   │   ├── Category.php                          # カテゴリーモデル
@@ -77,8 +83,12 @@
 │   │   ├── Technology.php                        # 技術モデル
 │   │   └── User.php                              # ユーザーモデル
 │   │
+│   ├── Policies/                                 # モデルの認可ロジックを定義
+│   │   └── LearningContentPolicy.php             # 学習コンテンツの認可ポリシー
+│   │
 │   └── Providers/                                # サービスコンテナへのサービス登録やイベント登録を行うサービスプロバイダ
 │       ├── AppServiceProvider.php                # アプリケーション全体のサービスプロバイダ
+│   │   ├── AuthServiceProvider.php               # 認証・認可サービスプロバイダ
 │       └── FortifyServiceProvider.php            # Fortify関連のサービスプロバイダ
 │
 ├── bootstrap/                                    # フレームワークのブートストラップ処理
@@ -135,9 +145,6 @@
 │   │   └── app.css                               # アプリケーションのメインCSSファイル
 │   │
 │   └── js/                                       # JavaScriptファイル ※詳細は別ドキュメントに記載
-│       └── stores/                               # Piniaストア
-│           ├── auth.js                           # 認証状態管理ストア
-│           └── masterData.js                     # マスターデータ（カテゴリー、技術）の状態管理ストア
 │
 ├── routes/                                       # アプリケーションのルーティング定義
 │   ├── api.php                                   # APIルート定義

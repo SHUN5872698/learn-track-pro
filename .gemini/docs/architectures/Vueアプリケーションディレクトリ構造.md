@@ -46,6 +46,9 @@
 
 ```bash
 resources/js/
+├── api/                                     # APIクライアント定義
+│   └── learningContent.js                   # 学習コンテンツ関連API
+│
 ├── components/                              # 再利用可能なUIコンポーネント
 │   ├── charts/                              # グラフ関連コンポーネント
 │   │   ├── BarChart.vue                     # 棒グラフコンポーネント
@@ -79,11 +82,9 @@ resources/js/
 │
 ├── composables/                             # 共有ロジック・状態管理（Vue Composition APIを活用）
 │   ├── data/                                # アプリケーションのモックデータ管理
-│   │   ├── mockCategories.js                # カテゴリーのモックデータ定義
 │   │   ├── mockLearningContents.js          # 学習コンテンツのモックデータ定義
 │   │   ├── mockSections.js                  # セクションのモックデータ定義
-│   │   ├── mockSessions.js                  # 学習セッションのモックデータ定義
-│   │   └── mockTechnologies.js              # 技術のモックデータ定義
+│   │   └── mockSessions.js                  # 学習セッションのモックデータ定義
 │   │
 │   ├── learning/                            # 学習ドメイン固有のコアロジック
 │   │   ├── useLearningContents.js           # 学習コンテンツのCRUD操作と関連ロジック
@@ -108,6 +109,7 @@ resources/js/
 │
 ├── stores/                                  # Piniaストア
 │   ├── auth.js                              # 認証状態管理ストア
+│   ├── learningContent.js                   # 学習コンテンツの状態管理ストア
 │   └── masterData.js                        # マスターデータ（カテゴリー、技術）の状態管理ストア
 │
 ├── utils/                                   # ユーティリティ関数
@@ -126,7 +128,6 @@ resources/js/
 │   │
 │   ├── learning/                            # 学習管理関連ページ
 │   │   ├── LearningContentCreate.vue        # 学習内容新規作成画面
-│   │   │   ├── LearningContentCreate.vue    # 学習内容新規作成画面
 │   │   ├── LearningContentDetail.vue        # 学習内容詳細画面
 │   │   ├── LearningContentEdit.vue          # 学習内容編集画面
 │   │   ├── SectionStudyRecords.vue          # セクション別学習記録一覧画面
@@ -146,6 +147,7 @@ resources/js/
 ├── App.vue                                  # ルートコンポーネント
 ├── bootstrap.js                             # アプリケーションの初期設定（Axiosなど）
 └── router.js                                # Vue Router設定
+
 ```
 
 ---
@@ -157,13 +159,11 @@ graph TD
     subgraph Composables
         A[useLearningData] --> B[useUser]
         A --> C[ui/useMenuState]
-        A --> D[ui/useUIHelpers]
         A --> E[learning/useLearningContents]
         A --> F[learning/useSections]
         A --> G[learning/useLearningSessions]
         A --> P[useSectionStatus]
 
-        E --> H[data/mockTechnologies]
         E --> I[data/mockLearningContents]
         E --> J[data/mockSessions]
 
@@ -177,7 +177,9 @@ graph TD
         Q[useWizardForm]
 
         B --> R[data/mockUsers]
-        H --> S[data/mockCategories]
+        S[stores/masterData] --> H[data/mockTechnologies]
+        S --> S2[data/mockCategories]
+
     end
 
     subgraph Data
@@ -186,7 +188,7 @@ graph TD
         J
         K
         R
-        S
+        S2
     end
 
     subgraph Validators
@@ -201,8 +203,8 @@ graph TD
         V --> O
         V --> Q
         V --> P
-        V --> D
         V --> T
+        V --> S
     end
 
     style A fill:#c9d1f3,stroke:#333,stroke-width:2px
@@ -218,6 +220,7 @@ graph TD
     style J fill:#e0e0e0,stroke:#333,stroke-width:1px
     style K fill:#e0e0e0,stroke:#333,stroke-width:1px
     style R fill:#e0e0e0,stroke:#333,stroke-width:1px
+    style S2 fill:#e0e0e0,stroke:#333,stroke-width:1px
     style S fill:#e0e0e0,stroke:#333,stroke-width:1px
 ```
 
