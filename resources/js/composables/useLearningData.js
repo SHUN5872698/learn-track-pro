@@ -6,20 +6,26 @@ import { useSections } from './learning/useSections';
 import { useLearningSessions } from './learning/useLearningSessions';
 import { useMasterDataStore } from '../stores/masterData';
 
+// 学習関連の全データを集約し、操作ロジックを提供するコンポーザブル
 export const useLearningData = () => {
+  // ユーザー情報管理コンポーザブルからユーザーデータを取得
   const { user } = useUser();
+  // メニュー状態管理コンポーザブルからアクティブメニューIDと設定関数を取得
   const { activeMenuId, setActiveMenu } = useMenuState();
+  // マスターデータストアから技術データを取得
   const masterDataStore = useMasterDataStore();
 
+  // マスターデータストアの技術データをリアクティブに取得
   const technologies = computed(() => masterDataStore.technologies);
-  const categories = computed(() => masterDataStore.categories);
 
-  // 各コンポーザブルをインスタンス化
-  const { learningContentsRaw, learningContents, addLearningContent: _addLearningContent, updateLearningContent: _updateLearningContent, deleteLearningContent: _deleteLearningContent, completeContent, reopenContent, _updateLearningContentStats } = useLearningContents();
+  // 学習コンテンツ関連のデータとアクションを学習コンテンツコンポーザブルから取得
+  const { learningContents, learningContentsRaw, createContent, updateLearningContent, deleteContent, completeContent, reopenContent, _updateLearningContentStats, loading, error, pagination, fetchContents } = useLearningContents();
 
+  // セクション関連のデータとアクションをセクションコンポーザブルから取得
   const { sections, addSections, updateSectionStatus, deleteSectionsByContentId, updateSections, normalizeStatus, toggleSectionComplete } = useSections();
 
-  // 依存関係を注入
+  // 学習セッション関連のデータとアクションを学習セッションコンポーザブルから取得
+  // 統計情報とセクションステータスの更新をコールバックとして渡し、関心の分離を維持
   const {
     learningSessions,
     addStudySession: _addStudySession,
@@ -32,31 +38,22 @@ export const useLearningData = () => {
     (sectionId) => updateSectionStatus(sectionId)
   );
 
-  // 既存のAPIを維持するためのラッパー関数
-  const addLearningContent = (formData) => {
-    console.log('【useLearningData.addLearningContent】受信フォームデータ:', formData);
-
-    const newContentId = _addLearningContent(formData, user);
-    const newSections = formData.sections.map((s, index) => {
-      const section = { ...s, learning_content_id: newContentId };
-      console.log(`【useLearningData】マッピング後セクション ${index + 1}:`, section);
-      return section;
-    });
-
-    addSections(newSections);
-    return newContentId;
-  };
-
-  // 学習コンテンツと関連セクションをまとめて更新し、統計を再計算する
-  const updateLearningContent = (contentId, updatedData) => {
-    _updateLearningContent(contentId, updatedData);
+  // 学習コンテンツの基本情報とセクション情報をまとめて更新するためのラッパー関数
+  const updateLearningContentWrapper = (contentId, updatedData) => {
+    const basicInfo = {
+      title: updatedData.title,
+      description: updatedData.description,
+      technology_id: updatedData.technology_id,
+      status: updatedData.status, // <-- この行を追加
+    };
+    updateLearningContent(contentId, basicInfo);
     updateSections(contentId, updatedData.sections);
     _updateLearningContentStats(contentId, sections.value);
   };
 
-  // 学習コンテンツに関連するセクションと学習記録もまとめて削除する
-  const deleteLearningContent = (contentId) => {
-    _deleteLearningContent(contentId);
+  // 学習コンテンツ、関連セクション、関連学習セッションをまとめて削除するためのラッパー関数
+  const deleteLearningContentWrapper = (contentId) => {
+    deleteContent(contentId);
     deleteSectionsByContentId(contentId);
     deleteSessionsByContentId(contentId);
   };
@@ -65,22 +62,27 @@ export const useLearningData = () => {
     user,
     learningContents,
     learningContentsRaw,
-    completeContent,
-    reopenContent,
     sections,
     learningSessions,
-    addStudySession: (sessionData) => _addStudySession(sessionData, user),
-    deleteStudySession: (sessionId) => _deleteStudySession(sessionId),
-    deleteLearningContent,
-    addLearningContent,
-    updateLearningContent,
-    updateStudySession: (updatedSessionData) => _updateStudySession(updatedSessionData),
-    updateSectionStatus,
+    technologies,
+    loading,
+    error,
+    pagination,
     activeMenuId,
+
+    // Actions
+    fetchContents,
+    createContent,
+    updateLearningContent: updateLearningContentWrapper,
+    deleteLearningContent: deleteLearningContentWrapper,
+    completeContent,
+    reopenContent,
+    addStudySession: (sessionData) => _addStudySession(sessionData, user),
+    updateStudySession: (updatedSessionData) => _updateStudySession(updatedSessionData),
+    deleteStudySession: (sessionId) => _deleteStudySession(sessionId),
+    updateSectionStatus,
     setActiveMenu,
     getRecordCountForSection,
-    technologies,
-    _updateLearningContentStats,
     normalizeStatus,
     toggleSectionComplete,
   };

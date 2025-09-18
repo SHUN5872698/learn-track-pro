@@ -1,142 +1,77 @@
 import { computed } from 'vue';
-import { useMasterDataStore } from '../../stores/masterData';
-import { mockLearningContentsRaw } from '../data/mockLearningContents';
-import { mockSessions } from '../data/mockSessions';
-import { useSectionStatus } from '../useSectionStatus';
+import { useLearningContentStore } from '@/stores/learningContent';
+import { useMasterDataStore } from '@/stores/masterData';
+import { useSectionStatus } from '@/composables/useSectionStatus';
 
-export const learningContentsRaw = mockLearningContentsRaw;
-const learningSessions = mockSessions; // learningContentsの算出プロパティで使用
-
-export const useLearningContents = () => {
+// 学習コンテンツ関連のデータと操作ロジックを提供するコンポーザブル
+export function useLearningContents() {
+  const contentStore = useLearningContentStore();
   const masterDataStore = useMasterDataStore();
 
-  // 生の学習コンテンツデータに技術名や進捗率などの付加情報を加えて提供する
+  // ストアの学習コンテンツデータを整形し、進捗率や技術名を追加
   const learningContents = computed(() => {
-    return learningContentsRaw.value
-      .map((content) => {
-        const technology = masterDataStore.getTechnologyById(content.technology_id);
-        const progress = content.total_sections > 0 ? Math.round((content.completed_sections / content.total_sections) * 100) : 0;
-        const totalStudyMinutes = learningSessions.value.filter((session) => session.learning_content_id === content.id).reduce((sum, session) => sum + session.study_minutes, 0);
+    return contentStore.contents.map((content) => {
+      // 進捗率を計算し、0除算を回避
+      const progress = content.total_sections > 0 ? Math.round((content.completed_sections / content.total_sections) * 100) : 0;
 
-        const filteredSessions = learningSessions.value.filter((session) => session.learning_content_id === content.id);
-        const sortedSessions = filteredSessions.sort((a, b) => new Date(b.studied_at).getTime() - new Date(a.studied_at).getTime());
-        const actualLatestSession = sortedSessions[0];
-
-        const latestSessionUpdatedAt = actualLatestSession ? actualLatestSession.studied_at : null;
-
-        const mappedContent = {
-          ...content,
-          technology: technology ? technology.name : '不明',
-          progress,
-          totalStudyMinutes,
-          completedSections: content.completed_sections,
-          totalSections: content.total_sections,
-          latestSessionUpdatedAt,
-        };
-        return mappedContent;
-      })
-      .sort((a, b) => {
-        // ステータスの希望する順序を定義
-        const statusOrder = {
-          in_progress: 1,
-          not_started: 2,
-          completed: 3,
-        };
-
-        // 1. ステータスでソート (in_progress, not_started, completed)
-        const statusComparison = statusOrder[a.status] - statusOrder[b.status];
-        if (statusComparison !== 0) {
-          return statusComparison;
-        }
-
-        // 2. ステータスが同じ場合、latestSessionUpdatedAtでソート (降順)
-        const dateA = new Date(a.latestSessionUpdatedAt).getTime();
-        const dateB = new Date(b.latestSessionUpdatedAt).getTime();
-
-        if (dateA !== dateB) {
-          return dateB - dateA;
-        }
-
-        // 3. latestSessionUpdatedAtも同じ場合、content.updated_atでソート (降順)
-        return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
-      });
+      return {
+        ...content,
+        // APIからeager loadされた技術情報をそのまま利用
+        technology: content.technology?.name || '不明',
+        progress,
+        // API実装まで一時的に固定値またはnullを設定
+        totalStudyMinutes: 0,
+        latestSessionUpdatedAt: content.updated_at, // 代わりにコンテンツ自体の更新日を使用
+      };
+    });
   });
 
-  // 新しい学習コンテンツをデータに追加する
-  const addLearningContent = (formData, user) => {
-    const newContentId = learningContentsRaw.value.length > 0 ? Math.max(...learningContentsRaw.value.map((c) => c.id)) + 1 : 1;
-    const newContent = {
-      id: newContentId,
-      user_id: user.id,
-      technology_id: formData.technology_id,
-      title: formData.title,
-      description: formData.description,
-      total_sections: formData.sections.length,
-      completed_sections: 0,
-      status: formData.startImmediately ? 'in_progress' : 'not_started',
-      completed_at: null,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-    learningContentsRaw.value.push(newContent);
-    return newContentId;
-  };
+  // ストアの生データをそのまま取得
+  const learningContentsRaw = computed(() => contentStore.contents);
 
-  // 既存の学習コンテンツの情報を更新する
-  const updateLearningContent = (contentId, updatedData) => {
-    const contentIndex = learningContentsRaw.value.findIndex((c) => c.id === contentId);
-    if (contentIndex !== -1) {
-      const contentToUpdate = learningContentsRaw.value[contentIndex];
-      Object.assign(contentToUpdate, updatedData, {
-        updated_at: new Date().toISOString(),
-      });
-    }
-  };
-
-  // 指定されたIDの学習コンテンツを削除する
-  const deleteLearningContent = (contentId) => {
-    learningContentsRaw.value = learningContentsRaw.value.filter((c) => c.id !== contentId);
-  };
-
-  // 学習コンテンツを完了状態に更新する
-  const completeContent = (id) => {
-    const index = learningContentsRaw.value.findIndex((content) => content.id === id);
-    if (index !== -1) {
-      learningContentsRaw.value[index].status = 'completed';
-      learningContentsRaw.value[index].completed_at = new Date().toISOString();
-    }
-  };
-
-  // 完了した学習コンテンツを再び学習中に戻す
-  const reopenContent = (id) => {
-    const index = learningContentsRaw.value.findIndex((content) => content.id === id);
-    if (index !== -1) {
-      learningContentsRaw.value[index].status = 'in_progress';
-      learningContentsRaw.value[index].completed_at = null;
-    }
-  };
-
+  // セクションステータス関連のヘルパー関数を取得
   const { countCompletedSections } = useSectionStatus();
 
-  // 関連するセクションの状態に基づいて、学習コンテンツの統計情報（完了セクション数など）を更新する
+  // 学習コンテンツの統計情報（完了セクション数、総セクション数）を更新
   const _updateLearningContentStats = (contentId, sections) => {
-    const contentIndex = learningContentsRaw.value.findIndex((c) => c.id === contentId);
-    if (contentIndex === -1) return;
-
+    // 指定されたコンテンツIDに紐づくセクションのみをフィルタリング
     const contentSections = sections.filter((s) => s.learning_content_id === contentId);
+    // 完了セクション数を再計算
     const completedSections = countCompletedSections(contentSections);
-    learningContentsRaw.value[contentIndex].completed_sections = completedSections;
-    learningContentsRaw.value[contentIndex].total_sections = contentSections.length;
+    // ストアの統計情報を更新し、UIに反映
+    contentStore.updateContentStats({
+      contentId,
+      completed_sections: completedSections,
+      total_sections: contentSections.length,
+    });
   };
 
   return {
     learningContentsRaw,
     learningContents,
-    addLearningContent,
-    updateLearningContent,
-    deleteLearningContent,
-    completeContent,
-    reopenContent,
+    // 新しい学習コンテンツを作成
+    createContent: (data) => contentStore.createContent(data),
+    // 既存の学習コンテンツを更新
+    updateLearningContent: (id, data) => contentStore.updateContent(id, data),
+    // 学習コンテンツを削除
+    deleteLearningContent: (id) => contentStore.deleteContent(id),
+    // 学習コンテンツを完了状態に設定
+    completeContent: (id) => contentStore.completeContent(id),
+    // 学習コンテンツを再開状態に設定
+    reopenContent: (id) => contentStore.reopenContent(id),
+    // 学習コンテンツの統計情報を更新するための内部ヘルパー
     _updateLearningContentStats,
+    // ロード状態をリアクティブに取得
+    loading: computed(() => contentStore.loading),
+    // エラー状態をリアクティブに取得
+    error: computed(() => contentStore.error),
+    // ページネーション情報をリアクティブに取得
+    pagination: computed(() => contentStore.pagination),
+    // 学習コンテンツをフェッチ
+    fetchContents: (page) => contentStore.fetchContents(page),
+    // フィルタを設定
+    setFilter: (filters) => contentStore.setFilter(filters),
+    // ソートを設定
+    setSort: (sort) => contentStore.setSort(sort),
   };
-};
+}

@@ -56,7 +56,7 @@
           <span class="font-medium text-violet-600">{{ content.completedSections }}</span>
           / {{ content.totalSections }} セクション完了
         </div>
-        <div class="flex items-center space-x-1">
+        <div v-if="content.totalStudyMinutes > 0" class="flex items-center space-x-1">
           <ClockIcon class="w-4 h-4 mr-1" />
           総学習時間: {{ formatMinutes(content.totalStudyMinutes) }}
         </div>

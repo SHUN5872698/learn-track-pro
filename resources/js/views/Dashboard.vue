@@ -7,28 +7,33 @@
     </template>
     <template #header-description>あなたの学習進捗を管理・追跡します</template>
 
-    <!-- 学習統計概要を表示するコンポーネント -->
-    <StatsOverview :learningContents="learningContents" />
-
-    <!-- 進行中の学習コンテンツをカード形式で表示するセクション -->
-    <div class="mb-6">
-      <h3 class="mb-4 text-xl font-semibold text-slate-900">進行中の学習</h3>
-      <div v-if="inProgressContents.length > 0" class="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
-        <LearningContentCard v-for="content in inProgressContents" :key="content.id" :content="content" />
-      </div>
-      <div v-else class="py-10 text-center text-slate-500">
-        <p>進行中の学習コンテンツはありません。</p>
-      </div>
+    <div v-if="loading" class="py-10 text-center">
+      <p class="text-slate-500">データを読み込んでいます...</p>
     </div>
+    <div v-else>
+      <!-- 学習統計概要を表示するコンポーネント -->
+      <StatsOverview :learningContents="learningContents" />
 
-    <!-- 完了した学習コンテンツをカード形式で表示するセクション -->
-    <div class="pt-6 mb-6 border-t border-slate-200">
-      <h3 class="mb-4 text-xl font-semibold text-slate-900">完了した学習</h3>
-      <div v-if="completedContents.length > 0" class="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
-        <LearningContentCard v-for="content in completedContents" :key="content.id" :content="content" />
+      <!-- 進行中の学習コンテンツをカード形式で表示するセクション -->
+      <div class="mb-6">
+        <h3 class="mb-4 text-xl font-semibold text-slate-900">進行中の学習</h3>
+        <div v-if="inProgressContents.length > 0" class="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+          <LearningContentCard v-for="content in inProgressContents" :key="content.id" :content="content" />
+        </div>
+        <div v-else class="py-10 text-center text-slate-500">
+          <p>進行中の学習コンテンツはありません。</p>
+        </div>
       </div>
-      <div v-else class="py-10 text-center text-slate-500">
-        <p>完了した学習コンテンツはありません。</p>
+
+      <!-- 完了した学習コンテンツをカード形式で表示するセクション -->
+      <div class="pt-6 mb-6 border-t border-slate-200">
+        <h3 class="mb-4 text-xl font-semibold text-slate-900">完了した学習</h3>
+        <div v-if="completedContents.length > 0" class="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+          <LearningContentCard v-for="content in completedContents" :key="content.id" :content="content" />
+        </div>
+        <div v-else class="py-10 text-center text-slate-500">
+          <p>完了した学習コンテンツはありません。</p>
+        </div>
       </div>
     </div>
   </DashboardLayout>
@@ -38,7 +43,7 @@
 // ========================================
 // 外部インポート
 // ========================================
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { PlusCircleIcon } from '@heroicons/vue/24/solid';
 
@@ -62,7 +67,14 @@ const router = useRouter();
 // ========================================
 // コンポーザブル実行
 // ========================================
-const { learningContents } = useLearningData();
+const { learningContents, fetchContents, loading } = useLearningData();
+
+// ========================================
+// ライフサイクル
+// ========================================
+onMounted(() => {
+  fetchContents();
+});
 
 // ========================================
 // 算出プロパティ

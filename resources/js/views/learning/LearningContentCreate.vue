@@ -119,7 +119,7 @@ import ConfirmModal from '../../components/common/ConfirmModal.vue';
 const router = useRouter();
 
 // コンポーザブル実行
-const { technologies, addLearningContent } = useLearningData();
+const { technologies, createContent } = useLearningData();
 const stepNames = ['基本情報', 'セクション設定', '確認'];
 const { currentStep, nextStep, prevStep, validationErrors, validateStep } = useWizardForm(stepNames.length);
 const { form, hasUnsavedChanges, validateBasicInfo, validateSections } = useLearningContentForm();
@@ -203,7 +203,7 @@ const handleSubmit = async () => {
       console.log(`  ${index + 1}. title: "${section.title}", status: "${section.status}"`);
     });
 
-    const newContentId = await addLearningContent(formDataWithStatus);
+    const newContentId = await createContent(formDataWithStatus);
     console.log('【Create.handleSubmit】作成完了 ID:', newContentId);
 
     alert('新しい学習内容を作成しました！');

@@ -9,7 +9,7 @@
       <!-- 次へボタン: showNextがtrueの場合に表示 -->
       <BaseButton v-if="showNext" variant="primary" :right-icon="ArrowRightIcon" @click="$emit('next')">次へ</BaseButton>
       <!-- 作成する/送信ボタン: showSubmitがtrueの場合に表示 -->
-      <BaseButton v-if="showSubmit" type="submit" variant="primary" @click="$emit('submit')">
+      <BaseButton v-if="showSubmit" type="button" variant="primary" @click="$emit('submit')">
         {{ submitText }}
       </BaseButton>
     </div>
