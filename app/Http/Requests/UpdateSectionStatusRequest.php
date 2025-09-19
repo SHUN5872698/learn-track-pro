@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class UpdateSectionRequest extends FormRequest
+class UpdateSectionStatusRequest extends FormRequest
 {
     /**
      * ユーザーがこのリクエストを行うことを承認されているか判定
@@ -22,8 +23,7 @@ class UpdateSectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['sometimes', 'required', 'string', 'max:255'],
-            'order' => ['sometimes', 'required', 'integer', 'min:1'],
+            'status' => ['required', Rule::in(['not_started', 'in_progress', 'completed'])],
         ];
     }
 }

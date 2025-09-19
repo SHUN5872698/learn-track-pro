@@ -7,22 +7,25 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreSectionRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * ユーザーがこのリクエストを行うことを承認されているか判定
      */
     public function authorize(): bool
     {
-        return false;
+        // 認可はコントローラーのGateで行うため、ここではtrueを返す
+        return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * リクエストに適用されるバリデーションルールを取得
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            //
+            'learning_content_id' => ['required', 'integer', 'exists:learning_contents,id'],
+            'title' => ['required', 'string', 'max:255'],
+            'order' => ['required', 'integer', 'min:1'],
         ];
     }
 }

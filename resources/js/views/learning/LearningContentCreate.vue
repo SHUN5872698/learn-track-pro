@@ -104,6 +104,8 @@ import { LightBulbIcon } from '@heroicons/vue/24/solid';
 import { useLearningData } from '../../composables/useLearningData';
 import { useWizardForm } from '../../composables/useWizardForm';
 import { useLearningContentForm } from '../../composables/useLearningContentForm';
+// Pinia
+import { useLearningContentStore } from '@/stores/learningContent';
 
 // コンポーネント
 import DetailLayout from '../../layouts/DetailLayout.vue';
@@ -113,12 +115,15 @@ import SectionListEditor from '../../components/learning/wizard/SectionListEdito
 import WizardNavigation from '../../components/learning/wizard/WizardNavigation.vue';
 import ConfirmModal from '../../components/common/ConfirmModal.vue';
 
+
+
 // ========================================
 // 初期設定
 // ========================================
 const router = useRouter();
 
 // コンポーザブル実行
+const contentStore = useLearningContentStore();
 const { technologies, createContent } = useLearningData();
 const stepNames = ['基本情報', 'セクション設定', '確認'];
 const { currentStep, nextStep, prevStep, validationErrors, validateStep } = useWizardForm(stepNames.length);
@@ -203,11 +208,11 @@ const handleSubmit = async () => {
       console.log(`  ${index + 1}. title: "${section.title}", status: "${section.status}"`);
     });
 
-    const newContentId = await createContent(formDataWithStatus);
-    console.log('【Create.handleSubmit】作成完了 ID:', newContentId);
+    const newContent = await contentStore.createContent(formDataWithStatus);
+    console.log('【Create.handleSubmit】作成完了 ID:', newContent.id);
 
     alert('新しい学習内容を作成しました！');
-    router.push(`/learning/${newContentId}`);
+    router.push(`/learning/${newContent.id}`);
   } catch (error) {
     console.error('【Create.handleSubmit】エラー:', error);
     validationErrors.value = ['作成中にエラーが発生しました。'];

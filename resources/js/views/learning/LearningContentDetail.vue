@@ -37,7 +37,11 @@
       </div>
     </template>
 
-    <div v-if="learningContent">
+    <!-- ローディング中の表示 -->
+    <div v-if="loading" class="py-10 text-center">
+      <p class="text-slate-500">データを読み込んでいます...</p>
+    </div>
+    <div v-else-if="learningContent">
       <!-- 説明セクション -->
       <div class="mb-6">
         <h3 class="mb-2 text-lg font-semibold text-slate-800">説明</h3>
@@ -62,7 +66,7 @@
         </div>
       </div>
 
-      <!-- セクション一覧セクション -->
+      <!-- セクション一覧 -->
       <div>
         <h3 class="mb-2 text-lg font-semibold text-slate-800">セクション一覧</h3>
 
@@ -123,7 +127,7 @@
 // ========================================
 // 外部インポート
 // ========================================
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { PlayCircleIcon, DocumentIcon, PencilIcon, ClockIcon, ArrowLeftIcon, ChartBarIcon, CheckCircleIcon as CheckCircleIconSolid, LightBulbIcon } from '@heroicons/vue/24/solid';
 import { CheckCircleIcon as CheckCircleIconOutline } from '@heroicons/vue/24/outline';
@@ -133,6 +137,11 @@ import { CheckCircleIcon as CheckCircleIconOutline } from '@heroicons/vue/24/out
 // ========================================
 // コンポーザブル
 import { useLearningData } from '../../composables/useLearningData';
+import { useSections } from '../../composables/learning/useSections';
+import { useSectionStore } from '@/stores/sections';
+
+// Piniaストア
+import { useMasterDataStore } from '@/stores/masterData';
 
 // コンポーネント
 import BaseButton from '../../components/common/BaseButton.vue';
@@ -172,7 +181,9 @@ const route = useRoute();
 const router = useRouter();
 
 // コンポーザブル実行
-const { learningContents, learningContentsRaw, sections, getRecordCountForSection, updateSectionStatus, _updateLearningContentStats, normalizeStatus, toggleSectionComplete, technologies } = useLearningData();
+const { learningContents, learningContentsRaw, getRecordCountForSection, technologies, fetchContents, loading } = useLearningData();
+const { sections, updateSectionStatus, normalizeStatus, toggleSectionComplete } = useSections();
+const sectionStore = useSectionStore();
 
 // ========================================
 // 状態管理
@@ -219,7 +230,7 @@ const statusDisplay = computed(() => {
 // 現在の学習コンテンツに紐づくセクションをフィルタリングし、並び順でソート
 const contentSections = computed(() => {
   if (!learningContent.value) return [];
-  return sections.value.filter((s) => s.learning_content_id === learningContent.value.id).sort((a, b) => a.order - b.order);
+  return sectionStore.sections.filter((s) => s.learning_content_id === learningContent.value.id).sort((a, b) => a.order - b.order);
 });
 
 // ページネーションされたセクションリスト
@@ -231,8 +242,20 @@ const paginatedContentSections = computed(() => {
 
 // 技術アイコンと名前を表示するための算出プロパティ
 const displayTechnology = computed(() => {
+  if (!learningContent.value) return { name: '不明', icon: '' };
   const tech = technologies.value.find((t) => t.id === learningContent.value.technology_id);
   return tech || { name: '不明', icon: '' };
+});
+
+// ========================================
+// ライフサイクル
+// ========================================
+onMounted(async () => {
+  // データが読み込まれていない場合は先に読み込む
+  if (learningContents.value.length === 0) {
+    await fetchContents();
+  }
+  sectionStore.fetchSections(learningContentId.value);
 });
 
 // ========================================
@@ -240,11 +263,15 @@ const displayTechnology = computed(() => {
 // ========================================
 // イベントハンドラ
 // セクション完了状態の切り替え処理
-const handleToggleComplete = (section, event) => {
+const handleToggleComplete = async (section, event) => {
   event.stopPropagation();
   const newStatus = toggleSectionComplete(section);
-  updateSectionStatus(section.id, newStatus);
-  _updateLearningContentStats(learningContentId.value, sections.value);
+  await updateSectionStatus(section.id, newStatus);
+  // Update learning content stats after section status change
+  const learningContent = learningContents.value.find((c) => c.id === learningContentId.value);
+  if (learningContent) {
+    learningContent.completed_sections = contentSections.value.filter((s) => s.status === 'completed').length;
+  }
 };
 
 // セクションクリック時にそのセクションの学習記録一覧ページへ遷移

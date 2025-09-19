@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateSectionRequest extends FormRequest
+class BulkUpdateSectionsRequest extends FormRequest
 {
     /**
      * ユーザーがこのリクエストを行うことを承認されているか判定
@@ -22,8 +22,12 @@ class UpdateSectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['sometimes', 'required', 'string', 'max:255'],
-            'order' => ['sometimes', 'required', 'integer', 'min:1'],
+            'sections' => ['required', 'array', 'min:1'],
+            'sections.*.id' => ['nullable', 'integer'],
+            'sections.*.title' => ['required', 'string', 'max:255'],
+            'sections.*.order' => ['required', 'integer', 'min:1'],
+            'deleted_section_ids' => ['sometimes', 'array'],
+            'deleted_section_ids.*' => ['integer', 'exists:sections,id'],
         ];
     }
 }
