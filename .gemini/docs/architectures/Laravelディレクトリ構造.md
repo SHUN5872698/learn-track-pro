@@ -22,7 +22,7 @@
   ```
   tree -L 5 --dirsfirst \
   . \
-  -I 'node_modules|vendor|lang|*.png|*.jpg|*.jpeg|*.gif|*.svg|*.ico|*.webp|components|composables|layouts|utils|validators|views|debugbar|sessions|cache|framework/views|app.js|App.vue|bootstrap.js|router.js|favicon.ico|robots.txt|index.php' \
+  -I 'node_modules|vendor|lang|*.png|*.jpg|*.jpeg|*.gif|*.svg|*.ico|*.webp|components|composables|layouts|utils|validators|views|debugbar|sessions|cache|framework/views|app.js|App.vue|bootstrap.js|router.js|favicon.ico|robots.txt|index.php'
   --prune
   ```
 1. `## 現在のディレクトリ構造`を、treeコマンドの結果と突き合わせて更新してください。
@@ -58,17 +58,17 @@
 │   │   │   ├── SectionController.php             # セクション関連のHTTPリクエストを処理
 │   │   │   ├── TechnologyController.php          # 技術関連のHTTPリクエストを処理
 │   │   │   └── UserController.php                # ユーザー関連のHTTPリクエストを処理
-│   │   │
 │   │   ├── Requests/                             # フォームリクエストのバリデーションルールを定義
 │   │   │   ├── User/                             # ユーザー関連のリクエスト
 │   │   │   │   └── ProfileRequest.php            # プロフィール更新時のバリデーション
+│   │   │   ├── BulkUpdateSectionsRequest.php     # セクション一括更新時のバリデーション
 │   │   │   ├── StoreLearningContentRequest.php   # 学習コンテンツ作成時のバリデーション
 │   │   │   ├── StoreLearningSessionRequest.php   # 学習セッション作成時のバリデーション
 │   │   │   ├── StoreSectionRequest.php           # セクション作成時のバリデーション
 │   │   │   ├── UpdateLearningContentRequest.php  # 学習コンテンツ更新時のバリデーション
 │   │   │   ├── UpdateLearningSessionRequest.php  # 学習セッション更新時のバリデーション
-│   │   │   └── UpdateSectionRequest.php          # セクション更新時のバリデーション
-│   │   │
+│   │   │   ├── UpdateSectionRequest.php          # セクション更新時のバリデーション
+│   │   │   └── UpdateSectionStatusRequest.php    # セクションステータス更新時のバリデーション
 │   │   └── Resources/                            # APIレスポンスのデータ変換と整形
 │   │       ├── CategoryResource.php              # カテゴリーデータのリソース変換
 │   │       ├── LearningContentResource.php       # 学習コンテンツデータのリソース変換
@@ -88,7 +88,7 @@
 │   │
 │   └── Providers/                                # サービスコンテナへのサービス登録やイベント登録を行うサービスプロバイダ
 │       ├── AppServiceProvider.php                # アプリケーション全体のサービスプロバイダ
-│   │   ├── AuthServiceProvider.php               # 認証・認可サービスプロバイダ
+│       ├── AuthServiceProvider.php               # 認証・認可サービスプロバイダ
 │       └── FortifyServiceProvider.php            # Fortify関連のサービスプロバイダ
 │
 ├── bootstrap/                                    # フレームワークのブートストラップ処理
@@ -174,4 +174,5 @@
 ├── README.md                                     # プロジェクトの概要と説明
 ├── tailwind.config.js                            # Tailwind CSSの設定ファイル
 └── vite.config.js                                # Viteの設定ファイル
+
 ```

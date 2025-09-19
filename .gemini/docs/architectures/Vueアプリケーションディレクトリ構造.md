@@ -47,7 +47,8 @@
 ```bash
 resources/js/
 ├── api/                                     # APIクライアント定義
-│   └── learningContent.js                   # 学習コンテンツ関連API
+│   ├── learningContent.js                   # 学習コンテンツ関連API
+│   └── sections.js                          # セクション関連API
 │
 ├── components/                              # 再利用可能なUIコンポーネント
 │   ├── charts/                              # グラフ関連コンポーネント
@@ -83,7 +84,6 @@ resources/js/
 ├── composables/                             # 共有ロジック・状態管理（Vue Composition APIを活用）
 │   ├── data/                                # アプリケーションのモックデータ管理
 │   │   ├── mockLearningContents.js          # 学習コンテンツのモックデータ定義
-│   │   ├── mockSections.js                  # セクションのモックデータ定義
 │   │   └── mockSessions.js                  # 学習セッションのモックデータ定義
 │   │
 │   ├── learning/                            # 学習ドメイン固有のコアロジック
@@ -100,7 +100,6 @@ resources/js/
 │   ├── useStudySessionForm.js               # 学習記録フォームのデータ管理、初期化、バリデーションロジック
 │   ├── useUser.js                           # ユーザー情報の状態管理、プロフィール更新、イニシャル生成ロジック
 │   └── useWizardForm.js                     # ウィザード形式フォームのステップ管理とバリデーション実行ロジック
-│
 ├── layouts/                                 # レイアウトコンポーネント
 │   ├── AuthLayout.vue                       # 認証画面用レイアウト
 │   ├── DashboardLayout.vue                  # ダッシュボード画面用レイアウト
@@ -110,8 +109,8 @@ resources/js/
 ├── stores/                                  # Piniaストア
 │   ├── auth.js                              # 認証状態管理ストア
 │   ├── learningContent.js                   # 学習コンテンツの状態管理ストア
-│   └── masterData.js                        # マスターデータ（カテゴリー、技術）の状態管理ストア
-│
+│   ├── masterData.js                        # マスターデータ（カテゴリー、技術）の状態管理ストア
+│   └── sections.js                          # セクションの状態管理ストア
 ├── utils/                                   # ユーティリティ関数
 │   ├── chartColors.js                       # チャートの色定義
 │   └── dateFormatters.js                    # 日付と時刻のフォーマット関数
