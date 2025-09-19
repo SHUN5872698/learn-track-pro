@@ -11,7 +11,7 @@
           </div>
           <div class="ml-4">
             <div class="text-sm font-medium text-slate-500">学習中コース</div>
-            <div class="text-2xl font-bold text-slate-900">{{ learningContents.filter(content => content.status !== 'completed').length }}</div>
+            <div class="text-2xl font-bold text-slate-900">{{ learningContents.filter((content) => content.status !== 'completed').length }}</div>
           </div>
         </div>
       </div>
@@ -55,15 +55,23 @@
 // ========================================
 import { computed } from 'vue';
 import { BookOpenIcon, CheckBadgeIcon, ChartBarIcon } from '@heroicons/vue/24/solid';
+
+// ========================================
+// 内部インポート
+// ========================================
+// コンポーザブル
 import { useLearningData } from '../../composables/useLearningData';
 
 // ========================================
-// 初期設定・コンポーザブル
+// Props定義
 // ========================================
 const props = defineProps({
   learningContents: Array,
 });
 
+// ========================================
+// 初期設定
+// ========================================
 const { learningContents } = useLearningData();
 
 // ========================================
@@ -79,11 +87,11 @@ const averageProgress = computed(() => {
 
 // 全ての学習コンテンツの完了セクション数を合計
 const totalCompletedSections = computed(() => {
-  return props.learningContents.reduce((sum, content) => sum + content.completedSections, 0);
+  return props.learningContents.reduce((sum, content) => sum + content.completed_sections, 0);
 });
 
 // 全ての学習コンテンツの総セクション数を合計
 const totalSections = computed(() => {
-  return props.learningContents.reduce((sum, content) => sum + content.totalSections, 0);
+  return props.learningContents.reduce((sum, content) => sum + (content.total_sections || 0), 0);
 });
 </script>
