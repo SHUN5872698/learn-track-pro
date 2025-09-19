@@ -35,7 +35,7 @@ export const useLearningContentStore = defineStore('learningContent', {
         this.pagination = response.data.meta;
       } catch (error) {
         this.error = '学習内容の読み込みに失敗しました。';
-        console.error('Error fetching learning contents:', error);
+        console.error('学習内容のフェッチ中にエラーが発生しました:', error);
       } finally {
         this.loading = false;
       }
@@ -44,13 +44,24 @@ export const useLearningContentStore = defineStore('learningContent', {
     // 新しい学習コンテンツをAPIに作成
     async createContent(data) {
       this.loading = true;
+      this.error = null; // 追加
       try {
         const response = await api.createLearningContent(data);
-        // 作成後、最新のリストを再フェッチしてストアを更新
+        const newContent = response.data.data || response.data;
+
+        // セクションストアへの追加
+        if (newContent.sections && newContent.sections.length > 0) {
+          // 動的インポートで循環参照回避
+          const { useSectionStore } = await import('./sections');
+          const sectionStore = useSectionStore();
+          sectionStore.sections.push(...newContent.sections);
+        }
+
         await this.fetchContents();
-        return response.data;
+        return newContent;
       } catch (error) {
-        console.error('Error creating content:', error);
+        this.error = '学習内容の作成に失敗しました。'; // 追加
+        console.error('学習内容の作成中にエラーが発生しました:', error);
         throw error;
       } finally {
         this.loading = false;
@@ -69,7 +80,7 @@ export const useLearningContentStore = defineStore('learningContent', {
         }
         return response.data;
       } catch (error) {
-        console.error('Error updating content:', error);
+        console.error('学習内容の更新に失敗しました:', error);
         throw error;
       } finally {
         this.loading = false;
@@ -84,7 +95,7 @@ export const useLearningContentStore = defineStore('learningContent', {
         // 削除後、ストアから該当コンテンツを削除
         this.contents = this.contents.filter((c) => c.id !== id);
       } catch (error) {
-        console.error('Error deleting content:', error);
+        console.error('学習内容の削除に失敗しました:', error);
         throw error;
       } finally {
         this.loading = false;
@@ -103,7 +114,7 @@ export const useLearningContentStore = defineStore('learningContent', {
         }
         return { success: true, message: successMessage };
       } catch (error) {
-        console.error(`Error updating status for content ${id}:`, error);
+        console.error(`学習コンテンツのステータス更新中にエラーが発生しました (ID: ${id}):`, error);
         return { success: false, error };
       } finally {
         this.loading = false;

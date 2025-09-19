@@ -53,8 +53,8 @@
       <!-- 進捗バーの下にセクション数と総学習時間を横並びで表示 -->
       <div class="flex items-center justify-between mt-4 text-sm text-slate-600">
         <div class="flex items-center space-x-1">
-          <span class="font-medium text-violet-600">{{ content.completedSections }}</span>
-          / {{ content.totalSections }} セクション完了
+          <span class="font-medium text-violet-600">{{ content.completed_sections }}</span>
+          / {{ content.total_sections }} セクション完了
         </div>
         <div v-if="content.totalStudyMinutes > 0" class="flex items-center space-x-1">
           <ClockIcon class="w-4 h-4 mr-1" />
@@ -83,48 +83,53 @@
 
 <script setup>
 // ========================================
-// 1. 外部ライブラリのインポート
+// 外部インポート
 // ========================================
 import { computed, ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { PencilIcon, InformationCircleIcon, TrashIcon, ClockIcon, CheckCircleIcon, ArrowPathIcon, EllipsisHorizontalIcon, PlayCircleIcon, DocumentIcon, PlusCircleIcon, ChartBarIcon } from '@heroicons/vue/24/solid';
 
 // ========================================
-// 2. 内部モジュールのインポート
+// 内部インポート
 // ========================================
-// 2.1 コンポーザブル
+// コンポーザブル
 import { useLearningData } from '../../composables/useLearningData';
 
-// 2.2 コンポーネント
+// コンポーネント
 import ConfirmModal from '../../components/common/ConfirmModal.vue';
 import BaseButton from '../common/BaseButton.vue';
 
+// Piniaストア
+import { useMasterDataStore } from '@/stores/masterData';
+
 // ========================================
-// 3. Props定義
+// Props定義
 // ========================================
 const props = defineProps({
   content: Object, // 表示する学習コンテンツデータ
 });
 
 // ========================================
-// 5. ルーター・ルート
+// 初期設定
 // ========================================
 const router = useRouter();
 
 // ========================================
-// 6. コンポーザブルの実行
+// コンポーザブルの実行
 // ========================================
 const { completeContent, reopenContent, activeMenuId, setActiveMenu, deleteLearningContent, technologies } = useLearningData();
 
+const masterDataStore = useMasterDataStore();
+
 // ========================================
-// 7. リアクティブな変数（ref/reactive）
+// 状態管理
 // ========================================
 const isModalOpen = ref(false); // 削除確認モーダルの表示状態を管理
 const menuButtonRef = ref(null); // 三点リーダーメニューボタンのDOM要素への参照
 const dropdownMenuRef = ref(null); // ドロップダウンメニューのDOM要素への参照
 
 // ========================================
-// 8. 算出プロパティ（computed）
+// 算出プロパティ
 // ========================================
 // 学習ステータスに対応する表示設定（テキスト、CSSクラス、アイコンコンポーネント）を定義
 const STATUS_CONFIGS = {
@@ -220,12 +225,20 @@ const menuItems = computed(() => {
 
 // 技術アイコンと名前を表示するための算出プロパティ
 const displayTechnology = computed(() => {
-  const tech = technologies.value.find((t) => t.id === props.content.technology_id);
+  const tech = masterDataStore.getTechnologyById(props.content.technology_id);
   return tech || { name: '不明', icon: '' };
 });
 
 // ========================================
-// 10. メソッド（イベントハンドラ → ヘルパー関数）
+// ライフサイクル
+// ========================================
+// コンポーネントがマウントされた時に、ドキュメント全体へのクリックイベントリスナーを登録
+onMounted(() => document.addEventListener('click', handleClickOutside));
+// コンポーネントがアンマウントされた時に、ドロップダウンメニュー外のクリックイベントリスナーを解除
+onUnmounted(() => document.removeEventListener('click', handleClickOutside));
+
+// ========================================
+// メソッド
 // ========================================
 // メニューアイテムのタイプ（danger, primary）に基づいて、対応するCSSクラスを返す
 const getMenuItemClass = (item) => {
@@ -352,12 +365,4 @@ const handleClickOutside = (event) => {
     setActiveMenu(null); // メニューを閉じる
   }
 };
-
-// ========================================
-// 11. ライフサイクルフック
-// ========================================
-// コンポーネントがマウントされた時に、ドキュメント全体へのクリックイベントリスナーを登録
-onMounted(() => document.addEventListener('click', handleClickOutside));
-// コンポーネントがアンマウントされた時に、ドロップダウンメニュー外のクリックイベントリスナーを解除
-onUnmounted(() => document.removeEventListener('click', handleClickOutside));
 </script>

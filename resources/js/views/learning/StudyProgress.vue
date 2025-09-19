@@ -1,25 +1,30 @@
 <template>
   <!-- 学習レポート（個別）コンポーネント -->
   <div class="max-w-4xl p-8 mx-auto">
-    <div v-if="learningContent" class="space-y-6">
-      <!-- メインカード（概要とグラフ統合） -->
-      <DetailLayout>
-        <template #breadcrumb>
-          <nav class="flex items-center text-sm text-slate-500">
-            <router-link :to="`/learning/${learningContent.id}`" class="flex items-center font-medium text-violet-600 hover:text-violet-800 hover:underline">
-              <ArrowLeftIcon class="w-4 h-4 mr-1" />
-              {{ learningContent.title }}
-            </router-link>
-            <span class="mx-2">/</span>
-            <span>個別レポート</span>
-          </nav>
-        </template>
+    <!-- メインカード（概要とグラフ統合） -->
+    <DetailLayout>
+      <template #breadcrumb>
+        <nav class="flex items-center text-sm text-slate-500">
+          <router-link :to="`/learning/${contentId}`" class="flex items-center font-medium text-violet-600 hover:text-violet-800 hover:underline">
+            <ArrowLeftIcon class="w-4 h-4 mr-1" />
+            {{ learningContent ? learningContent.title : '' }}
+          </router-link>
+          <span class="mx-2">/</span>
+          <span>個別レポート</span>
+        </nav>
+      </template>
 
-        <template #section-header>
-          <h2 class="mb-2 text-2xl font-bold text-slate-800">個別レポート: {{ learningContent.title }}</h2>
-          <p class="text-slate-600">直近30日間の個別レポートを確認できます。</p>
-        </template>
+      <template #section-header>
+        <h2 class="mb-2 text-2xl font-bold text-slate-800">個別レポート: {{ learningContent ? learningContent.title : '' }}</h2>
+        <p class="text-slate-600">直近30日間の個別レポートを確認できます。</p>
+      </template>
 
+      <!-- ローディング -->
+      <div v-if="loading" class="py-10 text-center">
+        <p class="text-slate-500">データを読み込んでいます...</p>
+      </div>
+
+      <div v-else-if="learningContent">
         <!-- 日別学習時間グラフ -->
         <div>
           <h3 class="mb-4 text-lg font-semibold text-slate-800">日別学習時間</h3>
@@ -27,62 +32,64 @@
             <LineChart :data="dailyStudyData" />
           </div>
         </div>
-      </DetailLayout>
+      </div>
 
-      <!-- 学習記録一覧カード（独立したカード） -->
-      <div class="max-w-4xl p-8 mx-auto">
-        <div class="p-8 border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl border-white/20">
-          <h3 class="mb-4 text-lg font-semibold text-slate-800">学習記録一覧</h3>
+      <div v-else class="text-center text-slate-500">
+        <p>学習コンテンツが見つかりません。</p>
+      </div>
+    </DetailLayout>
 
-          <div v-if="paginatedRecords.length > 0" class="space-y-4">
-            <div v-for="record in paginatedRecords" :key="record.id" class="p-5 transition-shadow bg-white border rounded-lg shadow-sm hover:shadow-md">
-              <div class="flex items-start justify-between">
-                <div class="flex-1">
-                  <p class="font-semibold text-slate-800">
-                    {{ formatDate(record.studied_at) }}
-                    <span class="text-slate-600">({{ formatTimeOnly(record.studied_at) }})</span>
-                  </p>
-                  <p class="text-sm text-slate-600">
-                    セクション:
-                    <router-link :to="`/learning/${contentId}/section/${record.section_id}`" class="font-medium text-violet-600 hover:underline">
-                      {{ record.sectionTitle }}
-                    </router-link>
-                  </p>
-                  <p class="text-sm text-slate-600">学習時間: {{ formatMinutes(record.study_minutes) }}</p>
-                  <div class="flex items-center mt-1">
-                    <span class="mr-1 text-sm text-slate-600">調子:</span>
-                    <StarIcon v-for="r in 5" :key="r" class="w-4 h-4" :class="r <= record.mood_rating ? 'text-yellow-400' : 'text-gray-300'" />
-                  </div>
-                  <p v-if="record.memo" class="mt-2 text-sm text-slate-700">メモ: {{ record.memo }}</p>
+    <!-- 学習記録一覧カード（独立したカード） -->
+    <div v-if="learningContent" class="max-w-4xl p-8 mx-auto">
+      <div class="p-8 border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl border-white/20">
+        <h3 class="mb-4 text-lg font-semibold text-slate-800">学習記録一覧</h3>
+
+        <div v-if="paginatedRecords.length > 0" class="space-y-4">
+          <div v-for="record in paginatedRecords" :key="record.id" class="p-5 transition-shadow bg-white border rounded-lg shadow-sm hover:shadow-md">
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <p class="font-semibold text-slate-800">
+                  {{ formatDate(record.studied_at) }}
+                  <span class="text-slate-600">({{ formatTimeOnly(record.studied_at) }})</span>
+                </p>
+                <p class="text-sm text-slate-600">
+                  セクション:
+                  <router-link :to="`/learning/${contentId}/section/${record.section_id}`" class="font-medium text-violet-600 hover:underline">
+                    {{ record.sectionTitle }}
+                  </router-link>
+                </p>
+                <p class="text-sm text-slate-600">学習時間: {{ formatMinutes(record.study_minutes) }}</p>
+                <div class="flex items-center mt-1">
+                  <span class="mr-1 text-sm text-slate-600">調子:</span>
+                  <StarIcon v-for="r in 5" :key="r" class="w-4 h-4" :class="r <= record.mood_rating ? 'text-yellow-400' : 'text-gray-300'" />
                 </div>
-                <div class="flex ml-4 space-x-2">
-                  <BaseButton variant="icon-primary" size="md" :left-icon="PencilIcon" :icon-only="true" @click="router.push(`/learning-contents/${contentId}/sessions/${record.id}/edit`)"> 記録を編集 </BaseButton>
-                  <DeleteButton variant="icon-danger" size="sm" @click="openDeleteModal(record)"> 記録を削除 </DeleteButton>
-                </div>
+                <p v-if="record.memo" class="mt-2 text-sm text-slate-700">メモ: {{ record.memo }}</p>
+              </div>
+              <div class="flex ml-4 space-x-2">
+                <BaseButton variant="icon-primary" size="md" :left-icon="PencilIcon" :icon-only="true" @click="router.push(`/learning-contents/${contentId}/sessions/${record.id}/edit`)"> 記録を編集 </BaseButton>
+                <DeleteButton variant="icon-danger" size="sm" @click="openDeleteModal(record)"> 記録を削除 </DeleteButton>
               </div>
             </div>
           </div>
+        </div>
 
-          <div v-else class="py-10 text-center text-slate-500">
-            <p>この学習コンテンツの学習記録はまだありません。</p>
-          </div>
+        <div v-else class="py-10 text-center text-slate-500">
+          <p>この学習コンテンツの学習記録はまだありません。</p>
+        </div>
 
-          <!-- ページネーションコントロール -->
-          <Pagination :total-items="allContentSessionsRecords.length" :items-per-page="recordItemsPerPage" :current-page="recordCurrentPage" @update:currentPage="recordCurrentPage = $event" />
+        <!-- ページネーションコントロール -->
+        <Pagination :total-items="allContentSessionsRecords.length" :items-per-page="recordItemsPerPage" :current-page="recordCurrentPage" @update:currentPage="recordCurrentPage = $event" />
 
-          <!-- アクションボタン -->
-          <div class="flex justify-end pt-6 mt-6 space-x-4 border-t border-slate-200">
-            <BackButton @click="router.back()" />
-          </div>
+        <!-- アクションボタン -->
+        <div class="flex justify-end pt-6 mt-6 space-x-4 border-t border-slate-200">
+          <BackButton @click="router.back()" />
         </div>
       </div>
     </div>
+  </div>
 
-    <div v-else class="p-8 text-center border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl border-white/20 text-slate-500">
-      <p>学習コンテンツが見つかりません。</p>
-    </div>
-
-    <!-- 削除確認モーダル -->
+  <!-- 削除確認モーダル -->
+  <Teleport to="#app">
     <ConfirmModal :is-open="isModalOpen" title="学習記録を削除しますか？" confirm-button-text="削除" @confirm="confirmDelete" @cancel="isModalOpen = false">
       <template #content>
         <div v-if="recordToDelete" class="p-4 mb-6 text-sm border rounded-lg bg-slate-50 border-slate-200">
@@ -93,14 +100,14 @@
         <p class="mb-6 text-slate-600">この操作は元に戻せません。</p>
       </template>
     </ConfirmModal>
-  </div>
+  </Teleport>
 </template>
 
 <script setup>
 // ========================================
 // 外部インポート
 // ========================================
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ArrowLeftIcon, StarIcon, PencilIcon } from '@heroicons/vue/24/solid';
 
@@ -131,7 +138,7 @@ const router = useRouter();
 // ========================================
 // コンポーザブル実行
 // ========================================
-const { learningContents, sections, learningSessions, deleteStudySession } = useLearningData();
+const { learningContents, sections, learningSessions, deleteStudySession, fetchContents, loading } = useLearningData();
 
 // ========================================
 // 状態管理
@@ -207,6 +214,15 @@ const dailyStudyData = computed(() => {
       },
     ],
   };
+});
+
+// ========================================
+// ライフサイクル
+// ========================================
+onMounted(async () => {
+  if (learningContents.value.length === 0) {
+    await fetchContents();
+  }
 });
 
 // ========================================
