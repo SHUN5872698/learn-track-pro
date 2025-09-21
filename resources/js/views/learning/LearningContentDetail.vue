@@ -139,9 +139,7 @@ import { CheckCircleIcon as CheckCircleIconOutline } from '@heroicons/vue/24/out
 import { useLearningData } from '../../composables/useLearningData';
 import { useSections } from '../../composables/learning/useSections';
 import { useSectionStore } from '@/stores/sections';
-
-// Piniaストア
-import { useMasterDataStore } from '@/stores/masterData';
+import { useLearningSessionStore } from '@/stores/learningSession';
 
 // コンポーネント
 import BaseButton from '../../components/common/BaseButton.vue';
@@ -181,13 +179,15 @@ const route = useRoute();
 const router = useRouter();
 
 // コンポーザブル実行
-const { learningContents, learningContentsRaw, getRecordCountForSection, technologies, fetchContents, loading } = useLearningData();
-const { sections, updateSectionStatus, normalizeStatus, toggleSectionComplete } = useSections();
+const { learningContents, learningContentsRaw, getRecordCountForSection, technologies, fetchContents } = useLearningData();
+const { updateSectionStatus, normalizeStatus, toggleSectionComplete } = useSections();
 const sectionStore = useSectionStore();
+const sessionStore = useLearningSessionStore();
 
 // ========================================
 // 状態管理
 // ========================================
+const loading = ref(true); // ローディング状態
 // ページネーション
 const sectionCurrentPage = ref(1);
 const sectionItemsPerPage = 10;
@@ -251,11 +251,22 @@ const displayTechnology = computed(() => {
 // ライフサイクル
 // ========================================
 onMounted(async () => {
+  loading.value = true;
   // データが読み込まれていない場合は先に読み込む
   if (learningContents.value.length === 0) {
     await fetchContents();
   }
-  sectionStore.fetchSections(learningContentId.value);
+  await sectionStore.fetchSections(learningContentId.value);
+
+  // 現在の学習コンテンツのセッションのみ取得
+  await sessionStore.fetchLearningSessions({
+    learning_content_id: learningContentId.value,
+    all: 'true', // 全件取得フラグ
+  });
+  loading.value = false;
+
+  // デバッグログ
+  console.log('Sessions for content ID', learningContentId.value, ':', sessionStore.sessions.length);
 });
 
 // ========================================

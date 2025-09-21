@@ -3,7 +3,10 @@
   <DetailLayout>
     <template #breadcrumb>
       <nav class="flex items-center text-sm text-slate-500">
-        <router-link v-if="learningContent" :to="`/learning/${learningContent.id}`" class="flex items-center font-medium text-violet-600 hover:text-violet-800 hover:underline"> <ArrowLeftIcon class="w-4 h-4 mr-1" /> {{ learningContent.title }} </router-link>
+        <router-link v-if="learningContent" :to="`/learning/${learningContent.id}`" class="flex items-center font-medium text-violet-600 hover:text-violet-800 hover:underline">
+          <ArrowLeftIcon class="w-4 h-4 mr-1" />
+          {{ learningContent.title }}
+        </router-link>
         <span v-if="learningContent" class="mx-2">/</span>
         <span v-if="section">{{ section.title }}の学習記録</span>
       </nav>
@@ -20,8 +23,12 @@
         >
       </div>
     </template>
+    <!-- ローディング中の表示 -->
+    <div v-if="loading" class="py-10 text-center">
+      <p class="text-slate-500">データを読み込んでいます...</p>
+    </div>
 
-    <div v-if="section && learningContent">
+    <div v-else-if="section && learningContent">
       <!-- 学習記録一覧 -->
       <div>
         <h3 class="mb-4 text-lg font-semibold text-slate-800">学習記録一覧</h3>
@@ -55,8 +62,8 @@
     </div>
 
     <template #actions>
-      <BackButton :to="`/learning/${learningContent.id}`" />
-      <BaseButton variant="primary" :left-icon="PlusCircleIcon" @click="goToRecordForm">このセクションに記録を追加</BaseButton>
+      <BackButton v-if="learningContent" :to="`/learning/${learningContent.id}`" />
+      <BaseButton v-if="learningContent && section" variant="primary" :left-icon="PlusCircleIcon" @click="goToRecordForm">このセクションに記録を追加</BaseButton>
     </template>
 
     <!-- 削除確認モーダル -->
@@ -77,7 +84,7 @@
 // ========================================
 // 外部インポート
 // ========================================
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { StarIcon, PencilIcon, PlusCircleIcon, ArrowLeftIcon } from '@heroicons/vue/24/solid';
 
@@ -85,6 +92,8 @@ import { StarIcon, PencilIcon, PlusCircleIcon, ArrowLeftIcon } from '@heroicons/
 // 内部インポート
 // ========================================
 import { useLearningData } from '../../composables/useLearningData';
+import { useLearningSessionStore } from '@/stores/learningSession';
+import { useSectionStore } from '@/stores/sections';
 
 // コンポーネント
 import DetailLayout from '../../layouts/DetailLayout.vue';
@@ -108,11 +117,14 @@ const router = useRouter();
 // ========================================
 // コンポーザブルの実行
 // ========================================
-const { learningContents, sections, learningSessions, deleteStudySession } = useLearningData();
+const { learningContents, sections, deleteStudySession, fetchContents } = useLearningData();
+const sectionStore = useSectionStore();
+const sessionStore = useLearningSessionStore();
 
 // ========================================
 // 状態管理
 // ========================================
+const loading = ref(true); // ローディング状態
 // 削除モーダルの状態管理
 const isModalOpen = ref(false);
 const recordToDelete = ref(null);
@@ -134,7 +146,7 @@ const section = computed(() => sections.value.find((s) => s.id === sectionId.val
 
 // 現在のセクションに紐づく学習記録をフィルタリングし、新しい順にソート
 const sectionRecords = computed(() => {
-  return learningSessions.value.filter((r) => r.section_id === sectionId.value).sort((a, b) => new Date(b.studied_at) - new Date(a.studied_at));
+  return sessionStore.sessionsBySectionId(sectionId.value).sort((a, b) => new Date(b.studied_at) - new Date(a.studied_at));
 });
 
 // ページネーションされた学習記録リスト
@@ -148,6 +160,28 @@ const paginatedRecords = computed(() => {
 const totalStudyTime = computed(() => {
   const totalMinutes = sectionRecords.value.reduce((sum, record) => sum + record.study_minutes, 0);
   return formatMinutes(totalMinutes);
+});
+
+// ========================================
+// ライフサイクル
+// ========================================
+onMounted(async () => {
+  loading.value = true;
+
+  // 学習コンテンツを取得
+  if (learningContents.value.length === 0) {
+    await fetchContents();
+  }
+
+  // セクションを取得（重要！）
+  await sectionStore.fetchSections(learningContentId.value);
+
+  // 学習記録を取得
+  await sessionStore.fetchLearningSessions({
+    section_id: sectionId.value,
+  });
+
+  loading.value = false;
 });
 
 // ========================================
@@ -169,9 +203,9 @@ const openDeleteModal = (record) => {
 };
 
 // 削除確認時の処理
-const confirmDelete = () => {
+const confirmDelete = async () => {
   if (recordToDelete.value) {
-    deleteStudySession(recordToDelete.value.id);
+    await deleteStudySession(recordToDelete.value.id);
   }
   isModalOpen.value = false;
   recordToDelete.value = null;

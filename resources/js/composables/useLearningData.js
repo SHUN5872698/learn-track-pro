@@ -4,8 +4,8 @@ import { useMenuState } from './ui/useMenuState';
 import { useLearningContentStore } from '@/stores/learningContent';
 import { useSectionStore } from '@/stores/sections';
 import { useLearningContents } from './learning/useLearningContents';
-import { useLearningSessions } from './learning/useLearningSessions';
 import { useMasterDataStore } from '../stores/masterData';
+import { useLearningSessionStore } from '@/stores/learningSession';
 
 // 学習関連の全データを集約し、操作ロジックを提供するコンポーザブル
 export const useLearningData = () => {
@@ -15,6 +15,7 @@ export const useLearningData = () => {
   const { activeMenuId, setActiveMenu } = useMenuState();
   const contentStore = useLearningContentStore();
   const sectionStore = useSectionStore();
+  const sessionStore = useLearningSessionStore();
   // マスターデータストアから技術データを取得
   const masterDataStore = useMasterDataStore();
 
@@ -23,18 +24,6 @@ export const useLearningData = () => {
 
   // 学習コンテンツ関連のデータとアクションを学習コンテンツコンポーザブルから取得
   const { learningContents, learningContentsRaw, createContent, updateLearningContent, deleteContent, completeContent, reopenContent, loading, error, pagination, fetchContents } = useLearningContents();
-
-  // 学習セッション関連のデータとアクションを学習セッションコンポーザブルから取得
-  const {
-    learningSessions,
-    addStudySession: _addStudySession,
-    updateStudySession: _updateStudySession,
-    deleteStudySession: _deleteStudySession,
-    getRecordCountForSection,
-  } = useLearningSessions(
-    (contentId) => contentStore.fetchContents(),
-    (sectionId, newStatus) => sectionStore.updateSectionStatus(sectionId, newStatus)
-  );
 
   // 学習コンテンツ削除のシンプルなラッパー
   const deleteLearningContentWrapper = async (contentId) => {
@@ -46,7 +35,7 @@ export const useLearningData = () => {
     learningContents,
     learningContentsRaw,
     sections: computed(() => sectionStore.sections),
-    learningSessions,
+    learningSessions: computed(() => sessionStore.sessions),
     technologies,
     loading,
     error,
@@ -60,10 +49,14 @@ export const useLearningData = () => {
     deleteLearningContent: deleteLearningContentWrapper,
     completeContent,
     reopenContent,
-    addStudySession: (sessionData) => _addStudySession(sessionData, user),
-    updateStudySession: (updatedSessionData) => _updateStudySession(updatedSessionData),
-    deleteStudySession: (sessionId) => _deleteStudySession(sessionId),
+    addStudySession: (sessionData) => sessionStore.createLearningSession(sessionData),
+    updateStudySession: (id, data) => sessionStore.updateLearningSession(id, data),
+    deleteStudySession: (id) => sessionStore.deleteLearningSession(id),
     setActiveMenu,
-    getRecordCountForSection,
+    getRecordCountForSection: (sectionId) => {
+      const sessions = sessionStore.sessions || [];
+      // section_idで直接フィルタ
+      return sessions.filter((s) => s.section_id === sectionId).length;
+    },
   };
 };

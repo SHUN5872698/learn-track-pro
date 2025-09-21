@@ -1,58 +1,65 @@
 <template>
   <!-- 学習記録フォームのメインコンテナ -->
   <DetailLayout title="学習記録の追加" :description="pageDescription">
-    <!-- バリデーションエラーメッセージの表示 -->
-    <div v-if="validationErrors.length" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
-      <h3 class="font-bold">入力エラー</h3>
-      <ul class="mt-2 ml-2 list-disc list-inside">
-        <li v-for="error in validationErrors" :key="error">{{ error }}</li>
-      </ul>
+    <!-- ローディング中の表示 -->
+    <div v-if="loading" class="py-10 text-center">
+      <p class="text-slate-500">データを読み込んでいます...</p>
     </div>
 
-    <!-- フォームセクション -->
-    <form @submit.prevent="handleSubmit" class="space-y-6">
-      <StudySessionFormFields
-        v-model="form"
-        :sections="availableSections"
-        :validation-errors="validationErrors"
-        :learning-content-title="learningContent ? learningContent.title : ''"
-        :formatted-date="formattedDate"
-        :formatted-time="formattedTime"
-        :display-study-hours="displayStudyHours"
-        :display-study-minutes="displayStudyMinutes"
-        :show-section-border="showSectionBorder"
-        :show-duration-border="showDurationBorder"
-        :show-memo-border="showMemoBorder"
-        @open-date-modal="openDateModal"
-        @open-time-modal="openTimeModal"
-        @reset-time-to-now="resetTimeToNow"
-        @section-modified="sectionModified = true"
-        @duration-modified="durationModified = true"
-        @memo-modified="memoModified = true"
+    <div v-else>
+      <!-- バリデーションエラーメッセージの表示 -->
+      <div v-if="validationErrors.length" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+        <h3 class="font-bold">入力エラー</h3>
+        <ul class="mt-2 ml-2 list-disc list-inside">
+          <li v-for="error in validationErrors" :key="error">{{ error }}</li>
+        </ul>
+      </div>
+
+      <!-- フォームセクション -->
+      <form @submit.prevent="handleSubmit" class="space-y-6">
+        <StudySessionFormFields
+          v-model="form"
+          :sections="availableSections"
+          :validation-errors="validationErrors"
+          :learning-content-title="learningContent ? learningContent.title : ''"
+          :formatted-date="formattedDate"
+          :formatted-time="formattedTime"
+          :display-study-hours="displayStudyHours"
+          :display-study-minutes="displayStudyMinutes"
+          :show-section-border="showSectionBorder"
+          :show-duration-border="showDurationBorder"
+          :show-memo-border="showMemoBorder"
+          @open-date-modal="openDateModal"
+          @open-time-modal="openTimeModal"
+          @reset-time-to-now="resetTimeToNow"
+          @section-modified="sectionModified = true"
+          @duration-modified="durationModified = true"
+          @memo-modified="memoModified = true"
+        />
+
+        <!-- アクションボタン: キャンセルと記録を保存 -->
+        <div class="flex justify-between pt-6 border-t">
+          <CancelButton @click="handleClose" />
+          <div class="flex space-x-4">
+            <BaseButton type="submit" variant="primary">記録を保存</BaseButton>
+          </div>
+        </div>
+      </form>
+
+      <!-- モーダルセクション -->
+      <DatePickerModal :is-open="isDateModalOpen" :initial-date="form.studied_at" @close="isDateModalOpen = false" @confirm="handleDateConfirm" />
+
+      <TimeInputModal
+        :is-open="isTimeModalOpen"
+        :initial-hours="timeModalMode === 'timeOfDay' ? new Date(form.studied_at).getHours() : displayStudyHours"
+        :initial-minutes="timeModalMode === 'timeOfDay' ? new Date(form.studied_at).getMinutes() : displayStudyMinutes"
+        :is-time-of-day-mode="timeModalMode === 'timeOfDay'"
+        @close="isTimeModalOpen = false"
+        @confirm="handleTimeConfirm"
       />
 
-      <!-- アクションボタン: キャンセルと記録を保存 -->
-      <div class="flex justify-between pt-6 border-t">
-        <CancelButton @click="handleClose" />
-        <div class="flex space-x-4">
-          <BaseButton type="submit" variant="primary">記録を保存</BaseButton>
-        </div>
-      </div>
-    </form>
-
-    <!-- モーダルセクション -->
-    <DatePickerModal :is-open="isDateModalOpen" :initial-date="form.studied_at" @close="isDateModalOpen = false" @confirm="handleDateConfirm" />
-
-    <TimeInputModal
-      :is-open="isTimeModalOpen"
-      :initial-hours="timeModalMode === 'timeOfDay' ? new Date(form.studied_at).getHours() : displayStudyHours"
-      :initial-minutes="timeModalMode === 'timeOfDay' ? new Date(form.studied_at).getMinutes() : displayStudyMinutes"
-      :is-time-of-day-mode="timeModalMode === 'timeOfDay'"
-      @close="isTimeModalOpen = false"
-      @confirm="handleTimeConfirm"
-    />
-
-    <ConfirmModal :is-open="isUnsavedModalOpen" title="編集内容が保存されていません" message="編集した内容を破棄してもよろしいですか？" confirm-button-text="破棄" confirm-button-variant="danger" :show-item-detail="false" @confirm="router.back()" @cancel="isUnsavedModalOpen = false" />
+      <ConfirmModal :is-open="isUnsavedModalOpen" title="編集内容が保存されていません" message="編集した内容を破棄してもよろしいですか？" confirm-button-text="破棄" confirm-button-variant="danger" :show-item-detail="false" @confirm="router.back()" @cancel="isUnsavedModalOpen = false" />
+    </div>
   </DetailLayout>
 </template>
 
@@ -66,7 +73,9 @@ import { useRoute, useRouter } from 'vue-router';
 // ========================================
 // 内部インポート
 // ========================================
-import { useLearningData } from '../../composables/useLearningData';
+import { useLearningSessionStore } from '@/stores/learningSession';
+import { useLearningContentStore } from '@/stores/learningContent';
+import { useSectionStore } from '@/stores/sections';
 import { useStudySessionForm } from '../../composables/useStudySessionForm';
 import DetailLayout from '../../layouts/DetailLayout.vue';
 import StudySessionFormFields from '../../components/learning/StudySessionFormFields.vue';
@@ -85,7 +94,12 @@ const router = useRouter();
 // ========================================
 // コンポーザブル
 // ========================================
-const { learningContents, sections, addStudySession } = useLearningData();
+const contentStore = useLearningContentStore();
+const sectionStore = useSectionStore();
+
+const learningContents = computed(() => contentStore.contents);
+const sections = computed(() => sectionStore.sections);
+const sessionStore = useLearningSessionStore();
 
 // ========================================
 // フォーム管理
@@ -112,8 +126,10 @@ const {
 } = useStudySessionForm();
 
 // ========================================
-// バリデーション状態管理
+// 状態管理
 // ========================================
+const loading = ref(true); // ローディング状態
+// バリデーション
 const sectionModified = ref(false);
 const durationModified = ref(false);
 const memoModified = ref(false);
@@ -158,18 +174,28 @@ const showMemoBorder = computed(() => {
 // ========================================
 // ライフサイクル
 // ========================================
-onMounted(() => {
+onMounted(async () => {
+  loading.value = true;
+  if (learningContents.value.length === 0) {
+    // 学習コンテンツとセクションのデータを取得
+    await contentStore.fetchContents();
+  }
+
+  await sectionStore.fetchSections(learningContentId.value);
+
+  // フォーム初期化
   const initialData = {
     learning_content_id: learningContentId.value,
     section_id: route.query.section_id ? parseInt(route.query.section_id, 10) : null,
   };
   initializeForm(initialData);
+  loading.value = false;
 });
 
 // ========================================
 // イベントハンドラ
 // ========================================
-const handleSubmit = () => {
+const handleSubmit = async () => {
   // 修正フラグをリセット
   sectionModified.value = false;
   durationModified.value = false;
@@ -178,17 +204,34 @@ const handleSubmit = () => {
   if (!validateForm()) {
     return;
   }
-  addStudySession({ ...form, memo: form.memo, mood_rating: form.mood_rating });
-  alert('学習記録を保存しました！');
-  // 更新成功後、セクション別学習記録一覧ページに遷移
-  router.push(`/learning/${form.learning_content_id}/section/${form.section_id}`);
+
+  try {
+    // mood_ratingが0またはfalsy値の場合はnullを送る
+    const sessionData = {
+      ...form,
+      memo: form.memo || null,
+      mood_rating: form.mood_rating && form.mood_rating > 0 ? form.mood_rating : null,
+      session_type: 'manual', // 必須項目
+    };
+
+    console.log('Sending data:', sessionData); // デバッグ用
+
+    await sessionStore.createLearningSession(sessionData);
+    alert('学習記録を保存しました！');
+    router.push(`/learning/${form.learning_content_id}/section/${form.section_id}`);
+  } catch (error) {
+    console.error('Failed to create study session:', error);
+    validationErrors.value.push('学習記録の保存に失敗しました。');
+  }
 };
 
 // キャンセル処理
 const handleClose = () => {
   if (hasUnsavedChanges.value) {
+    // 未保存の変更がある場合、確認モーダルを表示してユーザーに破棄を促す
     isUnsavedModalOpen.value = true;
   } else {
+    // 変更がない場合は前のページに戻る
     router.back();
   }
 };
