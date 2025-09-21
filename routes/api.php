@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TechnologyController;
 use App\Http\Controllers\LearningContentController;
 use App\Http\Controllers\SectionController;
+use App\Http\Controllers\LearningSessionController;
 
 // 認証不要のマスターデータAPI
 Route::get('/categories', [CategoryController::class, 'index']);
@@ -28,4 +29,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/sections/{section}', [SectionController::class, 'destroy']);
     Route::put('/sections/{section}/status', [SectionController::class, 'updateStatus']);
     Route::put('/learning-contents/{learningContent}/sections/bulk', [SectionController::class, 'bulkUpdate']);
+
+    // LearningSession statistics routes
+    Route::prefix('learning-sessions/statistics')->group(function () {
+        Route::get('summary', [LearningSessionController::class, 'statisticsSummary']);
+        Route::get('monthly', [LearningSessionController::class, 'monthlyStatistics']);
+        Route::get('by-technology', [LearningSessionController::class, 'technologyStatistics']);
+        Route::get('daily', [LearningSessionController::class, 'dailyStatistics']);
+    });
+
+    // LearningSession CRUD routes
+    Route::apiResource('learning-sessions', LearningSessionController::class);
+
+    // Nested LearningSession routes
+    Route::get('learning-contents/{learningContent}/sessions', [LearningSessionController::class, 'byContent']);
+    Route::get('sections/{section}/sessions', [LearningSessionController::class, 'bySection']);
 });

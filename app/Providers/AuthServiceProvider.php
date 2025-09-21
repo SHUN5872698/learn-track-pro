@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\LearningContent;
+use App\Models\LearningSession;
 use App\Policies\LearningContentPolicy;
+use App\Policies\LearningSessionPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -15,6 +17,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         LearningContent::class => LearningContentPolicy::class,
+        LearningSession::class => LearningSessionPolicy::class,
     ];
 
     /**
