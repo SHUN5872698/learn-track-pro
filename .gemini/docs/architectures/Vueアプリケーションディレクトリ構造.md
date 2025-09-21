@@ -48,8 +48,8 @@
 resources/js/
 ├── api/                                     # APIクライアント定義
 │   ├── learningContent.js                   # 学習コンテンツ関連API
+│   ├── learningSession.js                   # 学習セッション関連API
 │   └── sections.js                          # セクション関連API
-│
 ├── components/                              # 再利用可能なUIコンポーネント
 │   ├── charts/                              # グラフ関連コンポーネント
 │   │   ├── BarChart.vue                     # 棒グラフコンポーネント
@@ -83,6 +83,7 @@ resources/js/
 │
 ├── composables/                             # 共有ロジック・状態管理（Vue Composition APIを活用）
 │   ├── data/                                # アプリケーションのモックデータ管理
+│   │   ├── mockCategories.js                # カテゴリーのモックデータ定義
 │   │   ├── mockLearningContents.js          # 学習コンテンツのモックデータ定義
 │   │   └── mockSessions.js                  # 学習セッションのモックデータ定義
 │   │
@@ -109,6 +110,7 @@ resources/js/
 ├── stores/                                  # Piniaストア
 │   ├── auth.js                              # 認証状態管理ストア
 │   ├── learningContent.js                   # 学習コンテンツの状態管理ストア
+│   ├── learningSession.js                   # 学習セッションの状態管理ストア
 │   ├── masterData.js                        # マスターデータ（カテゴリー、技術）の状態管理ストア
 │   └── sections.js                          # セクションの状態管理ストア
 ├── utils/                                   # ユーティリティ関数

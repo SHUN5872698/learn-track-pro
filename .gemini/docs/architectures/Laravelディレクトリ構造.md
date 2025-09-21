@@ -1,6 +1,6 @@
 ## 相互リンク
 
-[Laravelディレクトリ構造](https://www.notion.so/Laravel-26c9d86c12e880a79147ee507d9cf541?pvs=21)
+[Laravelディレクトリ構造](https://www.notion.so/26c9d86c12e880a79147ee507d9cf541?pvs=21)
 
 .gemini/docs/architectures/Laravelディレクトリ構造.md
 
@@ -26,7 +26,7 @@
   --prune
   ```
 1. `## 現在のディレクトリ構造`を、treeコマンドの結果と突き合わせて更新してください。
-2.  追加ファイルとディレクトリがない場合は報告してください。
+2. 追加ファイルとディレクトリがない場合は報告してください。
 
 ### 注意点
 - 更新する際はディレクトリの並び順は変更しないでください
@@ -72,6 +72,7 @@
 │   │   └── Resources/                            # APIレスポンスのデータ変換と整形
 │   │       ├── CategoryResource.php              # カテゴリーデータのリソース変換
 │   │       ├── LearningContentResource.php       # 学習コンテンツデータのリソース変換
+│   │       ├── LearningSessionResource.php       # 学習セッションデータのリソース変換
 │   │       ├── SectionResource.php               # セクションデータのリソース変換
 │   │       └── TechnologyResource.php            # 技術データのリソース変換
 │   │
@@ -84,7 +85,8 @@
 │   │   └── User.php                              # ユーザーモデル
 │   │
 │   ├── Policies/                                 # モデルの認可ロジックを定義
-│   │   └── LearningContentPolicy.php             # 学習コンテンツの認可ポリシー
+│   │   ├── LearningContentPolicy.php             # 学習コンテンツの認可ポリシー
+│   │   └── LearningSessionPolicy.php             # 学習セッションの認可ポリシー
 │   │
 │   └── Providers/                                # サービスコンテナへのサービス登録やイベント登録を行うサービスプロバイダ
 │       ├── AppServiceProvider.php                # アプリケーション全体のサービスプロバイダ
@@ -145,6 +147,16 @@
 │   │   └── app.css                               # アプリケーションのメインCSSファイル
 │   │
 │   └── js/                                       # JavaScriptファイル ※詳細は別ドキュメントに記載
+│       ├── api/                                  # APIクライアント定義
+│       │   ├── learningContent.js               # 学習コンテンツ関連API
+│       │   ├── learningSession.js               # 学習セッション関連API
+│       │   └── sections.js                      # セクション関連API
+│       └── stores/                              # Piniaストア
+│           ├── auth.js                          # 認証状態管理ストア
+│           ├── learningContent.js               # 学習コンテンツの状態管理ストア
+│           ├── learningSession.js               # 学習セッションの状態管理ストア
+│           ├── masterData.js                    # マスターデータ（カテゴリー、技術）の状態管理ストア
+│           └── sections.js                      # セクションの状態管理ストア
 │
 ├── routes/                                       # アプリケーションのルーティング定義
 │   ├── api.php                                   # APIルート定義
