@@ -49,6 +49,7 @@ resources/js/
 ├── api/                                     # APIクライアント定義
 │   ├── learningContent.js                   # 学習コンテンツ関連API
 │   ├── learningSession.js                   # 学習セッション関連API
+│   ├── reports.js                           # レポート関連API
 │   └── sections.js                          # セクション関連API
 ├── components/                              # 再利用可能なUIコンポーネント
 │   ├── charts/                              # グラフ関連コンポーネント
@@ -112,6 +113,7 @@ resources/js/
 │   ├── learningContent.js                   # 学習コンテンツの状態管理ストア
 │   ├── learningSession.js                   # 学習セッションの状態管理ストア
 │   ├── masterData.js                        # マスターデータ（カテゴリー、技術）の状態管理ストア
+│   ├── reports.js                           # レポート関連ストア
 │   └── sections.js                          # セクションの状態管理ストア
 ├── utils/                                   # ユーティリティ関数
 │   ├── chartColors.js                       # チャートの色定義
@@ -165,36 +167,38 @@ graph TD
         A --> G[learning/useLearningSessions]
         A --> P[useSectionStatus]
 
-        E --> I[data/mockLearningContents]
-        E --> J[data/mockSessions]
+        E --> I[api/learningContent]
 
-        F --> K[data/mockSections]
+        F --> K[api/sections]
 
-        G --> J
+        G --> J[api/learningSession]
 
         L[useAuth] --> B
         M[useStudySessionForm] --> N[validators/studySessionValidator]
         O[useLearningContentForm]
         Q[useWizardForm]
 
-        B --> R[data/mockUsers]
-        S[stores/masterData] --> H[data/mockTechnologies]
-        S --> S2[data/mockCategories]
+        B --> R[stores/auth]
+        S[stores/masterData]
+        T[stores/reports]
 
     end
 
-    subgraph Data
-        H
+    subgraph API
         I
         J
         K
+    end
+
+    subgraph Stores
         R
-        S2
+        S
+        T
     end
 
     subgraph Validators
         N[studySessionValidator]
-        T[profileValidator]
+        U[profileValidator]
     end
 
     subgraph Views & Components
@@ -204,8 +208,9 @@ graph TD
         V --> O
         V --> Q
         V --> P
-        V --> T
+        V --> U
         V --> S
+        V --> T
     end
 
     style A fill:#c9d1f3,stroke:#333,stroke-width:2px
@@ -215,14 +220,13 @@ graph TD
     style O fill:#d5e8d4,stroke:#333,stroke-width:2px
     style Q fill:#d5e8d4,stroke:#333,stroke-width:2px
     style N fill:#f8d5d5,stroke:#333,stroke-width:2px
-    style T fill:#f8d5d5,stroke:#333,stroke-width:2px
-    style H fill:#e0e0e0,stroke:#333,stroke-width:1px
+    style U fill:#f8d5d5,stroke:#333,stroke-width:2px
     style I fill:#e0e0e0,stroke:#333,stroke-width:1px
     style J fill:#e0e0e0,stroke:#333,stroke-width:1px
     style K fill:#e0e0e0,stroke:#333,stroke-width:1px
     style R fill:#e0e0e0,stroke:#333,stroke-width:1px
-    style S2 fill:#e0e0e0,stroke:#333,stroke-width:1px
     style S fill:#e0e0e0,stroke:#333,stroke-width:1px
+    style T fill:#e0e0e0,stroke:#333,stroke-width:1px
 ```
 
 ---

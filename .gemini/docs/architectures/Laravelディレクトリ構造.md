@@ -147,16 +147,6 @@
 │   │   └── app.css                               # アプリケーションのメインCSSファイル
 │   │
 │   └── js/                                       # JavaScriptファイル ※詳細は別ドキュメントに記載
-│       ├── api/                                  # APIクライアント定義
-│       │   ├── learningContent.js               # 学習コンテンツ関連API
-│       │   ├── learningSession.js               # 学習セッション関連API
-│       │   └── sections.js                      # セクション関連API
-│       └── stores/                              # Piniaストア
-│           ├── auth.js                          # 認証状態管理ストア
-│           ├── learningContent.js               # 学習コンテンツの状態管理ストア
-│           ├── learningSession.js               # 学習セッションの状態管理ストア
-│           ├── masterData.js                    # マスターデータ（カテゴリー、技術）の状態管理ストア
-│           └── sections.js                      # セクションの状態管理ストア
 │
 ├── routes/                                       # アプリケーションのルーティング定義
 │   ├── api.php                                   # APIルート定義
