@@ -8,40 +8,83 @@ use App\Http\Controllers\LearningContentController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\LearningSessionController;
 
-// 認証不要のマスターデータAPI
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| エンドポイント一覧:
+| - 公開API: カテゴリー、技術情報
+| - 認証API: ユーザー、学習コンテンツ、セクション、学習セッション、統計
+|
+*/
+
+// ============================================
+// 公開API（認証不要）
+// ============================================
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/technologies', [TechnologyController::class, 'index']);
 
+// ============================================
+// 認証が必要なAPI
+// ============================================
 Route::middleware('auth:sanctum')->group(function () {
-    // User routes
-    Route::get('/user', [UserController::class, 'me']);
-    Route::put('/user/profile', [UserController::class, 'profile']);
 
-    // LearningContent routes
+    // ----------------------------------------
+    // ユーザー管理
+    // ----------------------------------------
+    Route::prefix('user')->group(function () {
+        Route::get('/', [UserController::class, 'me']);
+        Route::put('/profile', [UserController::class, 'profile']);
+    });
+
+    // ----------------------------------------
+    // 学習コンテンツ管理
+    // ----------------------------------------
     Route::apiResource('learning-contents', LearningContentController::class);
-    Route::put('/learning-contents/{learning_content}/complete', [LearningContentController::class, 'complete']);
-    Route::put('/learning-contents/{learning_content}/reopen', [LearningContentController::class, 'reopen']);
 
-    // Section routes
-    Route::get('/learning-contents/{learningContent}/sections', [SectionController::class, 'index']);
-    Route::post('/sections', [SectionController::class, 'store']);
-    Route::put('/sections/{section}', [SectionController::class, 'update']);
-    Route::delete('/sections/{section}', [SectionController::class, 'destroy']);
-    Route::put('/sections/{section}/status', [SectionController::class, 'updateStatus']);
-    Route::put('/learning-contents/{learningContent}/sections/bulk', [SectionController::class, 'bulkUpdate']);
+    Route::prefix('learning-contents/{learningContent}')->group(function () {
+        // ステータス操作
+        Route::put('complete', [LearningContentController::class, 'complete']);
+        Route::put('reopen', [LearningContentController::class, 'reopen']);
 
-    // LearningSession statistics routes
+        // セクション関連
+        Route::get('sections', [SectionController::class, 'index']);
+        Route::put('sections/bulk', [SectionController::class, 'bulkUpdate']);
+
+        // 学習セッション
+        Route::get('sessions', [LearningSessionController::class, 'byContent']);
+    });
+
+    // 特定コンテンツの統計
+    Route::get(
+        'learning-contents/{contentId}/statistics/daily',
+        [LearningSessionController::class, 'dailyStatisticsByContent']
+    );
+
+    // ----------------------------------------
+    // セクション管理
+    // ----------------------------------------
+    Route::prefix('sections')->group(function () {
+        Route::post('/', [SectionController::class, 'store']);
+        Route::put('{section}', [SectionController::class, 'update']);
+        Route::delete('{section}', [SectionController::class, 'destroy']);
+        Route::put('{section}/status', [SectionController::class, 'updateStatus']);
+        Route::get('{section}/sessions', [LearningSessionController::class, 'bySection']);
+    });
+
+    // ----------------------------------------
+    // 学習セッション管理
+    // ----------------------------------------
+    // CRUD操作
+    Route::apiResource('learning-sessions', LearningSessionController::class);
+
+    // 統計情報（グループ化）
     Route::prefix('learning-sessions/statistics')->group(function () {
         Route::get('summary', [LearningSessionController::class, 'statisticsSummary']);
         Route::get('monthly', [LearningSessionController::class, 'monthlyStatistics']);
-        Route::get('by-technology', [LearningSessionController::class, 'technologyStatistics']);
         Route::get('daily', [LearningSessionController::class, 'dailyStatistics']);
+        Route::get('by-technology', [LearningSessionController::class, 'technologyStatistics']);
+        Route::get('latest-by-content', [LearningSessionController::class, 'latestByContent']);
     });
-
-    // LearningSession CRUD routes
-    Route::apiResource('learning-sessions', LearningSessionController::class);
-
-    // Nested LearningSession routes
-    Route::get('learning-contents/{learningContent}/sessions', [LearningSessionController::class, 'byContent']);
-    Route::get('sections/{section}/sessions', [LearningSessionController::class, 'bySection']);
 });

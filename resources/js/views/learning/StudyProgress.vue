@@ -126,7 +126,9 @@ import DeleteButton from '../../components/common/buttons/DeleteButton.vue';
 import BackButton from '../../components/common/buttons/BackButton.vue';
 import Pagination from '../../components/common/Pagination.vue';
 
-// ユーティリティ関数
+// ========================================
+// ユーティリティ関数（純粋関数）
+// ========================================
 import { formatDate, formatTimeOnly, formatMinutes } from '../../utils/dateFormatters';
 
 // ========================================
@@ -138,11 +140,17 @@ const router = useRouter();
 // ========================================
 // コンポーザブル実行
 // ========================================
-const { learningContents, sections, learningSessions, deleteStudySession, fetchContents, loading } = useLearningData();
+// 学習データ全般を管理するコンポーザブルから必要な状態とアクションを取得
+const { learningContents, sections, deleteStudySession, fetchContents, loading } = useLearningData();
 
 // ========================================
 // 状態管理
 // ========================================
+// 日別統計データを格納するリアクティブな参照
+const dailyStatisticsData = ref([]);
+// 特定の学習コンテンツに紐づくセッションデータを格納するリアクティブな参照
+const contentSessions = ref([]);
+
 // ページネーション
 const recordCurrentPage = ref(1);
 const recordItemsPerPage = 5;
@@ -153,25 +161,30 @@ const recordToDelete = ref(null);
 // ========================================
 // 算出プロパティ
 // ========================================
+// ルートパラメータから学習コンテンツIDを取得
 const contentId = computed(() => parseInt(route.params.id, 10));
+// 取得したコンテンツIDに基づいて、学習コンテンツの情報を算出
 const learningContent = computed(() => learningContents.value.find((c) => c.id === contentId.value));
 
-// 学習記録一覧
+// 学習記録一覧（contentSessionsを使うように変更）
 const allContentSessionsRecords = computed(() => {
-  return learningSessions.value
-    .filter((s) => s.learning_content_id === contentId.value)
+  // セッションデータを日付でソートし、セクションタイトルを付与して整形
+  return contentSessions.value
     .sort((a, b) => new Date(b.studied_at) - new Date(a.studied_at))
     .map((session) => {
+      // セッションのsection_idに対応するセクション情報を検索
       const section = sections.value.find((s) => s.id === session.section_id);
       return {
         ...session,
-        sectionTitle: section ? section.title : 'N/A',
+        // セクションタイトルが存在すればそれを使用、なければ'N/A'
+        sectionTitle: section?.title || session.section?.title || 'N/A',
       };
     });
 });
 
 // ページネーションされた学習記録リスト
 const paginatedRecords = computed(() => {
+  // 現在のページと1ページあたりのアイテム数に基づいて表示するレコードをスライス
   const startIndex = (recordCurrentPage.value - 1) * recordItemsPerPage;
   const endIndex = startIndex + recordItemsPerPage;
   return allContentSessionsRecords.value.slice(startIndex, endIndex);
@@ -179,11 +192,13 @@ const paginatedRecords = computed(() => {
 
 // グラフデータ
 const dailyStudyData = computed(() => {
+  // 30日間の日別学習時間を初期化
   const dailyTotals = {};
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
   thirtyDaysAgo.setHours(0, 0, 0, 0);
 
+  // 過去30日間の日付を生成し、初期値を0に設定
   for (let i = 0; i < 30; i++) {
     const date = new Date(thirtyDaysAgo);
     date.setDate(date.getDate() + i);
@@ -191,16 +206,14 @@ const dailyStudyData = computed(() => {
     dailyTotals[dateKey] = 0;
   }
 
-  learningSessions.value
-    .filter((s) => s.learning_content_id === contentId.value)
-    .forEach((session) => {
-      const sessionDate = new Date(session.studied_at);
-      const dateKey = sessionDate.toISOString().split('T')[0];
-      if (dailyTotals.hasOwnProperty(dateKey)) {
-        dailyTotals[dateKey] += session.study_minutes;
-      }
-    });
+  // APIから取得した日別統計データをマージ
+  dailyStatisticsData.value.forEach((item) => {
+    if (dailyTotals.hasOwnProperty(item.date)) {
+      dailyTotals[item.date] = Number(item.total_minutes || 0);
+    }
+  });
 
+  // Chart.jsのデータ形式に変換
   return {
     labels: Object.keys(dailyTotals).map((key) => new Date(key).toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' })),
     datasets: [
@@ -220,25 +233,72 @@ const dailyStudyData = computed(() => {
 // ライフサイクル
 // ========================================
 onMounted(async () => {
+  loading.value = true;
+  // 学習コンテンツがまだロードされていない場合、ロードをトリガー
   if (learningContents.value.length === 0) {
     await fetchContents();
   }
+
+  // 日別統計データをAPIから取得
+  try {
+    const response = await axios.get(`/api/learning-contents/${contentId.value}/statistics/daily`, {
+      params: { days: 30 },
+    });
+    dailyStatisticsData.value = response.data;
+  } catch (error) {
+    console.error('日別統計の取得に失敗しました:', error);
+  }
+
+  // 学習セッションデータをAPIから取得
+  try {
+    const response = await axios.get('/api/learning-sessions', {
+      params: { learning_content_id: contentId.value },
+    });
+    contentSessions.value = response.data.data || [];
+  } catch (error) {
+    console.error('学習セッションの取得に失敗しました:', error);
+  }
+  loading.value = false;
 });
 
 // ========================================
 // メソッド
 // ========================================
 // イベントハンドラ
+// 削除モーダルを開く
 const openDeleteModal = (record) => {
   recordToDelete.value = record;
   isModalOpen.value = true;
 };
 
-const confirmDelete = () => {
+// 削除確認時の処理
+const confirmDelete = async () => {
   if (recordToDelete.value) {
-    deleteStudySession(recordToDelete.value.id);
+    const recordId = recordToDelete.value.id;
+    isModalOpen.value = false;
+    // 削除処理
+    await deleteStudySession(recordId);
+
+    // 削除したアイテムをcontentSessionsから除外
+    contentSessions.value = contentSessions.value.filter((session) => session.id !== recordId);
+
+    // 日別統計も再取得
+    try {
+      const response = await axios.get(`/api/learning-contents/${contentId.value}/statistics/daily`, {
+        params: { days: 30 },
+      });
+      dailyStatisticsData.value = response.data;
+    } catch (error) {
+      console.error('日別統計の再取得に失敗しました:', error);
+    }
+
+    // モーダルが完全に閉じた後にrecordToDeleteをクリア
+    setTimeout(() => {
+      recordToDelete.value = null;
+    }, 300);
+  } else {
+    isModalOpen.value = false;
+    recordToDelete.value = null;
   }
-  isModalOpen.value = false;
-  recordToDelete.value = null;
 };
 </script>
