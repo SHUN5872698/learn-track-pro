@@ -67,13 +67,14 @@ const router = useRouter();
 // ========================================
 // コンポーザブル実行
 // ========================================
-const { learningContents, fetchContents, loading } = useLearningData();
+const { learningContents, fetchContents, loading, fetchLearningSessions } = useLearningData();
 
 // ========================================
 // ライフサイクル
 // ========================================
-onMounted(() => {
-  fetchContents();
+onMounted(async () => {
+  await fetchContents();
+  await fetchLearningSessions();
 });
 
 // ========================================

@@ -3,7 +3,7 @@ import { useUser } from './useUser';
 import { useMenuState } from './ui/useMenuState';
 import { useLearningContentStore } from '@/stores/learningContent';
 import { useSectionStore } from '@/stores/sections';
-import { useLearningContents } from './learning/useLearningContents';
+import { useLearningContents as useLearningContentsComposable } from './learning/useLearningContents'; // 名前を変更
 import { useMasterDataStore } from '../stores/masterData';
 import { useLearningSessionStore } from '@/stores/learningSession';
 
@@ -22,8 +22,37 @@ export const useLearningData = () => {
   // マスターデータストアの技術データをリアクティブに取得
   const technologies = computed(() => masterDataStore.technologies);
 
-  // 学習コンテンツ関連のデータとアクションを学習コンテンツコンポーザブルから取得
-  const { learningContents, learningContentsRaw, createContent, updateLearningContent, deleteContent, completeContent, reopenContent, loading, error, pagination, fetchContents } = useLearningContents();
+  // useLearningContentsコンポーザブルから必要なものを取得
+  const {
+    learningContents: learningContentsFromComposable, // 名前を変更
+    learningContentsRaw,
+    createContent,
+    updateLearningContent,
+    deleteContent,
+    completeContent,
+    reopenContent,
+    loading,
+    error,
+    pagination,
+    fetchContents,
+  } = useLearningContentsComposable();
+
+  // 各学習コンテンツの総学習時間と最終学習日を計算
+  const learningContents = computed(() => {
+    return learningContentsFromComposable.value.map((content) => {
+      const contentSessions = sessionStore.sessions.filter((session) => session.learning_content_id === content.id);
+      const totalStudyMinutes = contentSessions.reduce((sum, session) => sum + session.study_minutes, 0);
+      const latestSession = contentSessions.reduce((latest, current) => {
+        return !latest || new Date(current.studied_at) > new Date(latest.studied_at) ? current : latest;
+      }, null);
+
+      return {
+        ...content,
+        totalStudyMinutes,
+        latestSessionUpdatedAt: latestSession ? latestSession.studied_at : null,
+      };
+    });
+  });
 
   // 学習コンテンツ削除のシンプルなラッパー
   const deleteLearningContentWrapper = async (contentId) => {
@@ -44,6 +73,7 @@ export const useLearningData = () => {
 
     // Actions
     fetchContents,
+    fetchLearningSessions: sessionStore.fetchLearningSessions,
     createContent,
     updateLearningContent,
     deleteLearningContent: deleteLearningContentWrapper,
