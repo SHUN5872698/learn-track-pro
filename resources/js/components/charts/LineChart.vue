@@ -4,10 +4,16 @@
 </template>
 
 <script setup>
+// ========================================
+// 外部インポート
+// ========================================
 import { computed } from 'vue';
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, Filler } from 'chart.js';
 import { Line } from 'vue-chartjs';
 
+// ========================================
+// 初期設定
+// ========================================
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, Filler);
 
 const props = defineProps({
@@ -17,9 +23,12 @@ const props = defineProps({
   },
 });
 
+// ========================================
+// 算出プロパティ
+// ========================================
 const chartOptions = computed(() => {
   // データの最大値を取得（エラー防止を追加）
-  const allData = props.data?.datasets?.flatMap(d => d.data) || [0];
+  const allData = props.data?.datasets?.flatMap((d) => d.data) || [0];
   const maxValue = Math.max(...allData, 0);
 
   // 最大値に基づいてstepSizeを決定
@@ -27,16 +36,20 @@ const chartOptions = computed(() => {
   let suggestedMax;
 
   // 学習時間に応じてY軸の目盛りを動的に調整し、グラフの可読性を高める
-  if (maxValue <= 60) { // 1時間以下
+  if (maxValue <= 60) {
+    // 1時間以下
     stepSize = 15; // 15分刻み
     suggestedMax = Math.ceil(maxValue / 15) * 15 + 15;
-  } else if (maxValue <= 180) { // 3時間以下
+  } else if (maxValue <= 180) {
+    // 3時間以下
     stepSize = 30; // 30分刻み
     suggestedMax = Math.ceil(maxValue / 30) * 30 + 30;
-  } else if (maxValue <= 360) { // 6時間以下
+  } else if (maxValue <= 360) {
+    // 6時間以下
     stepSize = 60; // 1時間刻み
     suggestedMax = Math.ceil(maxValue / 60) * 60 + 60;
-  } else if (maxValue <= 720) { // 12時間以下
+  } else if (maxValue <= 720) {
+    // 12時間以下
     stepSize = 120; // 2時間刻み
     suggestedMax = Math.ceil(maxValue / 120) * 120 + 120;
   } else {
@@ -78,7 +91,7 @@ const chartOptions = computed(() => {
       },
       tooltip: {
         callbacks: {
-          label: function(context) {
+          label: function (context) {
             const value = context.parsed.y;
             if (value < 60) {
               return `${context.dataset.label}: ${value}分`;
@@ -90,9 +103,9 @@ const chartOptions = computed(() => {
               return `${context.dataset.label}: ${hours}時間`;
             }
             return `${context.dataset.label}: ${hours}時間${minutes}分`;
-          }
-        }
-      }
+          },
+        },
+      },
     },
   };
 });

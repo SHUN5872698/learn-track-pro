@@ -4,10 +4,16 @@
 </template>
 
 <script setup>
+// ========================================
+// 外部インポート
+// ========================================
 import { computed } from 'vue';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
 import { Bar } from 'vue-chartjs';
 
+// ========================================
+// 初期設定
+// ========================================
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
 const props = defineProps({
@@ -17,6 +23,9 @@ const props = defineProps({
   },
 });
 
+// ========================================
+// 算出プロパティ
+// ========================================
 const chartOptions = computed(() => {
   // データの最大値を取得（エラー防止を追加）
   const maxValue = props.data?.datasets?.[0]?.data ? Math.max(...props.data.datasets[0].data, 0) : 0;
