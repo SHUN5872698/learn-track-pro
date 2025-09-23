@@ -141,11 +141,12 @@ const router = useRouter();
 // コンポーザブル実行
 // ========================================
 // 学習データ全般を管理するコンポーザブルから必要な状態とアクションを取得
-const { learningContents, sections, deleteStudySession, fetchContents, loading } = useLearningData();
+const { learningContents, sections, deleteStudySession, fetchContents } = useLearningData();
 
 // ========================================
 // 状態管理
 // ========================================
+const loading = ref(true); // ローディング状態
 // 日別統計データを格納するリアクティブな参照
 const dailyStatisticsData = ref([]);
 // 特定の学習コンテンツに紐づくセッションデータを格納するリアクティブな参照
