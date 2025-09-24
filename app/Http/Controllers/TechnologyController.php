@@ -14,7 +14,7 @@ class TechnologyController extends Controller
     {
         $query = Technology::with('category');
 
-        if ($request->has('category_id')) {
+        if ($request->filled('category_id')) {
             $query->byCategory($request->input('category_id'));
         }
 
