@@ -102,15 +102,34 @@ paths:
                   errors:
                     type: object
                     properties:
-                      password:
+                      email:
                         type: array
                         items:
                           type: string
                     required:
-                      - password
+                      - email
                 required:
                   - message
                   - errors
+              examples:
+                '1':
+                  summary: 異常例
+                  value:
+                    message: 指定のメールアドレスは既に使用されています。
+                    errors:
+                      email:
+                        - 指定のメールアドレスは既に使用されています。
+                '2':
+                  summary: 異常例
+                  value:
+                    message: 名前は必須項目です。 (その他、2エラーあり)
+                    errors:
+                      name:
+                        - 名前は必須項目です。
+                      email:
+                        - メールアドレスは必須項目です。
+                      password:
+                        - パスワードは必須項目です。
           headers: {}
       security: []
   /fortify/login:
@@ -1093,7 +1112,7 @@ components:
       properties:
         id:
           type: integer
-          example: 1
+          example: 26
         name:
           type: string
           example: 田中 太郎
@@ -1103,19 +1122,36 @@ components:
           example: tanaka@example.com
         email_verified_at:
           type: string
-          format: date-time
           nullable: true
+          example: null
         avatar:
           type: string
           nullable: true
+          example: null
+        two_factor_secret:
+          type: string
+          nullable: true
+          example: null
+        two_factor_recovery_codes:
+          type: string
+          nullable: true
+          example: null
+        two_factor_confirmed_at:
+          type: string
+          nullable: true
+          example: null
         created_at:
           type: string
-          format: date-time
-          example: '2025-08-21T10:00:00.000000Z'
+          example: '2025-09-23 22:49:50'
         updated_at:
           type: string
-          format: date-time
-          example: '2025-08-21T10:00:00.000000Z'
+          example: '2025-09-23 22:49:50'
+        has_avatar:
+          type: boolean
+          example: false
+        initials:
+          type: string
+          example: 田中
     ValidationError:
       type: object
       properties:
@@ -1130,12 +1166,12 @@ components:
               type: string
           properties: {}
   securitySchemes:
-    sanctum1:
+    sanctum11:
       type: apiKey
       in: cookie
       name: laravel_session
       description: Laravel Sanctum認証
-    sanctum11:
+    sanctum111:
       type: apiKey
       in: cookie
       name: laravel_session
