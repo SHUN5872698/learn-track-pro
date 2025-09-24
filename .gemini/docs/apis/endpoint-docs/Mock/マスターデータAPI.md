@@ -1,8 +1,8 @@
 ## 相互リンク
 
-[マスターデータAPI](https://www.notion.so/API-2689d86c12e880c9a42bd5e3a28deca4?pvs=21) 
+[Mock](https://www.notion.so/Mock-2789d86c12e880898dd0c9c301714f3f?pvs=21) 
 
-.gemini/docs/apis/endpoint-docs/マスターデータAPI.md
+.gemini/docs/apis/endpoint-docs/Mock/マスターデータAPI.md
 
 ---
 
@@ -350,6 +350,8 @@ GET    /api/technologies?category_id={id}     # カテゴリー別技術一覧
 ]
 
 ```
+
+---
 
 ## 備考
 
