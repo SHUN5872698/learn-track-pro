@@ -1,10 +1,8 @@
 ## 相互リンク
 
-[認証・ユーザー関連API](https://www.notion.so/API-2569d86c12e8804ba4bec2f497faeb5b?pvs=21) 
+[Mock](https://www.notion.so/Mock-2789d86c12e880b7be89d9ed0bea2470?pvs=21) 
 
-.gemini/docs/apis/endpoint-docs/認証・ユーザー管理API.md
-
----
+.gemini/docs/apis/endpoint-docs/Mock/認証・ユーザー管理API.md
 
 ## RESTful エンドポイント
 
@@ -12,21 +10,19 @@
 # CSRF保護
 GET    /sanctum/csrf-cookie
 
-# 基本認証
-POST   /api/register
-POST   /api/login
-POST   /api/logout
+# 基本認証（Fortify）
+POST   /fortify/register
+POST   /fortify/login
+POST   /fortify/logout
+POST   /fortify/forgot-password
+POST   /fortify/reset-password
+
+# ユーザー情報管理（自前API）
 GET    /api/user
-
-# ユーザー情報管理
 PUT    /api/user/profile
-PUT    /api/user/password
-
-# パスワードリセット
-POST   /api/forgot-password
-POST   /api/reset-password
-
 ```
+
+---
 
 ## 環境変数設定
 
@@ -35,36 +31,6 @@ base_url: <http://localhost:8000>
 frontend_url: <http://localhost:5173>
 XSRF_TOKEN: (自動設定)
 is_authenticated: false
-
-```
-
-## 共通設定（全エンドポイント - XSRF-Token取得以外）
-
-**Pre-processor**:
-
-```jsx
-const xsrfToken = pm.environment.get('XSRF_TOKEN');
-if (xsrfToken) {
-    pm.request.headers.upsert({
-        key: 'X-XSRF-TOKEN',
-        value: xsrfToken
-    });
-    console.log("✅ X-XSRF-TOKEN自動設定");
-}
-
-```
-
-**Post-processor**:
-
-```jsx
-const newXsrfToken = pm.cookies.get('XSRF-TOKEN');
-if (newXsrfToken) {
-    const currentToken = pm.environment.get('XSRF_TOKEN');
-    if (newXsrfToken !== currentToken) {
-        pm.environment.set('XSRF_TOKEN', newXsrfToken);
-        console.log("✅ XSRF-TOKEN自動更新");
-    }
-}
 
 ```
 
@@ -102,7 +68,7 @@ if (xsrfToken) {
 ## 2. ユーザー登録
 
 - **Method**: POST
-- **URL**: `/api/register`
+- **URL**: `/fortify/register`
 
 **Headers**:
 
@@ -115,10 +81,10 @@ if (xsrfToken) {
 
 ```json
 {
-    "name": "田中太郎",
+    "name": "田中 太郎",
     "email": "tanaka@example.com",
-    "password": "password123",
-    "password_confirmation": "password123"
+    "password": "password",
+    "password_confirmation": "password"
 }
 
 ```
@@ -128,13 +94,13 @@ if (xsrfToken) {
 ```json
 {
     "id": 1,
-    "name": "田中太郎",
+    "name": "田中 太郎",
     "email": "tanaka@example.com",
+    "email_verified_at": "tanaka@example.com",
+    "avatar": "https://avatars.githubusercontent.com/u/98958328",
     "created_at": "2025-08-21T10:00:00.000000Z",
     "updated_at": "2025-08-21T10:00:00.000000Z",
-    "message": "ユーザー登録が完了しました。"
 }
-
 ```
 
 **Mock Response 422**:
@@ -189,8 +155,10 @@ if (pm.response.code === 200) {
 ```json
 {
     "id": 1,
-    "name": "田中太郎",
+    "name": "田中 太郎",
     "email": "tanaka@example.com",
+    "email_verified_at": "tanaka@example.com",
+    "avatar": "https://avatars.githubusercontent.com/u/98958328",
     "created_at": "2025-08-21T10:00:00.000000Z",
     "updated_at": "2025-08-21T10:00:00.000000Z",
     "message": "ログインしました。"
@@ -253,13 +221,19 @@ if (pm.response.code === 204) {
 
 ```json
 {
-    "id": 1,
-    "name": "田中太郎",
+    "id": 26,
+    "name": "田中 太郎",
+    "avatar": null,
     "email": "tanaka@example.com",
-    "created_at": "2025-08-21T10:00:00.000000Z",
-    "updated_at": "2025-08-21T10:00:00.000000Z"
+    "email_verified_at": null,
+    "two_factor_secret": null,
+    "two_factor_recovery_codes": null,
+    "two_factor_confirmed_at": null,
+    "created_at": "2025-09-23 22:49:50",
+    "updated_at": "2025-09-23 22:49:50",
+    "has_avatar": false,
+    "initials": "田中"
 }
-
 ```
 
 **Mock Response 401**:
@@ -300,14 +274,22 @@ if (pm.response.code === 204) {
 
 ```json
 {
-    "id": 1,
-    "name": "田中次郎",
-    "email": "tanaka.new@example.com",
-    "created_at": "2025-08-21T10:00:00.000000Z",
-    "updated_at": "2025-08-21T11:00:00.000000Z",
-    "message": "プロフィールを更新しました。"
+    "user": {
+        "id": 26,
+        "name": "田中 次郎",
+        "avatar": null,
+        "email": "tanaka.new@example.com",
+        "email_verified_at": null,
+        "two_factor_secret": null,
+        "two_factor_recovery_codes": null,
+        "two_factor_confirmed_at": null,
+        "created_at": "2025-09-23 22:49:50",
+        "updated_at": "2025-09-23 22:58:27",
+        "has_avatar": false,
+        "initials": "田中"
+    },
+    "message": "プロフィールを更新しました"
 }
-
 ```
 
 **Mock Response 422**:
@@ -324,7 +306,7 @@ if (pm.response.code === 204) {
 
 ---
 
-## 7. パスワード変更
+## ~~7. パスワード変更~~
 
 - **Method**: PUT
 - **URL**: `/api/user/password`
@@ -372,7 +354,7 @@ if (pm.response.code === 204) {
 
 ---
 
-## 8. パスワードリセット要求
+## ~~8. パスワードリセット要求~~
 
 - **Method**: POST
 - **URL**: `/api/forgot-password`
@@ -416,7 +398,7 @@ if (pm.response.code === 204) {
 
 ---
 
-## 9. パスワードリセット実行
+## ~~9. パスワードリセット実行~~
 
 - **Method**: POST
 - **URL**: `/api/reset-password`
