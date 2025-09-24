@@ -121,6 +121,7 @@
 // 外部インポート
 // ========================================
 import { ref, reactive, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { EyeIcon, EyeSlashIcon, UserPlusIcon } from '@heroicons/vue/24/solid';
 
 // ========================================
@@ -133,6 +134,7 @@ import BaseButton from '../../components/common/BaseButton.vue';
 // ========================================
 // コンポーザブル
 // ========================================
+const router = useRouter();
 const authStore = useAuthStore();
 
 // ========================================

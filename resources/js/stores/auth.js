@@ -59,41 +59,28 @@ export const useAuthStore = defineStore('auth', {
       this.clearAuthErrors();
 
       try {
-        // CSRF Cookie取得（ログは開発時のみ）
-        if (import.meta.env.DEV) {
-          console.log('🔄 Pinia: CSRF Cookie取得開始');
-        }
+        // SPA認証のためにCSRF Cookieを取得
         await axios.get('/sanctum/csrf-cookie');
-        if (import.meta.env.DEV) {
-          console.log('✅ Pinia: CSRF Cookie取得完了');
-        }
 
-        // ログイン実行（ログは開発時のみ）
-        if (import.meta.env.DEV) {
-          console.log('🔄 Pinia: ログイン実行開始');
-        }
+        // Fortifyのログインエンドポイントへリクエスト
         const response = await axios.post('/fortify/login', credentials);
-        if (import.meta.env.DEV) {
-          console.log('✅ Pinia: ログイン成功', response);
-        }
 
+        // ログイン状態を永続化するためローカルストレージに保存
         localStorage.setItem('isLoggedIn', 'true');
-        await this.fetchUser();
+        await this.fetchUser(); // ログイン成功後、ユーザー情報を取得
       } catch (error) {
-        // 422エラー（バリデーションエラー）は静かに処理
+        // 422エラー（バリデーション）と他のエラーを区別
         if (error?.response?.status === 422) {
-          // バリデーションエラーメッセージを設定（コンソールには出力しない）
-          const errorData = error.response.data.errors || {
-            general: ['入力内容に誤りがあります'],
-          };
-          this.setAuthErrors(errorData);
+          this.setAuthErrors(
+            error.response.data.errors || {
+              general: ['入力内容に誤りがあります'],
+            }
+          );
         } else {
-          // 422以外のエラーのみコンソールに出力
           console.error('❌ Pinia: ログイン失敗', error);
-          const errorData = {
+          this.setAuthErrors({
             general: [error?.message || 'ログインに失敗しました'],
-          };
-          this.setAuthErrors(errorData);
+          });
         }
         throw error;
       } finally {
