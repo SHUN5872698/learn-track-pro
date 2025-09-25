@@ -33,7 +33,7 @@ export const useSectionStore = defineStore('sections', {
         const response = await api.fetchSections(learningContentId);
         // 特定のコンテンツIDのセクションを置き換える
         const otherSections = this.sections.filter((s) => s.learning_content_id !== learningContentId);
-        this.sections = [...otherSections, ...response.data];
+        this.sections = [...otherSections, ...response.data.data];
       } catch (error) {
         this.error = 'セクションの読み込みに失敗しました。';
         console.error('セクションのフェッチ中にエラーが発生しました:', error);
@@ -47,7 +47,7 @@ export const useSectionStore = defineStore('sections', {
       this.loading = true;
       try {
         const response = await api.createSection(data);
-        this.sections.push(response.data);
+        this.sections.push(response.data.data);
         // 学習コンテンツの統計情報を更新
         const learningContentStore = useLearningContentStore();
         await learningContentStore.fetchContents(); // 更新された統計情報を取得するために再フェッチ
@@ -66,7 +66,7 @@ export const useSectionStore = defineStore('sections', {
         const response = await api.updateSection(id, data);
         const index = this.sections.findIndex((s) => s.id === id);
         if (index !== -1) {
-          this.sections[index] = response.data;
+          this.sections[index] = response.data.data;
         }
       } catch (error) {
         console.error('セクションの更新中にエラーが発生しました:', error);
@@ -103,7 +103,7 @@ export const useSectionStore = defineStore('sections', {
         const index = this.sections.findIndex((s) => s.id === id);
         if (index !== -1) {
           // セクションを更新
-          this.sections[index] = { ...response.data };
+          this.sections[index] = { ...response.data.data };
 
           // 統計情報を手動で計算して更新
           const learningContentId = this.sections[index].learning_content_id;
@@ -133,9 +133,13 @@ export const useSectionStore = defineStore('sections', {
     async bulkUpdateSections(learningContentId, data) {
       this.loading = true;
       try {
-        const response = await api.bulkUpdateSections(learningContentId, data);
         // 一括更新後、そのコンテンツの全てのセクションを再フェッチするのが最善
-        await this.fetchSections(learningContentId);
+        const response = await api.bulkUpdateSections(learningContentId, data);
+
+        // セクションを直接更新
+        const otherSections = this.sections.filter((s) => s.learning_content_id !== learningContentId);
+        this.sections = [...otherSections, ...response.data.data];
+
         // 統計情報を更新するために学習コンテンツも再フェッチ
         const learningContentStore = useLearningContentStore();
         await learningContentStore.fetchContents();

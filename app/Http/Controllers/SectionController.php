@@ -28,7 +28,9 @@ final class SectionController extends Controller
 
         $sections = $learningContent->sections()->orderBy('order')->get();
 
-        return response()->json($sections);
+        return response()->json([
+            'data' => $sections
+        ]);
     }
 
     /**
@@ -51,7 +53,10 @@ final class SectionController extends Controller
             return $section;
         });
 
-        return response()->json($section, 201);
+        return response()->json([
+            'data' => $section,
+            'message' => 'セクションを追加しました。'
+        ], 201);
     }
 
     /**
@@ -66,7 +71,11 @@ final class SectionController extends Controller
         // 認可ポリシーを適用し、ユーザーがセクションの学習コンテンツを更新する権限があるか確認
         Gate::authorize('update', $section->learningContent);
         $section->update($request->validated());
-        return response()->json($section);
+
+        return response()->json([
+            'data' => $section,
+            'message' => 'セクションを更新しました。'
+        ]);
     }
 
     /**
@@ -118,7 +127,10 @@ final class SectionController extends Controller
 
         // ステータスに変更がない場合は更新処理をスキップ
         if ($oldStatus === $newStatus) {
-            return response()->json($section);
+            return response()->json([
+                'data' => $section,
+                'message' => 'ステータスは既に設定されています。'
+            ]);
         }
 
         // セクションのステータス更新と学習コンテンツの完了セクション数更新をトランザクションで囲み、原子性を保証
@@ -137,7 +149,10 @@ final class SectionController extends Controller
             }
         });
 
-        return response()->json($section);
+        return response()->json([
+            'data' => $section,
+            'message' => 'ステータスを更新しました。'
+        ]);
     }
 
     /**
@@ -170,14 +185,14 @@ final class SectionController extends Controller
             // 2. 既存セクションを一時的に退避（ユニーク制約回避）
             $existingIds = collect($validated['sections'])
                 ->pluck('id')
-                ->filter();  // nullを除外（新規セクションを除く）
+                ->filter(); // nullを除外（新規セクションを除く）
 
             if ($existingIds->isNotEmpty()) {
                 // updateメソッドで一括更新（パフォーマンス向上）
                 DB::table('sections')
                     ->where('learning_content_id', $learningContent->id)
                     ->whereIn('id', $existingIds)
-                    ->update(['order' => DB::raw('id + 10000')]);  // IDベースで一時値を設定
+                    ->update(['order' => DB::raw('id + 10000')]); // IDベースで一時値を設定
             }
 
             // 3. 正しい位置に配置
@@ -208,9 +223,10 @@ final class SectionController extends Controller
                     ->count()
             ]);
         });
+        $sections = $learningContent->sections()->orderBy('order')->get();
 
         return response()->json([
-            'sections' => $learningContent->sections()->orderBy('order')->get(),
+            'data' => $sections,
             'message' => 'セクションを更新しました。'
         ]);
     }
