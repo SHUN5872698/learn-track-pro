@@ -23,9 +23,9 @@ class LearningSessionResource extends JsonResource
             'memo' => $this->memo,
             'mood_rating' => $this->mood_rating,
             'session_type' => $this->session_type,
-            'studied_at' => $this->studied_at,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'studied_at' => $this->studied_at?->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             'learning_content' => new LearningContentResource($this->whenLoaded('learningContent')),
             'section' => new SectionResource($this->whenLoaded('section')),
         ];

@@ -23,9 +23,9 @@ class LearningContentResource extends JsonResource
             'total_sections' => $this->total_sections,
             'completed_sections' => $this->completed_sections,
             'status' => $this->status,
-            'completed_at' => $this->completed_at,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'completed_at' => $this->completed_at?->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             'technology' => new TechnologyResource($this->whenLoaded('technology')),
             'sections' => SectionResource::collection($this->whenLoaded('sections')),
         ];
