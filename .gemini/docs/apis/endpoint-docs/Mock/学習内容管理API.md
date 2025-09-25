@@ -1,8 +1,8 @@
 ## 相互リンク
 
-[学習内容管理API](https://www.notion.so/API-2569d86c12e880d5a9c4c87f5e382861?pvs=21) 
+[Mock](https://www.notion.so/Mock-2799d86c12e88000bdc2fd60cc1a62f7?pvs=21) 
 
-.gemini/docs/apis/endpoint-docs/学習内容管理API.md
+.gemini/docs/apis/endpoint-docs/Mock/学習内容管理API.md
 
 ---
 
@@ -38,10 +38,12 @@ PUT    /api/learning-contents/{id}/reopen     # 学習を再開
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| status | string | in_progress, completed, not_started |
+| status | string | ステータスでフィルタリング |
 | technology_id | integer | 技術分野でのフィルタ |
 | sort | string | updated_at, created_at, title (デフォルト: updated_at) |
 | order | string | asc, desc (デフォルト: desc) |
+| page | integer | ページ番号 |
+| per_page | integer | 1ページあたりの件数 |
 
 **Mock Response 200**:
 
@@ -574,3 +576,5 @@ PUT    /api/learning-contents/{id}/reopen     # 学習を再開
 }
 
 ```
+
+---
