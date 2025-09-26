@@ -1,23 +1,28 @@
-## 相互リンク
-
-[学習記録API](https://www.notion.so/API-2689d86c12e880ca9766e9fe6075d01d?pvs=21) 
-
-.gemini/docs/apis/endpoint-docs/学習記録API.md
-
----
-
 ## RESTful エンドポイント
 
 ```bash
-GET    /api/learning-sessions                     # 学習記録一覧
-POST   /api/learning-sessions                     # 学習記録作成
-GET    /api/learning-sessions/{id}                # 学習記録詳細
-PUT    /api/learning-sessions/{id}                # 学習記録更新
-DELETE /api/learning-sessions/{id}                # 学習記録削除
-GET    /api/sections/{id}/learning-sessions       # セクション別学習記録
-GET    /api/learning-sessions/statistics          # 学習統計情報
-
+GET    /api/learning-sessions                                       # 学習記録一覧
+POST   /api/learning-sessions                                       # 学習記録作成
+GET    /api/learning-sessions/{id}                                  # 学習記録詳細
+PUT    /api/learning-sessions/{id}                                  # 学習記録更新
+DELETE /api/learning-sessions/{id}                                  # 学習記録削除
+GET    /api/sections/{sectionId}/sessions                           # セクション別学習記録
+GET    /api/learning-contents/{learningContentId}/sessions          # 学習内容別学習記録
+GET    /api/learning-sessions/statistics/summary                    # 統計サマリー
+GET    /api/learning-sessions/statistics/monthly                    # 月別統計
+GET    /api/learning-sessions/statistics/by-technology              # 技術別統計
+GET    /api/learning-sessions/statistics/daily                      # 日別統計
+GET    /api/learning-sessions/statistics/latest-by-content          # 学習内容別最新記録取得
+GET    /api/learning-contents/{learningContentId}/statistics/daily  # 学習内容別日別統計取得
 ```
+
+## 相互リンク
+
+[Mock](https://www.notion.so/Mock-27a9d86c12e8801da1e7ed22fce60bac?pvs=21) 
+
+.gemini/docs/apis/endpoint-docs/Mock/学習記録API.md
+
+---
 
 ---
 
@@ -468,3 +473,5 @@ GET    /api/learning-sessions/statistics          # 学習統計情報
 - 学習記録は必ずセクションに紐づきます
 - 学習時間（duration_minutes）は開始時刻と終了時刻から自動計算されます
 - 学習記録の削除時、関連するセクションと学習内容の統計情報が自動的に更新されます
+
+---
