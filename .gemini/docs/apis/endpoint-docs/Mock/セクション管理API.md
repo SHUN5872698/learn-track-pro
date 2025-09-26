@@ -1,21 +1,20 @@
 ## 相互リンク
 
-[**セクション管理API設計**](https://www.notion.so/API-2569d86c12e880b2a4e4e65977b0fe11?pvs=21) 
+[Mock](https://www.notion.so/Mock-27a9d86c12e8802fa2faef586c1aa293?pvs=21) 
 
-.gemini/docs/apis/endpoint-docs/セクション管理API.md
+.gemini/docs/apis/endpoint-docs/Mock/セクション管理API.md
 
 ---
 
 ## RESTful エンドポイント
 
 ```bash
-GET    /api/learning-contents/{id}/sections   # セクション一覧
-POST   /api/learning-contents/{id}/sections   # セクション追加
-PUT    /api/sections/{id}                     # セクション編集
-DELETE /api/sections/{id}                     # セクション削除
-PUT    /api/sections/{id}/status              # ステータス変更
-PUT    /api/learning-contents/{id}/sections/bulk # セクション一括更新
-
+GET    /api/learning-contents/{id}/sections                      # セクション一覧
+POST   /api/sections                                             # セクション追加
+PUT    /api/sections/{id}                                        # セクション編集
+PUT    /api/sections/{id}/status                                 # ステータス変更
+PUT    /api/learning-contents/{learningContentId}/sections/bulk  # セクション一括更新
+DELETE /api/sections/{id}                                        # セクション削除
 ```
 
 ---
@@ -318,64 +317,7 @@ PUT    /api/learning-contents/{id}/sections/bulk # セクション一括更新
 
 ---
 
-## 4. セクション削除
-
-- **Method**: DELETE
-- **URL**: `/api/sections/{id}`
-
-**Headers**:
-
-| Key | Value |
-| --- | --- |
-| Accept | application/json |
-| Content-Type | application/json |
-| Referer | {{frontend_url}} |
-
-**Path Parameters**:
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| id | integer | セクションID |
-
-**Mock Response 200**:
-
-```json
-{
-    "message": "セクションを削除しました。"
-}
-
-```
-
-**Mock Response 404**:
-
-```json
-{
-    "message": "セクションが見つかりません。"
-}
-
-```
-
-**Mock Response 422（学習記録が存在する場合）**:
-
-```json
-{
-    "message": "学習記録が存在するセクションは削除できません。"
-}
-
-```
-
-**Mock Response 422（最後のセクションを削除しようとした場合）- 新規追加**:
-
-```json
-{
-    "message": "最後のセクションは削除できません。学習内容には最低1つのセクションが必要です。"
-}
-
-```
-
----
-
-## 5. セクションステータス変更
+## 4. セクションステータス変更
 
 - **Method**: PUT
 - **URL**: `/api/sections/{id}/status`
@@ -464,7 +406,7 @@ PUT    /api/learning-contents/{id}/sections/bulk # セクション一括更新
 
 ---
 
-## セクション一括更新
+## 5. セクション一括更新
 
 - **Method**: PUT
 - **URL**: `/api/learning-contents/{id}/sections/bulk`
@@ -556,6 +498,65 @@ PUT    /api/learning-contents/{id}/sections/bulk # セクション一括更新
 
 ```
 
+---
+
+## 6. セクション削除
+
+- **Method**: DELETE
+- **URL**: `/api/sections/{id}`
+
+**Headers**:
+
+| Key | Value |
+| --- | --- |
+| Accept | application/json |
+| Content-Type | application/json |
+| Referer | {{frontend_url}} |
+
+**Path Parameters**:
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| id | integer | セクションID |
+
+**Mock Response 200**:
+
+```json
+{
+    "message": "セクションを削除しました。"
+}
+
+```
+
+**Mock Response 404**:
+
+```json
+{
+    "message": "セクションが見つかりません。"
+}
+
+```
+
+**Mock Response 422（学習記録が存在する場合）**:
+
+```json
+{
+    "message": "学習記録が存在するセクションは削除できません。"
+}
+
+```
+
+**Mock Response 422（最後のセクションを削除しようとした場合）- 新規追加**:
+
+```json
+{
+    "message": "最後のセクションは削除できません。学習内容には最低1つのセクションが必要です。"
+}
+
+```
+
+---
+
 ## 備考
 
 - セクションの`order`は同一学習内容内で一意である必要があります
@@ -565,3 +566,5 @@ PUT    /api/learning-contents/{id}/sections/bulk # セクション一括更新
 - 学習内容には最低1つのセクションが必須です（最後のセクションは削除不可）
 - セクション削除時、該当学習内容のtotal_sectionsが自動的に1減少します
 - セクション追加時、該当学習内容のtotal_sectionsが自動的に1増加します
+
+---
