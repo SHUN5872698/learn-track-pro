@@ -215,7 +215,7 @@ class LearningSessionController extends Controller
 
         // 統計サマリーデータをJSON形式で返す
         return response()->json([
-            'total_study_minutes' => $totalMinutes,
+            'total_study_minutes' => (int) $totalMinutes,
             'completed_courses_count' => $completedCourses,
             'average_study_time_per_day' => $averagePerDay,
             'consecutive_study_days' => $consecutiveDays,
