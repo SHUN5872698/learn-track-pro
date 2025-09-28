@@ -2,7 +2,7 @@
 
 [開発環境](https://www.notion.so/27a9d86c12e8804cb37fe9f08313ceb2?pvs=21) 
 
-.gemini/docs/apis/endpoint-docs/Dev/セクション管理API.md
+.gemini/docs/apis/endpoint-docs/セクション管理API.md
 
 ---
 
@@ -37,165 +37,165 @@ DELETE /api/sections/{id}                                        # セクショ�
 | Parameter | Type | Description |
 | --- | --- | --- |
 | id | integer | 学習内容ID |
-
-**Mock Response 200（例: learning_content_id=2の場合）**:
-
-```json
-{
-    "data": [
-        {
-            "id": 21,
-            "learning_content_id": 2,
-            "title": "Vue.jsの基本",
-            "order": 1,
-            "status": "completed",
-            "completed_at": "2024-01-14 18:00:00",
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 22,
-            "learning_content_id": 2,
-            "title": "Composition API",
-            "order": 2,
-            "status": "completed",
-            "completed_at": "2024-01-14 18:00:00",
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 23,
-            "learning_content_id": 2,
-            "title": "Vue Router",
-            "order": 3,
-            "status": "completed",
-            "completed_at": "2024-01-14 18:00:00",
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 24,
-            "learning_content_id": 2,
-            "title": "Vuex/Pinia",
-            "order": 4,
-            "status": "completed",
-            "completed_at": "2024-01-14 18:00:00",
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 25,
-            "learning_content_id": 2,
-            "title": "コンポーネント設計",
-            "order": 5,
-            "status": "completed",
-            "completed_at": "2024-01-14 18:00:00",
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 26,
-            "learning_content_id": 2,
-            "title": "TypeScript統合",
-            "order": 6,
-            "status": "completed",
-            "completed_at": "2024-01-14 18:00:00",
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 27,
-            "learning_content_id": 2,
-            "title": "テスト戦略",
-            "order": 7,
-            "status": "completed",
-            "completed_at": "2024-01-14 18:00:00",
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 28,
-            "learning_content_id": 2,
-            "title": "パフォーマンス最適化",
-            "order": 8,
-            "status": "completed",
-            "completed_at": "2024-01-14 18:00:00",
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 29,
-            "learning_content_id": 2,
-            "title": "SSRとNuxt.js",
-            "order": 9,
-            "status": "completed",
-            "completed_at": "2024-01-14 18:00:00",
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 30,
-            "learning_content_id": 2,
-            "title": "カスタムディレクティブ",
-            "order": 10,
-            "status": "not_started",
-            "completed_at": null,
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 31,
-            "learning_content_id": 2,
-            "title": "プラグイン開発",
-            "order": 11,
-            "status": "not_started",
-            "completed_at": null,
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 32,
-            "learning_content_id": 2,
-            "title": "アニメーション",
-            "order": 12,
-            "status": "not_started",
-            "completed_at": null,
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 33,
-            "learning_content_id": 2,
-            "title": "国際化（i18n）",
-            "order": 13,
-            "status": "not_started",
-            "completed_at": null,
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 34,
-            "learning_content_id": 2,
-            "title": "PWA対応",
-            "order": 14,
-            "status": "not_started",
-            "completed_at": null,
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        },
-        {
-            "id": 35,
-            "learning_content_id": 2,
-            "title": "デプロイ戦略",
-            "order": 15,
-            "status": "not_started",
-            "completed_at": null,
-            "created_at": "2025-09-13 12:53:19",
-            "updated_at": "2025-09-13 12:53:19"
-        }
-    ]
-}
-```
+- **Mock Response 200（例: learning_content_id=2の場合）**:
+    
+    ```json
+    {
+        "data": [
+            {
+                "id": 21,
+                "learning_content_id": 2,
+                "title": "Vue.jsの基本",
+                "order": 1,
+                "status": "completed",
+                "completed_at": "2024-01-14 18:00:00",
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 22,
+                "learning_content_id": 2,
+                "title": "Composition API",
+                "order": 2,
+                "status": "completed",
+                "completed_at": "2024-01-14 18:00:00",
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 23,
+                "learning_content_id": 2,
+                "title": "Vue Router",
+                "order": 3,
+                "status": "completed",
+                "completed_at": "2024-01-14 18:00:00",
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 24,
+                "learning_content_id": 2,
+                "title": "Vuex/Pinia",
+                "order": 4,
+                "status": "completed",
+                "completed_at": "2024-01-14 18:00:00",
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 25,
+                "learning_content_id": 2,
+                "title": "コンポーネント設計",
+                "order": 5,
+                "status": "completed",
+                "completed_at": "2024-01-14 18:00:00",
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 26,
+                "learning_content_id": 2,
+                "title": "TypeScript統合",
+                "order": 6,
+                "status": "completed",
+                "completed_at": "2024-01-14 18:00:00",
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 27,
+                "learning_content_id": 2,
+                "title": "テスト戦略",
+                "order": 7,
+                "status": "completed",
+                "completed_at": "2024-01-14 18:00:00",
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 28,
+                "learning_content_id": 2,
+                "title": "パフォーマンス最適化",
+                "order": 8,
+                "status": "completed",
+                "completed_at": "2024-01-14 18:00:00",
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 29,
+                "learning_content_id": 2,
+                "title": "SSRとNuxt.js",
+                "order": 9,
+                "status": "completed",
+                "completed_at": "2024-01-14 18:00:00",
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 30,
+                "learning_content_id": 2,
+                "title": "カスタムディレクティブ",
+                "order": 10,
+                "status": "not_started",
+                "completed_at": null,
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 31,
+                "learning_content_id": 2,
+                "title": "プラグイン開発",
+                "order": 11,
+                "status": "not_started",
+                "completed_at": null,
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 32,
+                "learning_content_id": 2,
+                "title": "アニメーション",
+                "order": 12,
+                "status": "not_started",
+                "completed_at": null,
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 33,
+                "learning_content_id": 2,
+                "title": "国際化（i18n）",
+                "order": 13,
+                "status": "not_started",
+                "completed_at": null,
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 34,
+                "learning_content_id": 2,
+                "title": "PWA対応",
+                "order": 14,
+                "status": "not_started",
+                "completed_at": null,
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            },
+            {
+                "id": 35,
+                "learning_content_id": 2,
+                "title": "デプロイ戦略",
+                "order": 15,
+                "status": "not_started",
+                "completed_at": null,
+                "created_at": "2025-09-13 12:53:19",
+                "updated_at": "2025-09-13 12:53:19"
+            }
+        ]
+    }
+    ```
+    
 
 **Mock Response 200（パラメータ指定なし）:**HTMLが返却
 
@@ -219,33 +219,33 @@ DELETE /api/sections/{id}                                        # セクショ�
 | Accept | application/json |
 | Content-Type | application/json |
 | Referer | {{frontend_url}} |
-
-**Request Body (JSON)**:
-
-```json
-{
-    "learning_content_id": 2,
-    "title": "Apidocで作成",
-    "order": 16
-}
-```
-
-**Mock Response 201**:
-
-```json
-{
-    "data": {
-        "status": "not_started",
+- **Request Body (JSON)**:
+    
+    ```json
+    {
         "learning_content_id": 2,
         "title": "Apidocで作成",
-        "order": 16,
-        "updated_at": "2025-09-26 11:12:54",
-        "created_at": "2025-09-26 11:12:54",
-        "id": 92
-    },
-    "message": "セクションを追加しました。"
-}
-```
+        "order": 16
+    }
+    ```
+    
+- **Mock Response 201**:
+    
+    ```json
+    {
+        "data": {
+            "status": "not_started",
+            "learning_content_id": 2,
+            "title": "Apidocで作成",
+            "order": 16,
+            "updated_at": "2025-09-26 11:12:54",
+            "created_at": "2025-09-26 11:12:54",
+            "id": 92
+        },
+        "message": "セクションを追加しました。"
+    }
+    ```
+    
 
 **Mock Response 401**:権限なし
 
@@ -253,24 +253,25 @@ DELETE /api/sections/{id}                                        # セクショ�
 
 **Mock Response 404:**レコードが存在しない
 
-**Mock Response 422**:バリデーションエラー
-
-```json
-{
-    "message": "学習コンテンツは必須項目です。 (その他、2エラーあり)",
-    "errors": {
-        "learning_content_id": [
-            "学習コンテンツは必須項目です。"
-        ],
-        "title": [
-            "タイトルは必須項目です。"
-        ],
-        "order": [
-            "orderは必須項目です。"
-        ]
+- **Mock Response 422**:バリデーションエラー
+    
+    ```json
+    {
+        "message": "学習コンテンツは必須項目です。 (その他、2エラーあり)",
+        "errors": {
+            "learning_content_id": [
+                "学習コンテンツは必須項目です。"
+            ],
+            "title": [
+                "タイトルは必須項目です。"
+            ],
+            "order": [
+                "orderは必須項目です。"
+            ]
+        }
     }
-}
-```
+    ```
+    
 
 **Mock Response 500**:orderの重複
 
@@ -294,46 +295,46 @@ DELETE /api/sections/{id}                                        # セクショ�
 | Parameter | Type | Description |
 | --- | --- | --- |
 | id | integer | セクションID |
-
-**Request Body (JSON)**:
-
-```json
-{
-    "title": "Apidocで更新",
-    "order": 17
-}
-```
-
-**Mock Response 200（例: id=94の場合）**:
-
-```json
-{
-    "data": {
-        "id": 94,
-        "learning_content_id": 2,
+- **Request Body (JSON)**:
+    
+    ```json
+    {
         "title": "Apidocで更新",
-        "order": 17,
-        "status": "not_started",
-        "completed_at": null,
-        "created_at": "2025-09-26 11:21:26",
-        "updated_at": "2025-09-26 11:29:26",
-        "learning_content": {
-            "id": 2,
-            "user_id": 1,
-            "technology_id": 2,
-            "title": "Vue.js 3 実践ガイド",
-            "description": "Vue.js 3のComposition APIとTypeScriptを使ったモダンなフロントエンド開発",
-            "total_sections": 17,
-            "completed_sections": 9,
-            "status": "in_progress",
+        "order": 17
+    }
+    ```
+    
+- **Mock Response 200（例: id=94の場合）**:
+    
+    ```json
+    {
+        "data": {
+            "id": 94,
+            "learning_content_id": 2,
+            "title": "Apidocで更新",
+            "order": 17,
+            "status": "not_started",
             "completed_at": null,
-            "created_at": "2025-09-13 12:30:46",
-            "updated_at": "2025-09-26 11:21:26"
-        }
-    },
-    "message": "セクションを更新しました。"
-}
-```
+            "created_at": "2025-09-26 11:21:26",
+            "updated_at": "2025-09-26 11:29:26",
+            "learning_content": {
+                "id": 2,
+                "user_id": 1,
+                "technology_id": 2,
+                "title": "Vue.js 3 実践ガイド",
+                "description": "Vue.js 3のComposition APIとTypeScriptを使ったモダンなフロントエンド開発",
+                "total_sections": 17,
+                "completed_sections": 9,
+                "status": "in_progress",
+                "completed_at": null,
+                "created_at": "2025-09-13 12:30:46",
+                "updated_at": "2025-09-26 11:21:26"
+            }
+        },
+        "message": "セクションを更新しました。"
+    }
+    ```
+    
 
 **Mock Response 301（パラメータ指定なし）:**HTMLが返却
 
@@ -343,21 +344,22 @@ DELETE /api/sections/{id}                                        # セクショ�
 
 **Mock Response 404:**レコードが存在しない
 
-**Mock Response 422**:バリデーションエラー
-
-```json
-{
-    "message": "タイトルは必須項目です。 (その他、1エラーあり)",
-    "errors": {
-        "title": [
-            "タイトルは必須項目です。"
-        ],
-        "order": [
-            "orderは必須項目です。"
-        ]
+- **Mock Response 422**:バリデーションエラー
+    
+    ```json
+    {
+        "message": "タイトルは必須項目です。 (その他、1エラーあり)",
+        "errors": {
+            "title": [
+                "タイトルは必須項目です。"
+            ],
+            "order": [
+                "orderは必須項目です。"
+            ]
+        }
     }
-}
-```
+    ```
+    
 
 **Mock Response 500**:orderの重複
 
@@ -381,83 +383,82 @@ DELETE /api/sections/{id}                                        # セクショ�
 | Parameter | Type | Description |
 | --- | --- | --- |
 | id | integer | セクションID |
-
-**Request Body (JSON)**:
-
-```json
-{
-    "status": "in_progress"
-}
-
-```
-
-**Status Values**:
-
-- `not_started`: 未着手
-- `in_progress`: 学習中
-- `completed`: 完了
-
-**Mock Response 200（例: id=94を学習中にする場合）**:
-
-```json
-{
-    "data": {
-        "id": 94,
-        "learning_content_id": 2,
-        "title": "Vue3の新機能",
-        "order": 16,
-        "status": "in_progress",
-        "completed_at": null,
-        "created_at": "2025-09-26 11:58:03",
-        "updated_at": "2025-09-26 13:02:01",
-        "learning_content": {
-            "id": 2,
-            "user_id": 1,
-            "technology_id": 2,
-            "title": "Vue.js 3 実践ガイド",
-            "description": "Vue.js 3のComposition APIとTypeScriptを使ったモダンなフロントエンド開発",
-            "total_sections": 17,
-            "completed_sections": 9,
+- **Request Body (JSON)**:
+    
+    ```json
+    {
+        "status": "in_progress"
+    }
+    
+    ```
+    
+    **Status Values**:
+    
+    - `not_started`: 未着手
+    - `in_progress`: 学習中
+    - `completed`: 完了
+- **Mock Response 200（例: id=94を学習中にする場合）**:
+    
+    ```json
+    {
+        "data": {
+            "id": 94,
+            "learning_content_id": 2,
+            "title": "Vue3の新機能",
+            "order": 16,
             "status": "in_progress",
             "completed_at": null,
-            "created_at": "2025-09-13 12:30:46",
-            "updated_at": "2025-09-26 11:58:03"
-        }
-    },
-    "message": "ステータスを更新しました。"
-}
-```
-
-**Mock Response 200（例: id=94を完了にする場合）**:
-
-```json
-{
-    "data": {
-        "id": 94,
-        "learning_content_id": 2,
-        "title": "Vue3の新機能",
-        "order": 16,
-        "status": "completed",
-        "completed_at": "2025-09-26 13:05:28",
-        "created_at": "2025-09-26 11:58:03",
-        "updated_at": "2025-09-26 13:05:28",
-        "learning_content": {
-            "id": 2,
-            "user_id": 1,
-            "technology_id": 2,
-            "title": "Vue.js 3 実践ガイド",
-            "description": "Vue.js 3のComposition APIとTypeScriptを使ったモダンなフロントエンド開発",
-            "total_sections": 17,
-            "completed_sections": 10,
-            "status": "in_progress",
-            "completed_at": null,
-            "created_at": "2025-09-13 12:30:46",
-            "updated_at": "2025-09-26 13:04:44"
-        }
-    },
-    "message": "ステータスを更新しました。"
-}
-```
+            "created_at": "2025-09-26 11:58:03",
+            "updated_at": "2025-09-26 13:02:01",
+            "learning_content": {
+                "id": 2,
+                "user_id": 1,
+                "technology_id": 2,
+                "title": "Vue.js 3 実践ガイド",
+                "description": "Vue.js 3のComposition APIとTypeScriptを使ったモダンなフロントエンド開発",
+                "total_sections": 17,
+                "completed_sections": 9,
+                "status": "in_progress",
+                "completed_at": null,
+                "created_at": "2025-09-13 12:30:46",
+                "updated_at": "2025-09-26 11:58:03"
+            }
+        },
+        "message": "ステータスを更新しました。"
+    }
+    ```
+    
+- **Mock Response 200（例: id=94を完了にする場合）**:
+    
+    ```json
+    {
+        "data": {
+            "id": 94,
+            "learning_content_id": 2,
+            "title": "Vue3の新機能",
+            "order": 16,
+            "status": "completed",
+            "completed_at": "2025-09-26 13:05:28",
+            "created_at": "2025-09-26 11:58:03",
+            "updated_at": "2025-09-26 13:05:28",
+            "learning_content": {
+                "id": 2,
+                "user_id": 1,
+                "technology_id": 2,
+                "title": "Vue.js 3 実践ガイド",
+                "description": "Vue.js 3のComposition APIとTypeScriptを使ったモダンなフロントエンド開発",
+                "total_sections": 17,
+                "completed_sections": 10,
+                "status": "in_progress",
+                "completed_at": null,
+                "created_at": "2025-09-13 12:30:46",
+                "updated_at": "2025-09-26 13:04:44"
+            }
+        },
+        "message": "ステータスを更新しました。"
+    }
+    ```
+    
 
 **Mock Response 401**:権限なし
 
@@ -488,7 +489,7 @@ DELETE /api/sections/{id}                                        # セクショ�
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| learningContentId | integer | セクションID |
+| learningContentId | integer | 学習記録ID |
 
 **Request Body (JSON)**:
 
@@ -941,15 +942,15 @@ DELETE /api/sections/{id}                                        # セクショ�
 | Parameter | Type | Description |
 | --- | --- | --- |
 | id | integer | セクションID |
-
-**Mock Response 200**:
-
-```json
-{
-    "message": "セクションを削除しました。"
-}
-
-```
+- **Mock Response 200**:
+    
+    ```json
+    {
+        "message": "セクションを削除しました。"
+    }
+    
+    ```
+    
 
 **Mock Response 301（パラメータ指定なし）:**HTMLが返却
 
@@ -959,13 +960,14 @@ DELETE /api/sections/{id}                                        # セクショ�
 
 **Mock Response 404:**レコードが存在しない
 
-**Mock Response 422**:最後のセクション
-
-```json
-{
-    "message": "最低1つのセクションが必要です。"
-}
-```
+- **Mock Response 422**:最後のセクション
+    
+    ```json
+    {
+        "message": "最低1つのセクションが必要です。"
+    }
+    ```
+    
 
 ---
 

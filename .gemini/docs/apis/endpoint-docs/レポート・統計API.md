@@ -2,7 +2,7 @@
 
 [レポート・統計API](https://www.notion.so/API-2689d86c12e880bca3fde6b9f76c0ad1?pvs=21) 
 
-.gemini/docs/apis/endpoint-docs/Dev/レポート・統計API.md
+.gemini/docs/apis/endpoint-docs/レポート・統計API.md
 
 ---
 

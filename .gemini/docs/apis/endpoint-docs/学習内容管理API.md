@@ -2,7 +2,7 @@
 
 [開発環境](https://www.notion.so/2799d86c12e88026afd5e70d2b8dfd8b?pvs=21) 
 
-.gemini/docs/apis/endpoint-docs/Mock/学習内容管理API.md
+.gemini/docs/apis/endpoint-docs/学習内容管理API.md
 
 ---
 
