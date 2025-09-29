@@ -51,6 +51,7 @@ resources/js/
 │   ├── learningSession.js                   # 学習セッション関連API
 │   ├── reports.js                           # レポート関連API
 │   └── sections.js                          # セクション関連API
+│
 ├── components/                              # 再利用可能なUIコンポーネント
 │   ├── charts/                              # グラフ関連コンポーネント
 │   │   ├── BarChart.vue                     # 棒グラフコンポーネント
@@ -86,7 +87,9 @@ resources/js/
 │   ├── data/                                # アプリケーションのモックデータ管理
 │   │   ├── mockCategories.js                # カテゴリーのモックデータ定義
 │   │   ├── mockLearningContents.js          # 学習コンテンツのモックデータ定義
-│   │   └── mockSessions.js                  # 学習セッションのモックデータ定義
+│   │   ├── mockSessions.js                  # 学習セッションのモックデータ定義
+│   │   ├── mockTechnologies.js              # 技術のモックデータ定義
+│   │   └── mockUsers.js                     # ユーザーのモックデータ定義
 │   │
 │   ├── learning/                            # 学習ドメイン固有のコアロジック
 │   │   ├── useLearningContents.js           # 学習コンテンツのCRUD操作と関連ロジック
@@ -102,6 +105,7 @@ resources/js/
 │   ├── useStudySessionForm.js               # 学習記録フォームのデータ管理、初期化、バリデーションロジック
 │   ├── useUser.js                           # ユーザー情報の状態管理、プロフィール更新、イニシャル生成ロジック
 │   └── useWizardForm.js                     # ウィザード形式フォームのステップ管理とバリデーション実行ロジック
+│
 ├── layouts/                                 # レイアウトコンポーネント
 │   ├── AuthLayout.vue                       # 認証画面用レイアウト
 │   ├── DashboardLayout.vue                  # ダッシュボード画面用レイアウト
@@ -115,6 +119,7 @@ resources/js/
 │   ├── masterData.js                        # マスターデータ（カテゴリー、技術）の状態管理ストア
 │   ├── reports.js                           # レポート関連ストア
 │   └── sections.js                          # セクションの状態管理ストア
+│
 ├── utils/                                   # ユーティリティ関数
 │   ├── chartColors.js                       # チャートの色定義
 │   └── dateFormatters.js                    # 日付と時刻のフォーマット関数

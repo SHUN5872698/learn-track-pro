@@ -19,12 +19,12 @@
 
 ## 指示
 1. 以下のコマンドを実行してください。
-  ```
-  tree -L 5 --dirsfirst \
-  . \
-  -I 'node_modules|vendor|lang|*.png|*.jpg|*.jpeg|*.gif|*.svg|*.ico|*.webp|components|composables|layouts|utils|validators|views|debugbar|sessions|cache|framework/views|app.js|App.vue|bootstrap.js|router.js|favicon.ico|robots.txt|index.php'
-  --prune
-  ```
+```
+tree -L 5 --dirsfirst \
+. \
+-I 'node_modules|vendor|lang|*.png|*.jpg|*.jpeg|*.gif|*.svg|*.ico|*.webp|components|composables|layouts|utils|validators|views|debugbar|sessions|cache|framework/views|app.js|App.vue|bootstrap.js|router.js|favicon.ico|robots.txt|index.php|api|stores'
+--prune
+```
 1. `## 現在のディレクトリ構造`を、treeコマンドの結果と突き合わせて更新してください。
 2. 追加ファイルとディレクトリがない場合は報告してください。
 
