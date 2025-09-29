@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import BaseButton from '../BaseButton.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
 import { ArrowUturnLeftIcon } from '@heroicons/vue/24/solid';
 
 defineProps({

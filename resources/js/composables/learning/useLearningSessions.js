@@ -1,4 +1,4 @@
-import { mockSessions } from '../data/mockSessions';
+import { mockSessions } from '@/composables/data/mockSessions';
 
 export const learningSessions = mockSessions;
 

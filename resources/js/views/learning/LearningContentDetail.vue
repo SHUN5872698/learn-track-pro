@@ -136,16 +136,16 @@ import { CheckCircleIcon as CheckCircleIconOutline } from '@heroicons/vue/24/out
 // 内部インポート
 // ========================================
 // コンポーザブル
-import { useLearningData } from '../../composables/useLearningData';
-import { useSections } from '../../composables/learning/useSections';
+import { useLearningData } from '@/composables/useLearningData';
+import { useSections } from '@/composables/learning/useSections';
 import { useSectionStore } from '@/stores/sections';
 import { useLearningSessionStore } from '@/stores/learningSession';
 
 // コンポーネント
-import BaseButton from '../../components/common/BaseButton.vue';
-import DetailLayout from '../../layouts/DetailLayout.vue';
-import BackButton from '../../components/common/buttons/BackButton.vue';
-import Pagination from '../../components/common/Pagination.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
+import DetailLayout from '@/layouts/DetailLayout.vue';
+import BackButton from '@/components/common/buttons/BackButton.vue';
+import Pagination from '@/components/common/Pagination.vue';
 
 // ========================================
 // ユーティリティ関数（純粋関数）

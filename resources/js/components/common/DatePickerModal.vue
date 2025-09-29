@@ -59,8 +59,8 @@
 import { ref, computed, watch } from 'vue';
 import { Dialog, DialogPanel, TransitionRoot, TransitionChild } from '@headlessui/vue';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline';
-import BaseButton from './BaseButton.vue';
-import CancelButton from './buttons/CancelButton.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
+import CancelButton from '@/components/common/buttons/CancelButton.vue';
 
 const props = defineProps({
   isOpen: Boolean,

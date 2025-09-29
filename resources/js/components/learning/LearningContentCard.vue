@@ -93,11 +93,11 @@ import { PencilIcon, InformationCircleIcon, TrashIcon, ClockIcon, CheckCircleIco
 // 内部インポート
 // ========================================
 // コンポーザブル
-import { useLearningData } from '../../composables/useLearningData';
+import { useLearningData } from '@/composables/useLearningData';
 
 // コンポーネント
-import ConfirmModal from '../../components/common/ConfirmModal.vue';
-import BaseButton from '../common/BaseButton.vue';
+import ConfirmModal from '@/components/common/ConfirmModal.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
 
 // Piniaストア
 import { useMasterDataStore } from '@/stores/masterData';

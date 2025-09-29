@@ -74,7 +74,7 @@ import { StarIcon, CalendarIcon, ClockIcon } from '@heroicons/vue/24/solid';
 // ========================================
 // 内部インポート
 // ========================================
-import SectionSelector from '../../components/common/SectionSelector.vue';
+import SectionSelector from '@/components/common/SectionSelector.vue';
 
 // ========================================
 // Props & Emits

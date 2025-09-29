@@ -55,7 +55,7 @@ import { PlusIcon, LightBulbIcon } from '@heroicons/vue/24/solid';
 // 内部インポート
 // ========================================
 import draggable from 'vuedraggable';
-import BaseButton from '../../common/BaseButton.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
 
 // プロパティ定義
 const props = defineProps({

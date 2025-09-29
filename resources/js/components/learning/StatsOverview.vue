@@ -60,7 +60,7 @@ import { BookOpenIcon, CheckBadgeIcon, ChartBarIcon } from '@heroicons/vue/24/so
 // 内部インポート
 // ========================================
 // コンポーザブル
-import { useLearningData } from '../../composables/useLearningData';
+import { useLearningData } from '@/composables/useLearningData';
 
 // ========================================
 // Props定義

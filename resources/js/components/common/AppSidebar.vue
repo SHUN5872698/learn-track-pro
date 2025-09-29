@@ -81,7 +81,7 @@ import { BookOpenIcon, DocumentChartBarIcon, UserCircleIcon, ArrowLeftStartOnRec
 import { useAuthStore } from '@/stores/auth';
 
 // コンポーザブル
-import { useLearningData } from '../../composables/useLearningData';
+import { useLearningData } from '@/composables/useLearningData';
 
 // ========================================
 // Props & Emits

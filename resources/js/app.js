@@ -1,10 +1,10 @@
-import './bootstrap';
+import '@/bootstrap';
 import { createApp } from 'vue';
 import '../css/app.css';
-import App from './App.vue';
-import router from './router';
+import App from '@/App.vue';
+import router from '@/router';
 import { createPinia } from 'pinia';
-import { useMasterDataStore } from './stores/masterData';
+import { useMasterDataStore } from '@/stores/masterData';
 
 const app = createApp(App);
 const pinia = createPinia();

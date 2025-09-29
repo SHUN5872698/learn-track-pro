@@ -101,19 +101,19 @@ import { LightBulbIcon } from '@heroicons/vue/24/solid';
 // 内部インポート
 // ========================================
 // コンポーザブル
-import { useLearningData } from '../../composables/useLearningData';
-import { useWizardForm } from '../../composables/useWizardForm';
-import { useLearningContentForm } from '../../composables/useLearningContentForm';
+import { useLearningData } from '@/composables/useLearningData';
+import { useWizardForm } from '@/composables/useWizardForm';
+import { useLearningContentForm } from '@/composables/useLearningContentForm';
 // Pinia
 import { useLearningContentStore } from '@/stores/learningContent';
 
 // コンポーネント
-import DetailLayout from '../../layouts/DetailLayout.vue';
-import TechnologySelector from '../../components/learning/wizard/TechnologySelector.vue';
-import WizardStepIndicator from '../../components/learning/wizard/WizardStepIndicator.vue';
-import SectionListEditor from '../../components/learning/wizard/SectionListEditor.vue';
-import WizardNavigation from '../../components/learning/wizard/WizardNavigation.vue';
-import ConfirmModal from '../../components/common/ConfirmModal.vue';
+import DetailLayout from '@/layouts/DetailLayout.vue';
+import TechnologySelector from '@/components/learning/wizard/TechnologySelector.vue';
+import WizardStepIndicator from '@/components/learning/wizard/WizardStepIndicator.vue';
+import SectionListEditor from '@/components/learning/wizard/SectionListEditor.vue';
+import WizardNavigation from '@/components/learning/wizard/WizardNavigation.vue';
+import ConfirmModal from '@/components/common/ConfirmModal.vue';
 
 
 

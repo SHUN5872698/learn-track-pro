@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import BaseButton from '../BaseButton.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
 
 defineProps({
   // BaseButtonのpropsを継承し、オーバーライド可能にする

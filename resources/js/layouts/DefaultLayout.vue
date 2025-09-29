@@ -25,8 +25,8 @@ import { ref, computed, onMounted } from 'vue';
 // 内部インポート
 // ========================================
 // コンポーネント
-import AppHeader from '../components/common/AppHeader.vue';
-import AppSidebar from '../components/common/AppSidebar.vue';
+import AppHeader from '@/components/common/AppHeader.vue';
+import AppSidebar from '@/components/common/AppSidebar.vue';
 
 // Piniaストア
 import { useAuthStore } from '@/stores/auth';

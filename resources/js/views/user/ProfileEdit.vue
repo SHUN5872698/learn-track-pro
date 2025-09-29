@@ -60,12 +60,12 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
 // バリデーション
-import { validateProfile, validateField } from '../../validators/profileValidator';
+import { validateProfile, validateField } from '@/validators/profileValidator';
 
 // コンポーネント
-import DetailLayout from '../../layouts/DetailLayout.vue';
-import BaseButton from '../../components/common/BaseButton.vue';
-import UserAvatar from '../../components/common/UserAvatar.vue';
+import DetailLayout from '@/layouts/DetailLayout.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
+import UserAvatar from '@/components/common/UserAvatar.vue';
 
 // ========================================
 // 初期設定

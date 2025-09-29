@@ -9,5 +9,5 @@
 </template>
 
 <script setup>
-import BaseButton from '../components/common/BaseButton.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
 </script>

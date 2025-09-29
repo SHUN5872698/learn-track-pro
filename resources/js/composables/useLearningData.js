@@ -1,10 +1,10 @@
 import { computed } from 'vue';
-import { useUser } from './useUser';
-import { useMenuState } from './ui/useMenuState';
+import { useUser } from '@/composables/useUser';
+import { useMenuState } from '@/composables/ui/useMenuState';
 import { useLearningContentStore } from '@/stores/learningContent';
 import { useSectionStore } from '@/stores/sections';
-import { useLearningContents as useLearningContentsComposable } from './learning/useLearningContents'; // 名前を変更
-import { useMasterDataStore } from '../stores/masterData';
+import { useLearningContents as useLearningContentsComposable } from '@/composables/learning/useLearningContents';
+import { useMasterDataStore } from '@/stores/masterData';
 import { useLearningSessionStore } from '@/stores/learningSession';
 
 // 学習関連の全データを集約し、操作ロジックを提供するコンポーザブル

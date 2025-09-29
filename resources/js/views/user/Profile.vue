@@ -34,9 +34,9 @@ import { PencilIcon } from '@heroicons/vue/24/outline';
 import { useAuthStore } from '@/stores/auth';
 
 // コンポーネント
-import BaseButton from '../../components/common/BaseButton.vue';
-import DetailLayout from '../../layouts/DetailLayout.vue';
-import UserAvatar from '../../components/common/UserAvatar.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
+import DetailLayout from '@/layouts/DetailLayout.vue';
+import UserAvatar from '@/components/common/UserAvatar.vue';
 
 // ========================================
 // 初期設定

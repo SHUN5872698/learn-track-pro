@@ -52,8 +52,8 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { Dialog, DialogPanel, TransitionRoot, TransitionChild } from '@headlessui/vue';
-import BaseButton from './BaseButton.vue';
-import CancelButton from './buttons/CancelButton.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
+import CancelButton from '@/components/common/buttons/CancelButton.vue';
 
 const props = defineProps({
   isOpen: Boolean,

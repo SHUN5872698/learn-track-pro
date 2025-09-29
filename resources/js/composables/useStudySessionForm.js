@@ -1,5 +1,5 @@
 import { ref, reactive, computed } from 'vue';
-import { validateStudySessionForm } from '../validators/studySessionValidator';
+import { validateStudySessionForm } from '@/validators/studySessionValidator';
 
 export function useStudySessionForm(initialData = null) {
   const defaultForm = {

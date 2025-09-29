@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import * as api from '@/api/sections';
-import { useLearningContentStore } from './learningContent';
+import { useLearningContentStore } from '@/stores/learningContent';
 
 // セクションの状態管理を行うPiniaストアを定義
 export const useSectionStore = defineStore('sections', {

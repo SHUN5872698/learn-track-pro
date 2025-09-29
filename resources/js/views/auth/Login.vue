@@ -93,9 +93,9 @@ import { EyeIcon, EyeSlashIcon, LockClosedIcon } from '@heroicons/vue/24/solid';
 // ========================================
 // 内部インポート
 // ========================================
-import { validateEmail, validatePassword } from '../../validators/profileValidator';
+import { validateEmail, validatePassword } from '@/validators/profileValidator';
 // コンポーネント
-import BaseButton from '../../components/common/BaseButton.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
 
 // Piniaストア
 import { useAuthStore } from '@/stores/auth';

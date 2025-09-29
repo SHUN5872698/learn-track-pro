@@ -127,9 +127,9 @@ import { EyeIcon, EyeSlashIcon, UserPlusIcon } from '@heroicons/vue/24/solid';
 // ========================================
 // 内部インポート
 // ========================================
-import { validateName, validateEmail, validatePassword, validatePasswordConfirmation } from '../../validators/profileValidator';
+import { validateName, validateEmail, validatePassword, validatePasswordConfirmation } from '@/validators/profileValidator';
 import { useAuthStore } from '@/stores/auth';
-import BaseButton from '../../components/common/BaseButton.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
 
 // ========================================
 // コンポーザブル

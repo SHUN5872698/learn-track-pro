@@ -68,8 +68,8 @@ import { EnvelopeIcon } from '@heroicons/vue/24/solid';
 // ========================================
 // 内部インポート
 // ========================================
-import { validateEmail } from '../../validators/profileValidator';
-import BaseButton from '../../components/common/BaseButton.vue';
+import { validateEmail } from '@/validators/profileValidator';
+import BaseButton from '@/components/common/BaseButton.vue';
 import { useAuthStore } from '@/stores/auth'; // Piniaストアをインポート
 
 // ========================================

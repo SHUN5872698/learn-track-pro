@@ -76,14 +76,14 @@ import { useRoute, useRouter } from 'vue-router';
 import { useLearningSessionStore } from '@/stores/learningSession';
 import { useLearningContentStore } from '@/stores/learningContent';
 import { useSectionStore } from '@/stores/sections';
-import { useStudySessionForm } from '../../composables/useStudySessionForm';
-import DetailLayout from '../../layouts/DetailLayout.vue';
-import StudySessionFormFields from '../../components/learning/StudySessionFormFields.vue';
-import DatePickerModal from '../../components/common/DatePickerModal.vue';
-import TimeInputModal from '../../components/common/TimeInputModal.vue';
-import ConfirmModal from '../../components/common/ConfirmModal.vue';
-import BaseButton from '../../components/common/BaseButton.vue';
-import CancelButton from '../../components/common/buttons/CancelButton.vue';
+import { useStudySessionForm } from '@/composables/useStudySessionForm';
+import DetailLayout from '@/layouts/DetailLayout.vue';
+import StudySessionFormFields from '@/components/learning/StudySessionFormFields.vue';
+import DatePickerModal from '@/components/common/DatePickerModal.vue';
+import TimeInputModal from '@/components/common/TimeInputModal.vue';
+import ConfirmModal from '@/components/common/ConfirmModal.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
+import CancelButton from '@/components/common/buttons/CancelButton.vue';
 
 // ========================================
 // 初期設定

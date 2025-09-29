@@ -43,7 +43,7 @@ import { Bars3Icon } from '@heroicons/vue/24/solid';
 import { useAuthStore } from '@/stores/auth';
 
 // コンポーネント
-import UserAvatar from './UserAvatar.vue';
+import UserAvatar from '@/components/common/UserAvatar.vue';
 
 // ========================================
 // 初期設定

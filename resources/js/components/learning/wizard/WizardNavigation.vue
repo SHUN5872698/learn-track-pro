@@ -18,9 +18,9 @@
 
 <script setup>
 import { ArrowRightIcon } from '@heroicons/vue/24/solid';
-import BaseButton from '../../common/BaseButton.vue';
-import CancelButton from '../../common/buttons/CancelButton.vue';
-import BackButton from '../../common/buttons/BackButton.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
+import CancelButton from '@/components/common/buttons/CancelButton.vue';
+import BackButton from '@/components/common/buttons/BackButton.vue';
 
 // 親コンポーネントから受け取るプロパティを定義
 defineProps({

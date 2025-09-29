@@ -91,22 +91,22 @@ import { StarIcon, PencilIcon, PlusCircleIcon, ArrowLeftIcon } from '@heroicons/
 // ========================================
 // 内部インポート
 // ========================================
-import { useLearningData } from '../../composables/useLearningData';
+import { useLearningData } from '@/composables/useLearningData';
 import { useLearningSessionStore } from '@/stores/learningSession';
 import { useSectionStore } from '@/stores/sections';
 
 // コンポーネント
-import DetailLayout from '../../layouts/DetailLayout.vue';
-import ConfirmModal from '../../components/common/ConfirmModal.vue';
-import BaseButton from '../../components/common/BaseButton.vue';
-import BackButton from '../../components/common/buttons/BackButton.vue';
-import DeleteButton from '../../components/common/buttons/DeleteButton.vue';
-import Pagination from '../../components/common/Pagination.vue';
+import DetailLayout from '@/layouts/DetailLayout.vue';
+import ConfirmModal from '@/components/common/ConfirmModal.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
+import BackButton from '@/components/common/buttons/BackButton.vue';
+import DeleteButton from '@/components/common/buttons/DeleteButton.vue';
+import Pagination from '@/components/common/Pagination.vue';
 
 // ========================================
 // ユーティリティ関数（純粋関数）
 // ========================================
-import { formatDateTime, formatMinutes } from '../../utils/dateFormatters';
+import { formatDateTime, formatMinutes } from '@/utils/dateFormatters';
 
 // ========================================
 // 初期設定

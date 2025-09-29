@@ -1,20 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
-import Login from './views/auth/Login.vue';
-import Register from './views/auth/Register.vue';
-import PasswordReset from './views/auth/PasswordReset.vue';
-import Dashboard from './views/Dashboard.vue';
-import Reports from './views/Reports.vue';
-import StudyProgress from './views/learning/StudyProgress.vue';
-import StudySessionForm from './views/learning/StudySessionForm.vue';
-import LearningContentCreate from './views/learning/LearningContentCreate.vue';
-import LearningContentDetail from './views/learning/LearningContentDetail.vue';
-import LearningContentEdit from './views/learning/LearningContentEdit.vue';
-import SectionStudyRecords from './views/learning/SectionStudyRecords.vue';
-import StudySessionEdit from './views/learning/StudySessionEdit.vue';
-import Profile from './views/user/Profile.vue';
-import ProfileEdit from './views/user/ProfileEdit.vue';
-import NotFound from './views/NotFound.vue';
+import Login from '@/views/auth/Login.vue';
+import Register from '@/views/auth/Register.vue';
+import PasswordReset from '@/views/auth/PasswordReset.vue';
+import Dashboard from '@/views/Dashboard.vue';
+import Reports from '@/views/Reports.vue';
+import StudyProgress from '@/views/learning/StudyProgress.vue';
+import StudySessionForm from '@/views/learning/StudySessionForm.vue';
+import LearningContentCreate from '@/views/learning/LearningContentCreate.vue';
+import LearningContentDetail from '@/views/learning/LearningContentDetail.vue';
+import LearningContentEdit from '@/views/learning/LearningContentEdit.vue';
+import SectionStudyRecords from '@/views/learning/SectionStudyRecords.vue';
+import StudySessionEdit from '@/views/learning/StudySessionEdit.vue';
+import Profile from '@/views/user/Profile.vue';
+import ProfileEdit from '@/views/user/ProfileEdit.vue';
+import NotFound from '@/views/NotFound.vue';
 
 // アプリケーションのルート定義
 const routes = [

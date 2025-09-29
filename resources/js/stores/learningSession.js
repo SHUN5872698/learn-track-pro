@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import * as api from '../api/learningSession';
+import * as api from '@/api/learningSession';
 
 export const useLearningSessionStore = defineStore('learningSession', {
   // ストアの状態を定義

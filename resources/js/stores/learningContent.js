@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import * as api from '../api/learningContent';
+import * as api from '@/api/learningContent';
 
 // 学習コンテンツの状態管理を行うPiniaストア
 export const useLearningContentStore = defineStore('learningContent', {

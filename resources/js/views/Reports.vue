@@ -158,19 +158,19 @@ import { useLearningData } from '@/composables/useLearningData';
 import { useReportStore } from '@/stores/reports';
 
 // コンポーネント
-import DashboardLayout from '../layouts/DashboardLayout.vue';
-import BarChart from '../components/charts/BarChart.vue';
-import PieChart from '../components/charts/PieChart.vue';
-import ConfirmModal from '../components/common/ConfirmModal.vue';
-import BaseButton from '../components/common/BaseButton.vue';
-import DeleteButton from '../components/common/buttons/DeleteButton.vue';
-import Pagination from '../components/common/Pagination.vue';
+import DashboardLayout from '@/layouts/DashboardLayout.vue';
+import BarChart from '@/components/charts/BarChart.vue';
+import PieChart from '@/components/charts/PieChart.vue';
+import ConfirmModal from '@/components/common/ConfirmModal.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
+import DeleteButton from '@/components/common/buttons/DeleteButton.vue';
+import Pagination from '@/components/common/Pagination.vue';
 
 // ========================================
 // ユーティリティ関数（純粋関数）
 // ========================================
-import { generateTechColor } from '../utils/chartColors';
-import { formatDate, formatTimeOnly, formatMinutes } from '../utils/dateFormatters';
+import { generateTechColor } from '@/utils/chartColors';
+import { formatDate, formatTimeOnly, formatMinutes } from '@/utils/dateFormatters';
 
 // ========================================
 // 初期設定

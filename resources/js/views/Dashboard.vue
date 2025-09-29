@@ -51,13 +51,13 @@ import { PlusCircleIcon } from '@heroicons/vue/24/solid';
 // 内部インポート
 // ========================================
 // コンポーザブル
-import { useLearningData } from '../composables/useLearningData';
+import { useLearningData } from '@/composables/useLearningData';
 
 // コンポーネント
-import DashboardLayout from '../layouts/DashboardLayout.vue';
-import BaseButton from '../components/common/BaseButton.vue';
-import LearningContentCard from '../components/learning/LearningContentCard.vue';
-import StatsOverview from '../components/learning/StatsOverview.vue';
+import DashboardLayout from '@/layouts/DashboardLayout.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
+import LearningContentCard from '@/components/learning/LearningContentCard.vue';
+import StatsOverview from '@/components/learning/StatsOverview.vue';
 
 // ========================================
 // 初期設定

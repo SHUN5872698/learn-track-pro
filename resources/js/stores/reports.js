@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { reportApi } from '../api/reports';
+import { reportApi } from '@/api/reports';
 
 // レポート関連のデータと状態を管理するPiniaストア
 export const useReportStore = defineStore('reports', {
