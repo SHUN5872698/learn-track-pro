@@ -7,8 +7,9 @@
     </template>
     <template #header-description>あなたの学習進捗を管理・追跡します</template>
 
-    <div v-if="loading" class="py-10 text-center">
-      <p class="text-slate-500">データを読み込んでいます...</p>
+    <!-- ローディング中の表示 -->
+    <div v-if="isLoading" class="py-10 text-center">
+      <LoadingSpinner size="lg" message="データを読み込んでいます..." />
     </div>
     <div v-else>
       <!-- 学習統計概要を表示するコンポーネント -->
@@ -52,9 +53,11 @@ import { PlusCircleIcon } from '@heroicons/vue/24/solid';
 // ========================================
 // コンポーザブル
 import { useLearningData } from '@/composables/useLearningData';
+import { useLoading } from '@/composables/ui/useLoading';
 
 // コンポーネント
 import DashboardLayout from '@/layouts/DashboardLayout.vue';
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
 import BaseButton from '@/components/common/BaseButton.vue';
 import LearningContentCard from '@/components/learning/LearningContentCard.vue';
 import StatsOverview from '@/components/learning/StatsOverview.vue';
@@ -67,14 +70,18 @@ const router = useRouter();
 // ========================================
 // コンポーザブル実行
 // ========================================
-const { learningContents, fetchContents, loading, fetchLearningSessions } = useLearningData();
+const { learningContents, fetchContents, fetchLearningSessions } = useLearningData();
+const { isLoading, withLoading } = useLoading();
 
 // ========================================
 // ライフサイクル
 // ========================================
 onMounted(async () => {
-  await fetchContents();
-  await fetchLearningSessions();
+  // withLoadingで非同期処理をラップ
+  await withLoading('dashboard-init', async () => {
+    // 並列実行でパフォーマンス向上
+    await Promise.all([fetchContents(), fetchLearningSessions()]);
+  });
 });
 
 // ========================================

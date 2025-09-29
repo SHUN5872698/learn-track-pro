@@ -5,8 +5,8 @@
     <template #header-description>あなたの学習活動の概要と統計です。</template>
 
     <!-- ローディング中の表示 -->
-    <div v-if="loading" class="py-10 text-center">
-      <p class="text-slate-500">データを読み込んでいます...</p>
+    <div v-if="isLoading" class="py-10 text-center">
+      <LoadingSpinner size="lg" message="データを読み込んでいます..." />
     </div>
     <div v-else>
       <!-- 統計サマリーカード -->
@@ -156,15 +156,17 @@ import { ClockIcon, CheckBadgeIcon, ChartBarIcon, FireIcon, StarIcon, PencilIcon
 // コンポーザブル
 import { useLearningData } from '@/composables/useLearningData';
 import { useReportStore } from '@/stores/reports';
+import { useLoading } from '@/composables/ui/useLoading';
 
 // コンポーネント
 import DashboardLayout from '@/layouts/DashboardLayout.vue';
-import BarChart from '@/components/charts/BarChart.vue';
-import PieChart from '@/components/charts/PieChart.vue';
-import ConfirmModal from '@/components/common/ConfirmModal.vue';
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
 import BaseButton from '@/components/common/BaseButton.vue';
 import DeleteButton from '@/components/common/buttons/DeleteButton.vue';
+import ConfirmModal from '@/components/common/ConfirmModal.vue';
 import Pagination from '@/components/common/Pagination.vue';
+import BarChart from '@/components/charts/BarChart.vue';
+import PieChart from '@/components/charts/PieChart.vue';
 
 // ========================================
 // ユーティリティ関数（純粋関数）
@@ -183,11 +185,11 @@ const reportStore = useReportStore();
 // ========================================
 // 学習データ全般を管理するコンポーザブルから必要な状態とアクションを取得
 const { learningContents, deleteStudySession, fetchContents } = useLearningData();
+const { isLoading, withLoading } = useLoading();
 
 // ========================================
 // 状態管理
 // ========================================
-const loading = ref(true); // ローディング状態
 const latestSessionsByContent = ref([]); //内容別の最新学習記録
 // ページネーション
 const recordCurrentPage = ref(1);
@@ -197,7 +199,7 @@ const isModalOpen = ref(false);
 const recordToDelete = ref(null);
 
 // ========================================
-// 算出プロパティ
+// 算出プロパティ（既存のまま）
 // ========================================
 // --- データ集計ロジック ---
 // 全ての学習セッションの合計学習時間を計算し、フォーマットして返す
@@ -312,25 +314,29 @@ const paginatedRecords = computed(() => {
 // ライフサイクル
 // ========================================
 onMounted(async () => {
-  loading.value = true;
-  // データが読み込まれていない場合は先に読み込む
-  if (learningContents.value.length === 0) {
-    await fetchContents();
-  }
-  await Promise.all([reportStore.fetchStatisticsSummary(), reportStore.fetchMonthlyStatistics(6), reportStore.fetchTechnologyStatistics()]);
+  await withLoading('reports-init', async () => {
+    if (learningContents.value.length === 0) {
+      await fetchContents();
+    }
+    // 並列実行でパフォーマンス向上
+    await Promise.all([reportStore.fetchStatisticsSummary(), reportStore.fetchMonthlyStatistics(6), reportStore.fetchTechnologyStatistics(), fetchLatestSessionsByContent()]);
+  });
+});
 
-  // 学習内容別の最新セッションを取得
+// ========================================
+// メソッド
+// ========================================
+// API呼び出し関数（function宣言に変更）
+async function fetchLatestSessionsByContent() {
   try {
     const response = await axios.get('/api/learning-sessions/statistics/latest-by-content');
     latestSessionsByContent.value = response.data.data || [];
   } catch (error) {
     console.error('最新学習記録の取得に失敗しました:', error);
+    latestSessionsByContent.value = [];
   }
-  loading.value = false;
-});
-// ========================================
-// メソッド
-// ========================================
+}
+
 // イベントハンドラ
 // 削除モーダルを開く
 const openDeleteModal = (record) => {
