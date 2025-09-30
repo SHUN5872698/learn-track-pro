@@ -68,10 +68,15 @@ resources/js/
 │   │   ├── BaseButton.vue                   # 基本ボタンコンポーネント
 │   │   ├── ConfirmModal.vue                 # 確認モーダルコンポーネント
 │   │   ├── DatePickerModal.vue              # 日付選択モーダルコンポーネント
+│   │   ├── LoadingSpinner.vue               # ローディングスピナー
 │   │   ├── Pagination.vue                   # ページネーションコンポーネント
 │   │   ├── SectionSelector.vue              # セクション選択ドロップダウン
 │   │   ├── TimeInputModal.vue               # 時間入力モーダルコンポーネント
 │   │   └── UserAvatar.vue                   # ユーザーアバターコンポーネント
+│   │
+│   ├── layout/                              # レイアウト関連コンポーネント
+│   │   ├── DetailBreadcrumb.vue             # 詳細画面のパンくずリスト
+│   │   └── DetailSectionHeader.vue          # 詳細画面のセクションヘッダー
 │   │
 │   └── learning/                            # 学習管理関連コンポーネント
 │       ├── wizard/                          # ウィザード形式のコンポーネント
@@ -97,7 +102,9 @@ resources/js/
 │   │   └── useSections.js                   # セクションのCRUD操作と関連ロジック
 │   │
 │   ├── ui/                                  # UIの状態管理とヘルパー関数
+│   │   ├── useLoading.js                    # ローディング状態管理
 │   │   └── useMenuState.js                  # グローバルなメニュー開閉状態管理ロジック
+│   ├── .DS_Store                            # macOSの隠しファイル
 │   ├── useAuth.js                           # 認証（ログイン、ログアウト、登録）と認証状態管理ロジック
 │   ├── useLearningContentForm.js            # 学習内容フォームのデータ管理、初期化、バリデーションロジック
 │   ├── useLearningData.js                   # 全ての学習関連データを集約・提供するファサード（データ操作のハブ）
@@ -110,7 +117,8 @@ resources/js/
 │   ├── AuthLayout.vue                       # 認証画面用レイアウト
 │   ├── DashboardLayout.vue                  # ダッシュボード画面用レイアウト
 │   ├── DefaultLayout.vue                    # デフォルトレイアウト
-│   └── DetailLayout.vue                     # 詳細画面用レイアウト
+│   ├── DetailLayout.vue                     # 詳細画面用レイアウト
+│   └── MultiCardDetailLayout.vue            # 複数カード表示用レイアウト
 │
 ├── stores/                                  # Piniaストア
 │   ├── auth.js                              # 認証状態管理ストア
