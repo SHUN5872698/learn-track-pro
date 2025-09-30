@@ -1,6 +1,13 @@
 <template>
   <!-- プロフィール編集コンポーネント -->
-  <DetailLayout title="プロフィール編集" description="プロフィール情報を編集します。">
+  <DetailLayout>
+    <!-- セクションヘッダー -->
+    <template #section-header>
+      <h2 class="mb-2 text-2xl font-bold text-slate-800">プロフィール編集</h2>
+      <div class="text-xs font-medium text-slate-600 md:text-sm">
+        <span>プロフィール情報を編集します。</span>
+      </div>
+    </template>
     <div>
       <!-- バリデーションエラーメッセージの表示エリア -->
       <div v-if="validationErrors.length" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
@@ -92,8 +99,6 @@ const errors = reactive({
   avatar: '',
 });
 
-// パスワード表示/非表示のrefは削除（パスワード機能削除のため）
-
 // ========================================
 // 算出プロパティ
 // ========================================
@@ -147,9 +152,6 @@ const handleSubmit = async () => {
     return;
   }
 
-  // パスワード変更を試みるかどうかを判定
-  const isPasswordChangeAttempted = formData.current_password || formData.password || formData.password_confirmation;
-
   try {
     // プロフィール情報の更新のみ（パスワード更新処理は削除）
     const profileUpdateData = {
@@ -185,7 +187,6 @@ const handleCancel = () => {
   router.push('/profile');
 };
 
-// ヘルパー関数
 // 特定のフィールドのリアルタイムバリデーションを実行
 const validateInput = (fieldName) => {
   errors[fieldName] = validateField(fieldName, formData[fieldName], formData);

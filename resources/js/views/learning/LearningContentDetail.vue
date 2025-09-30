@@ -1,6 +1,12 @@
 <template>
   <!-- 学習コンテンツ詳細コンポーネント -->
-  <DetailLayout>
+  <div v-if="isLoading" class="py-10 text-center">
+    <LoadingSpinner size="lg" message="データを読み込んでいます..." />
+  </div>
+
+  <!-- データ取得後にDetailLayoutを表示 -->
+  <DetailLayout v-else>
+    <!-- パンくずリスト -->
     <template #breadcrumb>
       <nav class="flex items-center text-sm text-slate-500">
         <router-link to="/dashboard" class="flex items-center font-medium text-violet-600 hover:text-violet-800 hover:underline">
@@ -12,18 +18,19 @@
       </nav>
     </template>
 
+    <!-- セクションヘッダー -->
     <template #section-header>
       <h2 class="mb-2 text-2xl font-bold text-slate-800">{{ learningContent ? learningContent.title : '' }}</h2>
-      <div v-if="learningContent" class="text-sm text-slate-600">
+      <div v-if="learningContent" class="text-slate-600">
         <!-- 技術とステータス情報 -->
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-4 text-xs font-medium md:text-sm">
           <div class="flex items-center space-x-1">
-            <span class="text-xs font-medium md:text-sm">技術:</span>
+            <span>技術:</span>
             <img v-if="displayTechnology.icon" :src="displayTechnology.icon" :alt="displayTechnology.name" class="w-5 h-5 mr-1" />
-            <span class="text-xs font-medium md:text-sm">{{ displayTechnology.name }}</span>
+            <span>{{ displayTechnology.name }}</span>
           </div>
-          <div class="flex items-center space-x-1">
-            <span class="text-xs font-medium md:text-sm">ステータス:</span>
+          <div class="flex items-center space-x-1 text-xs font-medium md:text-sm">
+            <span>ステータス:</span>
             <div class="flex items-center text-xs font-medium md:text-sm" :class="statusDisplay.class">
               <component :is="statusDisplay.icon" class="w-5 h-5 mr-1" />
               {{ statusDisplay.text }}
@@ -37,11 +44,8 @@
       </div>
     </template>
 
-    <!-- ローディング中の表示 -->
-    <div v-if="loading" class="py-10 text-center">
-      <p class="text-slate-500">データを読み込んでいます...</p>
-    </div>
-    <div v-else-if="learningContent">
+    <!-- メインコンテンツ -->
+    <div v-if="learningContent">
       <!-- 説明セクション -->
       <div class="mb-6">
         <h3 class="mb-2 text-lg font-semibold text-slate-800">説明</h3>
@@ -135,15 +139,19 @@ import { CheckCircleIcon as CheckCircleIconOutline } from '@heroicons/vue/24/out
 // ========================================
 // 内部インポート
 // ========================================
-// コンポーザブル
-import { useLearningData } from '@/composables/useLearningData';
-import { useSections } from '@/composables/learning/useSections';
+// Piniaストア
 import { useSectionStore } from '@/stores/sections';
 import { useLearningSessionStore } from '@/stores/learningSession';
 
+// コンポーザブル
+import { useLearningData } from '@/composables/useLearningData';
+import { useSections } from '@/composables/learning/useSections';
+import { useLoading } from '@/composables/ui/useLoading';
+
 // コンポーネント
-import BaseButton from '@/components/common/BaseButton.vue';
 import DetailLayout from '@/layouts/DetailLayout.vue';
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
 import BackButton from '@/components/common/buttons/BackButton.vue';
 import Pagination from '@/components/common/Pagination.vue';
 
@@ -178,16 +186,16 @@ const formatMinutes = (totalMinutes) => {
 const route = useRoute();
 const router = useRouter();
 
-// コンポーザブル実行
+// コンポーザブル
 const { learningContents, learningContentsRaw, getRecordCountForSection, technologies, fetchContents } = useLearningData();
 const { updateSectionStatus, normalizeStatus, toggleSectionComplete } = useSections();
+const { isLoading, withLoading } = useLoading();
 const sectionStore = useSectionStore();
 const sessionStore = useLearningSessionStore();
 
 // ========================================
 // 状態管理
 // ========================================
-const loading = ref(true); // ローディング状態
 // ページネーション
 const sectionCurrentPage = ref(1);
 const sectionItemsPerPage = 10;
@@ -251,22 +259,21 @@ const displayTechnology = computed(() => {
 // ライフサイクル
 // ========================================
 onMounted(async () => {
-  loading.value = true;
-  // データが読み込まれていない場合は先に読み込む
-  if (learningContents.value.length === 0) {
-    await fetchContents();
-  }
-  await sectionStore.fetchSections(learningContentId.value);
-
-  // 現在の学習コンテンツのセッションのみ取得
-  await sessionStore.fetchLearningSessions({
-    learning_content_id: learningContentId.value,
-    all: 'true', // 全件取得フラグ
+  await withLoading('learning-detail-init', async () => {
+    // データが読み込まれていない場合は先に読み込む
+    if (learningContents.value.length === 0) {
+      await fetchContents();
+    }
+    // 並列実行でパフォーマンス向上
+    await Promise.all([
+      sectionStore.fetchSections(learningContentId.value),
+      // 現在の学習コンテンツのセッションのみ取得
+      sessionStore.fetchLearningSessions({
+        learning_content_id: learningContentId.value,
+        all: 'true', // 全件取得フラグ
+      }),
+    ]);
   });
-  loading.value = false;
-
-  // デバッグログ
-  console.log('Sessions for content ID', learningContentId.value, ':', sessionStore.sessions.length);
 });
 
 // ========================================

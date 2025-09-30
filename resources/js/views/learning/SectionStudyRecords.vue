@@ -1,6 +1,9 @@
 <template>
   <!-- 学習記録一覧コンポーネント -->
-  <DetailLayout>
+  <div v-if="isLoading" class="py-10 text-center">
+    <LoadingSpinner size="lg" message="データを読み込んでいます..." />
+  </div>
+  <DetailLayout v-else>
     <template #breadcrumb>
       <nav class="flex items-center text-sm text-slate-500">
         <router-link v-if="learningContent" :to="`/learning/${learningContent.id}`" class="flex items-center font-medium text-violet-600 hover:text-violet-800 hover:underline">
@@ -12,23 +15,23 @@
       </nav>
     </template>
 
+    <!-- セクションヘッダー -->
     <template #section-header>
       <h2 class="mb-2 text-2xl font-bold text-slate-800">{{ section ? section.title : '' }}</h2>
-      <div class="flex space-x-6 text-slate-600">
-        <span
-          >合計学習時間: <span class="font-semibold text-violet-700">{{ totalStudyTime }}</span></span
-        >
-        <span
-          >記録件数: <span class="font-semibold text-violet-700">{{ sectionRecords.length }} 件</span></span
-        >
+      <div v-if="learningContent" class="text-slate-600">
+        <div class="flex items-center space-x-4 text-xs font-medium md:text-sm">
+          <div class="flex items-center space-x-1">
+            <span>合計学習時間: </span>
+            <span>{{ totalStudyTime }}</span>
+          </div>
+          <div class="flex items-center space-x-1">
+            <span>記録件数: </span>
+            <span>{{ sectionRecords.length }} 件</span>
+          </div>
+        </div>
       </div>
     </template>
-    <!-- ローディング中の表示 -->
-    <div v-if="loading" class="py-10 text-center">
-      <p class="text-slate-500">データを読み込んでいます...</p>
-    </div>
-
-    <div v-else-if="section && learningContent">
+    <div v-if="section && learningContent">
       <!-- 学習記録一覧 -->
       <div>
         <h3 class="mb-4 text-lg font-semibold text-slate-800">学習記録一覧</h3>
@@ -91,17 +94,22 @@ import { StarIcon, PencilIcon, PlusCircleIcon, ArrowLeftIcon } from '@heroicons/
 // ========================================
 // 内部インポート
 // ========================================
-import { useLearningData } from '@/composables/useLearningData';
+// Piniaストア
 import { useLearningSessionStore } from '@/stores/learningSession';
 import { useSectionStore } from '@/stores/sections';
 
+// コンポーザブル
+import { useLearningData } from '@/composables/useLearningData';
+import { useLoading } from '@/composables/ui/useLoading';
+
 // コンポーネント
 import DetailLayout from '@/layouts/DetailLayout.vue';
-import ConfirmModal from '@/components/common/ConfirmModal.vue';
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
 import BaseButton from '@/components/common/BaseButton.vue';
 import BackButton from '@/components/common/buttons/BackButton.vue';
 import DeleteButton from '@/components/common/buttons/DeleteButton.vue';
 import Pagination from '@/components/common/Pagination.vue';
+import ConfirmModal from '@/components/common/ConfirmModal.vue';
 
 // ========================================
 // ユーティリティ関数（純粋関数）
@@ -111,20 +119,19 @@ import { formatDateTime, formatMinutes } from '@/utils/dateFormatters';
 // ========================================
 // 初期設定
 // ========================================
+// ルーター・ルート
 const route = useRoute();
 const router = useRouter();
 
-// ========================================
-// コンポーザブルの実行
-// ========================================
+// コンポーザブル
 const { learningContents, sections, deleteStudySession, fetchContents } = useLearningData();
+const { isLoading, withLoading } = useLoading();
 const sectionStore = useSectionStore();
 const sessionStore = useLearningSessionStore();
 
 // ========================================
 // 状態管理
 // ========================================
-const loading = ref(true); // ローディング状態
 // 削除モーダルの状態管理
 const isModalOpen = ref(false);
 const recordToDelete = ref(null);
@@ -166,22 +173,22 @@ const totalStudyTime = computed(() => {
 // ライフサイクル
 // ========================================
 onMounted(async () => {
-  loading.value = true;
-
-  // 学習コンテンツを取得
-  if (learningContents.value.length === 0) {
-    await fetchContents();
-  }
-
-  // セクションを取得（重要！）
-  await sectionStore.fetchSections(learningContentId.value);
-
-  // 学習記録を取得
-  await sessionStore.fetchLearningSessions({
-    section_id: sectionId.value,
+  await withLoading('section-records-init', async () => {
+    // 学習コンテンツを取得
+    if (learningContents.value.length === 0) {
+      await fetchContents();
+    }
+    // 並列実行でパフォーマンス向上
+    await Promise.all([
+      // セクションを取得
+      sectionStore.fetchSections(learningContentId.value),
+      // 学習記録を取得
+      sessionStore.fetchLearningSessions({
+        section_id: sectionId.value,
+        all: 'true', // 全件取得フラグ
+      }),
+    ]);
   });
-
-  loading.value = false;
 });
 
 // ========================================

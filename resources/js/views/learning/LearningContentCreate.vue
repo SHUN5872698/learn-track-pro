@@ -1,6 +1,13 @@
 <template>
   <!-- 学習内容作成ページのメインコンテナ -->
-  <DetailLayout title="新しい学習内容の作成" description="学習したい内容とセクションを登録します。">
+  <DetailLayout>
+    <!-- セクションヘッダー -->
+    <template #section-header>
+      <h2 class="mb-2 text-2xl font-bold text-slate-800">新しい学習内容の作成</h2>
+      <div class="text-xs font-medium text-slate-600 md:text-sm">
+        <span>学習したい内容とセクションを登録します。</span>
+      </div>
+    </template>
     <!-- ウィザードのステップ表示コンポーネント -->
     <WizardStepIndicator :current-step="currentStep" :step-names="stepNames" />
 
@@ -84,9 +91,10 @@
       <WizardNavigation :current-step="currentStep" :total-steps="stepNames.length" :show-back="currentStep > 1" :show-next="currentStep < stepNames.length" :show-submit="currentStep === stepNames.length" @cancel="handleCancel" @back="prevStep" @next="handleNext" @submit="handleSubmit" />
     </form>
   </DetailLayout>
-
-  <!-- 未保存の変更がある場合の確認モーダル -->
-  <ConfirmModal :is-open="isUnsavedModalOpen" title="編集内容が保存されていません" message="編集した内容を破棄してもよろしいですか？" confirm-button-text="破棄" confirm-button-variant="danger" :show-item-detail="false" @confirm="router.push('/dashboard')" @cancel="isUnsavedModalOpen = false" />
+  <Teleport to="#app">
+    <!-- モーダルセクション -->
+    <ConfirmModal :is-open="isUnsavedModalOpen" title="編集内容が保存されていません" message="編集した内容を破棄してもよろしいですか？" confirm-button-text="破棄" confirm-button-variant="danger" :show-item-detail="false" @confirm="router.push('/dashboard')" @cancel="isUnsavedModalOpen = false" />
+  </Teleport>
 </template>
 
 <script setup>
@@ -100,29 +108,29 @@ import { LightBulbIcon } from '@heroicons/vue/24/solid';
 // ========================================
 // 内部インポート
 // ========================================
+// Piniaストア
+import { useLearningContentStore } from '@/stores/learningContent';
+
 // コンポーザブル
 import { useLearningData } from '@/composables/useLearningData';
 import { useWizardForm } from '@/composables/useWizardForm';
 import { useLearningContentForm } from '@/composables/useLearningContentForm';
-// Pinia
-import { useLearningContentStore } from '@/stores/learningContent';
 
 // コンポーネント
 import DetailLayout from '@/layouts/DetailLayout.vue';
-import TechnologySelector from '@/components/learning/wizard/TechnologySelector.vue';
 import WizardStepIndicator from '@/components/learning/wizard/WizardStepIndicator.vue';
-import SectionListEditor from '@/components/learning/wizard/SectionListEditor.vue';
 import WizardNavigation from '@/components/learning/wizard/WizardNavigation.vue';
+import TechnologySelector from '@/components/learning/wizard/TechnologySelector.vue';
+import SectionListEditor from '@/components/learning/wizard/SectionListEditor.vue';
 import ConfirmModal from '@/components/common/ConfirmModal.vue';
-
-
 
 // ========================================
 // 初期設定
 // ========================================
+// ルーター・ルート
 const router = useRouter();
 
-// コンポーザブル実行
+// コンポーザブル
 const contentStore = useLearningContentStore();
 const { technologies, createContent } = useLearningData();
 const stepNames = ['基本情報', 'セクション設定', '確認'];
@@ -168,18 +176,18 @@ const getTechnologyName = computed(() => {
 // イベントハンドラ
 // ウィザードナビゲーション
 const handleNext = () => {
-  // 修正フラグをリセット
+  // 各入力フィールドの修正フラグをリセットし、バリデーション表示を初期状態に戻す
   titleModified.value = false;
   descriptionModified.value = false;
   technologyModified.value = false;
 
   if (currentStep.value === 1) {
-    // ステップ1のバリデーションを実行し、成功すれば次のステップへ
+    // ステップ1（基本情報）のバリデーションを実行し、成功すれば次のステップへ進む
     if (validateStep(validateBasicInfo)) {
       nextStep();
     }
   } else if (currentStep.value === 2) {
-    // ステップ2のバリデーションを実行し、成功すれば次のステップへ
+    // ステップ2（セクション設定）のバリデーションを実行し、成功すれば次のステップへ進む
     if (validateStep(validateSections)) {
       nextStep();
     }
@@ -191,14 +199,14 @@ const handleSubmit = async () => {
   console.log('【Create.handleSubmit】開始');
 
   try {
-    // セクションにstatusとcompleted_atを追加（in_progressで作成）
+    // フォームデータにセクションのステータスと完了日時を追加し、バックエンドの期待する形式に整形
     const formDataWithStatus = {
       ...form,
       sections: form.sections.map((section, index) => ({
         ...section,
-        order: index + 1,
-        status: 'in_progress',
-        completed_at: null,
+        order: index + 1, // セクションの並び順を更新
+        status: 'in_progress', // 新規作成時は学習中として設定
+        completed_at: null, // 完了日時はnullに設定
       })),
     };
 
@@ -208,22 +216,27 @@ const handleSubmit = async () => {
       console.log(`  ${index + 1}. title: "${section.title}", status: "${section.status}"`);
     });
 
+    // Piniaストアのアクションを呼び出し、学習内容を作成
     const newContent = await contentStore.createContent(formDataWithStatus);
     console.log('【Create.handleSubmit】作成完了 ID:', newContent.id);
 
+    // 成功メッセージを表示し、作成した学習内容の詳細ページへ遷移
     alert('新しい学習内容を作成しました！');
     router.push(`/learning/${newContent.id}`);
   } catch (error) {
     console.error('【Create.handleSubmit】エラー:', error);
+    // エラーが発生した場合、バリデーションエラーメッセージを設定
     validationErrors.value = ['作成中にエラーが発生しました。'];
   }
 };
 
 // キャンセル処理
 const handleCancel = () => {
+  // 未保存の変更がある場合は確認モーダルを表示
   if (hasUnsavedChanges.value) {
     isUnsavedModalOpen.value = true;
   } else {
+    // 変更がない場合はダッシュボードへ遷移
     router.push('/dashboard');
   }
 };

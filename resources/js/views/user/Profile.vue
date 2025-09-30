@@ -1,6 +1,7 @@
 <template>
   <!-- プロフィールコンポーネント -->
-  <DetailLayout title="プロフィール">
+  <DetailLayout>
+    <h2 class="mb-2 text-2xl font-bold text-slate-800">プロフィール</h2>
     <!-- アバター部 -->
     <div class="flex justify-center mb-6">
       <UserAvatar :user="user" size="lg" />
@@ -24,7 +25,6 @@
 // 外部インポート
 // ========================================
 import { computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 import { PencilIcon } from '@heroicons/vue/24/outline';
 
 // ========================================
@@ -34,18 +34,18 @@ import { PencilIcon } from '@heroicons/vue/24/outline';
 import { useAuthStore } from '@/stores/auth';
 
 // コンポーネント
-import BaseButton from '@/components/common/BaseButton.vue';
 import DetailLayout from '@/layouts/DetailLayout.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
 import UserAvatar from '@/components/common/UserAvatar.vue';
 
 // ========================================
 // 初期設定
 // ========================================
-const router = useRouter();
+// コンポーザブル
 const authStore = useAuthStore();
 
 // ========================================
-// 状態管理
+// 算出プロパティ
 // ========================================
 const user = computed(() => authStore.authUser || {});
 
@@ -53,6 +53,7 @@ const user = computed(() => authStore.authUser || {});
 // ライフサイクル
 // ========================================
 onMounted(async () => {
+  // データが読み込まれていない場合は先に読み込む
   if (!authStore.authUser) {
     await authStore.fetchUser();
   }
