@@ -192,30 +192,40 @@ const paginatedRecords = computed(() => {
 
 // グラフデータ
 const dailyStudyData = computed(() => {
-  // 30日間の日別学習時間を初期化
-  const dailyTotals = {};
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
-  thirtyDaysAgo.setHours(0, 0, 0, 0);
-
-  // 過去30日間の日付を生成し、初期値を0に設定
-  for (let i = 0; i < 30; i++) {
-    const date = new Date(thirtyDaysAgo);
-    date.setDate(date.getDate() + i);
-    const dateKey = date.toISOString().split('T')[0];
-    dailyTotals[dateKey] = 0;
+  // APIから取得したデータが空の場合は早期リターン
+  if (!dailyStatisticsData.value || dailyStatisticsData.value.length === 0) {
+    return {
+      labels: [],
+      datasets: [
+        {
+          label: '学習時間 (分)',
+          borderColor: '#7c3aed',
+          backgroundColor: 'rgba(124, 58, 237, 0.1)',
+          tension: 0.3,
+          fill: true,
+          data: [],
+        },
+      ],
+    };
   }
 
-  // APIから取得した日別統計データをマージ
-  dailyStatisticsData.value.forEach((item) => {
-    if (dailyTotals.hasOwnProperty(item.date)) {
-      dailyTotals[item.date] = Number(item.total_minutes || 0);
-    }
-  });
+  // APIから取得したデータをそのまま使用
+  const apiData = dailyStatisticsData.value;
 
-  // Chart.jsのデータ形式に変換
-  return {
-    labels: Object.keys(dailyTotals).map((key) => new Date(key).toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' })),
+  // 今日の日付を取得
+  const today = new Date().toISOString().split('T')[0];
+
+  // Chart.jsのデータ形式に変換（シンプルに）
+  const chartData = {
+    labels: apiData.map((item) => {
+      const date = new Date(item.date + 'T00:00:00'); // タイムゾーン問題を回避
+      const isToday = item.date === today;
+      const label = date.toLocaleDateString('ja-JP', {
+        month: 'numeric',
+        day: 'numeric',
+      });
+      return isToday ? `${label}(今日)` : label;
+    }),
     datasets: [
       {
         label: '学習時間 (分)',
@@ -223,10 +233,15 @@ const dailyStudyData = computed(() => {
         backgroundColor: 'rgba(124, 58, 237, 0.1)',
         tension: 0.3,
         fill: true,
-        data: Object.values(dailyTotals),
+        data: apiData.map((item) => Number(item.total_minutes || 0)),
+        // 今日のポイントを視覚的に区別
+        pointBackgroundColor: apiData.map((item) => (item.date === today ? '#f59e0b' : '#7c3aed')),
+        pointRadius: apiData.map((item) => (item.date === today ? 6 : 3)),
       },
     ],
   };
+
+  return chartData;
 });
 
 // ========================================
