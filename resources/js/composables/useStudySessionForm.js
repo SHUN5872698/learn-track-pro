@@ -118,11 +118,9 @@ export function useStudySessionForm(initialData = null) {
   // studied_atの時刻を現在時刻にリセット
   const resetTimeToNow = () => {
     const now = new Date();
-    const existingDate = new Date(form.studied_at);
-    // 既存の日付を保持しつつ、時刻のみを現在時刻に更新
-    const newDateTime = new Date(existingDate.getFullYear(), existingDate.getMonth(), existingDate.getDate(), now.getHours(), now.getMinutes());
     const pad = (num) => String(num).padStart(2, '0');
-    form.studied_at = `${newDateTime.getFullYear()}-${pad(newDateTime.getMonth() + 1)}-${pad(newDateTime.getDate())}T${pad(newDateTime.getHours())}:${pad(newDateTime.getMinutes())}`;
+    // 日付と時刻の両方を現在時刻に更新
+    form.studied_at = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
   };
 
   // initialDataが提供された場合、すぐにフォームを初期化
