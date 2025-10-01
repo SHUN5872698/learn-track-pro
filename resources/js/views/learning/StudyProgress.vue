@@ -43,41 +43,23 @@
         <h3 class="mb-4 text-lg font-semibold text-slate-800">学習記録一覧</h3>
 
         <div v-if="paginatedRecords.length > 0" class="space-y-4">
-          <div v-for="record in paginatedRecords" :key="record.id" class="p-5 transition-shadow bg-white border rounded-lg shadow-sm hover:shadow-md">
-            <!-- 記録の内容 -->
-            <div class="flex items-start justify-between">
-              <div class="flex-1">
-                <p class="font-semibold text-slate-800">
-                  {{ formatDate(record.studied_at) }}
-                  <span class="text-slate-600">({{ formatTimeOnly(record.studied_at) }})</span>
-                </p>
-                <p class="text-sm text-slate-600">
-                  セクション:
-                  <router-link :to="`/learning/${contentId}/section/${record.section_id}`" class="font-medium text-violet-600 hover:underline">
-                    {{ record.sectionTitle }}
-                  </router-link>
-                </p>
-                <p class="text-sm text-slate-600">学習時間: {{ formatMinutes(record.study_minutes) }}</p>
-                <div class="flex items-center mt-1">
-                  <span class="mr-1 text-sm text-slate-600">調子:</span>
-                  <StarIcon v-for="r in 5" :key="r" class="w-4 h-4" :class="r <= record.mood_rating ? 'text-yellow-400' : 'text-gray-300'" />
-                </div>
-                <p v-if="record.memo" class="mt-2 text-sm text-slate-700">メモ: {{ record.memo }}</p>
+          <LearningRecordCard v-for="record in paginatedRecords" :key="record.id" :record="record" @edit="router.push(`/learning-contents/${contentId}/sessions/${record.id}/edit`)" @delete="openDeleteModal(record)">
+            <template #additional-info="{ record }">
+              <div>
+                <span class="text-sm text-slate-600"
+                  >セクション:
+                  <router-link :to="`/learning/${contentId}/section/${record.section_id}`" class="font-medium text-violet-600 hover:underline"> {{ record.section?.title }} </router-link>
+                </span>
               </div>
-              <div class="flex ml-4 space-x-2">
-                <BaseButton variant="icon-primary" size="md" :left-icon="PencilIcon" :icon-only="true" @click="router.push(`/learning-contents/${contentId}/sessions/${record.id}/edit`)"> 記録を編集 </BaseButton>
-                <DeleteButton variant="icon-danger" size="sm" @click="openDeleteModal(record)"> 記録を削除 </DeleteButton>
-              </div>
-            </div>
-          </div>
+            </template>
+          </LearningRecordCard>
+          <!-- ページネーション -->
+          <Pagination :total-items="allContentSessionsRecords.length" :items-per-page="recordItemsPerPage" :current-page="recordCurrentPage" @update:currentPage="recordCurrentPage = $event" />
         </div>
 
         <div v-else class="py-10 text-center text-slate-500">
           <p>この学習コンテンツの学習記録はまだありません。</p>
         </div>
-
-        <!-- ページネーション -->
-        <Pagination :total-items="allContentSessionsRecords.length" :items-per-page="recordItemsPerPage" :current-page="recordCurrentPage" @update:currentPage="recordCurrentPage = $event" />
 
         <!-- アクションボタン -->
         <div class="flex justify-end pt-6 mt-6 space-x-4 border-t border-slate-200">
@@ -87,18 +69,8 @@
     </template>
   </MultiCardDetailLayout>
 
-  <!-- 削除確認モーダル -->
   <Teleport to="#app">
-    <ConfirmModal :is-open="isModalOpen" title="学習記録を削除しますか？" confirm-button-text="削除" @confirm="confirmDelete" @cancel="isModalOpen = false">
-      <template #content>
-        <div v-if="recordToDelete" class="p-4 mb-6 text-sm border rounded-lg bg-slate-50 border-slate-200">
-          <p><span class="font-semibold">日時:</span> {{ formatDate(recordToDelete.studied_at) }} {{ formatTimeOnly(recordToDelete.studied_at) }}</p>
-          <p><span class="font-semibold">学習時間:</span> {{ formatMinutes(recordToDelete.study_minutes) }}</p>
-          <p v-if="recordToDelete.memo" class="mt-2"><span class="font-semibold">メモ:</span> {{ recordToDelete.memo }}</p>
-        </div>
-        <p class="mb-6 text-slate-600">この操作は元に戻せません。</p>
-      </template>
-    </ConfirmModal>
+    <DeleteRecordConfirmModal :is-open="isModalOpen" :record="recordToDelete" @confirm="confirmDelete" @cancel="isModalOpen = false" />
   </Teleport>
 </template>
 
@@ -108,7 +80,7 @@
 // ========================================
 import { computed, ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { ArrowLeftIcon, StarIcon, PencilIcon } from '@heroicons/vue/24/solid';
+import { ArrowLeftIcon } from '@heroicons/vue/24/solid';
 
 // ========================================
 // 内部インポート
@@ -120,17 +92,16 @@ import { useLoading } from '@/composables/ui/useLoading';
 // コンポーネント
 import MultiCardDetailLayout from '@/layouts/MultiCardDetailLayout.vue';
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
-import BaseButton from '@/components/common/BaseButton.vue';
 import BackButton from '@/components/common/buttons/BackButton.vue';
-import DeleteButton from '@/components/common/buttons/DeleteButton.vue';
+import LearningRecordCard from '@/components/learning/LearningRecordCard.vue';
 import Pagination from '@/components/common/Pagination.vue';
-import ConfirmModal from '@/components/common/ConfirmModal.vue';
+import DeleteRecordConfirmModal from '@/components/learning/DeleteRecordConfirmModal.vue';
 import LineChart from '@/components/charts/LineChart.vue';
 
 // ========================================
 // ユーティリティ関数（純粋関数）
 // ========================================
-import { formatDate, formatTimeOnly, formatMinutes } from '@/utils/dateFormatters';
+import { formatDateTime, formatMinutes } from '@/utils/dateFormatters';
 
 // ========================================
 // 初期設定

@@ -36,23 +36,7 @@
       <div>
         <h3 class="mb-4 text-lg font-semibold text-slate-800">学習記録一覧</h3>
         <div v-if="paginatedRecords.length > 0" class="space-y-4">
-          <div v-for="record in paginatedRecords" :key="record.id" class="p-5 bg-white border rounded-lg shadow-sm">
-            <div class="flex items-start justify-between">
-              <div>
-                <p class="font-semibold text-slate-800">{{ formatDateTime(record.studied_at) }}</p>
-                <p class="text-sm text-slate-600">学習時間: {{ formatMinutes(record.study_minutes) }}</p>
-                <div class="flex items-center mt-1">
-                  <span class="mr-1 text-sm text-slate-600">調子:</span>
-                  <StarIcon v-for="r in 5" :key="r" class="w-4 h-4" :class="r <= record.mood_rating ? 'text-yellow-400' : 'text-gray-300'" />
-                </div>
-                <p v-if="record.memo" class="mt-2 text-sm text-slate-700">メモ: {{ record.memo }}</p>
-              </div>
-              <div class="flex space-x-2">
-                <BaseButton variant="icon-primary" size="md" :left-icon="PencilIcon" :icon-only="true" @click="router.push(`/learning-contents/${learningContentId}/sessions/${record.id}/edit`)"> 記録を編集 </BaseButton>
-                <DeleteButton variant="icon-danger" size="sm" @click="openDeleteModal(record)"> 記録を削除 </DeleteButton>
-              </div>
-            </div>
-          </div>
+          <LearningRecordCard v-for="record in paginatedRecords" :key="record.id" :record="record" @edit="router.push(`/learning-contents/${learningContentId}/sessions/${record.id}/edit`)" @delete="openDeleteModal(record)"> </LearningRecordCard>
           <Pagination :total-items="sectionRecords.length" :items-per-page="recordItemsPerPage" :current-page="recordCurrentPage" @update:currentPage="recordCurrentPage = $event" />
         </div>
         <div v-else class="py-10 text-center text-slate-500">
@@ -69,17 +53,9 @@
       <BaseButton v-if="learningContent && section" variant="primary" :left-icon="PlusCircleIcon" @click="goToRecordForm">このセクションに記録を追加</BaseButton>
     </template>
 
-    <!-- 削除確認モーダル -->
-    <ConfirmModal :is-open="isModalOpen" title="学習記録を削除しますか？" confirm-button-text="削除" @confirm="confirmDelete" @cancel="isModalOpen = false">
-      <template #content>
-        <div v-if="recordToDelete" class="p-4 mb-6 text-sm border rounded-lg bg-slate-50 border-slate-200">
-          <p><span class="font-semibold">日時:</span> {{ formatDateTime(recordToDelete.studied_at) }}</p>
-          <p><span class="font-semibold">学習時間:</span> {{ formatMinutes(recordToDelete.study_minutes) }}</p>
-          <p v-if="recordToDelete.memo" class="mt-2"><span class="font-semibold">メモ:</span> {{ recordToDelete.memo }}</p>
-        </div>
-        <p class="mb-6 text-slate-600">この操作は元に戻せません。</p>
-      </template>
-    </ConfirmModal>
+    <Teleport to="#app">
+      <DeleteRecordConfirmModal :is-open="isModalOpen" :record="recordToDelete" @confirm="confirmDelete" @cancel="isModalOpen = false" />
+    </Teleport>
   </DetailLayout>
 </template>
 
@@ -89,7 +65,7 @@
 // ========================================
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { StarIcon, PencilIcon, PlusCircleIcon, ArrowLeftIcon } from '@heroicons/vue/24/solid';
+import { PlusCircleIcon, ArrowLeftIcon } from '@heroicons/vue/24/solid';
 
 // ========================================
 // 内部インポート
@@ -107,9 +83,9 @@ import DetailLayout from '@/layouts/DetailLayout.vue';
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
 import BaseButton from '@/components/common/BaseButton.vue';
 import BackButton from '@/components/common/buttons/BackButton.vue';
-import DeleteButton from '@/components/common/buttons/DeleteButton.vue';
+import LearningRecordCard from '@/components/learning/LearningRecordCard.vue';
 import Pagination from '@/components/common/Pagination.vue';
-import ConfirmModal from '@/components/common/ConfirmModal.vue';
+import DeleteRecordConfirmModal from '@/components/learning/DeleteRecordConfirmModal.vue';
 
 // ========================================
 // ユーティリティ関数（純粋関数）
@@ -138,7 +114,7 @@ const recordToDelete = ref(null);
 
 // ページネーション
 const recordCurrentPage = ref(1);
-const recordItemsPerPage = 10;
+const recordItemsPerPage = 5;
 
 // ========================================
 // 算出プロパティ
