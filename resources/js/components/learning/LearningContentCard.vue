@@ -6,15 +6,15 @@
       <div class="flex-1">
         <h3 class="mb-2 text-lg font-semibold text-slate-900">{{ content.title }}</h3>
         <!-- 技術とステータス情報 -->
-        <div class="flex items-center space-x-4">
-          <div class="flex items-center space-x-1">
-            <span class="text-xs font-medium">技術:</span>
+        <div class="space-y-1 text-slate-600">
+          <div class="flex items-center space-x-1 text-xs">
+            <span class="font-medium">技術:</span>
             <img v-if="displayTechnology.icon" :src="displayTechnology.icon" :alt="displayTechnology.name" class="w-5 h-5 mr-1" />
-            <span class="text-xs font-medium">{{ displayTechnology.name }}</span>
+            <span class="font-medium">{{ displayTechnology.name }}</span>
           </div>
-          <div class="flex items-center space-x-1">
-            <span class="text-xs font-medium">ステータス:</span>
-            <div class="flex items-center text-xs font-medium" :class="statusDisplay.class">
+          <div class="flex items-center space-x-1 text-xs">
+            <span class="font-medium">ステータス:</span>
+            <div class="flex items-center font-medium" :class="statusDisplay.class">
               <component :is="statusDisplay.icon" class="w-5 h-5 mr-1" />
               {{ statusDisplay.text }}
             </div>
