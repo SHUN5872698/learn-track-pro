@@ -84,18 +84,14 @@ resources/js/
 │       │   ├── TechnologySelector.vue       # 技術選択ドロップダウン
 │       │   ├── WizardNavigation.vue         # ウィザードナビゲーションボタン
 │       │   └── WizardStepIndicator.vue      # ウィザードステップインジケーター
+│       ├── DeleteRecordConfirmModal.vue     # 学習記録削除確認モーダル
 │       ├── LearningContentCard.vue          # 学習コンテンツカード
+│       ├── LearningRecordCard.vue           # 学習記録カード
 │       ├── StatsOverview.vue                # 統計概要コンポーネント
 │       └── StudySessionFormFields.vue       # 学習記録フォームフィールド
 │
 ├── composables/                             # 共有ロジック・状態管理（Vue Composition APIを活用）
 │   ├── data/                                # アプリケーションのモックデータ管理
-│   │   ├── mockCategories.js                # カテゴリーのモックデータ定義
-│   │   ├── mockLearningContents.js          # 学習コンテンツのモックデータ定義
-│   │   ├── mockSessions.js                  # 学習セッションのモックデータ定義
-│   │   ├── mockTechnologies.js              # 技術のモックデータ定義
-│   │   └── mockUsers.js                     # ユーザーのモックデータ定義
-│   │
 │   ├── learning/                            # 学習ドメイン固有のコアロジック
 │   │   ├── useLearningContents.js           # 学習コンテンツのCRUD操作と関連ロジック
 │   │   ├── useLearningSessions.js           # 学習セッション（記録）のCRUD操作と関連ロジック
