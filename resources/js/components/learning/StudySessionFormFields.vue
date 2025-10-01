@@ -46,7 +46,7 @@
       <label for="memo" class="block text-sm font-medium text-slate-700">学習メモ</label>
       <textarea
         id="memo"
-        rows="4"
+        rows="5"
         v-model="localForm.memo"
         @input="$emit('memo-modified')"
         placeholder="学習した内容のメモや感想を自由に入力してください。"
