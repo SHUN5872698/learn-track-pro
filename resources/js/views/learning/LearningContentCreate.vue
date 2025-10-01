@@ -43,7 +43,7 @@
           <label for="description" class="block text-sm font-medium text-slate-700">概要</label>
           <textarea
             id="description"
-            rows="4"
+            rows="5"
             v-model="form.description"
             placeholder="学習内容の詳細を自由に入力してください。"
             class="block w-full px-3 py-2 mt-1 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
@@ -66,7 +66,12 @@
           <h3 class="mb-4 text-lg font-semibold border-b text-slate-800">基本情報</h3>
           <p><span class="font-semibold">技術:</span> {{ getTechnologyName }}</p>
           <p><span class="font-semibold">タイトル:</span> {{ form.title }}</p>
-          <p><span class="font-semibold">内容:</span> {{ form.description || '未入力' }}</p>
+          <div>
+            <span class="font-semibold">概要:</span>
+            <div class="p-2 my-1 bg-gray-100 rounded">
+              <p class="break-words whitespace-pre-wrap">{{ form.description || '（未入力）' }}</p>
+            </div>
+          </div>
         </div>
         <!-- セクション情報の確認表示 -->
         <div class="p-6 border rounded-lg bg-slate-50">
@@ -78,7 +83,7 @@
         <!-- 「すぐに学習を開始する」チェックボックス -->
         <div class="flex items-center mt-4">
           <input id="startImmediately" type="checkbox" v-model="form.startImmediately" class="w-4 h-4 border-gray-300 rounded text-violet-600 focus:ring-violet-500" />
-          <label for="startImmediately" class="flex items-center ml-2 text-sm"> すぐに学習を開始する </label>
+          <label for="startImmediately" class="flex items-center ml-2 text-sm">すぐに学習を開始する</label>
         </div>
         <!-- チェックボックスのヒント -->
         <p class="flex items-center mt-2 text-sm text-slate-500">
@@ -91,8 +96,8 @@
       <WizardNavigation :current-step="currentStep" :total-steps="stepNames.length" :show-back="currentStep > 1" :show-next="currentStep < stepNames.length" :show-submit="currentStep === stepNames.length" @cancel="handleCancel" @back="prevStep" @next="handleNext" @submit="handleSubmit" />
     </form>
   </DetailLayout>
+
   <Teleport to="#app">
-    <!-- モーダルセクション -->
     <ConfirmModal :is-open="isUnsavedModalOpen" title="編集内容が保存されていません" message="編集した内容を破棄してもよろしいですか？" confirm-button-text="破棄" confirm-button-variant="danger" :show-item-detail="false" @confirm="router.push('/dashboard')" @cancel="isUnsavedModalOpen = false" />
   </Teleport>
 </template>
@@ -157,7 +162,7 @@ const showTitleBorder = computed(() => {
 });
 
 const showDescriptionBorder = computed(() => {
-  return validationErrors.value.some((error) => error.includes('説明')) && !descriptionModified.value;
+  return validationErrors.value.some((error) => error.includes('概要')) && !descriptionModified.value;
 });
 
 const showTechnologyBorder = computed(() => {

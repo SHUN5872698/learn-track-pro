@@ -46,7 +46,7 @@
           <label for="description" class="block text-sm font-medium text-slate-700">概要</label>
           <textarea
             id="description"
-            rows="4"
+            rows="5"
             v-model="form.description"
             placeholder="学習内容の詳細を自由に入力してください。"
             class="block w-full px-3 py-2 mt-1 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
@@ -94,6 +94,7 @@
               </span>
               <span v-else class="ml-2">{{ getTechnologyNameById(form.technology_id) }}</span>
             </p>
+
             <p>
               <span class="font-semibold">タイトル:</span>
               <span v-if="originalData.title !== form.title" class="inline-flex items-center ml-2">
@@ -103,15 +104,22 @@
               </span>
               <span v-else class="ml-2">{{ form.title }}</span>
             </p>
-            <p>
-              <span class="font-semibold">説明:</span>
-              <span v-if="originalData.description !== form.description" class="inline-flex items-center ml-2">
-                <span class="text-gray-400 line-through">{{ originalData.description || '未入力' }}</span>
-                <ArrowRightIcon class="w-4 h-4 mx-1" />
-                <span class="font-bold text-blue-600">{{ form.description || '未入力' }}</span>
-              </span>
-              <span v-else class="ml-2">{{ form.description || '未入力' }}</span>
-            </p>
+
+            <div>
+              <span class="font-semibold">概要:</span>
+              <div v-if="originalData.description !== form.description" class="mt-1 space-y-2">
+                <div class="p-2 bg-gray-100 rounded">
+                  <p class="text-xs text-gray-500">変更前:</p>
+                  <p class="text-sm text-gray-400 line-through break-words whitespace-pre-wrap">{{ originalData.description || '（未入力）' }}</p>
+                </div>
+                <div class="p-2 rounded bg-blue-50">
+                  <p class="text-xs text-blue-600">変更後:</p>
+                  <p class="text-sm font-bold text-blue-600 break-words whitespace-pre-wrap">{{ form.description || '（未入力）' }}</p>
+                </div>
+              </div>
+              <p v-else class="mt-1 break-words whitespace-pre-wrap">{{ form.description || '（未入力）' }}</p>
+            </div>
+
             <p>
               <span class="font-semibold">ステータス:</span>
               <span v-if="originalData.status !== form.status" class="inline-flex items-center ml-2">
@@ -167,8 +175,8 @@
       />
     </form>
   </DetailLayout>
+
   <Teleport to="#app">
-    <!-- モーダルセクション -->
     <ConfirmModal :is-open="isUnsavedModalOpen" title="編集内容が保存されていません" message="編集した内容を破棄してもよろしいですか？" confirm-button-text="破棄" confirm-button-variant="danger" :show-item-detail="false" @confirm="router.back()" @cancel="isUnsavedModalOpen = false" />
     <ConfirmModal :is-open="isDeleteModalOpen" title="セクションを削除しますか？" message="このセクションに関連する学習記録もすべて削除されます。この操作は取り消せません。" @confirm="confirmSectionDelete" @cancel="cancelSectionDelete" />
   </Teleport>
@@ -292,7 +300,7 @@ const showTitleBorder = computed(() => {
 });
 
 const showDescriptionBorder = computed(() => {
-  return validationErrors.value.some((error) => error.includes('説明')) && !descriptionModified.value;
+  return validationErrors.value.some((error) => error.includes('概要')) && !descriptionModified.value;
 });
 
 const showTechnologyBorder = computed(() => {
@@ -480,7 +488,7 @@ const cancelSectionDelete = () => {
  * 既存の学習コンテンツデータを読み込み、フォームに設定する
  *
  * この関数は2つのデータソースを統合する：
- * 1. learningContentsRaw: 基本情報（タイトル、説明、技術など）
+ * 1. learningContentsRaw: 基本情報（タイトル、概要、技術など）
  * 2. sections: セクション情報（各セクションのstatus、completed_atを含む）
  *
  * 統合したデータを：
