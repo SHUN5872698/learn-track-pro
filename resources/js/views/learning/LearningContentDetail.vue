@@ -41,17 +41,16 @@
           <span class="text-xs font-medium md:text-sm">作成日: {{ formatDate(learningContent.created_at) }}</span>
           <span class="text-xs font-medium md:text-sm">最終学習日: {{ learningContent.latestSessionUpdatedAt ? formatDate(learningContent.latestSessionUpdatedAt) : '-' }}</span>
         </div>
+        <!-- 説明セクション -->
+        <div class="mt-4">
+          <h3 class="mb-2 text-lg font-semibold text-slate-800">概要: </h3>
+          <p class="break-words whitespace-pre-wrap text-slate-600">{{ learningContent.description }}</p>
+        </div>
       </div>
     </template>
 
     <!-- メインコンテンツ -->
     <div v-if="learningContent">
-      <!-- 説明セクション -->
-      <div class="mb-6">
-        <h3 class="mb-2 text-lg font-semibold text-slate-800">説明</h3>
-        <p class="text-slate-600">{{ learningContent.description }}</p>
-      </div>
-
       <!-- 進捗表示セクション -->
       <div class="mb-6">
         <div class="flex items-center justify-between mb-2">
@@ -75,10 +74,10 @@
         <h3 class="mb-2 text-lg font-semibold text-slate-800">セクション一覧</h3>
 
         <!-- 完了状態切り替えのヒント（セクション一覧の直下） -->
-        <p class="flex items-center mb-4 text-sm text-slate-500">
+        <div class="flex items-center mb-4 text-sm text-slate-500">
           <LightBulbIcon class="w-5 h-5 mr-2 text-yellow-500" />
-          チェックマークをクリックすると完了状態を切り替えられます。
-        </p>
+          <span>チェックマークをクリックすると完了状態を切り替えられます。</span>
+        </div>
 
         <div v-if="contentSections.length > 0">
           <ul class="space-y-3">
@@ -107,6 +106,7 @@
               <div class="ml-4 text-sm text-slate-500">[{{ getRecordCountForSection(section.id) }}件の記録]</div>
             </li>
           </ul>
+
           <Pagination :total-items="contentSections.length" :items-per-page="sectionItemsPerPage" :current-page="sectionCurrentPage" @update:currentPage="sectionCurrentPage = $event" />
         </div>
 
