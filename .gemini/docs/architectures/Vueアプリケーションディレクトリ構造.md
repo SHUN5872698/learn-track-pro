@@ -100,7 +100,7 @@ resources/js/
 │   ├── ui/                                  # UIの状態管理とヘルパー関数
 │   │   ├── useLoading.js                    # ローディング状態管理
 │   │   └── useMenuState.js                  # グローバルなメニュー開閉状態管理ロジック
-│   ├── .DS_Store                            # macOSの隠しファイル
+│   │
 │   ├── useAuth.js                           # 認証（ログイン、ログアウト、登録）と認証状態管理ロジック
 │   ├── useLearningContentForm.js            # 学習内容フォームのデータ管理、初期化、バリデーションロジック
 │   ├── useLearningData.js                   # 全ての学習関連データを集約・提供するファサード（データ操作のハブ）
@@ -136,6 +136,7 @@ resources/js/
 │   ├── auth/                                # 認証関連ページ
 │   │   ├── Login.vue                        # ログイン画面
 │   │   ├── PasswordReset.vue                # パスワードリセット画面
+│   │   ├── PasswordResetConfirm.vue.vue     # パスワードリセット実行画面
 │   │   └── Register.vue                     # 新規登録画面
 │   │
 │   ├── learning/                            # 学習管理関連ページ
@@ -159,6 +160,7 @@ resources/js/
 ├── App.vue                                  # ルートコンポーネント
 ├── bootstrap.js                             # アプリケーションの初期設定（Axiosなど）
 └── router.js                                # Vue Router設定
+
 ```
 
 ---
