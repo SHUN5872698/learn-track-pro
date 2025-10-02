@@ -162,9 +162,26 @@ paths:
           application/json:
             schema:
               type: string
-            example:
-              email: tanaka@example.com
-              password: password123
+            examples:
+              '1':
+                value:
+                  email: tanaka@example.com
+                  password: password123
+              '2':
+                value:
+                  email: taro.yamada@example.com
+                  password: password
+                summary: 例 2
+              '3':
+                value:
+                  email: test01@example.com
+                  password: password
+                summary: 例 3
+              '4':
+                value:
+                  email: tekisasu.bager@gmail.com
+                  password: password
+                summary: 例 4
       responses:
         '200':
           description: OK - ログイン成功
@@ -821,71 +838,6 @@ paths:
                     - パスワードは8文字以上である必要があります。
           headers: {}
       security: []
-  /api/forgot-password:
-    post:
-      summary: パスワードリセット要求
-      deprecated: false
-      description: パスワードリセット用のメールを送信します
-      operationId: forgotPassword
-      tags:
-        - Password Reset
-      parameters:
-        - name: Accept
-          in: header
-          description: ''
-          required: true
-          example: application/json
-          schema:
-            type: string
-            default: application/json
-        - name: Content-Type
-          in: header
-          description: ''
-          required: true
-          example: application/json
-          schema:
-            type: string
-            default: application/json
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - email
-              properties:
-                email:
-                  type: string
-                  format: email
-                  description: メールアドレス
-                  example: tanaka@example.com
-            examples: {}
-      responses:
-        '200':
-          description: OK - パスワードリセットメール送信成功
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              example:
-                message: パスワードリセット用のメールを送信しました。
-          headers: {}
-        '422':
-          description: Unprocessable Entity - バリデーションエラー
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-              example:
-                message: The given data was invalid.
-                errors:
-                  email:
-                    - このメールアドレスは登録されていません。
-          headers: {}
-      security: []
   /fortify/forgot-password:
     post:
       summary: パスワードリセット要求
@@ -924,7 +876,23 @@ paths:
                   format: email
                   description: メールアドレス
                   example: tanaka@example.com
-            examples: {}
+            examples:
+              '1':
+                value:
+                  email: test01@example.com
+                summary: 例 2
+              '2':
+                value:
+                  email: tekisasu.bager@gmail.com
+                summary: 例 3
+              '3':
+                value:
+                  email: testt9999@example.com
+                summary: 未登録
+              '4':
+                value:
+                  email: ''
+                summary: 未入力
       responses:
         '200':
           description: OK - パスワードリセットメール送信成功
@@ -936,83 +904,29 @@ paths:
                   status:
                     type: string
                     example: パスワードリセット用のメールを送信しました。
+              example:
+                message: パスワードリセットメールを送信しました。
           headers: {}
-        '422':
-          description: Unprocessable Entity - バリデーションエラー
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          headers: {}
-      security: []
-  /api/reset-password:
-    post:
-      summary: パスワードリセット実行
-      deprecated: false
-      description: トークンを使用してパスワードをリセットします
-      operationId: resetPassword
-      tags:
-        - Password Reset
-      parameters:
-        - name: Accept
-          in: header
+        '302':
           description: ''
-          required: true
-          example: application/json
-          schema:
-            type: string
-            default: application/json
-        - name: Content-Type
-          in: header
-          description: ''
-          required: true
-          example: application/json
-          schema:
-            type: string
-            default: application/json
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - token
-                - email
-                - password
-                - password_confirmation
-              properties:
-                token:
-                  type: string
-                  description: リセットトークン
-                  example: sample_reset_token
-                email:
-                  type: string
-                  format: email
-                  description: メールアドレス
-                  example: tanaka@example.com
-                password:
-                  type: string
-                  format: password
-                  description: 新しいパスワード
-                  example: newpassword456
-                password_confirmation:
-                  type: string
-                  format: password
-                  description: 新しいパスワード（確認）
-                  example: newpassword456
-            examples: {}
-      responses:
-        '200':
-          description: OK - パスワードリセット成功
           content:
-            application/json:
+            '*/*':
               schema:
                 type: object
-                properties:
-                  message:
-                    type: string
-              example:
-                message: パスワードをリセットしました。
+                properties: {}
+              example: |-
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta charset="UTF-8" />
+                        <meta http-equiv="refresh" content="0;url='http://localhost:8000'" />
+
+                        <title>Redirecting to http: //localhost:8000</title>
+                    </head>
+                    <body>
+                        Redirecting to <a href="http://localhost:8000">http: //localhost:8000</a>.
+                    </body>
+                </html>
           headers: {}
         '422':
           description: Unprocessable Entity - バリデーションエラー
@@ -1020,20 +934,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-              example:
-                message: The given data was invalid.
-                errors:
-                  token:
-                    - トークンが無効です。
-                  password:
-                    - パスワードは8文字以上である必要があります。
+              examples:
+                '3':
+                  summary: レコードなし
+                  value:
+                    message: このメールアドレスに一致するユーザーがいません。
+                    errors:
+                      email:
+                        - このメールアドレスに一致するユーザーがいません。
+                '4':
+                  summary: 未入力
+                  value:
+                    message: メールアドレスは必須項目です。
+                    errors:
+                      email:
+                        - メールアドレスは必須項目です。
           headers: {}
       security: []
   /fortify/reset-password:
     post:
       summary: パスワードリセット実行
       deprecated: false
-      description: トークンを使用してパスワードをリセットします
+      description: >-
+        トークンを使用してパスワードをリセットします
+
+
+        【トークンの取得方法】
+
+        エンドポイント8（/fortify/forgot-password）のレスポンスにはトークンが含まれません。これはセキュリティ上の意図的な設計です。トークンはメール内のURLにのみ含まれます。
+
+
+        【テスト手順】
+
+        1. エンドポイント8でメール送信を実行
+
+        2. 受信メールのリンクからトークンをコピー（URLの/reset-password/の後の文字列）
+
+        3. このエンドポイントのtokenフィールドに貼り付けて実行
+
+
+        【メール内のURL例】
+
+        http://localhost:5173/reset-password/abc123def456ghi789?email=tanaka@example.com
+
+        → abc123def456ghi789 の部分がトークンです
       operationId: resetPassword
       tags:
         - Password Reset
@@ -1084,7 +1028,36 @@ paths:
                   format: password
                   description: 新しいパスワード（確認）
                   example: newpassword456
-            examples: {}
+            examples:
+              '1':
+                value:
+                  token: >-
+                    f54e3363df2b50b36ea5efe4c02453673f16947ab5c2fdc27d79d790e5000cd6
+                  email: tekisasu.bager@gmail.com
+                  password: newpassword456
+                  password_confirmation: newpassword456
+                summary: 例 1
+              '2':
+                value:
+                  token: sample_reset_token
+                  email: testt9999@example.com
+                  password: newpassword456
+                  password_confirmation: newpassword456
+                summary: 未登録
+              '3':
+                value:
+                  token: ''
+                  email: ''
+                  password: ''
+                  password_confirmation: ''
+                summary: 未入力
+              '4':
+                value:
+                  token: sample_reset_token
+                  email: tekisasu.bager@gmail.com
+                  password: newpassword456
+                  password_confirmation: newpassword456
+                summary: トークンエラー
       responses:
         '200':
           description: OK - パスワードリセット成功
@@ -1096,6 +1069,29 @@ paths:
                   status:
                     type: string
                     example: パスワードをリセットしました。
+              example:
+                message: パスワードが再設定されました。
+          headers: {}
+        '302':
+          description: ''
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+              example: |-
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta charset="UTF-8" />
+                        <meta http-equiv="refresh" content="0;url='http://localhost:8000'" />
+
+                        <title>Redirecting to http: //localhost:8000</title>
+                    </head>
+                    <body>
+                        Redirecting to <a href="http://localhost:8000">http: //localhost:8000</a>.
+                    </body>
+                </html>
           headers: {}
         '422':
           description: Unprocessable Entity - バリデーションエラー
@@ -1103,6 +1099,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
+              examples:
+                '1':
+                  summary: 未登録
+                  value:
+                    message: このメールアドレスに一致するユーザーがいません。
+                    errors:
+                      email:
+                        - このメールアドレスに一致するユーザーがいません。
+                '2':
+                  summary: バリデーションエラー
+                  value:
+                    message: tokenは必須項目です。 (その他、2エラーあり)
+                    errors:
+                      token:
+                        - tokenは必須項目です。
+                      email:
+                        - メールアドレスは必須項目です。
+                      password:
+                        - パスワードは必須項目です。
+                '3':
+                  summary: トークンエラー
+                  value:
+                    message: このパスワード再設定トークンは無効です。
+                    errors:
+                      email:
+                        - このパスワード再設定トークンは無効です。
           headers: {}
       security: []
 components:
@@ -1165,16 +1187,8 @@ components:
             items:
               type: string
           properties: {}
-  securitySchemes:
-    sanctum11:
-      type: apiKey
-      in: cookie
-      name: laravel_session
-      description: Laravel Sanctum認証
-    sanctum111:
-      type: apiKey
-      in: cookie
-      name: laravel_session
-      description: Laravel Sanctum認証
-servers: []
+  securitySchemes: {}
+servers:
+  - url: http://localhost:8000
+    description: 開発環境
 security: []
