@@ -23,7 +23,7 @@
           <!-- 名前入力フィールド -->
           <div>
             <label class="block mb-2 text-sm font-medium">名前<span class="pl-1 text-red-500">*</span></label>
-            <input v-model="formData.name" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" :class="errors.name ? 'border-red-500' : ''" placeholder="例: 山田太郎" />
+            <input v-model="formData.name" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" :class="errors.name ? 'border-red-500' : ''" placeholder="例: 山田 太郎" />
           </div>
 
           <!-- メールアドレス入力フィールド -->

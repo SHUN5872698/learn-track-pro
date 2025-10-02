@@ -33,7 +33,7 @@
               type="text"
               autocomplete="name"
               class="block w-full px-3 py-2 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
-              placeholder="例: 山田太郎"
+              placeholder="例: 山田 太郎"
               v-model="name"
               @input="nameModified = true"
               :class="[showNameBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
