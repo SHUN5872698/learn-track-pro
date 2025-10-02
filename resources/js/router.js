@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/auth';
 import Login from '@/views/auth/Login.vue';
 import Register from '@/views/auth/Register.vue';
 import PasswordReset from '@/views/auth/PasswordReset.vue';
+import PasswordConfirm from '@/views/auth/PasswordResetConfirm.vue';
 import Dashboard from '@/views/Dashboard.vue';
 import Reports from '@/views/Reports.vue';
 import StudyProgress from '@/views/learning/StudyProgress.vue';
@@ -39,6 +40,12 @@ const routes = [
     name: 'password-reset',
     component: PasswordReset, // パスワードリセットページ
     meta: { requiresGuest: true },
+  },
+  {
+    path: '/reset-password/:token',
+    name: 'password-reset-confirm',
+    component: PasswordConfirm, // パスワードリセット実行ページ
+    meta: { requiresGuest: true, layout: 'auth' },
   },
   {
     path: '/dashboard',
