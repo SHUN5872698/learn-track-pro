@@ -145,7 +145,7 @@ resources/js/
 │   │   ├── SectionStudyRecords.vue          # セクション別学習記録一覧画面
 │   │   ├── StudyProgress.vue                # 個別レポート画面
 │   │   ├── StudySessionEdit.vue             # 学習記録編集画面
-│   │   └── StudySessionForm.vue             # 学習記録作成画面
+│   │   └── StudySessionCreate.vue           # 学習記録作成画面
 │   │
 │   ├── user/                                # ユーザー関連ページ
 │   │   ├── Profile.vue                      # プロフィール表示画面
@@ -159,7 +159,6 @@ resources/js/
 ├── App.vue                                  # ルートコンポーネント
 ├── bootstrap.js                             # アプリケーションの初期設定（Axiosなど）
 └── router.js                                # Vue Router設定
-
 ```
 
 ---
@@ -259,22 +258,24 @@ graph TD
 
 ## 各ディレクトリの役割
 
-## /views
+### /views
 
 - ルーターで直接アクセスされるページコンポーネント
 - 各ページはレイアウトとコンポーネントを組み合わせる
 
-## /components
+### /components
 
 - 再利用可能なUIコンポーネント
 - 機能別にサブフォルダで整理（auth, learning, common）
 
-## /composables
+### /composables
 
 - Vue 3 Composition APIを使った共有ロジック
 - 状態管理、API通信、バリデーションなど
 
-## /layouts
+### /layouts
 
 - ページ全体のレイアウトを定義
 - ヘッダー、サイドバー、フッターの配置
+
+---
