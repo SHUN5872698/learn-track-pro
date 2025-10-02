@@ -6,7 +6,7 @@ import PasswordReset from '@/views/auth/PasswordReset.vue';
 import Dashboard from '@/views/Dashboard.vue';
 import Reports from '@/views/Reports.vue';
 import StudyProgress from '@/views/learning/StudyProgress.vue';
-import StudySessionForm from '@/views/learning/StudySessionForm.vue';
+import StudySessionCreate from '@/views/learning/StudySessionCreate.vue';
 import LearningContentCreate from '@/views/learning/LearningContentCreate.vue';
 import LearningContentDetail from '@/views/learning/LearningContentDetail.vue';
 import LearningContentEdit from '@/views/learning/LearningContentEdit.vue';
@@ -61,7 +61,7 @@ const routes = [
   {
     path: '/learning-contents/:id/record',
     name: 'study-session-form',
-    component: StudySessionForm, // 学習記録作成ページ
+    component: StudySessionCreate, // 学習記録作成ページ
     meta: { requiresAuth: true },
   },
   {
