@@ -16,9 +16,15 @@
 </template>
 
 <script setup>
+// ========================================
+// 外部インポート
+// ========================================
 import { computed, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 
+// ========================================
+// 初期設定
+// ========================================
 const props = defineProps({
   // ボタンの視覚的なスタイルを定義
   variant: {
@@ -89,9 +95,15 @@ const props = defineProps({
 
 defineEmits(['click']);
 
+// ========================================
+// 状態管理
+// ========================================
 // ルート要素への参照を作成
 const rootElement = ref(null);
 
+// ========================================
+// 算出プロパティ
+// ========================================
 // toプロパティの有無でRouterLinkとbuttonを動的に切り替える
 const componentType = computed(() => (props.to ? RouterLink : 'button'));
 
@@ -144,6 +156,9 @@ const tooltipClasses = computed(() => {
 // 全てのクラス定義を結合し、最終的なボタンのスタイルを決定
 const buttonClasses = computed(() => [baseClasses, variantClasses.value[props.variant], sizeClasses.value[props.size], shapeClasses.value, { 'w-full': props.fullWidth, 'relative group': props.tooltip }]);
 
+// ========================================
+// メソッド
+// ========================================
 // 親コンポーネントにルートDOM要素を公開
 defineExpose({
   rootElement,

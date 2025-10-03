@@ -167,17 +167,14 @@ const isSubmitting = ref(false);
 const showEmailBorder = computed(() => {
   return errors.email && !emailModified.value;
 });
-
 // パスワード入力フィールドの赤枠表示を制御
 const showPasswordBorder = computed(() => {
   return errors.password && !passwordModified.value;
 });
-
 // パスワード確認入力フィールドの赤枠表示を制御
 const showPasswordConfirmBorder = computed(() => {
   return errors.passwordConfirmation && !passwordConfirmModified.value;
 });
-
 // 全てのバリデーションエラーメッセージを集約
 const validationErrors = computed(() => {
   const messages = [];

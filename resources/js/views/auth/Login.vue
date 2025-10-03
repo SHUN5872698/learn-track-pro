@@ -93,56 +93,56 @@ import { EyeIcon, EyeSlashIcon, LockClosedIcon } from '@heroicons/vue/24/solid';
 // ========================================
 // 内部インポート
 // ========================================
-import { validateEmail, validatePassword } from '@/validators/profileValidator';
-// コンポーネント
-import BaseButton from '@/components/common/BaseButton.vue';
-
 // Piniaストア
 import { useAuthStore } from '@/stores/auth';
+// コンポーネント
+import BaseButton from '@/components/common/BaseButton.vue';
+// バリデーションルール
+import { validateEmail, validatePassword } from '@/validators/profileValidator';
 
 // ========================================
-// コンポーザブル
+// 初期設定
 // ========================================
+// ルーター・ルート
 const router = useRouter();
-const authStore = useAuthStore(); // 変更: Piniaストアを使用
+// コンポーザブル
+const authStore = useAuthStore();
 
 // ========================================
-// フォーム状態管理
+// 状態管理
 // ========================================
+// 入力状態
 const email = ref('');
 const password = ref('');
 const showPassword = ref(false);
 
-// ========================================
-// バリデーション状態管理
-// ========================================
+// バリデーション
+// 各入力フィールドのエラーメッセージを保持
 const errors = reactive({
   email: '',
   password: '',
 });
 
+// 各入力フィールドが変更されたかどうかのフラグ
 const emailModified = ref(false);
 const passwordModified = ref(false);
 
-// ========================================
 // UI状態管理
-// ========================================
 const authError = ref('');
 const isSubmitting = ref(false);
 
 // ========================================
 // 算出プロパティ
 // ========================================
-// エラー時の赤枠表示制御
+// メールアドレス入力フィールドの赤枠表示を
 const showEmailBorder = computed(() => {
   return errors.email && !emailModified.value;
 });
-
+// パスワード確認入力フィールドの赤枠表示を制御
 const showPasswordBorder = computed(() => {
   return errors.password && !passwordModified.value;
 });
-
-// エラーメッセージの集約
+// 全てのバリデーションエラーメッセージを集約
 const validationErrors = computed(() => {
   const messages = [];
   if (errors.email) messages.push(errors.email);
@@ -151,7 +151,7 @@ const validationErrors = computed(() => {
 });
 
 // ========================================
-// イベントハンドラ
+// メソッド
 // ========================================
 const handleLogin = async () => {
   // 状態をリセット
@@ -165,14 +165,11 @@ const handleLogin = async () => {
   const emailResult = validateEmail(email.value);
   const passwordResult = validatePassword(password.value);
 
-  if (!emailResult.isValid) {
-    errors.email = emailResult.message;
-  }
-  if (!passwordResult.isValid) {
-    errors.password = passwordResult.message;
-  }
+  // バリデーション結果に基づいてエラーメッセージを設定
+  if (!emailResult.isValid) errors.email = emailResult.message;
+  if (!passwordResult.isValid) errors.password = passwordResult.message;
 
-  // エラーがあれば処理中断
+  // いずれかのフィールドにエラーがあれば処理を中断
   if (errors.email || errors.password) {
     return;
   }

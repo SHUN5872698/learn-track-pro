@@ -58,7 +58,7 @@ import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue';
 import { ChevronDownIcon, CheckIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/solid';
 
 // ========================================
-// Props & Emits
+// 初期設定
 // ========================================
 const props = defineProps({
   modelValue: Number,
@@ -75,28 +75,28 @@ const emit = defineEmits(['update:modelValue', 'modified']);
 // 状態管理
 // ========================================
 // UI状態管理
+// ドロップダウンの開閉状態を管理
 const isDropdownOpen = ref(false);
+// 検索クエリを管理
 const searchQuery = ref('');
-
-// 入力状態管理
+// フォームが変更されたかどうかを追跡し、バリデーション表示を制御
 const isModified = ref(false);
-
-// ========================================
-// DOM参照
-// ========================================
+// DOM要素への参照を保持
 const searchInput = ref(null);
 const dropdownRef = ref(null);
 
 // ========================================
 // 算出プロパティ
 // ========================================
-// エラー時の赤枠表示制御
+// エラー状態と変更フラグに基づいて、入力フィールドのボーダー表示を制御
 const showBorder = computed(() => {
   return props.hasError && !isModified.value;
 });
 
+// 現在選択されているセクションオブジェクトを特定
 const selectedSection = computed(() => props.sections.find((s) => s.id === props.modelValue));
 
+// 検索クエリに基づいてセクションリストをフィルタリング
 const filteredSections = computed(() => {
   if (!searchQuery.value) {
     return props.sections;
@@ -108,11 +108,13 @@ const filteredSections = computed(() => {
 // ========================================
 // ライフサイクル
 // ========================================
+// コンポーネントマウント時にイベントリスナーを設定
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
   document.addEventListener('keydown', handleEscKey);
 });
 
+// コンポーネントアンマウント時にイベントリスナーを解除
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
   document.removeEventListener('keydown', handleEscKey);
@@ -121,7 +123,7 @@ onUnmounted(() => {
 // ========================================
 // ウォッチャー
 // ========================================
-// hasErrorがtrueになったら（新しいバリデーションエラー）、isModifiedをリセット
+// hasErrorプロップの変更を監視し、エラーが新しく発生した場合はisModifiedフラグをリセット
 watch(
   () => props.hasError,
   (newValue) => {
@@ -135,46 +137,46 @@ watch(
 // メソッド
 // ========================================
 // イベントハンドラ
-// ボタンクリック時の処理
+// ボタンクリック時にisModifiedフラグを立て、ドロップダウンの開閉を制御
 const handleButtonClick = async () => {
   isModified.value = true;
   emit('modified');
   toggleDropdown();
 };
 
-// ドロップダウンの開閉
+// ドロップダウンの表示状態を切り替え、検索入力フィールドにフォーカスを設定
 const toggleDropdown = async () => {
   isDropdownOpen.value = !isDropdownOpen.value;
   if (isDropdownOpen.value) {
-    await nextTick();
+    await nextTick(); // DOM更新後に検索フィールドにフォーカス
     searchInput.value?.focus();
   } else {
-    searchQuery.value = '';
+    searchQuery.value = ''; // ドロップダウンを閉じる際に検索クエリをクリア
   }
 };
 
-// セクション選択
+// セクション選択時にisModifiedフラグを立て、選択されたセクションIDを親コンポーネントに通知
 const selectSection = (section) => {
   isModified.value = true;
   emit('modified');
   emit('update:modelValue', section.id);
-  isDropdownOpen.value = false;
-  searchQuery.value = '';
+  isDropdownOpen.value = false; // ドロップダウンを閉じる
+  searchQuery.value = ''; // 検索クエリをクリア
 };
 
-// クリック外検知
+// ドロップダウン外のクリックを検出し、ドロップダウンを閉じる
 const handleClickOutside = (event) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
     isDropdownOpen.value = false;
-    searchQuery.value = '';
+    searchQuery.value = ''; // ドロップダウンを閉じる際に検索クエリをクリア
   }
 };
 
-// ESCキー検知
+// ESCキーが押されたときにドロップダウンを閉じる
 const handleEscKey = (event) => {
   if (event.key === 'Escape' && isDropdownOpen.value) {
     isDropdownOpen.value = false;
-    searchQuery.value = '';
+    searchQuery.value = ''; // 検索クエリをクリア
   }
 };
 </script>

@@ -68,32 +68,37 @@ import { EnvelopeIcon } from '@heroicons/vue/24/solid';
 // ========================================
 // 内部インポート
 // ========================================
-import { validateEmail } from '@/validators/profileValidator';
-import BaseButton from '@/components/common/BaseButton.vue';
+// Piniaストア
 import { useAuthStore } from '@/stores/auth'; // Piniaストアをインポート
+// コンポーネント
+import BaseButton from '@/components/common/BaseButton.vue';
+// バリデーションルール
+import { validateEmail } from '@/validators/profileValidator';
 
 // ========================================
 // 初期設定
 // ========================================
+// ルーター・ルート
 const router = useRouter();
-const authStore = useAuthStore(); // Piniaストアを使用
+// コンポーザブル
+const authStore = useAuthStore();
 
 // ========================================
-// フォーム状態管理
+// 状態管理
 // ========================================
+// 入力状態
 const email = ref('');
-const emailModified = ref(false);
 
-// ========================================
-// バリデーション状態管理
-// ========================================
+// バリデーション
+// 各入力フィールドのエラーメッセージを保持
 const errors = reactive({
   email: '',
 });
 
-// ========================================
+// 各入力フィールドが変更されたかどうかのフラグ
+const emailModified = ref(false);
+
 // UI状態管理
-// ========================================
 const authError = ref('');
 const successMessage = ref('');
 const isSubmitting = ref(false);
@@ -101,12 +106,11 @@ const isSubmitting = ref(false);
 // ========================================
 // 算出プロパティ
 // ========================================
-// エラー時の赤枠表示制御
+// メールアドレス入力フィールドの赤枠表示を制御
 const showEmailBorder = computed(() => {
   return errors.email && !emailModified.value;
 });
-
-// エラーメッセージの集約
+// 全てのバリデーションエラーメッセージを集約
 const validationErrors = computed(() => {
   const messages = [];
   if (errors.email) messages.push(errors.email);
@@ -120,8 +124,10 @@ const validationErrors = computed(() => {
 });
 
 // ========================================
-// イベントハンドラ
+// メソッド
 // ========================================
+// イベントハンドラ
+// パスワードリセットメール送信を実行
 const handlePasswordReset = async () => {
   // 状態をリセット
   errors.email = '';
@@ -151,8 +157,6 @@ const handlePasswordReset = async () => {
     // Piniaストアからのエラーを表示
     if (authStore.hasAuthErrors) {
       authError.value = Object.values(authStore.authErrors).flat().join(', ');
-    } else {
-      authError.value = error.message || 'パスワードリセットメールの送信に失敗しました';
     }
   } finally {
     isSubmitting.value = false;

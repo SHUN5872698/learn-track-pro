@@ -8,8 +8,14 @@
 </template>
 
 <script setup>
+// ========================================
+// 外部インポート
+// ========================================
 import { ref, computed } from 'vue';
 
+// ========================================
+// 初期設定
+// ========================================
 const props = defineProps({
   user: {
     type: Object,
@@ -23,14 +29,16 @@ const props = defineProps({
   },
 });
 
+// ========================================
+// 状態管理
+// ========================================
+// 画像の読み込みエラー状態を管理
 const imageError = ref(false);
 
-// 画像読み込みエラー時の処理
-const handleImageError = () => {
-  imageError.value = true;
-};
-
-// サイズに応じたコンテナのクラスを算出
+// ========================================
+// 算出プロパティ
+// ========================================
+// アバターコンテナの動的なクラスを生成
 const containerClasses = computed(() => {
   let sizeClass = '';
   switch (props.size) {
@@ -47,17 +55,17 @@ const containerClasses = computed(() => {
   return [`rounded-full overflow-hidden flex-shrink-0`, sizeClass];
 });
 
-// 画像のクラスを算出
+// アバター画像の動的なクラスを生成
 const imageClasses = computed(() => {
   return [`object-cover w-full h-full`];
 });
 
-// イニシャルのクラスを算出
+// イニシャル表示の動的なクラスを生成
 const initialsClasses = computed(() => {
   return [`w-full h-full flex items-center justify-center font-bold text-white bg-gradient-to-r from-violet-600 to-emerald-600`];
 });
 
-// ユーザーのイニシャルを生成
+// ユーザー名からイニシャルを生成
 const userInitials = computed(() => {
   if (!props.user || !props.user.name) {
     return '';
@@ -86,8 +94,12 @@ const userInitials = computed(() => {
     }
   }
 });
-</script>
 
-<style scoped>
-/* 必要に応じて追加のスタイル */
-</style>
+// ========================================
+// メソッド
+// ========================================
+// 画像読み込みエラー時の処理
+const handleImageError = () => {
+  imageError.value = true;
+};
+</script>

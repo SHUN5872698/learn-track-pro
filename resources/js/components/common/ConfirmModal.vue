@@ -32,10 +32,20 @@
 </template>
 
 <script setup>
+// ========================================
+// 外部インポート
+// ========================================
 import { Dialog, DialogPanel, TransitionRoot, TransitionChild } from '@headlessui/vue';
+
+// ========================================
+// 内部インポート
+// ========================================
 import BaseButton from '@/components/common/BaseButton.vue';
 import CancelButton from '@/components/common/buttons/CancelButton.vue';
 
+// ========================================
+// 初期設定
+// ========================================
 defineProps({
   isOpen: { type: Boolean, default: false },
   title: {

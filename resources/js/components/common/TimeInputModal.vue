@@ -50,11 +50,22 @@
 </template>
 
 <script setup>
+// ========================================
+// 外部インポート
+// ========================================
 import { ref, watch } from 'vue';
 import { Dialog, DialogPanel, TransitionRoot, TransitionChild } from '@headlessui/vue';
+
+// ========================================
+// 内部インポート
+// ========================================
+// コンポーネント
 import BaseButton from '@/components/common/BaseButton.vue';
 import CancelButton from '@/components/common/buttons/CancelButton.vue';
 
+// ========================================
+// 初期設定
+// ========================================
 const props = defineProps({
   isOpen: Boolean,
   initialHours: { type: Number, default: 0 },
@@ -64,9 +75,15 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'confirm']);
 
+// ========================================
+// 状態管理
+// ========================================
 const selectedHours = ref(props.initialHours);
 const selectedMinutes = ref(props.initialMinutes);
 
+// ========================================
+// ライフサイクル
+// ========================================
 // モーダルが開いたときに選択された時間と分を初期化する: ユーザーがモーダルを開くたびに、初期値が正しく反映されるようにするため
 watch(
   () => props.isOpen,
@@ -79,6 +96,9 @@ watch(
   { immediate: true }
 );
 
+// ========================================
+// メソッド
+// ========================================
 // 選択を確定し、親コンポーネントに時間と分を通知する: ユーザーが「確認」ボタンをクリックした際に、選択された時間と分を親コンポーネントに渡し、モーダルを閉じるため
 const confirmSelection = () => {
   emit('confirm', { hours: selectedHours.value, minutes: selectedMinutes.value, isTimeOfDay: props.isTimeOfDayMode });

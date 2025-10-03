@@ -127,19 +127,25 @@ import { EyeIcon, EyeSlashIcon, UserPlusIcon } from '@heroicons/vue/24/solid';
 // ========================================
 // 内部インポート
 // ========================================
-import { validateName, validateEmail, validatePassword, validatePasswordConfirmation } from '@/validators/profileValidator';
+// Piniaストア
 import { useAuthStore } from '@/stores/auth';
+// コンポーネント
 import BaseButton from '@/components/common/BaseButton.vue';
+// バリデーションルール
+import { validateName, validateEmail, validatePassword, validatePasswordConfirmation } from '@/validators/profileValidator';
 
 // ========================================
-// コンポーザブル
+// 初期設定
 // ========================================
+// ルーター・ルート
 const router = useRouter();
+// コンポーザブル
 const authStore = useAuthStore();
 
 // ========================================
-// フォーム状態管理
+// 状態管理
 // ========================================
+// 入力状態
 const name = ref('');
 const email = ref('');
 const password = ref('');
@@ -147,9 +153,8 @@ const passwordConfirm = ref('');
 const showPassword = ref(false);
 const showPasswordConfirm = ref(false);
 
-// ========================================
-// バリデーション状態管理
-// ========================================
+// バリデーション
+// 各入力フィールドのエラーメッセージを保持
 const errors = reactive({
   name: '',
   email: '',
@@ -157,38 +162,36 @@ const errors = reactive({
   passwordConfirmation: '',
 });
 
+// 各入力フィールドが変更されたかどうかのフラグ
 const nameModified = ref(false);
 const emailModified = ref(false);
 const passwordModified = ref(false);
 const passwordConfirmModified = ref(false);
 
-// ========================================
 // UI状態管理
-// ========================================
 const authError = ref('');
 const isSubmitting = ref(false);
 
 // ========================================
 // 算出プロパティ
 // ========================================
-// エラー時の赤枠表示制御
+// 名前入力フィールドの赤枠表示を制御
 const showNameBorder = computed(() => {
   return errors.name && !nameModified.value;
 });
-
+// メールアドレス入力フィールドの赤枠表示を制御
 const showEmailBorder = computed(() => {
   return errors.email && !emailModified.value;
 });
-
+// パスワード入力フィールドの赤枠表示を制御
 const showPasswordBorder = computed(() => {
   return errors.password && !passwordModified.value;
 });
-
+// パスワード確認入力フィールドの赤枠表示を制御
 const showPasswordConfirmBorder = computed(() => {
   return errors.passwordConfirmation && !passwordConfirmModified.value;
 });
-
-// エラーメッセージの集約
+// 全てのバリデーションエラーメッセージを集約
 const validationErrors = computed(() => {
   const messages = [];
   if (errors.name) messages.push(errors.name);
@@ -199,10 +202,11 @@ const validationErrors = computed(() => {
 });
 
 // ========================================
-// イベントハンドラ
+// メソッド
 // ========================================
+// イベントハンドラ
 const handleRegister = async () => {
-  // 状態をリセット
+  // フォームの状態とエラーメッセージをリセット
   errors.name = '';
   errors.email = '';
   errors.password = '';
@@ -213,21 +217,23 @@ const handleRegister = async () => {
   passwordModified.value = false;
   passwordConfirmModified.value = false;
 
+  // 空白を除去
   name.value = name.value.trim();
   email.value = email.value.trim();
 
-  // フィールドバリデーション
+  // 各入力フィールドのバリデーションを実行
   const nameResult = validateName(name.value);
   const emailResult = validateEmail(email.value);
   const passwordResult = validatePassword(password.value);
   const passwordConfirmResult = validatePasswordConfirmation(passwordConfirm.value, password.value);
 
+  // バリデーション結果に基づいてエラーメッセージを設定
   if (!nameResult.isValid) errors.name = nameResult.message;
   if (!emailResult.isValid) errors.email = emailResult.message;
   if (!passwordResult.isValid) errors.password = passwordResult.message;
   if (!passwordConfirmResult.isValid) errors.passwordConfirmation = passwordConfirmResult.message;
 
-  // エラーがあれば処理中断
+  // いずれかのフィールドにエラーがあれば処理を中断
   if (errors.name || errors.email || errors.password || errors.passwordConfirmation) {
     return;
   }

@@ -56,12 +56,23 @@
 </template>
 
 <script setup>
+// ========================================
+// 外部インポート
+// ========================================
 import { ref, computed, watch } from 'vue';
 import { Dialog, DialogPanel, TransitionRoot, TransitionChild } from '@headlessui/vue';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline';
+
+// ========================================
+// 内部インポート
+// ========================================
+// コンポーネント
 import BaseButton from '@/components/common/BaseButton.vue';
 import CancelButton from '@/components/common/buttons/CancelButton.vue';
 
+// ========================================
+// 初期設定
+// ========================================
 const props = defineProps({
   isOpen: Boolean,
   initialDate: String, // YYYY-MM-DD
@@ -69,43 +80,21 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'confirm']);
 
+// ========================================
+// 状態管理
+// ========================================
 const currentMonth = ref(0); // 0-11
 const currentYear = ref(0);
 const selectedDate = ref(null); // Date object
 
 const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
 
-// モーダルが開いたときにカレンダーの表示を初期化する
-watch(
-  () => props.isOpen,
-  (newVal) => {
-    if (newVal) {
-      const dateToSet = props.initialDate ? new Date(props.initialDate) : new Date();
-      currentMonth.value = dateToSet.getMonth();
-      currentYear.value = dateToSet.getFullYear();
-      // initialDateが提供されている場合のみ、その日付を選択状態にする
-      selectedDate.value = props.initialDate ? dateToSet : null;
-    }
-  },
-  { immediate: true }
-);
-
 const today = new Date();
 today.setHours(0, 0, 0, 0); // 日付比較のために時刻情報をリセット
 
-// 指定された日付が今日であるかを判定する
-const isToday = (date) => {
-  return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate();
-};
-
-// 指定された日付が選択されているかを判定する
-const isSelected = (date) => {
-  // selectedDate.value が null の場合は false を返すように明示的に追加
-  if (!selectedDate.value) return false;
-
-  return date.getFullYear() === selectedDate.value.getFullYear() && date.getMonth() === selectedDate.value.getMonth() && date.getDate() === selectedDate.value.getDate();
-};
-
+// ========================================
+// 算出プロパティ
+// ========================================
 // カレンダーの日付グリッドを生成する
 const generateCalendarDays = computed(() => {
   const days = [];
@@ -138,6 +127,40 @@ const generateCalendarDays = computed(() => {
 });
 
 const calendarDays = generateCalendarDays;
+
+// ========================================
+// ライフサイクル
+// ========================================
+// モーダルが開いたときにカレンダーの表示を初期化する
+watch(
+  () => props.isOpen,
+  (newVal) => {
+    if (newVal) {
+      const dateToSet = props.initialDate ? new Date(props.initialDate) : new Date();
+      currentMonth.value = dateToSet.getMonth();
+      currentYear.value = dateToSet.getFullYear();
+      // initialDateが提供されている場合のみ、その日付を選択状態にする
+      selectedDate.value = props.initialDate ? dateToSet : null;
+    }
+  },
+  { immediate: true }
+);
+
+// ========================================
+// メソッド
+// ========================================
+// 指定された日付が今日であるかを判定する
+const isToday = (date) => {
+  return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate();
+};
+
+// 指定された日付が選択されているかを判定する
+const isSelected = (date) => {
+  // selectedDate.value が null の場合は false を返すように明示的に追加
+  if (!selectedDate.value) return false;
+
+  return date.getFullYear() === selectedDate.value.getFullYear() && date.getMonth() === selectedDate.value.getMonth() && date.getDate() === selectedDate.value.getDate();
+};
 
 // 前の月に移動する
 const prevMonth = () => {
