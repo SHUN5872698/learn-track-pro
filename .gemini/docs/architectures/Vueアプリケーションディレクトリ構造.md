@@ -18,7 +18,7 @@
 .gemini/docs/architectures/Vueアプリケーションディレクトリ構造.md
 
 ## 指示
-1. `tree ./resources/js/ -a -L 3 --dirsfirst -I 'node_modules|.git|*.backup'`コマンドを実行してください。
+1. `tree ./resources/js/ -a -L 3 --dirsfirst -I 'node_modules|.DS_Store|.git|*.backup'`コマンドを実行してください。
 2. `## 現在のディレクトリ構造`を、treeコマンドの結果と突き合わせて更新してください。
 3. 追加ファイルとディレクトリがない場合は報告してください。
 
@@ -71,6 +71,7 @@ resources/js/
 │   │   ├── LoadingSpinner.vue               # ローディングスピナー
 │   │   ├── Pagination.vue                   # ページネーションコンポーネント
 │   │   ├── SectionSelector.vue              # セクション選択ドロップダウン
+│   │   ├── SuccessToast.vue                 # 完了通知アラート
 │   │   ├── TimeInputModal.vue               # 時間入力モーダルコンポーネント
 │   │   └── UserAvatar.vue                   # ユーザーアバターコンポーネント
 │   │
