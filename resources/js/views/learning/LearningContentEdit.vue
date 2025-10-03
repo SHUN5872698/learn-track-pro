@@ -179,6 +179,7 @@
   <Teleport to="#app">
     <ConfirmModal :is-open="isUnsavedModalOpen" title="編集内容が保存されていません" message="編集した内容を破棄してもよろしいですか？" confirm-button-text="破棄" confirm-button-variant="danger" :show-item-detail="false" @confirm="router.back()" @cancel="isUnsavedModalOpen = false" />
     <ConfirmModal :is-open="isDeleteModalOpen" title="セクションを削除しますか？" message="このセクションに関連する学習記録もすべて削除されます。この操作は取り消せません。" @confirm="confirmSectionDelete" @cancel="cancelSectionDelete" />
+    <SuccessToast :show="showSuccessToast" title="更新完了" message="学習内容を更新しました！" :duration="toastDuration" />
   </Teleport>
 </template>
 
@@ -198,19 +199,20 @@ import { useLearningContentStore } from '@/stores/learningContent';
 import { useSectionStore } from '@/stores/sections';
 
 // コンポーザブル
+import { useLearningContentForm } from '@/composables/useLearningContentForm';
 import { useLearningData } from '@/composables/useLearningData';
 import { useWizardForm } from '@/composables/useWizardForm';
-import { useLearningContentForm } from '@/composables/useLearningContentForm';
 import { useLoading } from '@/composables/ui/useLoading';
 
 // コンポーネント
 import DetailLayout from '@/layouts/DetailLayout.vue';
+import ConfirmModal from '@/components/common/ConfirmModal.vue';
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
+import SuccessToast from '@/components/common/SuccessToast.vue';
+import SectionListEditor from '@/components/learning/wizard/SectionListEditor.vue';
+import TechnologySelector from '@/components/learning/wizard/TechnologySelector.vue';
 import WizardStepIndicator from '@/components/learning/wizard/WizardStepIndicator.vue';
 import WizardNavigation from '@/components/learning/wizard/WizardNavigation.vue';
-import TechnologySelector from '@/components/learning/wizard/TechnologySelector.vue';
-import SectionListEditor from '@/components/learning/wizard/SectionListEditor.vue';
-import ConfirmModal from '@/components/common/ConfirmModal.vue';
 
 // ========================================
 // ユーティリティ関数
@@ -283,8 +285,10 @@ const deletedSections = ref([]);
 const isUnsavedModalOpen = ref(false);
 const isDeleteModalOpen = ref(false);
 const sectionToDeleteIndex = ref(null);
+const showSuccessToast = ref(false);
 
 // 定数
+const toastDuration = 2000; // 通知を表示させる時間
 const statusMap = {
   not_started: '未着手',
   in_progress: '学習中',
@@ -298,11 +302,9 @@ const statusMap = {
 const showTitleBorder = computed(() => {
   return validationErrors.value.some((error) => error.includes('タイトル')) && !titleModified.value;
 });
-
 const showDescriptionBorder = computed(() => {
   return validationErrors.value.some((error) => error.includes('概要')) && !descriptionModified.value;
 });
-
 const showTechnologyBorder = computed(() => {
   return validationErrors.value.some((error) => error.includes('技術')) && !technologyModified.value;
 });
@@ -434,7 +436,7 @@ const handleSubmit = async () => {
         // 新規セクションはIDが文字列で始まるため、nullに変換してバックエンドで新規作成を識別
         id: s.id && !s.id.toString().startsWith('new_') ? s.id : null,
         title: s.title,
-        order: index + 1, // セクションの並び順を
+        order: index + 1, // セクションの並び順
       })),
       deleted_section_ids: deletedSections.value.map((s) => s.id), // 削除されたセクションのIDを送信
     };
@@ -444,8 +446,10 @@ const handleSubmit = async () => {
 
     console.log('【Edit.handleSubmit】更新完了');
     // 成功メッセージを表示し、更新した学習内容の詳細ページへ遷移
-    alert('学習内容を更新しました！');
-    router.push(`/learning/${contentId}`);
+    showSuccessToast.value = true;
+    setTimeout(() => {
+      router.push(`/learning/${contentId}`);
+    }, toastDuration);
   } catch (error) {
     console.error('【Edit.handleSubmit】エラー:', error);
     // エラーが発生した場合、バリデーションエラーメッセージを設定

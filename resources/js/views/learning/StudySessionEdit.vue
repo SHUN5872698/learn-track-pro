@@ -50,8 +50,8 @@
       </div>
     </form>
   </DetailLayout>
+
   <Teleport to="#app">
-    <!-- モーダルセクション -->
     <DatePickerModal :is-open="isDateModalOpen" :initial-date="form.studied_at" @close="isDateModalOpen = false" @confirm="handleDateConfirm" />
 
     <TimeInputModal
@@ -64,6 +64,7 @@
     />
 
     <ConfirmModal :is-open="isUnsavedModalOpen" title="編集内容が保存されていません" message="編集した内容を破棄してもよろしいですか？" confirm-button-text="破棄" confirm-button-variant="danger" :show-item-detail="false" @confirm="router.back()" @cancel="isUnsavedModalOpen = false" />
+    <SuccessToast :show="showSuccessToast" title="更新完了" message="学習記録を更新しました！" :duration="toastDuration" />
   </Teleport>
 </template>
 
@@ -78,8 +79,8 @@ import { useRoute, useRouter } from 'vue-router';
 // 内部インポート
 // ========================================
 // Piniaストア
-import { useLearningSessionStore } from '@/stores/learningSession';
 import { useLearningContentStore } from '@/stores/learningContent';
+import { useLearningSessionStore } from '@/stores/learningSession';
 import { useSectionStore } from '@/stores/sections';
 
 // コンポーザブル
@@ -88,13 +89,14 @@ import { useLoading } from '@/composables/ui/useLoading';
 
 // コンポーネント
 import DetailLayout from '@/layouts/DetailLayout.vue';
-import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
 import BaseButton from '@/components/common/BaseButton.vue';
-import CancelButton from '@/components/common/buttons/CancelButton.vue';
 import ConfirmModal from '@/components/common/ConfirmModal.vue';
-import StudySessionFormFields from '@/components/learning/StudySessionFormFields.vue';
 import DatePickerModal from '@/components/common/DatePickerModal.vue';
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
+import SuccessToast from '@/components/common/SuccessToast.vue';
 import TimeInputModal from '@/components/common/TimeInputModal.vue';
+import CancelButton from '@/components/common/buttons/CancelButton.vue';
+import StudySessionFormFields from '@/components/learning/StudySessionFormFields.vue';
 
 // ========================================
 // 初期設定
@@ -137,8 +139,12 @@ const sectionModified = ref(false);
 const durationModified = ref(false);
 const memoModified = ref(false);
 
-// 未保存変更確認モーダルの表示状態
-const isUnsavedModalOpen = ref(false);
+// UI状態
+const isUnsavedModalOpen = ref(false); // 未保存変更確認モーダルの表示状態
+const showSuccessToast = ref(false);
+
+// 定数
+const toastDuration = 2000; // 通知を表示させる時間
 
 // ========================================
 // 算出プロパティ
@@ -172,11 +178,9 @@ const pageDescription = computed(() => {
 const showSectionBorder = computed(() => {
   return validationErrors.value.some((error) => error.includes('セクション')) && !sectionModified.value;
 });
-
 const showDurationBorder = computed(() => {
   return validationErrors.value.some((error) => error.includes('学習時間')) && !durationModified.value;
 });
-
 const showMemoBorder = computed(() => {
   return validationErrors.value.some((error) => error.includes('メモ')) && !memoModified.value;
 });
@@ -213,8 +217,9 @@ onMounted(async () => {
 });
 
 // ========================================
-// イベントハンドラ
+// メソッド
 // ========================================
+// イベントハンドラ
 const handleSubmit = async () => {
   // 修正フラグをリセット
   sectionModified.value = false;
@@ -236,9 +241,12 @@ const handleSubmit = async () => {
       session_type: form.session_type || 'manual',
     };
 
+    // 成功メッセージを表示し、更新した学習記録の詳細ページへ遷移
     await sessionStore.updateLearningSession(form.id, sessionData);
-    alert('学習記録を更新しました！');
-    router.push(`/learning/${form.learning_content_id}/section/${form.section_id}`);
+    showSuccessToast.value = true;
+    setTimeout(() => {
+      router.push(`/learning/${form.learning_content_id}/section/${form.section_id}`);
+    }, toastDuration);
   } catch (error) {
     console.error('Failed to update study session:', error);
     validationErrors.value.push('学習記録の更新に失敗しました。');

@@ -51,6 +51,10 @@
       </div>
     </template>
   </DetailLayout>
+
+  <Teleport to="#app">
+    <SuccessToast :show="showSuccessToast" title="更新完了" message="プロフィールを更新しました！" :duration="toastDuration" />
+  </Teleport>
 </template>
 
 <script setup>
@@ -66,13 +70,14 @@ import { useRouter } from 'vue-router';
 // Piniaストア
 import { useAuthStore } from '@/stores/auth';
 
-// バリデーション
-import { validateProfile, validateField } from '@/validators/profileValidator';
-
 // コンポーネント
 import DetailLayout from '@/layouts/DetailLayout.vue';
 import BaseButton from '@/components/common/BaseButton.vue';
+import SuccessToast from '@/components/common/SuccessToast.vue';
 import UserAvatar from '@/components/common/UserAvatar.vue';
+
+// バリデーション
+import { validateProfile, validateField } from '@/validators/profileValidator';
 
 // ========================================
 // 初期設定
@@ -83,21 +88,27 @@ const authStore = useAuthStore();
 // ========================================
 // 状態管理
 // ========================================
-// フォームの入力値を保持するためのリアクティブなオブジェクト
+// バリデーション
+// 各入力フィールドのエラーメッセージを保持
+const errors = reactive({
+  name: '',
+  email: '',
+  avatar: '',
+});
+
+// 入力状態
 const formData = reactive({
   name: '',
   email: '',
   avatar: '',
 });
 
+// UI状態
 const imageError = ref(false);
+const showSuccessToast = ref(false);
 
-// バリデーションエラーメッセージを保持するためのリアクティブなオブジェクト
-const errors = reactive({
-  name: '',
-  email: '',
-  avatar: '',
-});
+// 定数
+const toastDuration = 2000; // 通知を表示させる時間
 
 // ========================================
 // 算出プロパティ
@@ -153,7 +164,7 @@ const handleSubmit = async () => {
   }
 
   try {
-    // プロフィール情報の更新のみ（パスワード更新処理は削除）
+    // プロフィール情報の更新
     const profileUpdateData = {
       name: formData.name,
       email: formData.email,
@@ -172,13 +183,14 @@ const handleSubmit = async () => {
       return;
     }
 
-    // 更新成功
-    alert('プロフィールを更新しました');
-    router.push('/profile');
+    // 成功メッセージを表示し、プロフィール詳細ページへ遷移
+    showSuccessToast.value = true;
+    setTimeout(() => {
+      router.push('/profile');
+    }, toastDuration);
   } catch (error) {
-    // 予期せぬエラーが発生した場合
     console.error('更新エラー:', error);
-    alert(error.message || '更新中に予期せぬエラーが発生しました');
+    router.push('/404');
   }
 };
 

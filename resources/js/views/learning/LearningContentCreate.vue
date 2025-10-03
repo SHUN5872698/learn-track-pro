@@ -99,6 +99,7 @@
 
   <Teleport to="#app">
     <ConfirmModal :is-open="isUnsavedModalOpen" title="編集内容が保存されていません" message="編集した内容を破棄してもよろしいですか？" confirm-button-text="破棄" confirm-button-variant="danger" :show-item-detail="false" @confirm="router.push('/dashboard')" @cancel="isUnsavedModalOpen = false" />
+    <SuccessToast :show="showSuccessToast" title="作成完了" message="学習内容を作成しました！" :duration="toastDuration" />
   </Teleport>
 </template>
 
@@ -117,17 +118,18 @@ import { LightBulbIcon } from '@heroicons/vue/24/solid';
 import { useLearningContentStore } from '@/stores/learningContent';
 
 // コンポーザブル
+import { useLearningContentForm } from '@/composables/useLearningContentForm';
 import { useLearningData } from '@/composables/useLearningData';
 import { useWizardForm } from '@/composables/useWizardForm';
-import { useLearningContentForm } from '@/composables/useLearningContentForm';
 
 // コンポーネント
 import DetailLayout from '@/layouts/DetailLayout.vue';
-import WizardStepIndicator from '@/components/learning/wizard/WizardStepIndicator.vue';
-import WizardNavigation from '@/components/learning/wizard/WizardNavigation.vue';
-import TechnologySelector from '@/components/learning/wizard/TechnologySelector.vue';
-import SectionListEditor from '@/components/learning/wizard/SectionListEditor.vue';
 import ConfirmModal from '@/components/common/ConfirmModal.vue';
+import SuccessToast from '@/components/common/SuccessToast.vue';
+import SectionListEditor from '@/components/learning/wizard/SectionListEditor.vue';
+import TechnologySelector from '@/components/learning/wizard/TechnologySelector.vue';
+import WizardNavigation from '@/components/learning/wizard/WizardNavigation.vue';
+import WizardStepIndicator from '@/components/learning/wizard/WizardStepIndicator.vue';
 
 // ========================================
 // 初期設定
@@ -152,6 +154,10 @@ const technologyModified = ref(false);
 
 // UI状態
 const isUnsavedModalOpen = ref(false);
+const showSuccessToast = ref(false);
+
+// 定数
+const toastDuration = 2000; // 通知を表示させる時間
 
 // ========================================
 // 算出プロパティ
@@ -226,8 +232,10 @@ const handleSubmit = async () => {
     console.log('【Create.handleSubmit】作成完了 ID:', newContent.id);
 
     // 成功メッセージを表示し、作成した学習内容の詳細ページへ遷移
-    alert('新しい学習内容を作成しました！');
-    router.push(`/learning/${newContent.id}`);
+    showSuccessToast.value = true;
+    setTimeout(() => {
+      router.push(`/learning/${newContent.id}`);
+    }, toastDuration);
   } catch (error) {
     console.error('【Create.handleSubmit】エラー:', error);
     // エラーが発生した場合、バリデーションエラーメッセージを設定
