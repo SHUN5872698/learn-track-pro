@@ -13,12 +13,15 @@
           <span class="font-semibold text-slate-600">{{ index + 1 }}.</span>
           <!-- セクションタイトル入力フィールド -->
           <input
+            :id="`section-title-${index}`"
+            :name="`section-title-${index}`"
             type="text"
+            autocomplete="off"
+            class="flex-grow px-3 py-2 placeholder-gray-400 border rounded-md shadow-sm focus:outline-none sm:text-sm"
+            :class="[showSectionBorder(index) ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+            placeholder="セクションのタイトル"
             :value="section.title"
             @input="sectionTitleModified(index, $event.target.value)"
-            placeholder="セクションのタイトル"
-            class="flex-grow px-3 py-2 border rounded-md shadow-sm focus:outline-none sm:text-sm"
-            :class="[showSectionBorder(index) ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
           />
           <!-- セクション削除ボタン -->
           <!-- セクションが1つしかない場合は削除不可 -->
@@ -124,6 +127,7 @@ watch(
 // ========================================
 // セクションのタイトルを更新
 const sectionTitleModified = (index, title) => {
+  // セクションのタイトルが変更された際に、ローカルの状態と親コンポーネントに通知し、変更フラグを立てる
   const newSections = [...localSections.value];
   newSections[index].title = title;
   emit('update:modelValue', newSections);
@@ -131,6 +135,7 @@ const sectionTitleModified = (index, title) => {
 };
 
 const updateSectionOrder = () => {
+  // セクションの順序が変更された際に、orderプロパティを更新し、親コンポーネントに通知する
   const updatedSections = localSections.value.map((section, i) => ({
     ...section,
     order: i + 1,
@@ -139,17 +144,20 @@ const updateSectionOrder = () => {
 };
 
 const addSection = () => {
+  // 新しいセクションを追加し、親コンポーネントに通知する
   const newSection = { id: `new_${Date.now()}`, title: '', order: localSections.value.length + 1 };
   const newSections = [...localSections.value, newSection];
   emit('update:modelValue', newSections);
 };
 
 const handleDragEnd = () => {
+  // ドラッグ操作が終了した際に、ドラッグ状態をリセットし、セクションの順序を更新する
   isDragging.value = false;
   updateSectionOrder();
 };
 
 const removeSection = (index) => {
+  // セクションを削除する際に、編集モードと元のセクションであるかを考慮し、親コンポーネントに通知する
   const section = localSections.value[index];
   const isOriginal = props.originalSections.some((orig) => orig.id === section.id);
 

@@ -74,7 +74,7 @@ const emit = defineEmits(['update:modelValue', 'modified']);
 // ========================================
 // 状態管理
 // ========================================
-// UI状態管理
+// UI状態
 // ドロップダウンの開閉状態を管理
 const isDropdownOpen = ref(false);
 // 検索クエリを管理

@@ -26,27 +26,10 @@ export function useLearningContentForm(initialData = null) {
     Object.assign(form, JSON.parse(initialForm.value));
   };
 
-  const validateBasicInfo = () => {
-    const errors = [];
-    if (!form.technology_id) errors.push('技術を選択してください。');
-    if (!form.title.trim()) errors.push('タイトルを入力してください。');
-    return errors;
-  };
-
-  const validateSections = () => {
-    const errors = [];
-    if (form.sections.some((s) => !s.title.trim())) {
-      errors.push('すべてのセクションにタイトルを入力してください。');
-    }
-    return errors;
-  };
-
   return {
     form,
     hasUnsavedChanges,
     resetForm,
-    validateBasicInfo,
-    validateSections,
     initializeForm,
   };
 }

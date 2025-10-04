@@ -81,7 +81,7 @@ const emit = defineEmits(['update:modelValue']);
 // ========================================
 // 状態管理
 // ========================================
-// UI状態管理
+// UI状態
 const isDropdownOpen = ref(false);
 const searchQuery = ref('');
 

@@ -11,7 +11,7 @@
     <!-- ウィザードのステップ表示コンポーネント -->
     <WizardStepIndicator :current-step="currentStep" :step-names="stepNames" />
 
-    <!-- バリデーションエラーメッセージの表示 -->
+    <!-- Vue側のバリデーションエラー -->
     <div v-if="validationErrors.length" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
       <h3 class="font-bold">入力エラー</h3>
       <ul class="mt-2 ml-2 list-disc list-inside">
@@ -19,7 +19,14 @@
       </ul>
     </div>
 
-    <!-- フォーム本体 -->
+    <!-- API側のエラー -->
+    <div v-if="apiError" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+      <h3 class="font-bold">エラー</h3>
+      <ul class="mt-2 ml-2 list-disc list-inside">
+        <li>{{ apiError }}</li>
+      </ul>
+    </div>
+
     <form @submit.prevent="handleSubmit" class="space-y-6">
       <!-- Step 1: 基本情報入力セクション -->
       <div v-if="currentStep === 1" class="space-y-6 animate-fade-in">
@@ -28,13 +35,15 @@
         <div>
           <label for="title" class="block text-sm font-medium text-slate-700">タイトル<span class="pl-1 text-red-500">*</span></label>
           <input
-            type="text"
             id="title"
-            v-model="form.title"
-            placeholder="例: Laravel完全マスター"
-            class="block w-full px-3 py-2 mt-1 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
-            @input="titleModified = true"
+            name="title"
+            type="text"
+            autocomplete="off"
+            class="block w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
             :class="[showTitleBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+            placeholder="例: Laravel完全マスター"
+            v-model="form.title"
+            @input="titleModified = true"
           />
         </div>
 
@@ -43,12 +52,14 @@
           <label for="description" class="block text-sm font-medium text-slate-700">概要</label>
           <textarea
             id="description"
+            name="description"
             rows="5"
-            v-model="form.description"
-            placeholder="学習内容の詳細を自由に入力してください。"
-            class="block w-full px-3 py-2 mt-1 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
-            @input="descriptionModified = true"
+            autocomplete="off"
+            class="block w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
             :class="[showDescriptionBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+            placeholder="学習内容の詳細を自由に入力してください。"
+            v-model="form.description"
+            @input="descriptionModified = true"
           ></textarea>
         </div>
       </div>
@@ -56,7 +67,7 @@
       <!-- Step 2: セクション設定セクション -->
       <div v-if="currentStep === 2">
         <!-- セクションリスト編集コンポーネント -->
-        <SectionListEditor v-model="form.sections" :show-hint="true" :has-error="validationErrors.some((error) => error.includes('セクション'))" />
+        <SectionListEditor v-model="form.sections" :show-hint="true" :has-error="showSectionsBorder" />
       </div>
 
       <!-- Step 3: 確認画面セクション -->
@@ -107,7 +118,7 @@
 // ========================================
 // 外部インポート
 // ========================================
-import { computed, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { LightBulbIcon } from '@heroicons/vue/24/solid';
 
@@ -131,6 +142,9 @@ import TechnologySelector from '@/components/learning/wizard/TechnologySelector.
 import WizardNavigation from '@/components/learning/wizard/WizardNavigation.vue';
 import WizardStepIndicator from '@/components/learning/wizard/WizardStepIndicator.vue';
 
+// バリデーションルール
+import { validateTechnology, validateTitle, validateDescription, validateSections } from '@/validators/learningContentValidator';
+
 // ========================================
 // 初期設定
 // ========================================
@@ -138,19 +152,30 @@ import WizardStepIndicator from '@/components/learning/wizard/WizardStepIndicato
 const router = useRouter();
 
 // コンポーザブル
-const contentStore = useLearningContentStore();
-const { technologies, createContent } = useLearningData();
 const stepNames = ['基本情報', 'セクション設定', '確認'];
-const { currentStep, nextStep, prevStep, validationErrors, validateStep } = useWizardForm(stepNames.length);
-const { form, hasUnsavedChanges, validateBasicInfo, validateSections } = useLearningContentForm();
+const contentStore = useLearningContentStore();
+const { form, hasUnsavedChanges } = useLearningContentForm();
+const { technologies } = useLearningData();
+const { currentStep, nextStep, prevStep } = useWizardForm(stepNames.length);
 
 // ========================================
 // 状態管理
 // ========================================
-// 入力状態
+// バリデーション
+const errors = reactive({
+  technology_id: '',
+  title: '',
+  description: '',
+  sections: '',
+});
+
+// API側のエラー
+const apiError = ref('');
+
+// 入力変更フラグ
+const technologyModified = ref(false);
 const titleModified = ref(false);
 const descriptionModified = ref(false);
-const technologyModified = ref(false);
 
 // UI状態
 const isUnsavedModalOpen = ref(false);
@@ -163,16 +188,27 @@ const toastDuration = 2000; // 通知を表示させる時間
 // 算出プロパティ
 // ========================================
 // バリデーションエラー表示制御
-const showTitleBorder = computed(() => {
-  return validationErrors.value.some((error) => error.includes('タイトル')) && !titleModified.value;
-});
-
-const showDescriptionBorder = computed(() => {
-  return validationErrors.value.some((error) => error.includes('概要')) && !descriptionModified.value;
-});
-
 const showTechnologyBorder = computed(() => {
-  return validationErrors.value.some((error) => error.includes('技術')) && !technologyModified.value;
+  return errors.technology_id !== '' && !technologyModified.value;
+});
+const showTitleBorder = computed(() => {
+  return errors.title !== '' && !titleModified.value;
+});
+const showDescriptionBorder = computed(() => {
+  return errors.description !== '' && !descriptionModified.value;
+});
+const showSectionsBorder = computed(() => {
+  return errors.sections !== '';
+});
+
+// validationErrorsの配列生成
+const validationErrors = computed(() => {
+  const messages = [];
+  if (errors.technology_id) messages.push(errors.technology_id);
+  if (errors.title) messages.push(errors.title);
+  if (errors.description) messages.push(errors.description);
+  if (errors.sections) messages.push(errors.sections);
+  return messages;
 });
 
 // データ取得用
@@ -187,27 +223,53 @@ const getTechnologyName = computed(() => {
 // イベントハンドラ
 // ウィザードナビゲーション
 const handleNext = () => {
-  // 各入力フィールドの修正フラグをリセットし、バリデーション表示を初期状態に戻す
+  // エラーをリセット
+  errors.technology_id = '';
+  errors.title = '';
+  errors.description = '';
+  errors.sections = '';
+
+  // 修正フラグをリセット
+  technologyModified.value = false;
   titleModified.value = false;
   descriptionModified.value = false;
-  technologyModified.value = false;
 
   if (currentStep.value === 1) {
-    // ステップ1（基本情報）のバリデーションを実行し、成功すれば次のステップへ進む
-    if (validateStep(validateBasicInfo)) {
-      nextStep();
+    // ステップ1（基本情報）のバリデーション
+
+    // すべてのバリデーションを実行
+    const technologyResult = validateTechnology(form.technology_id);
+    const titleResult = validateTitle(form.title);
+    const descriptionResult = validateDescription(form.description);
+
+    // すべてのエラーを設定
+    if (!technologyResult.isValid) errors.technology_id = technologyResult.message;
+    if (!titleResult.isValid) errors.title = titleResult.message;
+    if (!descriptionResult.isValid) errors.description = descriptionResult.message;
+
+    // 最後に一括チェック
+    if (errors.technology_id || errors.title || errors.description) {
+      return;
     }
+
+    // 全て成功したら次のステップへ
+    nextStep();
   } else if (currentStep.value === 2) {
-    // ステップ2（セクション設定）のバリデーションを実行し、成功すれば次のステップへ進む
-    if (validateStep(validateSections)) {
-      nextStep();
+    // ステップ2（セクション設定）のバリデーション
+    const sectionsResult = validateSections(form.sections);
+    if (!sectionsResult.isValid) {
+      errors.sections = sectionsResult.message;
+      return;
     }
+    // 成功したら次のステップへ
+    nextStep();
   }
 };
 
-// フォーム送信
+// API送信処理
 const handleSubmit = async () => {
-  console.log('【Create.handleSubmit】開始');
+  // API側エラーをリセット
+  apiError.value = '';
 
   try {
     // フォームデータにセクションのステータスと完了日時を追加し、バックエンドの期待する形式に整形
@@ -215,21 +277,13 @@ const handleSubmit = async () => {
       ...form,
       sections: form.sections.map((section, index) => ({
         ...section,
-        order: index + 1, // セクションの並び順を更新
-        status: 'in_progress', // 新規作成時は学習中として設定
-        completed_at: null, // 完了日時はnullに設定
+        order: index + 1,
+        status: 'in_progress',
+        completed_at: null,
       })),
     };
-
-    console.log('【Create.handleSubmit】送信データ全体:', formDataWithStatus);
-    console.log('【Create.handleSubmit】セクション詳細:');
-    formDataWithStatus.sections.forEach((section, index) => {
-      console.log(`  ${index + 1}. title: "${section.title}", status: "${section.status}"`);
-    });
-
     // Piniaストアのアクションを呼び出し、学習内容を作成
     const newContent = await contentStore.createContent(formDataWithStatus);
-    console.log('【Create.handleSubmit】作成完了 ID:', newContent.id);
 
     // 成功メッセージを表示し、作成した学習内容の詳細ページへ遷移
     showSuccessToast.value = true;
@@ -237,9 +291,14 @@ const handleSubmit = async () => {
       router.push(`/learning/${newContent.id}`);
     }, toastDuration);
   } catch (error) {
-    console.error('【Create.handleSubmit】エラー:', error);
-    // エラーが発生した場合、バリデーションエラーメッセージを設定
-    validationErrors.value = ['作成中にエラーが発生しました。'];
+    console.error('学習内容作成エラー:', error);
+    if (error?.response?.status === 422) {
+      // Laravel側のバリデーションエラー（422）の場合
+      apiError.value = '入力データに問題があります。';
+    } else {
+      // それ以外のレスポンスエラーは固定メッセージ
+      apiError.value = 'エラーが発生しました。';
+    }
   }
 };
 
