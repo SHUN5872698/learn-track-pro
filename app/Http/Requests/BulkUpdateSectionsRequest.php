@@ -24,7 +24,7 @@ class BulkUpdateSectionsRequest extends FormRequest
         return [
             'sections' => ['required', 'array', 'min:1'],
             'sections.*.id' => ['nullable', 'integer'],
-            'sections.*.title' => ['required', 'string', 'max:255'],
+            'sections.*.title' => ['required', 'string', 'max:50'],
             'sections.*.order' => ['required', 'integer', 'min:1'],
             'deleted_section_ids' => ['sometimes', 'array'],
             'deleted_section_ids.*' => ['integer', 'exists:sections,id'],

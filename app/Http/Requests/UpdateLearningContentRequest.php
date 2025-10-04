@@ -25,8 +25,8 @@ class UpdateLearningContentRequest extends FormRequest
     {
         return [
             'technology_id' => ['sometimes', 'integer', 'exists:technologies,id'],
-            'title' => ['sometimes', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
+            'title' => ['sometimes', 'string', 'max:50'],
+            'description' => ['nullable', 'string', 'max:500'],
             'status' => ['sometimes', Rule::in(['not_started', 'in_progress', 'completed'])],
         ];
     }

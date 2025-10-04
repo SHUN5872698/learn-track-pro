@@ -20,11 +20,12 @@ class StoreSectionRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+
     public function rules(): array
     {
         return [
             'learning_content_id' => ['required', 'integer', 'exists:learning_contents,id'],
-            'title' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:50'],
             'order' => ['required', 'integer', 'min:1'],
         ];
     }

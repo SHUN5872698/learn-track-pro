@@ -23,10 +23,10 @@ class StoreLearningContentRequest extends FormRequest
     {
         return [
             'technology_id' => ['required', 'integer', 'exists:technologies,id'],
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
+            'title' => ['required', 'string', 'max:50'],
+            'description' => ['nullable', 'string', 'max:500'],
             'sections' => ['required', 'array', 'min:1'],
-            'sections.*.title' => ['required', 'string', 'max:255'],
+            'sections.*.title' => ['required', 'string', 'max:50'],
             'startImmediately' => ['boolean'],
         ];
     }
