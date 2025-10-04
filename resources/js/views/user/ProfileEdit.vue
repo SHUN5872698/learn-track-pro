@@ -9,11 +9,19 @@
       </div>
     </template>
     <div>
-      <!-- バリデーションエラーメッセージの表示エリア -->
+      <!-- バリデーションエラー -->
       <div v-if="validationErrors.length" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
         <h3 class="font-bold">入力エラー</h3>
         <ul class="mt-2 ml-2 list-disc list-inside">
           <li v-for="error in validationErrors" :key="error">{{ error }}</li>
+        </ul>
+      </div>
+
+      <!-- API側のエラー -->
+      <div v-if="apiError" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+        <h3 class="font-bold">エラー</h3>
+        <ul class="mt-2 ml-2 list-disc list-inside">
+          <li>{{ apiError }}</li>
         </ul>
       </div>
 
@@ -22,22 +30,42 @@
         <div class="space-y-6">
           <!-- 名前入力フィールド -->
           <div>
-            <label class="block mb-2 text-sm font-medium">名前<span class="pl-1 text-red-500">*</span></label>
-            <input v-model="formData.name" type="text" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" :class="errors.name ? 'border-red-500' : ''" placeholder="例: 山田 太郎" />
+            <label for="name" class="block text-sm font-medium text-slate-700">名前<span class="pl-1 text-red-500">*</span></label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              autocomplete="off"
+              class="block w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
+              :class="[showNameBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+              placeholder="例: 山田 太郎"
+              v-model="formData.name"
+              @input="nameModified = true"
+            />
           </div>
 
           <!-- メールアドレス入力フィールド -->
           <div>
-            <label class="block mb-2 text-sm font-medium">メールアドレス<span class="pl-1 text-red-500">*</span></label>
-            <input v-model="formData.email" type="email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" :class="errors.email ? 'border-red-500' : ''" placeholder="your@email.com" />
+            <label for="email-address" class="block text-sm font-medium text-slate-700">メールアドレス<span class="pl-1 text-red-500">*</span></label>
+            <input
+              id="email-address"
+              name="email"
+              type="email"
+              autocomplete="off"
+              class="block w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
+              :class="[showEmailBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+              placeholder="your@email.com"
+              v-model="formData.email"
+              @input="emailModified = true"
+            />
           </div>
 
           <!-- アバター画像表示と変更ボタン -->
           <div>
-            <label class="block mb-2 text-sm font-medium">アバター画像</label>
+            <label for="email-address" class="block text-sm font-medium text-slate-700">アバター画像</label>
             <div class="flex items-center space-x-4">
               <UserAvatar :user="formData" size="md" />
-              <BaseButton type="button" variant="secondary" :disabled="true"> 画像を変更 </BaseButton>
+              <BaseButton type="button" variant="secondary" :disabled="true">画像を変更</BaseButton>
             </div>
             <p class="mt-2 text-sm text-gray-500">※画像アップロード機能は準備中です</p>
           </div>
@@ -46,8 +74,8 @@
     </div>
     <template #actions>
       <div class="flex justify-between pt-6 mt-6 space-x-3">
-        <BaseButton @click="handleCancel" variant="secondary"> キャンセル </BaseButton>
-        <BaseButton @click="handleSubmit" variant="primary" type="submit"> 保存 </BaseButton>
+        <BaseButton @click="handleCancel" variant="secondary">キャンセル</BaseButton>
+        <BaseButton @click="handleSubmit" variant="primary" type="submit">保存</BaseButton>
       </div>
     </template>
   </DetailLayout>
@@ -61,7 +89,7 @@
 // ========================================
 // 外部インポート
 // ========================================
-import { ref, reactive, onMounted, computed } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 // ========================================
@@ -77,7 +105,7 @@ import SuccessToast from '@/components/common/SuccessToast.vue';
 import UserAvatar from '@/components/common/UserAvatar.vue';
 
 // バリデーション
-import { validateProfile, validateField } from '@/validators/profileValidator';
+import { validateProfile } from '@/validators/profileValidator';
 
 // ========================================
 // 初期設定
@@ -88,6 +116,13 @@ const authStore = useAuthStore();
 // ========================================
 // 状態管理
 // ========================================
+// 入力状態
+const formData = reactive({
+  name: '',
+  email: '',
+  avatar: '',
+});
+
 // バリデーション
 // 各入力フィールドのエラーメッセージを保持
 const errors = reactive({
@@ -96,12 +131,12 @@ const errors = reactive({
   avatar: '',
 });
 
-// 入力状態
-const formData = reactive({
-  name: '',
-  email: '',
-  avatar: '',
-});
+// API側のエラー
+const apiError = ref('');
+
+// 各入力フィールドが変更されたかどうかのフラグ
+const nameModified = ref(false);
+const emailModified = ref(false);
 
 // UI状態
 const imageError = ref(false);
@@ -113,13 +148,20 @@ const toastDuration = 2000; // 通知を表示させる時間
 // ========================================
 // 算出プロパティ
 // ========================================
-// ユーザー名のイニシャルを生成: ユーザーアバターの代替表示として利用するため
+// バリデーションエラー表示制御
+const showNameBorder = computed(() => {
+  return errors.name !== '' && !nameModified.value;
+});
+const showEmailBorder = computed(() => {
+  return errors.email !== '' && !emailModified.value;
+});
+
+// Vue側のバリデーションエラーメッセージを集約
 const validationErrors = computed(() => {
   const messages = [];
   if (errors.name) messages.push(errors.name);
   if (errors.email) messages.push(errors.email);
   if (errors.avatar) messages.push(errors.avatar);
-
   return messages;
 });
 
@@ -145,43 +187,40 @@ onMounted(async () => {
 // メソッド
 // ========================================
 // イベントハンドラ
+// プロフィール情報の更新
 const handleSubmit = async () => {
-  // エラーメッセージを全てクリア
+  // 状態をリセット
   errors.name = '';
   errors.email = '';
   errors.avatar = '';
-  authStore.clearAuthErrors();
+  apiError.value = '';
+  nameModified.value = false;
+  emailModified.value = false;
 
-  // フォーム全体のバリデーションを実行
+  // 空白を除去
+  formData.name = formData.name.trim();
+  formData.email = formData.email.trim();
+
+  // フィールドバリデーション
   const validation = validateProfile(formData);
 
+  // バリデーション結果に基づいてエラーメッセージを設定
   if (!validation.isValid) {
-    // バリデーションエラーがある場合、エラーメッセージを対応するフィールドに設定
     Object.keys(validation.errors).forEach((key) => {
       errors[key] = validation.errors[key];
     });
     return;
   }
 
+  // API送信処理
   try {
-    // プロフィール情報の更新
     const profileUpdateData = {
       name: formData.name,
       email: formData.email,
       avatar: formData.avatar,
     };
-
-    const profileResponse = await authStore.updateProfile(profileUpdateData);
-
-    if (!profileResponse.success) {
-      // プロフィール更新が失敗した場合
-      if (authStore.authErrors) {
-        Object.keys(authStore.authErrors).forEach((key) => {
-          errors[key] = authStore.authErrors[key][0] || authStore.authErrors[key];
-        });
-      }
-      return;
-    }
+    // Piniaストアのアクションを呼び出し、ユーザー情報を更新
+    await authStore.updateProfile(profileUpdateData);
 
     // 成功メッセージを表示し、プロフィール詳細ページへ遷移
     showSuccessToast.value = true;
@@ -189,18 +228,21 @@ const handleSubmit = async () => {
       router.push('/profile');
     }, toastDuration);
   } catch (error) {
-    console.error('更新エラー:', error);
-    router.push('/404');
+    console.error('プロフィール更新エラー:', error);
+    if (error?.response?.status === 422 && authStore.hasAuthErrors) {
+      // Laravel側のバリデーションエラー（422）の場合、各フィールドにエラーを設定
+      Object.keys(authStore.authErrors).forEach((key) => {
+        errors[key] = authStore.authErrors[key][0] || authStore.authErrors[key];
+      });
+    } else {
+      // それ以外のレスポンスエラーは固定メッセージ
+      apiError.value = 'エラーが発生しました。';
+    }
   }
 };
 
 // キャンセルボタンクリック時の処理: プロフィールページへ戻る
 const handleCancel = () => {
   router.push('/profile');
-};
-
-// 特定のフィールドのリアルタイムバリデーションを実行
-const validateInput = (fieldName) => {
-  errors[fieldName] = validateField(fieldName, formData[fieldName], formData);
 };
 </script>

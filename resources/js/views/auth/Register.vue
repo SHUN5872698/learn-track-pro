@@ -8,7 +8,8 @@
         <h2 class="mt-6 text-3xl font-bold text-center text-transparent bg-gradient-to-r from-violet-600 to-emerald-600 bg-clip-text">LearnTrack Pro</h2>
         <p class="mt-2 text-sm text-center text-gray-600">新しいアカウントを作成</p>
       </div>
-      <!-- バリデーションエラーメッセージの表示エリア -->
+
+      <!-- Vue側のバリデーションエラー -->
       <div v-if="validationErrors.length" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
         <h3 class="font-bold">入力エラー</h3>
         <ul class="mt-2 ml-2 list-disc list-inside">
@@ -16,50 +17,54 @@
         </ul>
       </div>
 
-      <!-- 認証エラー用（登録失敗時） -->
-      <div v-if="authError" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
-        {{ authError }}
+      <!-- API側のエラー -->
+      <div v-if="apiError" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+        <h3 class="font-bold">エラー</h3>
+        <ul class="mt-2 ml-2 list-disc list-inside">
+          <li>{{ apiError }}</li>
+        </ul>
       </div>
 
       <!-- 新規登録フォーム -->
       <form class="mt-8 space-y-6" @submit.prevent="handleRegister">
         <!-- 名前入力フィールド -->
         <div>
-          <label for="name" class="block text-sm font-medium text-gray-700">名前<span class="pl-1 text-red-500">*</span></label>
+          <label for="name" class="block text-sm font-medium text-slate-700">名前<span class="pl-1 text-red-500">*</span></label>
           <div class="mt-1">
             <input
               id="name"
               name="name"
               type="text"
               autocomplete="name"
-              class="block w-full px-3 py-2 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
               placeholder="例: 山田 太郎"
-              v-model="name"
-              @input="nameModified = true"
+              class="block w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
               :class="[showNameBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+              v-model="formData.name"
+              @input="nameModified = true"
             />
           </div>
         </div>
+
         <!-- メールアドレス入力フィールド -->
         <div>
-          <label for="email-address" class="block text-sm font-medium text-gray-700">メールアドレス<span class="pl-1 text-red-500">*</span></label>
+          <label for="email-address" class="block text-sm font-medium text-slate-700">メールアドレス<span class="pl-1 text-red-500">*</span></label>
           <div class="mt-1">
             <input
               id="email-address"
               name="email"
               type="email"
               autocomplete="email"
-              class="block w-full px-3 py-2 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
-              placeholder="your@email.com"
-              v-model="email"
-              @input="emailModified = true"
+              class="block w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
               :class="[showEmailBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+              placeholder="your@email.com"
+              v-model="formData.email"
+              @input="emailModified = true"
             />
           </div>
         </div>
         <!-- パスワード入力フィールド -->
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">パスワード<span class="pl-1 text-red-500">*</span></label>
+          <label for="password" class="block text-sm font-medium text-slate-700">パスワード<span class="pl-1 text-red-500">*</span></label>
           <div class="relative mt-1">
             <input
               :type="showPassword ? 'text' : 'password'"
@@ -67,10 +72,10 @@
               name="password"
               autocomplete="new-password"
               class="block w-full px-3 py-2 pr-10 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
-              placeholder="8文字以上"
-              v-model="password"
-              @input="passwordModified = true"
               :class="[showPasswordBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+              placeholder="8文字以上"
+              v-model="formData.password"
+              @input="passwordModified = true"
             />
             <!-- パスワード表示/非表示切り替えボタン -->
             <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -81,18 +86,18 @@
         </div>
         <!-- パスワード確認入力フィールド -->
         <div>
-          <label for="password-confirm" class="block text-sm font-medium text-gray-700">パスワード確認<span class="pl-1 text-red-500">*</span></label>
+          <label for="password-confirm" class="block text-sm font-medium text-slate-700">パスワード確認<span class="pl-1 text-red-500">*</span></label>
           <div class="relative mt-1">
             <input
-              :type="showPasswordConfirm ? 'text' : 'password'"
               id="password-confirm"
               name="password-confirm"
+              :type="showPasswordConfirm ? 'text' : 'password'"
               autocomplete="new-password"
               class="block w-full px-3 py-2 pr-10 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
-              placeholder="パスワードを再入力"
-              v-model="passwordConfirm"
-              @input="passwordConfirmModified = true"
               :class="[showPasswordConfirmBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+              placeholder="パスワードを再入力"
+              v-model="formData.passwordConfirm"
+              @input="passwordConfirmModified = true"
             />
             <!-- パスワード確認表示/非表示切り替えボタン -->
             <button type="button" @click="showPasswordConfirm = !showPasswordConfirm" class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -102,15 +107,13 @@
           </div>
         </div>
 
-        <!-- 登録ボタン -->
         <div>
-          <BaseButton type="submit" :disabled="isSubmitting" full-width :left-icon="UserPlusIcon"> 登録する </BaseButton>
+          <BaseButton type="submit" :disabled="isSubmitting" full-width :left-icon="UserPlusIcon">登録する</BaseButton>
         </div>
       </form>
-      <!-- ログインへのリンク -->
       <div class="text-sm text-center text-gray-600">
         すでにアカウントをお持ちですか？
-        <router-link to="/login" class="font-medium text-violet-600 hover:text-violet-500"> ログインはこちら </router-link>
+        <router-link to="/login" class="font-medium text-violet-600 hover:text-violet-500">ログインはこちら</router-link>
       </div>
     </div>
   </div>
@@ -120,7 +123,7 @@
 // ========================================
 // 外部インポート
 // ========================================
-import { ref, reactive, computed } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { EyeIcon, EyeSlashIcon, UserPlusIcon } from '@heroicons/vue/24/solid';
 
@@ -132,7 +135,7 @@ import { useAuthStore } from '@/stores/auth';
 // コンポーネント
 import BaseButton from '@/components/common/BaseButton.vue';
 // バリデーションルール
-import { validateName, validateEmail, validatePassword, validatePasswordConfirmation } from '@/validators/profileValidator';
+import { validateEmail, validateName, validatePassword, validatePasswordConfirmation } from '@/validators/authValidator';
 
 // ========================================
 // 初期設定
@@ -146,12 +149,12 @@ const authStore = useAuthStore();
 // 状態管理
 // ========================================
 // 入力状態
-const name = ref('');
-const email = ref('');
-const password = ref('');
-const passwordConfirm = ref('');
-const showPassword = ref(false);
-const showPasswordConfirm = ref(false);
+const formData = reactive({
+  name: '',
+  email: '',
+  password: '',
+  passwordConfirm: '',
+});
 
 // バリデーション
 // 各入力フィールドのエラーメッセージを保持
@@ -159,8 +162,11 @@ const errors = reactive({
   name: '',
   email: '',
   password: '',
-  passwordConfirmation: '',
+  passwordConfirm: '',
 });
+
+// API側のエラー
+const apiError = ref('');
 
 // 各入力フィールドが変更されたかどうかのフラグ
 const nameModified = ref(false);
@@ -168,36 +174,35 @@ const emailModified = ref(false);
 const passwordModified = ref(false);
 const passwordConfirmModified = ref(false);
 
-// UI状態管理
-const authError = ref('');
+// UI状態
+const showPassword = ref(false);
+const showPasswordConfirm = ref(false);
 const isSubmitting = ref(false);
 
 // ========================================
 // 算出プロパティ
 // ========================================
-// 名前入力フィールドの赤枠表示を制御
+// バリデーションエラー表示制御
 const showNameBorder = computed(() => {
-  return errors.name && !nameModified.value;
+  return errors.name !== '' && !nameModified.value;
 });
-// メールアドレス入力フィールドの赤枠表示を制御
 const showEmailBorder = computed(() => {
-  return errors.email && !emailModified.value;
+  return errors.email !== '' && !emailModified.value;
 });
-// パスワード入力フィールドの赤枠表示を制御
 const showPasswordBorder = computed(() => {
-  return errors.password && !passwordModified.value;
+  return errors.password !== '' && !passwordModified.value;
 });
-// パスワード確認入力フィールドの赤枠表示を制御
 const showPasswordConfirmBorder = computed(() => {
-  return errors.passwordConfirmation && !passwordConfirmModified.value;
+  return errors.passwordConfirm !== '' && !passwordConfirmModified.value;
 });
-// 全てのバリデーションエラーメッセージを集約
+
+// Vue側のバリデーションエラーメッセージを集約
 const validationErrors = computed(() => {
   const messages = [];
   if (errors.name) messages.push(errors.name);
   if (errors.email) messages.push(errors.email);
   if (errors.password) messages.push(errors.password);
-  if (errors.passwordConfirmation) messages.push(errors.passwordConfirmation);
+  if (errors.passwordConfirm) messages.push(errors.passwordConfirm);
   return messages;
 });
 
@@ -205,56 +210,64 @@ const validationErrors = computed(() => {
 // メソッド
 // ========================================
 // イベントハンドラ
+// 登録実行
 const handleRegister = async () => {
-  // フォームの状態とエラーメッセージをリセット
+  // 状態をリセット
   errors.name = '';
   errors.email = '';
   errors.password = '';
-  errors.passwordConfirmation = '';
-  authError.value = '';
+  errors.passwordConfirm = '';
+  apiError.value = '';
   nameModified.value = false;
   emailModified.value = false;
   passwordModified.value = false;
   passwordConfirmModified.value = false;
 
   // 空白を除去
-  name.value = name.value.trim();
-  email.value = email.value.trim();
+  formData.name = formData.name.trim();
+  formData.email = formData.email.trim();
 
-  // 各入力フィールドのバリデーションを実行
-  const nameResult = validateName(name.value);
-  const emailResult = validateEmail(email.value);
-  const passwordResult = validatePassword(password.value);
-  const passwordConfirmResult = validatePasswordConfirmation(passwordConfirm.value, password.value);
+  // フィールドバリデーション
+  const nameResult = validateName(formData.name);
+  const emailResult = validateEmail(formData.email);
+  const passwordResult = validatePassword(formData.password);
+  const passwordConfirmResult = validatePasswordConfirmation(formData.passwordConfirm, formData.password);
 
   // バリデーション結果に基づいてエラーメッセージを設定
   if (!nameResult.isValid) errors.name = nameResult.message;
   if (!emailResult.isValid) errors.email = emailResult.message;
   if (!passwordResult.isValid) errors.password = passwordResult.message;
-  if (!passwordConfirmResult.isValid) errors.passwordConfirmation = passwordConfirmResult.message;
+  if (!passwordConfirmResult.isValid) errors.passwordConfirm = passwordConfirmResult.message;
 
   // いずれかのフィールドにエラーがあれば処理を中断
-  if (errors.name || errors.email || errors.password || errors.passwordConfirmation) {
+  if (errors.name || errors.email || errors.password || errors.passwordConfirm) {
     return;
   }
 
-  // 登録実行
+  // API送信処理
   isSubmitting.value = true;
   try {
     await authStore.register({
-      name: name.value,
-      email: email.value,
-      password: password.value,
-      password_confirmation: passwordConfirm.value,
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      password_confirmation: formData.passwordConfirm,
     });
-    router.push('/dashboard'); // 成功時はダッシュボードへ遷移
+    // 成功時はダッシュボードへ遷移
+    router.push('/dashboard');
   } catch (error) {
-    if (authStore.hasAuthErrors) {
-      authError.value = Object.values(authStore.authErrors).flat().join(', ');
+    console.error('ユーザー登録エラー:', error);
+    if (error?.response?.status === 422 && authStore.hasAuthErrors) {
+      // Laravel側のバリデーションエラー（422）の場合、各フィールドにエラーを設定
+      Object.keys(authStore.authErrors).forEach((key) => {
+        errors[key] = authStore.authErrors[key][0] || authStore.authErrors[key];
+      });
     } else {
-      authError.value = 'ユーザー登録に失敗しました';
+      // それ以外のレスポンスエラーは固定メッセージ
+      apiError.value = 'エラーが発生しました。';
     }
   } finally {
+    // フォーム送信状態をリセット
     isSubmitting.value = false;
   }
 };
