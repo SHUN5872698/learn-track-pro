@@ -122,6 +122,7 @@ const loadData = () => {
 - コンポーネント：PascalCase（例：AuthWizard.vue、DeleteConfirmModal.vue）
 - Composables：camelCase（例：useAuthState.js）
 - ユーティリティ：camelCase（例：formatDate.js）
+- バリデーター：camelCase（例：studySessionValidator.js）
 
 ### 変数・関数
 
@@ -173,6 +174,83 @@ const routes = [
 - ref、reactive、computed適切に使い分け
 - provide/inject適切に活用
 - カスタムcomposables作成
+
+## フォームデータ管理の統一ルール
+
+### コンポーザブル化すべき条件（いずれか1つ該当）
+
+1. Create/Edit両方で使う
+2. バリデーションロジックが複雑
+3. モーダル管理などUI状態が複雑
+4. フォーマット処理が必要
+
+### reactive（コンポーネント内）でOKな条件
+
+1. Editのみで使う（Createがない）
+2. シンプルな入力フィールドのみ（3〜5個程度）
+3. バリデーションが単純（必須チェック程度）
+
+### ref使用ケース
+
+- 単一の値のみ（例：`const isLoading = ref(false)`）
+
+### 判断フロー
+
+```
+新しいフォームを作る
+    ↓
+Create/Edit両方ある？ → はい → コンポーザブル化
+    ↓ いいえ
+複雑（モーダル、ウィザード、フォーマット処理）？ → はい → コンポーザブル化
+    ↓ いいえ
+reactive（コンポーネント内）
+
+```
+
+## バリデーション実装ルール
+
+### 推奨：個別バリデーション関数
+
+```jsx
+import { validateSectionId, validateStudiedAt } from '@/validators/studySessionValidator';
+
+const sectionResult = validateSectionId(form.section_id);
+const studiedAtResult = validateStudiedAt(form.studied_at);
+
+if (!sectionResult.isValid) errors.section_id = sectionResult.message;
+if (!studiedAtResult.isValid) errors.studied_at = studiedAtResult.message;
+
+```
+
+### バリデーター関数の戻り値形式
+
+```jsx
+export const validateSectionId = (sectionId) => {
+  if (!sectionId) {
+    return { isValid: false, message: '学習セクションを選択してください' };
+  }
+  return { isValid: true, message: '' };
+};
+
+```
+
+### エラー表示制御
+
+```jsx
+// 修正フラグ
+const sectionModified = ref(false);
+
+// エラー表示制御
+const showSectionBorder = computed(() => {
+  return errors.section_id !== '' && !sectionModified.value;
+});
+
+```
+
+### 避けるべきアンチパターン
+
+- 文字列マッチングでのエラー振り分け（エラーメッセージ変更で動作が変わる）
+- 理由なき「とりあえずreactiveで統一」
 
 ## UI・スタイリング
 
