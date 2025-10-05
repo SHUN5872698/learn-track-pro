@@ -8,20 +8,23 @@
     <!-- 学習日入力フィールド: 日付と時刻の選択、現時刻リセット機能 -->
     <div>
       <label for="studied-at" class="block text-sm font-medium text-slate-700">学習日</label>
-      <div class="flex items-center p-3 py-2 mt-1 space-x-2 border border-gray-300 rounded-md shadow-sm focus-within:ring-violet-500 focus-within:border-violet-500 sm:text-sm">
+      <div
+        class="flex items-center w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
+        :class="[showStudiedAtBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+      >
         <div class="flex items-center flex-1 space-x-2">
           <!-- 日付選択部分 -->
-          <div @click.stop="$emit('openDateModal')" class="flex items-center px-2 py-1 space-x-2 transition-colors duration-200 rounded-md cursor-pointer hover:bg-gray-200">
+          <div @click.stop="handleDateClick" class="flex items-center px-2 py-1 space-x-2 transition-colors duration-200 rounded-md cursor-pointer hover:bg-gray-200">
             <CalendarIcon class="w-5 h-5 text-gray-400" />
             <span class="text-slate-700">{{ formattedDate }}</span>
           </div>
           <!-- 時刻選択部分 -->
-          <div @click.stop="$emit('openTimeModal', 'timeOfDay')" class="flex items-center px-2 py-1 space-x-2 transition-colors duration-200 rounded-md cursor-pointer hover:bg-gray-200">
+          <div @click.stop="handleTimeClick" class="flex items-center px-2 py-1 space-x-2 transition-colors duration-200 rounded-md cursor-pointer hover:bg-gray-200">
             <ClockIcon class="w-5 h-5 text-gray-400" />
             <span class="text-slate-700">{{ formattedTime }}</span>
           </div>
         </div>
-        <span @click.stop="$emit('resetTimeToNow')" class="text-sm font-medium cursor-pointer text-violet-600 hover:bg-gray-200">現時刻</span>
+        <span @click.stop="handleResetTime" class="text-sm font-medium cursor-pointer text-violet-600 hover:bg-violet-100">現時刻</span>
       </div>
     </div>
 
@@ -31,10 +34,8 @@
       <button
         type="button"
         @click="handleDurationClick"
-        :class="[
-          'flex items-center w-full px-3 py-2 mt-1 text-left transition-colors duration-200 rounded-md shadow-sm focus:outline-none sm:text-sm hover:bg-gray-200',
-          showDurationBorder ? 'border border-red-500 focus:ring-red-500 focus:border-red-500' : 'border border-gray-300 focus:ring-violet-500 focus:border-violet-500',
-        ]"
+        class="flex items-center w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm hover:bg-gray-100"
+        :class="[showDurationBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
       >
         <ClockIcon class="inline w-5 h-5 mr-2 text-gray-400" />
         {{ displayStudyHours }}時間 {{ displayStudyMinutes }}分
@@ -46,11 +47,14 @@
       <label for="memo" class="block text-sm font-medium text-slate-700">学習メモ</label>
       <textarea
         id="memo"
+        name="memo"
         rows="5"
+        autocomplete="off"
+        class="block w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
+        :class="[showMemoBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+        placeholder="学習した内容のメモや感想を自由に入力してください。"
         v-model="localForm.memo"
         @input="$emit('memo-modified')"
-        placeholder="学習した内容のメモや感想を自由に入力してください。"
-        :class="['block w-full px-3 py-2 mt-1 rounded-md shadow-sm focus:outline-none sm:text-sm', showMemoBorder ? 'border border-red-500 focus:ring-red-500 focus:border-red-500' : 'border border-gray-300 focus:ring-violet-500 focus:border-violet-500']"
       ></textarea>
     </div>
 
@@ -90,9 +94,10 @@ const props = defineProps({
   showSectionBorder: Boolean,
   showDurationBorder: Boolean,
   showMemoBorder: Boolean,
+  showStudiedAtBorder: Boolean,
 });
 
-const emit = defineEmits(['update:modelValue', 'openDateModal', 'openTimeModal', 'resetTimeToNow', 'section-modified', 'duration-modified', 'memo-modified']);
+const emit = defineEmits(['update:modelValue', 'openDateModal', 'openTimeModal', 'resetTimeToNow', 'section-modified', 'duration-modified', 'memo-modified', 'studied-at-modified']);
 
 // ========================================
 // 算出プロパティ
@@ -103,8 +108,24 @@ const localForm = computed({
 });
 
 // ========================================
-// イベントハンドラ
+// メソッド
 // ========================================
+// イベントハンドラ
+const handleDateClick = () => {
+  emit('studied-at-modified');
+  emit('openDateModal');
+};
+
+const handleTimeClick = () => {
+  emit('studied-at-modified');
+  emit('openTimeModal', 'timeOfDay');
+};
+
+const handleResetTime = () => {
+  emit('studied-at-modified');
+  emit('resetTimeToNow');
+};
+
 const handleDurationClick = () => {
   emit('duration-modified');
   emit('openTimeModal', 'duration');

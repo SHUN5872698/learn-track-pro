@@ -9,6 +9,7 @@ export const useLearningSessionStore = defineStore('learningSession', {
     pagination: {}, // ページネーション情報
     loading: false, // APIリクエスト中のローディング状態
     error: null, // エラーメッセージ
+    errors: {},
   }),
 
   // 状態から派生した値（キャッシュされる）
@@ -28,6 +29,10 @@ export const useLearningSessionStore = defineStore('learningSession', {
     // 全ての学習セッションの合計学習時間を計算して取得
     totalStudyMinutes: (state) => {
       return state.sessions.reduce((total, session) => total + session.study_minutes, 0);
+    },
+    // 【追加】バリデーションエラーがあるかチェック
+    hasSessionErrors: (state) => {
+      return state.errors && Object.keys(state.errors).length > 0;
     },
   },
 
@@ -51,6 +56,7 @@ export const useLearningSessionStore = defineStore('learningSession', {
         this.loading = false;
       }
     },
+
     // 単一の学習記録を取得
     async fetchLearningSession(id) {
       try {
@@ -75,12 +81,17 @@ export const useLearningSessionStore = defineStore('learningSession', {
     // 新しい学習セッションを作成
     async createLearningSession(data) {
       this.loading = true;
+      this.errors = {};
       try {
         const response = await api.createLearningSession(data);
         const newSession = response.data.data || response.data;
         this.sessions.push(newSession);
         return newSession;
       } catch (error) {
+        // 422エラーの場合、errorsに格納
+        if (error?.response?.status === 422) {
+          this.errors = error.response.data.errors || {};
+        }
         console.error('学習記録の作成中にエラーが発生しました:', error);
         throw error;
       } finally {
@@ -91,6 +102,7 @@ export const useLearningSessionStore = defineStore('learningSession', {
     // 既存の学習セッションを更新
     async updateLearningSession(id, data) {
       this.loading = true;
+      this.errors = {};
       try {
         const response = await api.updateLearningSession(id, data);
         const updatedSession = response.data.data || response.data;
@@ -100,6 +112,10 @@ export const useLearningSessionStore = defineStore('learningSession', {
         }
         return updatedSession;
       } catch (error) {
+        // 422エラーの場合、errorsに格納
+        if (error?.response?.status === 422) {
+          this.errors = error.response.data.errors || {};
+        }
         console.error('学習記録の更新中にエラーが発生しました:', error);
         throw error;
       } finally {
