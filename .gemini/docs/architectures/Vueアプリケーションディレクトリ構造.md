@@ -282,3 +282,192 @@ graph TD
 - ヘッダー、サイドバー、フッターの配置
 
 ---
+
+## なぜこの構造が良いか
+
+1. 直感的な配置
+- ページはviews/
+- 部品はcomponents/
+- ロジックはcomposables/
+1. 適度な整理
+- 認証関連：views/auth/とcomponents/auth/
+- 学習関連：components/learning/
+- 機能ごとにまとまっているが、過度に複雑ではない
+1. 現実的な規模感
+- features/のような深い階層は避ける
+- MVPの規模に適している
+- 将来の拡張も可能
+
+---
+
+## 各ディレクトリの役割
+
+### /views
+
+- ルーターで直接アクセスされるページコンポーネント
+- 各ページはレイアウトとコンポーネントを組み合わせる
+
+### /components
+
+- 再利用可能なUIコンポーネント
+- 機能別にサブフォルダで整理（auth, learning, common）
+
+### /composables
+
+- Vue 3 Composition APIを使った共有ロジック
+- **ビジネスロジック層**として機能
+- 複数のStoreを連携して複雑な処理を実現
+- 状態管理、バリデーション、エラーハンドリング
+
+### /stores
+
+- Pinia Storeによる状態管理
+- **API通信・状態管理層**として機能
+- Laravel APIとの通信を担当
+- シンプルなデータの取得・保存・更新のみ
+
+### /layouts
+
+- ページ全体のレイアウトを定義
+- ヘッダー、サイドバー、フッターの配置
+
+---
+
+## Composables と Store の責務分離
+
+### 基本原則
+
+```mermaid
+graph LR
+    A[Vue Components] --> B[Composables<br/>ビジネスロジック層]
+    B --> C[Store<br/>API通信・状態管理層]
+    C --> D[Laravel API]
+
+    style B fill:#51cf66
+    style C fill:#339af0
+
+```
+
+### Store の責務（API通信・状態管理）
+
+**役割：**
+
+- Laravel APIとの通信
+- レスポンスデータの保存
+- 単純な状態の取得・更新
+
+**実装例：**
+
+```jsx
+// stores/learningSession.js
+export const useLearningSessionStore = defineStore('learningSession', {
+  state: () => ({
+    sessions: [],
+    loading: false,
+    error: null,
+  }),
+
+  actions: {
+    // API通信のみ
+    async fetchLearningSessions() {
+      this.loading = true;
+      const response = await api.fetchLearningSessions();
+      this.sessions = response.data;
+      this.loading = false;
+    },
+
+    async createLearningSession(data) {
+      const response = await api.createLearningSession(data);
+      this.sessions.push(response.data);
+    },
+  },
+
+  getters: {
+    // シンプルなフィルタリングのみ
+    sessionById: (state) => (id) => {
+      return state.sessions.find(s => s.id === id);
+    },
+  },
+});
+
+```
+
+### Composables の責務（ビジネスロジック）
+
+**役割：**
+
+- 複数のStoreを連携
+- ビジネスルールの実装
+- エラーハンドリング
+- 統計計算・データ加工
+
+**実装例：**
+
+```jsx
+// composables/learning/useLearningSessions.js
+export const useLearningSessions = () => {
+  const sessionStore = useLearningSessionStore();
+  const contentStore = useLearningContentStore();
+  const sectionStore = useSectionStore();
+
+  // 複数Storeを連携したビジネスロジック
+  const addStudySession = async (sessionData) => {
+    try {
+      // 1. セッション作成
+      await sessionStore.createLearningSession(sessionData);
+
+      // 2. 関連する学習内容の統計を更新（連携）
+      await contentStore.fetchLearningContent(sessionData.learning_content_id);
+
+      // 3. 関連するセクションのステータスを更新（連携）
+      await sectionStore.fetchSection(sessionData.section_id);
+
+      return true;
+    } catch (error) {
+      console.error('学習記録の追加に失敗:', error);
+      return false;
+    }
+  };
+
+  return { addStudySession };
+};
+
+```
+
+### 判断基準チートシート
+
+| 条件 | 実装場所 |
+| --- | --- |
+| API通信が必要 | **Store** |
+| 単純なデータ取得・保存 | **Store** |
+| 複数のStoreを使う | **Composable** |
+| ビジネスルールがある | **Composable** |
+| エラーハンドリングが複雑 | **Composable** |
+| 統計計算・データ加工 | **Composable** |
+| 状態の連携・同期 | **Composable** |
+
+### 実際のプロジェクト構造
+
+```
+composables/learning/
+├── useLearningContents.js    → learningContentStore を使用
+├── useLearningSessions.js     → learningSessionStore を使用
+└── useSections.js             → sectionStore を使用
+
+composables/
+└── useLearningData.js         → 上記3つのComposableを統合（ファサード）
+
+stores/
+├── learningContent.js         → API通信のみ
+├── learningSession.js         → API通信のみ
+└── section.js                 → API通信のみ
+
+```
+
+**ポイント：**
+
+- 各Composableは対応するStoreを1つ持つ
+- Composableは複数のStoreを連携できる
+- `useLearningData.js` が全体のファサードとして機能
+
+---
