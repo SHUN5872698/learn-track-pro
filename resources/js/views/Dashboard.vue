@@ -87,14 +87,50 @@ onMounted(async () => {
 // ========================================
 // 算出プロパティ
 // ========================================
-// 進行中の学習コンテンツをフィルタリング
+// 進行中の学習コンテンツをフィルタリングし、指定された基準でソート
 const inProgressContents = computed(() => {
-  return learningContents.value.filter((content) => content.status === 'in_progress' || content.status === 'not_started');
+  return learningContents.value
+    .filter((content) => content.status === 'in_progress' || content.status === 'not_started')
+    .sort((a, b) => {
+      // 1. latestSessionUpdatedAtが最新のものを優先
+      if (a.latestSessionUpdatedAt && b.latestSessionUpdatedAt) {
+        if (new Date(b.latestSessionUpdatedAt).getTime() !== new Date(a.latestSessionUpdatedAt).getTime()) {
+          return new Date(b.latestSessionUpdatedAt).getTime() - new Date(a.latestSessionUpdatedAt).getTime();
+        }
+      } else if (a.latestSessionUpdatedAt) {
+        return -1; // aにのみlatestSessionUpdatedAtがある場合、aを優先
+      } else if (b.latestSessionUpdatedAt) {
+        return 1; // bにのみlatestSessionUpdatedAtがある場合、bを優先
+      }
+
+      // 2. statusがin_progressのものを優先
+      if (a.status === 'in_progress' && b.status === 'not_started') return -1;
+      if (a.status === 'not_started' && b.status === 'in_progress') return 1;
+
+      // 3. statusが同じ場合、updated_atが最新のものを優先
+      return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+    });
 });
 
-// 完了した学習コンテンツをフィルタリング
+// 完了した学習コンテンツをフィルタリングし、指定された基準でソート
 const completedContents = computed(() => {
-  return learningContents.value.filter((content) => content.status === 'completed');
+  return learningContents.value
+    .filter((content) => content.status === 'completed')
+    .sort((a, b) => {
+      // 1. latestSessionUpdatedAtが最新のものを優先
+      if (a.latestSessionUpdatedAt && b.latestSessionUpdatedAt) {
+        if (new Date(b.latestSessionUpdatedAt).getTime() !== new Date(a.latestSessionUpdatedAt).getTime()) {
+          return new Date(b.latestSessionUpdatedAt).getTime() - new Date(a.latestSessionUpdatedAt).getTime();
+        }
+      } else if (a.latestSessionUpdatedAt) {
+        return -1; // aにのみlatestSessionUpdatedAtがある場合、aを優先
+      } else if (b.latestSessionUpdatedAt) {
+        return 1; // bにのみlatestSessionUpdatedAtがある場合、bを優先
+      }
+
+      // 2. updated_atが最新のものを優先
+      return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+    });
 });
 
 // ========================================
