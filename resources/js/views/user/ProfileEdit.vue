@@ -170,6 +170,10 @@ const validationErrors = computed(() => {
 // ========================================
 // コンポーネントがマウントされた時にユーザーデータをフォームに初期設定
 onMounted(async () => {
+  // ログアウト中は処理をスキップ
+  if (!authStore.isLoggedIn) {
+    return;
+  }
   // ユーザー情報がなければ取得
   if (!authStore.authUser) {
     await authStore.fetchUser();

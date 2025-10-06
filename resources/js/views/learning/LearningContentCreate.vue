@@ -118,7 +118,7 @@
 // ========================================
 // 外部インポート
 // ========================================
-import { computed, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { LightBulbIcon } from '@heroicons/vue/24/solid';
 
@@ -126,6 +126,7 @@ import { LightBulbIcon } from '@heroicons/vue/24/solid';
 // 内部インポート
 // ========================================
 // Piniaストア
+import { useAuthStore } from '@/stores/auth';
 import { useLearningContentStore } from '@/stores/learningContent';
 
 // コンポーザブル
@@ -153,6 +154,7 @@ const router = useRouter();
 
 // コンポーザブル
 const stepNames = ['基本情報', 'セクション設定', '確認'];
+const authStore = useAuthStore();
 const contentStore = useLearningContentStore();
 const { form, hasUnsavedChanges } = useLearningContentForm();
 const { technologies } = useLearningData();
@@ -199,6 +201,16 @@ const showDescriptionBorder = computed(() => {
 });
 const showSectionsBorder = computed(() => {
   return errors.sections !== '';
+});
+
+// ========================================
+// ライフサイクル
+// ========================================
+onMounted(async () => {
+  // ログアウト中は処理をスキップ
+  if (!authStore.isLoggedIn) {
+    return;
+  }
 });
 
 // validationErrorsの配列生成

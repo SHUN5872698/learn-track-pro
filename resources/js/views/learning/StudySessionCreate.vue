@@ -90,6 +90,7 @@ import { useRoute, useRouter } from 'vue-router';
 // 内部インポート
 // ========================================
 // Piniaストア
+import { useAuthStore } from '@/stores/auth';
 import { useLearningContentStore } from '@/stores/learningContent';
 import { useLearningSessionStore } from '@/stores/learningSession';
 import { useSectionStore } from '@/stores/sections';
@@ -120,6 +121,7 @@ const route = useRoute();
 const router = useRouter();
 
 // コンポーザブル
+const authStore = useAuthStore();
 const contentStore = useLearningContentStore();
 const sectionStore = useSectionStore();
 const sessionStore = useLearningSessionStore();
@@ -220,6 +222,10 @@ const showStudiedAtBorder = computed(() => {
 // ライフサイクル
 // ========================================
 onMounted(async () => {
+  // ログアウト中は処理をスキップ
+  if (!authStore.isLoggedIn) {
+    return;
+  }
   await withLoading('study-edit-init', async () => {
     try {
       if (learningContents.value.length === 0) {

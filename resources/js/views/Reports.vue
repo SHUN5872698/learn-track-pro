@@ -131,6 +131,8 @@ import { ClockIcon, CheckBadgeIcon, ChartBarIcon, FireIcon } from '@heroicons/vu
 // ========================================
 // 内部インポート
 // ========================================
+// Pinia ストア
+import { useAuthStore } from '@/stores/auth';
 // コンポーザブル
 import { useLearningData } from '@/composables/useLearningData';
 import { useReportStore } from '@/stores/reports';
@@ -155,6 +157,7 @@ import { formatDateTime, formatMinutes } from '@/utils/dateFormatters';
 // 初期設定
 // ========================================
 const router = useRouter();
+const authStore = useAuthStore();
 const reportStore = useReportStore();
 
 // ========================================
@@ -176,7 +179,7 @@ const isModalOpen = ref(false);
 const recordToDelete = ref(null);
 
 // ========================================
-// 算出プロパティ（既存のまま）
+// 算出プロパティ
 // ========================================
 // --- データ集計ロジック ---
 // 全ての学習セッションの合計学習時間を計算し、フォーマットして返す
@@ -291,6 +294,10 @@ const paginatedRecords = computed(() => {
 // ライフサイクル
 // ========================================
 onMounted(async () => {
+  // ログアウト中は処理をスキップ
+  if (!authStore.isLoggedIn) {
+    return;
+  }
   await withLoading('reports-init', async () => {
     if (learningContents.value.length === 0) {
       await fetchContents();

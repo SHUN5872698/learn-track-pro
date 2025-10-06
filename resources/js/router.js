@@ -140,7 +140,20 @@ router.beforeEach(async (to, from, next) => {
 
   // 初回アクセス時に認証状態を確認
   if (!authStore.authUser && localStorage.getItem('isLoggedIn') === 'true') {
-    await authStore.fetchUser();
+    try {
+      // エラーハンドリング
+      await authStore.fetchUser();
+    } catch (error) {
+      // 認証失敗時はログイン画面へ
+      console.error('認証情報の取得に失敗しました:', error);
+      localStorage.removeItem('isLoggedIn');
+
+      // ログインページ以外にアクセスしようとしている場合はログイン画面へリダイレクト
+      if (to.name !== 'login') {
+        next('/login');
+        return;
+      }
+    }
   }
 
   const isAuthenticated = authStore.isLoggedIn;
@@ -148,10 +161,13 @@ router.beforeEach(async (to, from, next) => {
   const requiresGuest = to.matched.some((record) => record.meta.requiresGuest);
 
   if (requiresAuth && !isAuthenticated) {
+    // 認証が必要なページに未ログインでアクセス → ログイン画面へ
     next('/login');
   } else if (requiresGuest && isAuthenticated) {
+    // ゲスト専用ページ（ログイン/登録）にログイン済みでアクセス → ダッシュボードへ
     next('/dashboard');
   } else {
+    // その他の場合は通常通りナビゲーション
     next();
   }
 });

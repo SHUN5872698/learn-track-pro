@@ -43,7 +43,7 @@
         </div>
         <!-- 説明セクション -->
         <div class="mt-4">
-          <h3 class="mb-2 text-lg font-semibold text-slate-800">概要: </h3>
+          <h3 class="mb-2 text-lg font-semibold text-slate-800">概要:</h3>
           <p class="break-words whitespace-pre-wrap text-slate-600">{{ learningContent.description }}</p>
         </div>
       </div>
@@ -140,6 +140,7 @@ import { CheckCircleIcon as CheckCircleIconOutline } from '@heroicons/vue/24/out
 // 内部インポート
 // ========================================
 // Piniaストア
+import { useAuthStore } from '@/stores/auth';
 import { useSectionStore } from '@/stores/sections';
 import { useLearningSessionStore } from '@/stores/learningSession';
 
@@ -187,6 +188,7 @@ const route = useRoute();
 const router = useRouter();
 
 // コンポーザブル
+const authStore = useAuthStore();
 const { learningContents, learningContentsRaw, getRecordCountForSection, technologies, fetchContents } = useLearningData();
 const { updateSectionStatus, normalizeStatus, toggleSectionComplete } = useSections();
 const { isLoading, withLoading } = useLoading();
@@ -259,6 +261,10 @@ const displayTechnology = computed(() => {
 // ライフサイクル
 // ========================================
 onMounted(async () => {
+  // ログアウト中は処理をスキップ
+  if (!authStore.isLoggedIn) {
+    return;
+  }
   await withLoading('learning-detail-init', async () => {
     // データが読み込まれていない場合は先に読み込む
     if (learningContents.value.length === 0) {

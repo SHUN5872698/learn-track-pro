@@ -208,6 +208,7 @@ import { ArrowRightIcon } from '@heroicons/vue/24/solid';
 // 内部インポート
 // ========================================
 // Piniaストア
+import { useAuthStore } from '@/stores/auth';
 import { useLearningContentStore } from '@/stores/learningContent';
 import { useSectionStore } from '@/stores/sections';
 
@@ -278,6 +279,7 @@ const contentId = parseInt(route.params.id, 10);
 
 // コンポーザブル
 const stepNames = ['基本情報', 'セクション設定', '確認'];
+const authStore = useAuthStore();
 const contentStore = useLearningContentStore();
 const sectionStore = useSectionStore();
 const { form, hasUnsavedChanges } = useLearningContentForm();
@@ -405,6 +407,10 @@ const sectionChanges = computed(() => {
 // ライフサイクル
 // ========================================
 onMounted(async () => {
+  // ログアウト中は処理をスキップ
+  if (!authStore.isLoggedIn) {
+    return;
+  }
   await withLoading('learning-edit-init', async () => {
     try {
       // データが読み込まれていない場合は先に読み込む

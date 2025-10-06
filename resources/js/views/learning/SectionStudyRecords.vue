@@ -71,6 +71,7 @@ import { PlusCircleIcon, ArrowLeftIcon } from '@heroicons/vue/24/solid';
 // 内部インポート
 // ========================================
 // Piniaストア
+import { useAuthStore } from '@/stores/auth';
 import { useLearningSessionStore } from '@/stores/learningSession';
 import { useSectionStore } from '@/stores/sections';
 
@@ -102,6 +103,7 @@ const router = useRouter();
 // コンポーザブル
 const { learningContents, sections, deleteStudySession, fetchContents } = useLearningData();
 const { isLoading, withLoading } = useLoading();
+const authStore = useAuthStore();
 const sectionStore = useSectionStore();
 const sessionStore = useLearningSessionStore();
 
@@ -149,6 +151,10 @@ const totalStudyTime = computed(() => {
 // ライフサイクル
 // ========================================
 onMounted(async () => {
+  // ログアウト中は処理をスキップ
+  if (!authStore.isLoggedIn) {
+    return;
+  }
   await withLoading('section-records-init', async () => {
     // 学習コンテンツを取得
     if (learningContents.value.length === 0) {

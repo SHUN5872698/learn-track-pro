@@ -1,5 +1,17 @@
+// ========================================
+// 外部インポート
+// ========================================
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import router from '@/router';
+
+// ========================================
+// 内部インポート
+// ========================================
+// Piniaストア
+import { useLearningContentStore } from '@/stores/learningContent';
+import { useLearningSessionStore } from '@/stores/learningSession';
+import { useSectionStore } from '@/stores/sections';
+import { useReportStore } from '@/stores/reports';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -112,17 +124,48 @@ export const useAuthStore = defineStore('auth', {
     // ログアウト処理: ユーザーセッションを終了させる
     async logout() {
       this.setAuthLoading(true);
+
       try {
-        console.log('🔄 Pinia: ログアウト実行開始');
-        const response = await axios.post('/fortify/logout');
-        console.log('✅ Pinia: ログアウト成功', response); // Fortifyのログアウトエンドポイントへリクエスト
-        this.setAuthUser(null); // ユーザー情報をクリア
-        localStorage.removeItem('isLoggedIn'); // ローカルストレージのログイン状態を削除
-      } catch (error) {
-        console.error('❌ Pinia: ログアウト失敗', error);
-        // ログアウトは失敗してもローカル状態をクリア
+        console.log('🔄 ログアウト開始');
+
+        // ローカル状態をクリア
+        // この時点で isLoggedIn が false になり、App.vue の watch が発火する
         this.setAuthUser(null);
         localStorage.removeItem('isLoggedIn');
+
+        // すべての Pinia Store をリセット
+        try {
+          const learningContentStore = useLearningContentStore();
+          const learningSessionStore = useLearningSessionStore();
+          const sectionStore = useSectionStore();
+          const reportStore = useReportStore();
+
+          learningContentStore.$reset();
+          learningSessionStore.$reset();
+          sectionStore.$reset();
+          reportStore.$reset();
+
+          console.log('✅ すべての Pinia Store をリセットしました');
+        } catch (error) {
+          console.warn('⚠️ Pinia Store のリセットに失敗しましたが、処理を継続します', error);
+        }
+
+        // ログイン画面にリダイレクト
+        await router.replace('/login');
+
+        // サーバー側のログアウト
+        axios.post('/fortify/logout').catch((error) => {
+          console.warn('サーバー側のログアウトに失敗しましたが、クライアント側はクリア済みです:', error);
+        });
+
+        console.log('✅ ログアウト完了');
+      } catch (error) {
+        console.error('❌ ログアウト失敗', error);
+        // エラー時も確実にローカル状態をクリア
+        this.setAuthUser(null);
+        localStorage.removeItem('isLoggedIn');
+        // エラー時も確実にログイン画面にリダイレクト
+        await router.replace('/login');
       } finally {
         this.setAuthLoading(false);
       }
