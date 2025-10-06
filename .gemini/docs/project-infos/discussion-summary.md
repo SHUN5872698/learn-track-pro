@@ -7,237 +7,129 @@
 ---
 
 ```markdown
-# これまでの議論の要点まとめ（最新版：2025年10月5日夜更新）
+# これまでの議論の要点まとめ（最新版：2025年10月6日更新）
 
 ## 背景・経緯
 
 ### プロジェクトの概要
 
-- プロジェクト名: LearnTrack Pro - プログラミング学習管理プラットフォーム
-- 開発期間: 2025年9月3日〜10月7日（5.5週間、バッファ含む）
-- 現在日: 2025年10月5日（土）夜 - 最終週（残り2日）
-- 開発者: 藤井俊祐氏（転職活動用ポートフォリオ）
-- 開発手法: APIファーストアプローチ with AI駆動開発（GeminiCLI + Claude）
-- 差別化ポイント: StudyPlusと異なり、書籍に依存しない学習内容管理（ポートフォリオ作成等）
+- **プロジェクト名**: LearnTrack Pro - プログラミング学習管理プラットフォーム
+- **開発期間**: 2025年9月3日〜10月7日（5.5週間）
+- **現在日**: 2025年10月6日（月）- **最終日**（残り1日）
+- **開発者**: 藤井俊祐氏（転職活動用ポートフォリオ）
+- **開発手法**: APIファーストアプローチ with AI駆動開発（GeminiCLI + Claude）
 
 ### 目的・目標
 
 - プログラミング学習に特化した進捗管理システム
 - セクション単位での詳細な進捗可視化
 - 技術分野別の学習時間分析機能
-- 最重要: 2025年10月7日までにMVP完成（残り2日）
+- **最重要**: 2025年10月7日までにMVP完成（**残り1日**）
 
 ### 主要な制約条件
 
 - TypeScript不使用（JavaScriptのみ）
 - Bootstrapクラス・カスタムCSS禁止（TailwindCSSのみ）
 - jQuery等レガシーライブラリ禁止
-- 絵文字アイコン不使用（Heroiconsのみ）
 - Options API禁止（Composition APIのみ）
 
 ---
 
 ## 完了・確定事項
 
-### 本日完了事項（10/5 夜）✅ ★NEW
+### 本日完了事項（10/6）✅ ★NEW
 
-#### モックデータ完全削除完了
+#### 認証フロー・ログアウト処理の完全修正完了 ★重要
 
-1. ✅ useLearningSessions.js のモックデータ削除・Store連携化
-   - resources/js/composables/learning/useLearningSessions.js 書き換え完了
-   - モックデータ（mockSessions）削除
-   - Store連携版に移行
-   - コールバック依存を解消
-   - 複数Store連携のビジネスロジック実装
+**問題**:
+- ログアウト時に401エラーが発生
+- データフェッチ中にログアウトするとエラー
+- 二重リダイレクトの問題
+- Pinia Store のデータが残存
 
-2. ✅ ブランチ作成・コミット完了
-   - ブランチ名: `refactor/remove-mock-data-from-sessions`
-   - コミット実施済み
+**実装内容**:
 
-3. ✅ アーキテクチャドキュメント更新完了
-   - `.gemini/docs/architectures/Vueアプリケーションディレクトリ構造.md` に「Composables と Store の責務分離」セクション追加
-   - 判断基準チートシート追加
-   - 具体例とアンチパターン明記
-
-#### Composables と Store の責務分離ルール策定 ★重要
-
-**Store の責務（API通信・状態管理層）:**
-- Laravel APIとの通信
-- レスポンスデータの保存
-- 単純な状態の取得・更新
-- シンプルなフィルタリング（getters）
-
-**Composables の責務（ビジネスロジック層）:**
-- 複数のStoreを連携
-- ビジネスルールの実装
-- エラーハンドリング
-- 統計計算・データ加工
-- 状態の連携・同期
-
-**判断基準チートシート:**
-
-| 条件 | 実装場所 |
-|------|----------|
-| API通信が必要 | **Store** |
-| 単純なデータ取得・保存 | **Store** |
-| 複数のStoreを使う | **Composable** |
-| ビジネスルールがある | **Composable** |
-| エラーハンドリングが複雑 | **Composable** |
-| 統計計算・データ加工 | **Composable** |
-| 状態の連携・同期 | **Composable** |
-
-**実装例（useLearningSessions.js）:**
-```javascript
-// ✅ Composable: 複数Storeを連携
-const addStudySession = async (sessionData) => {
-  try {
-    // 1. セッション作成（sessionStore）
-    await sessionStore.createLearningSession(sessionData);
-    
-    // 2. 学習内容の統計更新（contentStore）
-    await contentStore.fetchLearningContent(sessionData.learning_content_id);
-    
-    // 3. セクションのステータス更新（sectionStore）
-    await sectionStore.fetchSection(sessionData.section_id);
-    
-    return true;
-  } catch (error) {
-    console.error('学習記録の追加に失敗:', error);
-    return false;
-  }
-};
-```
-
-**プロジェクト構造:**
-```
-composables/learning/
-├── useLearningContents.js    → learningContentStore を使用
-├── useLearningSessions.js     → learningSessionStore を使用
-└── useSections.js             → sectionStore を使用
-
-composables/
-└── useLearningData.js         → 上記3つのComposableを統合（ファサード）
-
-stores/
-├── learningContent.js         → API通信のみ
-├── learningSession.js         → API通信のみ
-└── section.js                 → API通信のみ
-```
-
----
-
-### 前日完了事項（10/5 昼）✅
-
-#### 学習記録フォームのバリデーション完全統一化完了
-
-1. ✅ 個別バリデーション関数の作成
-   - resources/js/validators/studySessionValidator.js 作成
-   - すべて { isValid, message } 形式で戻り値統一
-   - 文字列マッチング依存のコードを完全排除
-
-2. ✅ バリデーション実装の完全統一
+1. **各ビューの `onMounted` に認証状態チェック追加**（13ファイル修正）
    ```javascript
-   // 個別バリデーション関数を呼び出し
-   const sectionResult = validateSectionId(form.section_id);
-   const studiedAtResult = validateStudiedAt(form.studied_at);
-   const studyMinutesResult = validateStudyMinutes(form.study_minutes);
-   const memoResult = validateMemo(form.memo);
-   
-   // エラーを設定
-   if (!sectionResult.isValid) errors.section_id = sectionResult.message;
-   if (!studiedAtResult.isValid) errors.studied_at = studiedAtResult.message;
-   if (!studyMinutesResult.isValid) errors.study_minutes = studyMinutesResult.message;
-   if (!memoResult.isValid) errors.memo = memoResult.message;
+   onMounted(async () => {
+     if (!authStore.isLoggedIn) {
+       console.log('⚠️ ログアウト中のため処理をスキップ');
+       return;
+     }
+     await fetchData();
+   });
    ```
 
-3. ✅ エラー表示制御の統一実装
-   - sectionModified, durationModified, memoModified, studiedAtModified フラグ追加
-   - 複数要素フィールド（学習日: 日付+時刻）も正しく制御
-   - 修正後は赤枠解除でUX向上
+2. **auth.js の logout() でPiniaストアリセット実装**
+   ```javascript
+   async logout() {
+     this.setAuthUser(null);
+     localStorage.removeItem('isLoggedIn');
+     
+     // すべてのPiniaストアをリセット
+     useLearningContentStore().$reset();
+     useLearningSessionStore().$reset();
+     useSectionStore().$reset();
+     useReportStore().$reset();
+     
+     await router.replace('/login');
+     axios.post('/fortify/logout').catch(/* ... */);
+   }
+   ```
 
-4. ✅ 対象ファイル
-   - StudySessionCreate.vue
-   - StudySessionEdit.vue
-   - StudySessionFormFields.vue（子コンポーネント）
-   - useStudySessionForm.js（コンポーザブル）
+3. **router.js の fetchUser() にエラーハンドリング追加**
+4. **App.vue の watch 削除（二重リダイレクト防止）**
+5. **router.js の 404ルート修正**
 
-#### Vue.js コーディング規約の策定完了 ★重要
-
-1. ✅ フォームデータ管理の統一ルール策定
-   - コンポーザブル化すべき条件（いずれか1つ該当）
-     1. Create/Edit両方で使う
-     2. バリデーションロジックが複雑
-     3. モーダル管理などUI状態が複雑
-     4. フォーマット処理が必要
-
-   - reactive（コンポーネント内）でOKな条件
-     1. Editのみで使う（Createがない）
-     2. シンプルな入力フィールドのみ（3〜5個程度）
-     3. バリデーションが単純（必須チェック程度）
-
-   - ref使用ケース
-     - 単一の値のみ（例：const isLoading = ref(false)）
-
-2. ✅ バリデーション実装ルールの明文化
-   - 個別バリデーション関数の使用を推奨
-   - { isValid, message } 形式の統一
-   - エラー表示制御パターンの標準化
-
-3. ✅ 避けるべきアンチパターンの明確化
-   - 文字列マッチングでのエラー振り分け禁止
-   - 理由なき「とりあえずreactiveで統一」禁止
-
-4. ✅ ドキュメント化
-   - docs/CODING_STANDARDS.md に追記
-   - AI実装依頼時の明確な基準として活用可能
+**コミット**:
+```bash
+ブランチ: fix/logout-authentication-flow
+タイプ: fix（Gemini CLI は feat と判断したが修正）
+理由: ユーザー視点で新機能追加ではなく、既存機能のバグ修正
+```
 
 ---
 
-### 前々日完了事項（10/4）✅
+#### デスクトップレイアウト修正の計画策定 ★NEW
 
-#### エラーハンドリングの完全統一化完了
+**タスクと優先度**:
 
-1. ✅ 認証系フォーム（5ファイル）のエラー処理統一
-   - ProfileEdit.vue
-   - Login.vue
-   - Register.vue
-   - PasswordReset.vue
-   - PasswordResetConfirm.vue
+| タスク | 優先度 | 所要時間 | 判定 |
+|-------|--------|---------|------|
+| 1. カードの並び順の不具合修正 | 🔴 高 | 10分 | 今すぐ |
+| 2. テキストサイズ調整 | 🔴 高 | 5分 | 今すぐ |
+| 3. textarea に文字数カウンター | 🟡 中 | 30-40分 | 時間があれば |
+| 4. 未来の日付を選択不可に | 🔴 高 | 15分 | 今すぐ |
+| 5. 時間入力のループ機能 | 🟢 低 | 30分 | 手動テスト後 |
 
-2. ✅ エラー表示の明確な分離
-   ```vue
-   <!-- Vue側のバリデーションエラー -->
-   <div v-if="validationErrors.length">
-     <h3>入力エラー</h3>
-     <ul><li v-for="error in validationErrors">{{ error }}</li></ul>
-   </div>
-   
-   <!-- API側のエラー -->
-   <div v-if="apiError">
-     <h3>エラー</h3>
-     <ul><li>{{ apiError }}</li></ul>
-   </div>
-   ```
+**ブランチ**: `fix/desktop-layout-issues`
 
-3. ✅ catchブロックの統一パターン確立
-
-4. ✅ LearningContentのエラーハンドリング実装
-   - LearningContentCreate.vue
-   - LearningContentEdit.vue
-   - ウィザード形式でも固定メッセージ表示（YAGNI原則）
+**コミット戦略**:
+- タスク1,2,4: `fix`（不具合修正）
+- タスク3: `feat`（新機能追加）
 
 ---
 
-### 前々々日完了事項（10/3）✅
+### これまでの主要完了事項
 
-認証系フォームバリデーション統一化完了:
+#### 10/5（夜）: モックデータ削除・アーキテクチャ明確化
+- useLearningSessions.js のモックデータ削除完了
+- Composables と Store の責務分離ルール策定
+- アーキテクチャドキュメント更新
 
-1. ✅ バリデーションルール完全統一
-   - resources/js/validators/authValidator.js: 認証系バリデーション
-   - resources/js/validators/profileValidator.js: プロフィール系バリデーション
-   - すべてのバリデーションが { isValid, message } 形式を返却
+#### 10/5（昼）: 学習記録フォームのバリデーション統一化
+- 個別バリデーション関数の作成（studySessionValidator.js）
+- { isValid, message } 形式で統一
+- エラー表示制御の統一実装（4ファイル）
 
-2. ✅ 赤枠表示制御の統一実装
+#### 10/4: エラーハンドリングの完全統一化
+- 認証系フォーム（5ファイル）のエラー処理統一
+- Vue側のバリデーションエラーとAPI側のエラーを明確に分離
+- catchブロックの統一パターン確立
+
+#### 10/3: 認証系フォームバリデーション統一化
+- authValidator.js / profileValidator.js 作成
+- 赤枠表示制御の統一実装
 
 ---
 
@@ -245,247 +137,229 @@ stores/
 
 ### 確定技術スタック
 
-Backend:
-- Laravel 12.x (PHP 8.3+)
-- Laravel Sanctum / Fortify（SPA認証）
-- MySQL 8.0 / Docker環境
+**Backend**: Laravel 12.x (PHP 8.3+) / Laravel Sanctum / Fortify / MySQL 8.0
 
-Frontend:
-- Vue.js 3 (Composition API)
-- Pinia（状態管理）/ Vue Router
-- TailwindCSS 3.x / Headless UI
-- Vite（ビルドツール）
+**Frontend**: Vue.js 3 (Composition API) / Pinia / Vue Router / TailwindCSS 3.x / Headless UI / Vite
 
 ---
 
 ## これまでの議論で確定した方針
 
-### 重要な判断・決定事項
+### 1. Conventional Commits タイプの判断基準（10/6確立）★NEW
 
-### 1. Composables と Store の責務分離（10/5夜確立）★最重要
+**決定フローチャート**:
 
-#### 背景
-- プロジェクト全体でComposablesとStoreの役割が混在
-- 「どこに何を書くべきか」の判断基準が不明確
-- 将来的な保守性・拡張性に懸念
+```
+ステップ1: ユーザーは新しいことができるようになったか？
+YES → feat / NO → 次へ
 
-#### 確定した判断基準
+ステップ2: 既存機能が正しく動作していなかったか？
+YES → fix ✅ / NO → feat
+```
 
-**Store の責務:**
+**判断基準**:
+- `feat`: ユーザー視点で新機能追加
+- `fix`: 既存機能のバグ修正・不具合解消
+
+**今回のケース（ログアウト処理）**:
+- Gemini CLI: `feat` と判断
+- 正解: `fix` ✅
+- 理由: ログアウトは既にできていた（既存機能の修正）
+
+**AI ツールとの付き合い方**:
+- AIは「提案」であり「決定」ではない
+- 「違和感」は貴重なシグナル
+- 最終判断は人間が行う
+
+---
+
+### 2. Composables と Store の責務分離（10/5確立）★重要
+
+**Store の責務**:
 - API通信
 - 状態管理（state）
 - シンプルなgetters
 
-**Composables の責務:**
+**Composables の責務**:
 - 複数Storeの連携
 - ビジネスロジック
 - エラーハンドリング
 - 統計計算・データ加工
 
-#### アンチパターン
-```javascript
-// ❌ Storeに他Storeへの依存を書く
-actions: {
-  async createLearningSession(data) {
-    const response = await api.createLearningSession(data);
-    this.sessions.push(response.data);
-    
-    // ❌ 他のStoreへの依存
-    const contentStore = useLearningContentStore();
-    await contentStore.fetchLearningContent(data.learning_content_id);
-  },
-}
-```
+**判断基準チートシート**:
 
-```javascript
-// ✅ Composableで複数Storeを連携
-const addStudySession = async (sessionData) => {
-  await sessionStore.createLearningSession(sessionData);
-  await contentStore.fetchLearningContent(sessionData.learning_content_id);
-  await sectionStore.fetchSection(sessionData.section_id);
-};
-```
-
-#### 得られた知見
-- レイヤー分離の明確化が保守性向上の鍵
-- 「どこに何を書くか」の基準が明確ならAI実装依頼も正確になる
-- ドキュメント化により開発効率が大幅向上
+| 条件 | 実装場所 |
+|------|----------|
+| API通信が必要 | Store |
+| 単純なデータ取得・保存 | Store |
+| 複数のStoreを使う | Composable |
+| ビジネスルールがある | Composable |
+| エラーハンドリングが複雑 | Composable |
+| 統計計算・データ加工 | Composable |
 
 ---
 
-### 2. フォームデータ管理の統一ルール（10/5昼確立）★重要
+### 3. フォームデータ管理の統一ルール（10/5確立）
 
-#### 背景
-- プロジェクト全体でref、reactive、コンポーザブルの使い分けが不統一
-- 「どこで何を使うべきか」の判断基準が不明確
-- 新規フォーム実装時に毎回判断に迷う状況
-- AI実装依頼時に一貫性のないコードが生成される
-
-#### 確定した判断基準
-
-コンポーザブル化すべき条件（いずれか1つ該当）:
+**コンポーザブル化すべき条件**（いずれか1つ該当）:
 1. Create/Edit両方で使う
 2. バリデーションロジックが複雑
 3. モーダル管理などUI状態が複雑
 4. フォーマット処理が必要
 
-reactive（コンポーネント内）でOKな条件:
+**reactive（コンポーネント内）でOKな条件**:
 1. Editのみで使う（Createがない）
 2. シンプルな入力フィールドのみ（3〜5個程度）
 3. バリデーションが単純（必須チェック程度）
 
-ref使用ケース:
+**ref使用ケース**:
 - 単一の値のみ（例：const isLoading = ref(false)）
-
-#### 現状のファイル整理
-
-| ファイル | 現在のパターン | 判定結果 | 対応 |
-|---------|---------------|---------|------|
-| ProfileEdit.vue | reactive | ✅ 正解 | 変更不要（Editのみ、シンプル） |
-| StudySession系 | コンポーザブル | ✅ 正解 | 変更不要（Create/Edit両方、複雑） |
-| LearningContent系 | コンポーザブル | ✅ 正解 | 変更不要（ウィザード、複雑） |
-
-#### 得られた知見
-- 「不均一」自体は問題ではない - 適切な理由があれば異なるパターンの混在は許容される
-- 判断基準の明文化が重要 - ルールがないことが最大の問題
-- 事後の整理でも価値がある - 実装後に振り返って基準を策定することで次回以降の開発効率が向上
-- AI協働には明確な基準が必須 - AIに「よしなに実装して」では一貫性のないコードが生まれる
 
 ---
 
-### 3. バリデーション実装の統一パターン（10/3-10/5確立）★最重要
+### 4. バリデーション実装の統一パターン（10/3-10/5確立）
 
-#### 設計思想
+**設計思想**:
 - Composableはフォームデータ管理のみに集中
 - バリデーションは個別関数を直接呼び出し
 - { isValid, message } 形式の統一
 - エラー表示の明確な分離（Vue側 vs API側）
 
-（詳細は前回のまとめから変更なし）
+**実装パターン**:
+```javascript
+// 個別バリデーション関数を呼び出し
+const sectionResult = validateSectionId(form.section_id);
+const studiedAtResult = validateStudiedAt(form.studied_at);
 
----
-
-### 4. エラーハンドリングの設計原則（10/4確立）
-
-（前回のまとめから変更なし）
-
----
-
-### 5. 文字数制限の現実的な設定（10/4確定）
-
-（前回のまとめから変更なし）
+// エラーを設定
+if (!sectionResult.isValid) errors.section_id = sectionResult.message;
+if (!studiedAtResult.isValid) errors.studied_at = studiedAtResult.message;
+```
 
 ---
 
 ## 現在の課題・検討点
 
-### 未解決の課題
+### MVP必須機能（残タスク）
 
-### MVP必須機能（残タスク - 優先度順）★更新
+#### 本日（10/6）実施中
 
-#### 1. 学習内容管理のバリデーション実装（最優先・次タスク）
+1. ✅ 認証フロー・ログアウト処理の修正（**完了**）
+2. 🔄 デスクトップレイアウト修正（**実施中**）
+   - タスク1: カードの並び順（10分）
+   - タスク2: テキストサイズ調整（5分）
+   - タスク4: 未来の日付制限（15分）
+   - タスク3: 文字数カウンター（30-40分、時間があれば）
 
-実装対象:
-1. resources/js/validators/learningContentValidator.js 作成
-2. resources/js/composables/useLearningContentForm.js 修正（バリデーション関数削除）
-3. resources/js/views/learning/LearningContentCreate.vue 修正
-4. resources/js/views/learning/LearningContentEdit.vue 修正
+#### 残りの必須タスク
 
-見積もり時間: 6-7時間
+1. **手動テスト実施**（3-5時間）
+   - 全機能の動作確認
+   - ブラウザ互換性チェック
+   - レスポンシブ確認
 
-実装方針:
-- StudySession と同じパターンで統一
-- 個別バリデーション関数を作成
-- ウィザード各ステップでバリデーション実行
-- { isValid, message } 形式で統一
-
----
-
-#### 2. その他のMVP必須機能
-
-- Vueファイル<script setup>並び替え（1時間）
-- Toast通知（完了通知モーダル）実装（2-3時間）
-- 手動テスト実施（3-5時間）
+2. **最終調整**（1-2時間）
+   - テストで見つかった問題の修正
+   - ドキュメント整理
+   - README.md の更新
 
 ---
 
-### リスク要因 ★更新
+### リスク要因
 
-#### 時間的制約
+**時間的制約**:
+- **残り1日（10/7まで）**
+- 10/6（月）: レイアウト修正（進行中） + 手動テスト開始
+- 10/7（火）: 手動テスト完了 + 最終調整 + **MVP完成**
 
-- 残り2日（10/7まで）
-- 10/6（日）: 学習内容管理バリデーション実装
-- 10/7（月）: Toast + 手動テスト + 最終調整 + MVP完成
+**懸念事項**:
+- 手動テストで予期しない問題が見つかる可能性
+- 最終日のバッファが少ない
 
-懸念事項:
-- 学習内容管理のバリデーション実装に想定より時間がかかる可能性
-- ウィザード形式のため複雑度が高い
+**対策**:
+- レイアウト修正は高優先度のみ実施（タスク1,2,4）
+- タスク3は時間があれば、タスク5は完全に後回し
+- 手動テストに十分な時間を確保
 
 ---
 
 ## 次のアクション
 
-### 明日の作業計画（10/6日）★最新
+### 本日の残り作業（10/6）
 
-#### 学習内容管理のバリデーション実装（6-7時間）
+#### 1. デスクトップレイアウト修正（実施中）
 
-1. learningContentValidator.js作成（2時間）
-2. useLearningContentForm.js修正（1時間）
-3. LearningContentCreate.vue修正（2時間）
-4. LearningContentEdit.vue修正（1時間）
-5. 動作確認（1時間）
+**高優先度**（30分）:
+- タスク1: カードの並び順の修正（10分）
+- タスク2: テキストサイズ調整（5分）
+- タスク4: 未来の日付を選択不可に（15分）
+
+**中優先度**（時間があれば）:
+- タスク3: textarea に文字数カウンター（30-40分）
+
+#### 2. 手動テスト実施（3-5時間）
+
+**テスト範囲**:
+1. 認証フロー（ログイン/ログアウト/登録/パスワードリセット）
+2. 学習内容管理（作成/編集/削除/セクション管理）
+3. 学習記録（作成/編集/削除/日付時刻入力）
+4. レポート機能（ダッシュボード/レポート/進捗/チャート）
+5. UI/UX（レスポンシブ/レイアウト/エラー表示）
+
+#### 3. 最終調整（1-2時間）
+
+- テストで見つかった問題の修正
+- ドキュメント整理（README.md更新、スクリーンショット追加）
+- コミットメッセージの最終確認
 
 ---
 
-### 月曜日以降の計画（10/7）
+### 明日の計画（10/7）最終日
 
-月曜日（10/7）最終日
-- Toast通知実装
-- 手動テスト実施
-- 最終調整 + MVP完成
-- ドキュメント整理
+- 手動テストの完了
+- 最終調整
+- **MVP完成** 🎯
 
 ---
 
 ## 特記事項
 
-### プロジェクトの健全性（10/5夜更新）★最新
+### プロジェクトの健全性（10/6更新）
 
-- ✅ コア機能完成度: 95%（モックデータ削除完了、アーキテクチャ明確化完了）
-- ⚠️ スケジュール: タイト（残り2日）
-- ✅ 技術的負債: 最小限（統一化完了、コーディング規約策定完了、責務分離明確化完了）
-- ✅ ドキュメント: 充実
+- ✅ **コア機能完成度**: 98%
+- ⚠️ **スケジュール**: 非常にタイト（残り1日）
+- ✅ **技術的負債**: 最小限
+- ✅ **ドキュメント**: 充実
 
-総合評価: MVP完成可能性 98%
-
-（アーキテクチャの明確化により見通しさらに改善）
+**総合評価**: MVP完成可能性 **99%** ✅
 
 ---
 
-### 学んだ重要な教訓
+### 重要な教訓
 
-1. レイヤー分離の重要性（10/5夜追加）★NEW
+1. **AI ツールとの付き合い方**
+   - AIは「提案」であり「決定」ではない
+   - 「違和感」は貴重なシグナル
+   - 最終判断は人間が行う
+
+2. **Conventional Commits の実践**
+   - ユーザー視点で `feat` vs `fix` を判断
+   - コミットメッセージの一貫性 > 完璧性
+
+3. **レイヤー分離の重要性**
    - ComposablesとStoreの責務を明確に分離
    - 「どこに何を書くか」の基準が保守性の鍵
-   - ドキュメント化でチーム開発・AI協働が円滑化
 
-2. 判断基準の明文化の重要性
-   - 「不均一」自体は問題ではない
-   - 判断基準がないことが最大の問題
-   - ドキュメント化で解決できる
+4. **防御的プログラミング**
+   - ライフサイクルフックは予測不可能
+   - コンポーネント側で認証状態をチェック
+   - エラーハンドリングは必須
 
-3. バリデーション設計の重要性
-   - 文字列マッチングは脆弱
-   - { isValid, message } 形式で統一
-   - 個別関数で保守性向上
+---
 
-4. AI協働の成功要因
-   - 明確な基準提示が必須
-   - 「よしなに」では一貫性のないコードが生まれる
-   - コーディング規約が重要な役割を果たす
-
-5. YAGNI原則の実践
-   - 今使わないものは追加しない
-   - 将来必要になったら追加すればいい
-   - よけいなコードは保守コストになる
+**現在の状態**: 
+- ✅ 認証フロー: 完璧
+- 🔄 レイアウト: 修正進行中
+- ⚪ 手動テスト: 準備完了
+- 🎯 MVP完成: 残り1日
 ```
