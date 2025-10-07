@@ -17,27 +17,15 @@
                   <ChevronLeftIcon class="w-5 h-5 text-gray-600" />
                 </BaseButton>
                 <span class="text-lg font-semibold text-slate-800">{{ currentYear }}年 {{ currentMonth + 1 }}月</span>
-                <BaseButton @click="nextMonth" variant="ghost" size="md" shape="circle" :icon-only="true">
-                  <ChevronRightIcon class="w-5 h-5 text-gray-600" />
+                <BaseButton @click="nextMonth" variant="ghost" size="md" shape="circle" :icon-only="true" :disabled="isNextMonthDisabled">
+                  <ChevronRightIcon class="w-5 h-5" :class="isNextMonthDisabled ? 'text-gray-300' : 'text-gray-600'" />
                 </BaseButton>
               </div>
 
               <!-- カレンダーグリッド -->
               <div class="grid grid-cols-7 gap-1 text-center">
                 <div v-for="dayName in dayNames" :key="dayName" class="py-2 text-sm font-medium text-gray-500">{{ dayName }}</div>
-                <div
-                  v-for="day in calendarDays"
-                  :key="day.dateString"
-                  class="py-2 rounded-lg cursor-pointer"
-                  :class="{
-                    'text-gray-400': !day.isCurrentMonth,
-                    'text-slate-800': day.isCurrentMonth,
-                    'bg-blue-100 text-blue-700 font-semibold': day.isToday && day.isCurrentMonth && !isSelected(day.date),
-                    'bg-violet-600 text-white font-bold': isSelected(day.date),
-                    'hover:bg-gray-100': day.isCurrentMonth && !isSelected(day.date),
-                  }"
-                  @click="selectDate(day.date)"
-                >
+                <div v-for="day in calendarDays" :key="day.dateString" class="py-2 rounded-lg" :class="getDayClasses(day)" @click="selectDate(day.date)">
                   {{ day.date.getDate() }}
                 </div>
               </div>
@@ -106,13 +94,23 @@ const generateCalendarDays = computed(() => {
   const startDayOfWeek = firstDayOfMonth.getDay(); // 0:日曜日, 1:月曜日...
   for (let i = 0; i < startDayOfWeek; i++) {
     const prevMonthDay = new Date(currentYear.value, currentMonth.value, 0 - (startDayOfWeek - 1 - i));
-    days.push({ date: prevMonthDay, isCurrentMonth: false, dateString: prevMonthDay.toISOString().split('T')[0] });
+    days.push({
+      date: prevMonthDay,
+      isCurrentMonth: false,
+      dateString: prevMonthDay.toISOString().split('T')[0],
+      isFuture: isFutureDate(prevMonthDay),
+    });
   }
 
   // 今月の日付を追加
   for (let i = 1; i <= numDaysInMonth; i++) {
     const currentMonthDay = new Date(currentYear.value, currentMonth.value, i);
-    days.push({ date: currentMonthDay, isCurrentMonth: true, dateString: currentMonthDay.toISOString().split('T')[0] });
+    days.push({
+      date: currentMonthDay,
+      isCurrentMonth: true,
+      dateString: currentMonthDay.toISOString().split('T')[0],
+      isFuture: isFutureDate(currentMonthDay),
+    });
   }
 
   // 翌月の日付を追加して最後の週を埋める
@@ -120,13 +118,26 @@ const generateCalendarDays = computed(() => {
   const remainingCells = 42 - totalDays; // 一貫したレイアウトのために6週間分を確保
   for (let i = 1; i <= remainingCells; i++) {
     const nextMonthDay = new Date(currentYear.value, currentMonth.value + 1, i);
-    days.push({ date: nextMonthDay, isCurrentMonth: false, dateString: nextMonthDay.toISOString().split('T')[0] });
+    days.push({
+      date: nextMonthDay,
+      isCurrentMonth: false,
+      dateString: nextMonthDay.toISOString().split('T')[0],
+      isFuture: isFutureDate(nextMonthDay),
+    });
   }
 
   return days;
 });
 
 const calendarDays = generateCalendarDays;
+
+// 次月ボタンを無効化するかどうか
+const isNextMonthDisabled = computed(() => {
+  // 表示中の月が今月以降の場合は無効化
+  const displayedDate = new Date(currentYear.value, currentMonth.value, 1);
+  const todayFirstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+  return displayedDate >= todayFirstDay;
+});
 
 // ========================================
 // ライフサイクル
@@ -149,6 +160,11 @@ watch(
 // ========================================
 // メソッド
 // ========================================
+// 指定された日付が未来かどうかを判定する
+const isFutureDate = (date) => {
+  return date > today;
+};
+
 // 指定された日付が今日であるかを判定する
 const isToday = (date) => {
   return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth() && date.getDate() === today.getDate();
@@ -160,6 +176,44 @@ const isSelected = (date) => {
   if (!selectedDate.value) return false;
 
   return date.getFullYear() === selectedDate.value.getFullYear() && date.getMonth() === selectedDate.value.getMonth() && date.getDate() === selectedDate.value.getDate();
+};
+
+// 日付セルのCSSクラスを動的に生成
+const getDayClasses = (day) => {
+  const classes = [];
+
+  // 未来の日付の場合
+  if (day.isFuture) {
+    classes.push('text-gray-300', 'cursor-not-allowed');
+    return classes.join(' ');
+  }
+
+  // 選択可能な日付の場合
+  classes.push('cursor-pointer');
+
+  // 当月以外の日付
+  if (!day.isCurrentMonth) {
+    classes.push('text-gray-400');
+  } else {
+    classes.push('text-slate-800');
+  }
+
+  // 今日の日付
+  if (isToday(day.date) && day.isCurrentMonth && !isSelected(day.date)) {
+    classes.push('bg-blue-100', 'text-blue-700', 'font-semibold');
+  }
+
+  // 選択中の日付
+  if (isSelected(day.date)) {
+    classes.push('bg-violet-600', 'text-white', 'font-bold');
+  }
+
+  // ホバー効果（未来の日付・選択中以外）
+  if (day.isCurrentMonth && !isSelected(day.date)) {
+    classes.push('hover:bg-gray-100');
+  }
+
+  return classes.join(' ');
 };
 
 // 前の月に移動する
@@ -174,6 +228,9 @@ const prevMonth = () => {
 
 // 次の月に移動する
 const nextMonth = () => {
+  // 次月ボタンが無効化されている場合は何もしない
+  if (isNextMonthDisabled.value) return;
+
   if (currentMonth.value === 11) {
     currentMonth.value = 0;
     currentYear.value++;
@@ -184,6 +241,9 @@ const nextMonth = () => {
 
 // 日付を選択する
 const selectDate = (date) => {
+  // 未来の日付は選択不可
+  if (isFutureDate(date)) return;
+
   selectedDate.value = date;
 };
 
