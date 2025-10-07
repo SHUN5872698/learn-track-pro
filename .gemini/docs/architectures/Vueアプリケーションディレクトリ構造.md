@@ -92,7 +92,6 @@ resources/js/
 │       └── StudySessionFormFields.vue       # 学習記録フォームフィールド
 │
 ├── composables/                             # 共有ロジック・状態管理（Vue Composition APIを活用）
-│   ├── data/                                # アプリケーションのモックデータ管理
 │   ├── learning/                            # 学習ドメイン固有のコアロジック
 │   │   ├── useLearningContents.js           # 学習コンテンツのCRUD操作と関連ロジック
 │   │   ├── useLearningSessions.js           # 学習セッション（記録）のCRUD操作と関連ロジック
@@ -130,6 +129,8 @@ resources/js/
 │   └── dateFormatters.js                    # 日付と時刻のフォーマット関数
 │
 ├── validators/                              # フォーム入力のバリデーションロジック
+│   ├── authValidator.js                     # 認証関連の入力値バリデーション
+│   ├── learningContentValidator.js          # 学習内容関連の入力値バリデーション
 │   ├── profileValidator.js                  # ユーザープロフィール関連の入力値バリデーション
 │   └── studySessionValidator.js             # 学習セッション（記録）関連の入力値バリデーション
 │
@@ -137,18 +138,16 @@ resources/js/
 │   ├── auth/                                # 認証関連ページ
 │   │   ├── Login.vue                        # ログイン画面
 │   │   ├── PasswordReset.vue                # パスワードリセット画面
-│   │   ├── PasswordResetConfirm.vue.vue     # パスワードリセット実行画面
+│   │   ├── PasswordResetConfirm.vue         # パスワードリセット実行画面
 │   │   └── Register.vue                     # 新規登録画面
-│   │
 │   ├── learning/                            # 学習管理関連ページ
 │   │   ├── LearningContentCreate.vue        # 学習内容新規作成画面
 │   │   ├── LearningContentDetail.vue        # 学習内容詳細画面
 │   │   ├── LearningContentEdit.vue          # 学習内容編集画面
 │   │   ├── SectionStudyRecords.vue          # セクション別学習記録一覧画面
 │   │   ├── StudyProgress.vue                # 個別レポート画面
-│   │   ├── StudySessionEdit.vue             # 学習記録編集画面
-│   │   └── StudySessionCreate.vue           # 学習記録作成画面
-│   │
+│   │   ├── StudySessionCreate.vue           # 学習記録作成画面
+│   │   └── StudySessionEdit.vue             # 学習記録編集画面
 │   ├── user/                                # ユーザー関連ページ
 │   │   ├── Profile.vue                      # プロフィール表示画面
 │   │   └── ProfileEdit.vue                  # プロフィール編集画面
