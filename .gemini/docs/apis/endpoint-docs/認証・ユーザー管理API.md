@@ -136,7 +136,7 @@ is_authenticated: false
     }
     ```
     
-- **Mock Response 422**:
+- **Mock Response 422**:メールアドレスの重複
     
     ```json
     {
@@ -147,6 +147,44 @@ is_authenticated: false
         }
     }
     
+    ```
+    
+- **Mock Response 422**:未入力
+    
+    ```json
+    {
+        "message": "名前は必須項目です。 (その他、2エラーあり)",
+        "errors": {
+            "name": [
+                "名前は必須項目です。"
+            ],
+            "email": [
+                "メールアドレスは必須項目です。"
+            ],
+            "password": [
+                "パスワードは必須項目です。"
+            ]
+        }
+    }
+    ```
+    
+- **Mock Response 422**:バリデーションエラー
+    
+    ```json
+    {
+        "message": "名前の文字数は、50文字以下である必要があります。 (その他、2エラーあり)",
+        "errors": {
+            "name": [
+                "名前の文字数は、50文字以下である必要があります。"
+            ],
+            "email": [
+                "メールアドレスは、有効なメールアドレス形式で指定してください。"
+            ],
+            "password": [
+                "パスワードの文字数は、255文字以下である必要があります。"
+            ]
+        }
+    }
     ```
     
 
@@ -410,10 +448,10 @@ is_authenticated: false
 
 ---
 
-## ~~8. パスワードリセット要求~~
+## 8. パスワードリセット要求
 
 - **Method**: POST
-- **URL**: `/api/forgot-password`
+- **URL**: `/fortify/forgot-password`
 
 **Headers**:
 
@@ -439,25 +477,66 @@ is_authenticated: false
     
     ```
     
+- **Mock Response 302**:ログイン中（guest middlewareによるリダイレクト）
+    
+    ```json
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="UTF-8" />
+            <meta http-equiv="refresh" content="0;url='http://localhost:8000'" />
+    
+            <title>Redirecting to http: //localhost:8000</title>
+        </head>
+        <body>
+            Redirecting to <a href="http://localhost:8000">http: //localhost:8000</a>.
+        </body>
+    </html>
+    ```
+    
 - **Mock Response 422**:
     
     ```json
     {
-        "message": "The given data was invalid.",
+        "message": "このメールアドレスに一致するユーザーがいません。",
         "errors": {
-            "email": ["このメールアドレスは登録されていません。"]
+            "email": [
+                "このメールアドレスに一致するユーザーがいません。"
+            ]
         }
     }
-    
     ```
     
 
 ---
 
-## ~~9. パスワードリセット実行~~
+## 9. パスワードリセット実行
 
 - **Method**: POST
-- **URL**: `/api/reset-password`
+- **URL**: `/fortify/reset-password`
+
+<aside>
+⚠️
+
+**トークンの取得方法**
+
+- エンドポイント8（`/fortify/forgot-password`）のレスポンスには**トークンが含まれません**。
+- これはセキュリティ上の意図的な設計です。トークンはメール内のURLにのみ含まれます。
+
+**テスト手順**
+
+1. エンドポイント8でメール送信
+2. 受信メールのリンクからトークンをコピー
+3. 下記のRequest Bodyの`token`フィールドに貼り付けて実行
+
+**メール内のURL形式**
+
+- http://localhost:5173/reset-password/{token}?email={メールアドレス}
+
+**例**
+
+- http://localhost:5173/reset-password/abc123def456ghi789?email=tanaka@example.com ←`abc123def456ghi789`部分をコピー
+</aside>
 
 **Headers**:
 
@@ -469,7 +548,7 @@ is_authenticated: false
     
     ```json
     {
-        "token": "sample_reset_token",
+        "token": "{token}",
         "email": "tanaka@example.com",
         "password": "newpassword456",
         "password_confirmation": "newpassword456"
@@ -481,19 +560,63 @@ is_authenticated: false
     
     ```json
     {
-        "message": "パスワードをリセットしました。"
+        "message": "パスワードが再設定されました。"
     }
+    ```
     
+- **Mock Response 302**:ログイン中（guest middlewareによるリダイレクト）
+    
+    ```json
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="UTF-8" />
+            <meta http-equiv="refresh" content="0;url='http://localhost:8000'" />
+    
+            <title>Redirecting to http: //localhost:8000</title>
+        </head>
+        <body>
+            Redirecting to <a href="http://localhost:8000">http: //localhost:8000</a>.
+        </body>
+    </html>
     ```
     
 - **Mock Response 422**:
     
     ```json
+    // 未登録
     {
-        "message": "The given data was invalid.",
+        "message": "このメールアドレスに一致するユーザーがいません。",
         "errors": {
-            "token": ["トークンが無効です。"],
-            "password": ["パスワードは8文字以上である必要があります。"]
+            "email": [
+                "このメールアドレスに一致するユーザーがいません。"
+            ]
+        }
+    }
+    
+    // バリデーションエラー
+    {
+        "message": "tokenは必須項目です。 (その他、2エラーあり)",
+        "errors": {
+            "token": [
+                "tokenは必須項目です。"
+            ],
+            "email": [
+                "メールアドレスは必須項目です。"
+            ],
+            "password": [
+                "パスワードは必須項目です。"
+            ]
+        }
+    }
+    
+    // トークンエラー
+    {
+        "message": "このパスワード再設定トークンは無効です。",
+        "errors": {
+            "email": [
+                "このパスワード再設定トークンは無効です。"
+            ]
         }
     }
     
