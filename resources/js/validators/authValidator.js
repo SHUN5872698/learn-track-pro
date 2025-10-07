@@ -33,6 +33,7 @@ export const AUTH_ERROR_MESSAGES = {
   // パスワード関連
   PASSWORD_REQUIRED: 'パスワードを入力してください',
   PASSWORD_MIN_LENGTH: `パスワードは${AUTH_VALIDATION_RULES.PASSWORD_MIN_LENGTH}文字以上で入力してください`,
+  PASSWORD_MAX_LENGTH: `パスワードは${AUTH_VALIDATION_RULES.PASSWORD_MAX_LENGTH}文字以内で入力してください`,
   PASSWORD_CONFIRMATION_REQUIRED: 'パスワード確認を入力してください',
   PASSWORD_MISMATCH: 'パスワードが一致しません',
 
@@ -118,6 +119,10 @@ export const validatePassword = (password) => {
 
   if (password.length < AUTH_VALIDATION_RULES.PASSWORD_MIN_LENGTH) {
     return { isValid: false, message: AUTH_ERROR_MESSAGES.PASSWORD_MIN_LENGTH };
+  }
+
+  if (password.length > AUTH_VALIDATION_RULES.PASSWORD_MAX_LENGTH) {
+    return { isValid: false, message: AUTH_ERROR_MESSAGES.PASSWORD_MAX_LENGTH };
   }
 
   return { isValid: true, message: '' };
