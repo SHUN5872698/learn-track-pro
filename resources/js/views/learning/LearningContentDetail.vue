@@ -79,6 +79,13 @@
           <span>チェックマークをクリックすると完了状態を切り替えられます。</span>
         </div>
 
+        <!-- API側のエラー -->
+        <div v-if="apiError" class="mb-4 text-sm text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+          <ul class="mt-2 ml-2 list-disc list-inside">
+            <li>{{ apiError }}</li>
+          </ul>
+        </div>
+
         <div v-if="contentSections.length > 0">
           <ul class="space-y-3">
             <li v-for="section in paginatedContentSections" :key="section.id" class="flex items-center justify-between p-4 transition-all duration-200 bg-white border rounded-lg shadow-sm hover:shadow-md hover:border-violet-300">
@@ -86,13 +93,27 @@
                 <!-- チェックボックス -->
                 <button
                   @click="handleToggleComplete(section, $event)"
-                  class="relative p-1.5 mr-3 transition-all duration-200 rounded-full hover:bg-violet-100 focus:outline-none focus:ring-2 focus:ring-violet-500"
-                  :title="normalizeStatus(section.status) === 'completed' ? 'クリックで未完了にする' : 'クリックで完了にする'"
+                  :disabled="updatingSectionId === section.id"
+                  class="relative p-1.5 mr-3 transition-all duration-200 rounded-full hover:bg-violet-100 focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  :title="getToggleTitle(section)"
                 >
-                  <transition name="check" mode="out-in">
-                    <CheckCircleIconSolid v-if="normalizeStatus(section.status) === 'completed'" key="completed" class="w-6 h-6 text-emerald-500 hover:text-emerald-600" />
-                    <CheckCircleIconOutline v-else key="incomplete" class="w-6 h-6 text-gray-400 transition-colors duration-200 hover:text-violet-600" />
-                  </transition>
+                  <!-- ↓↓↓ 固定サイズのコンテナで囲む ↓↓↓ -->
+                  <div class="relative flex items-center justify-center w-6 h-6">
+                    <!-- ローディングスピナー -->
+                    <div v-if="updatingSectionId === section.id" class="absolute inset-0 flex items-center justify-center">
+                      <svg class="w-6 h-6 text-violet-600 animate-spin" xmlns="<http://www.w3.org/2000/svg>" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    </div>
+
+                    <!-- チェックアイコン -->
+                    <transition name="check" mode="out-in">
+                      <CheckCircleIconSolid v-if="normalizeStatus(section.status) === 'completed' && updatingSectionId !== section.id" key="completed" class="w-6 h-6 text-emerald-500 hover:text-emerald-600" />
+                      <CheckCircleIconOutline v-else-if="updatingSectionId !== section.id" key="incomplete" class="w-6 h-6 text-gray-400 transition-colors duration-200 hover:text-violet-600" />
+                    </transition>
+                  </div>
+                  <!-- ↑↑↑ ここまで ↑↑↑ -->
                 </button>
 
                 <!-- セクション情報（クリックで詳細へ） -->
@@ -198,9 +219,15 @@ const sessionStore = useLearningSessionStore();
 // ========================================
 // 状態管理
 // ========================================
+// API側のエラー
+const apiError = ref('');
+
 // ページネーション
 const sectionCurrentPage = ref(1);
 const sectionItemsPerPage = 10;
+
+// 更新中のセクションIDを管理（nullの場合は更新中でない）
+const updatingSectionId = ref(null);
 
 // ========================================
 // 算出プロパティ
@@ -257,6 +284,14 @@ const displayTechnology = computed(() => {
   return tech || { name: '不明', icon: '' };
 });
 
+// ツールチップテキストを動的に生成
+const getToggleTitle = (section) => {
+  if (updatingSectionId.value === section.id) {
+    return '更新中...';
+  }
+  return normalizeStatus(section.status) === 'completed' ? 'クリックで未完了にする' : 'クリックで完了にする';
+};
+
 // ========================================
 // ライフサイクル
 // ========================================
@@ -286,18 +321,6 @@ onMounted(async () => {
 // メソッド
 // ========================================
 // イベントハンドラ
-// セクション完了状態の切り替え処理
-const handleToggleComplete = async (section, event) => {
-  event.stopPropagation();
-  const newStatus = toggleSectionComplete(section);
-  await updateSectionStatus(section.id, newStatus);
-  // Update learning content stats after section status change
-  const learningContent = learningContents.value.find((c) => c.id === learningContentId.value);
-  if (learningContent) {
-    learningContent.completed_sections = contentSections.value.filter((s) => s.status === 'completed').length;
-  }
-};
-
 // セクションクリック時にそのセクションの学習記録一覧ページへ遷移
 const goToSectionRecords = (sectionId) => {
   router.push(`/learning/${learningContentId.value}/section/${sectionId}`);
@@ -306,6 +329,45 @@ const goToSectionRecords = (sectionId) => {
 // 個別レポートページへの遷移処理
 const goToProgressDetails = () => {
   router.push(`/learning/${learningContentId.value}/progress`);
+};
+
+// API送信処理
+// セクションの完了状態の更新
+const handleToggleComplete = async (section, event) => {
+  // 学習記録詳細ページへの遷移をブロック
+  event.stopPropagation();
+  // API側エラーをリセット
+  apiError.value = '';
+
+  // 既に更新中の場合は処理をスキップ
+  if (updatingSectionId.value !== null) {
+    return;
+  }
+  // 更新中フラグを立てる
+  updatingSectionId.value = section.id;
+
+  try {
+    const newStatus = toggleSectionComplete(section);
+    // Piniaストアのアクションを呼び出し、セクションの完了状態の更新
+    await updateSectionStatus(section.id, newStatus);
+    // 学習コンテンツの統計を更新
+    const learningContent = learningContents.value.find((c) => c.id === learningContentId.value);
+    if (learningContent) {
+      learningContent.completed_sections = contentSections.value.filter((s) => s.status === 'completed').length;
+    }
+  } catch (error) {
+    console.error('セクション状態更新エラー:', error);
+    if (error?.response?.status === 422) {
+      // Laravel側のバリデーションエラー（422）の場合
+      apiError.value = '入力データに問題があります。';
+    } else {
+      // それ以外のレスポンスエラーは固定メッセージ
+      apiError.value = 'エラーが発生しました。';
+    }
+  } finally {
+    // 更新完了後にフラグをクリア
+    updatingSectionId.value = null;
+  }
 };
 </script>
 
