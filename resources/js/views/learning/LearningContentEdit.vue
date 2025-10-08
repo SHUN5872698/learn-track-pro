@@ -181,6 +181,7 @@
         :show-next="currentStep < stepNames.length"
         :show-submit="currentStep === stepNames.length"
         submit-text="更新する"
+        :is-submitting="isSubmitting"
         @cancel="handleCancel"
         @back="prevStep"
         @next="handleNext"
@@ -320,6 +321,7 @@ const isUnsavedModalOpen = ref(false);
 const isDeleteModalOpen = ref(false);
 const sectionToDeleteIndex = ref(null);
 const showSuccessToast = ref(false);
+const isSubmitting = ref(false);
 
 // 定数
 const toastDuration = 2000; // 通知を表示させる時間
@@ -488,59 +490,6 @@ const handleNext = () => {
   }
 };
 
-// API送信処理
-const handleSubmit = async () => {
-  // API側エラーをリセット
-  apiError.value = '';
-
-  try {
-    // 基本情報の更新
-    const basicInfo = {
-      title: form.title,
-      description: form.description,
-      technology_id: form.technology_id,
-      status: form.status,
-    };
-    // Piniaストアのアクションを呼び出し、学習コンテンツの基本情報を更新
-    await contentStore.updateContent(contentId, basicInfo);
-
-    // セクションデータの送信（index + 1 を使用）
-    const sectionPayload = {
-      sections: form.sections.map((s, index) => ({
-        // 新規セクションはIDが文字列で始まるため、nullに変換してバックエンドで新規作成を識別
-        id: s.id && !s.id.toString().startsWith('new_') ? s.id : null,
-        title: s.title,
-        order: index + 1, // セクションの並び順
-      })),
-      deleted_section_ids: deletedSections.value.map((s) => s.id), // 削除されたセクションのIDを送信
-    };
-
-    // Piniaストアのアクションを呼び出し、セクションを一括更新
-    await sectionStore.bulkUpdateSections(contentId, sectionPayload);
-
-    console.log('【Edit.handleSubmit】更新完了');
-    // 成功メッセージを表示し、更新した学習内容の詳細ページへ遷移
-    showSuccessToast.value = true;
-    setTimeout(() => {
-      router.push(`/learning/${contentId}`);
-    }, toastDuration);
-  } catch (error) {
-    console.error('学習内容更新エラー:', error);
-    if (error?.response?.status === 422) {
-      // Laravel側のバリデーションエラー（422）の場合
-      apiError.value = '入力データに問題があります。';
-    } else {
-      // それ以外のレスポンスエラーは固定メッセージ
-      // TODO:トランザクション未実装のためセクションの一括更新に失敗した場合はメッセージで通知する
-      if (!contentStore.error && sectionStore.error) {
-        apiError.value = '※基本情報のみ更新されました。';
-      } else {
-        apiError.value = 'エラーが発生しました。';
-      }
-    }
-  }
-};
-
 // キャンセル処理
 const handleCancel = () => {
   // 未保存の変更がある場合は確認モーダルを表示
@@ -621,5 +570,63 @@ const loadContentData = () => {
 const getTechnologyNameById = (id) => {
   const tech = technologies.value.find((t) => t.id === id);
   return tech ? tech.name : '不明';
+};
+
+// API送信処理
+// 学習記録とセクションの更新
+const handleSubmit = async () => {
+  // API側エラーをリセット
+  apiError.value = '';
+  // ボタンの無効化
+  isSubmitting.value = true;
+
+  try {
+    // 基本情報の更新
+    const basicInfo = {
+      title: form.title,
+      description: form.description,
+      technology_id: form.technology_id,
+      status: form.status,
+    };
+    // Piniaストアのアクションを呼び出し、学習コンテンツの基本情報を更新
+    await contentStore.updateContent(contentId, basicInfo);
+
+    // セクションデータの送信（index + 1 を使用）
+    const sectionPayload = {
+      sections: form.sections.map((s, index) => ({
+        // 新規セクションはIDが文字列で始まるため、nullに変換してバックエンドで新規作成を識別
+        id: s.id && !s.id.toString().startsWith('new_') ? s.id : null,
+        title: s.title,
+        order: index + 1, // セクションの並び順
+      })),
+      deleted_section_ids: deletedSections.value.map((s) => s.id), // 削除されたセクションのIDを送信
+    };
+
+    // Piniaストアのアクションを呼び出し、セクションを一括更新
+    await sectionStore.bulkUpdateSections(contentId, sectionPayload);
+
+    console.log('【Edit.handleSubmit】更新完了');
+    // 成功メッセージを表示し、更新した学習内容の詳細ページへ遷移
+    showSuccessToast.value = true;
+    setTimeout(() => {
+      router.push(`/learning/${contentId}`);
+    }, toastDuration);
+  } catch (error) {
+    console.error('学習内容更新エラー:', error);
+    if (error?.response?.status === 422) {
+      // Laravel側のバリデーションエラー（422）の場合
+      apiError.value = '入力データに問題があります。';
+    } else {
+      // それ以外のレスポンスエラーは固定メッセージ
+      // TODO:トランザクション未実装のためセクションの一括更新に失敗した場合はメッセージで通知する
+      if (!contentStore.error && sectionStore.error) {
+        apiError.value = '※基本情報のみ更新されました。';
+      } else {
+        apiError.value = 'エラーが発生しました。';
+      }
+    }
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 </script>

@@ -9,7 +9,7 @@
       <!-- 次へボタン: showNextがtrueの場合に表示 -->
       <BaseButton v-if="showNext" variant="primary" :right-icon="ArrowRightIcon" @click="$emit('next')">次へ</BaseButton>
       <!-- 作成する/送信ボタン: showSubmitがtrueの場合に表示 -->
-      <BaseButton v-if="showSubmit" type="button" variant="primary" @click="$emit('submit')">
+      <BaseButton v-if="showSubmit" type="button" variant="primary" :disabled="isSubmitting" @click="$emit('submit')">
         {{ submitText }}
       </BaseButton>
     </div>
@@ -31,6 +31,7 @@ defineProps({
   showNext: { type: Boolean, default: false }, // 次へボタンの表示/非表示
   showSubmit: { type: Boolean, default: false }, // 送信ボタンの表示/非表示
   submitText: { type: String, default: '作成する' }, // 送信ボタンのテキスト
+  isSubmitting: { type: Boolean, default: false }, // 送信中かどうか
 });
 
 // 親コンポーネントに発行するイベントを定義

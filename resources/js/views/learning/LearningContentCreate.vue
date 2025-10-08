@@ -104,7 +104,18 @@
       </div>
 
       <!-- ウィザードのナビゲーションボタン -->
-      <WizardNavigation :current-step="currentStep" :total-steps="stepNames.length" :show-back="currentStep > 1" :show-next="currentStep < stepNames.length" :show-submit="currentStep === stepNames.length" @cancel="handleCancel" @back="prevStep" @next="handleNext" @submit="handleSubmit" />
+      <WizardNavigation
+        :current-step="currentStep"
+        :total-steps="stepNames.length"
+        :show-back="currentStep > 1"
+        :show-next="currentStep < stepNames.length"
+        :show-submit="currentStep === stepNames.length"
+        :is-submitting="isSubmitting"
+        @cancel="handleCancel"
+        @back="prevStep"
+        @next="handleNext"
+        @submit="handleSubmit"
+      />
     </form>
   </DetailLayout>
 
@@ -182,6 +193,7 @@ const descriptionModified = ref(false);
 // UI状態
 const isUnsavedModalOpen = ref(false);
 const showSuccessToast = ref(false);
+const isSubmitting = ref(false);
 
 // 定数
 const toastDuration = 2000; // 通知を表示させる時間
@@ -278,10 +290,24 @@ const handleNext = () => {
   }
 };
 
+// キャンセル処理
+const handleCancel = () => {
+  // 未保存の変更がある場合は確認モーダルを表示
+  if (hasUnsavedChanges.value) {
+    isUnsavedModalOpen.value = true;
+  } else {
+    // 変更がない場合はダッシュボードへ遷移
+    router.push('/dashboard');
+  }
+};
+
 // API送信処理
+// 学習内容を作成
 const handleSubmit = async () => {
   // API側エラーをリセット
   apiError.value = '';
+  // ボタンの無効化
+  isSubmitting.value = true;
 
   try {
     // フォームデータにセクションのステータスと完了日時を追加し、バックエンドの期待する形式に整形
@@ -311,17 +337,9 @@ const handleSubmit = async () => {
       // それ以外のレスポンスエラーは固定メッセージ
       apiError.value = 'エラーが発生しました。';
     }
-  }
-};
-
-// キャンセル処理
-const handleCancel = () => {
-  // 未保存の変更がある場合は確認モーダルを表示
-  if (hasUnsavedChanges.value) {
-    isUnsavedModalOpen.value = true;
-  } else {
-    // 変更がない場合はダッシュボードへ遷移
-    router.push('/dashboard');
+  } finally {
+    // フォーム送信状態をリセット
+    isSubmitting.value = false;
   }
 };
 </script>
