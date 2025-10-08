@@ -78,7 +78,7 @@
   </div>
 
   <!-- 削除確認モーダル -->
-  <ConfirmModal :is-open="isModalOpen" :item-name="content.title" @confirm="confirmDelete" @cancel="cancelDelete" />
+  <ConfirmModal :is-open="isModalOpen" :item-name="content.title" :is-submitting="isSubmitting" @confirm="confirmDelete" @cancel="cancelDelete" />
 </template>
 
 <script setup>
@@ -124,6 +124,8 @@ const masterDataStore = useMasterDataStore();
 // ========================================
 // 状態管理
 // ========================================
+// UI状態
+const isSubmitting = ref(false);
 const isModalOpen = ref(false); // 削除確認モーダルの表示状態を管理
 const menuButtonRef = ref(null); // 三点リーダーメニューボタンのDOM要素への参照
 const dropdownMenuRef = ref(null); // ドロップダウンメニューのDOM要素への参照
@@ -345,10 +347,19 @@ const handleReopen = () => {
 };
 
 // 削除確認モーダルで「削除」がクリックされた時の処理
-const confirmDelete = () => {
+const confirmDelete = async () => {
   console.log('削除が確認されました:', props.content.title);
-  deleteLearningContent(props.content.id); // 実際の削除処理
-  isModalOpen.value = false;
+  // ボタンの無効化
+  isSubmitting.value = true;
+  try {
+    await deleteLearningContent(props.content.id); // 実際の削除処理
+    isModalOpen.value = false;
+  } catch (error) {
+    console.error('削除処理に失敗しました:', error);
+  } finally {
+    // ボタンを再び有効化
+    isSubmitting.value = false;
+  }
 };
 
 // 削除確認モーダルで「キャンセル」がクリックされた時の処理

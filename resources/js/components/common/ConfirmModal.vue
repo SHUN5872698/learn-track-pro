@@ -18,8 +18,8 @@
               </slot>
 
               <div class="flex justify-end space-x-3">
-                <CancelButton @click="$emit('cancel')" />
-                <BaseButton :variant="confirmButtonVariant" @click="$emit('confirm')">
+                <CancelButton @click="$emit('cancel')" :disabled="isSubmitting" />
+                <BaseButton :variant="confirmButtonVariant" @click="$emit('confirm')" :disabled="isSubmitting">
                   {{ confirmButtonText }}
                 </BaseButton>
               </div>
@@ -71,6 +71,10 @@ defineProps({
   showItemDetail: {
     type: Boolean,
     default: true,
+  },
+  isSubmitting: {
+    type: Boolean,
+    default: false,
   },
 });
 
