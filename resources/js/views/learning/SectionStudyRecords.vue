@@ -54,7 +54,7 @@
     </template>
 
     <Teleport to="#app">
-      <DeleteRecordConfirmModal :is-open="isModalOpen" :record="recordToDelete" @confirm="confirmDelete" @cancel="isModalOpen = false" />
+      <DeleteRecordConfirmModal :is-open="isModalOpen" :record="recordToDelete" :is-submitting="isSubmitting" @confirm="confirmDelete" @cancel="isModalOpen = false" />
     </Teleport>
   </DetailLayout>
 </template>
@@ -117,6 +117,9 @@ const recordToDelete = ref(null);
 // ページネーション
 const recordCurrentPage = ref(1);
 const recordItemsPerPage = 5;
+
+// UI状態
+const isSubmitting = ref(false);
 
 // ========================================
 // 算出プロパティ
@@ -187,16 +190,41 @@ const goToRecordForm = () => {
 
 // 削除モーダルを開く
 const openDeleteModal = (record) => {
+  // TODO:削除処理中の場合は新しいモーダルを開かないようにする
+  if (isSubmitting.value) {
+    return;
+  }
   recordToDelete.value = record;
   isModalOpen.value = true;
 };
 
+// API関連処理
 // 削除確認時の処理
 const confirmDelete = async () => {
-  if (recordToDelete.value) {
-    await deleteStudySession(recordToDelete.value.id);
+  if (!recordToDelete.value) {
+    isModalOpen.value = false;
+    return;
   }
+  const recordId = recordToDelete.value.id;
+  // モーダルを先に閉じることで表示崩れを防止
   isModalOpen.value = false;
-  recordToDelete.value = null;
+  // ボタンの無効化
+  isSubmitting.value = true;
+  try {
+    // 削除処理API
+    await deleteStudySession(recordId);
+    // ストアのデータを再取得（アニメーション用）
+    await sessionStore.fetchLearningSessions({
+      section_id: sectionId.value,
+      all: 'true',
+    });
+  } catch (error) {
+    console.error('削除処理に失敗しました:', error);
+  } finally {
+    // フォーム送信状態をリセット
+    isSubmitting.value = false;
+    // 初期化
+    recordToDelete.value = null;
+  }
 };
 </script>

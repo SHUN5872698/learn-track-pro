@@ -25,8 +25,8 @@
               <p class="mb-6 text-slate-600">この操作は元に戻せません。</p>
 
               <div class="flex justify-end space-x-3">
-                <CancelButton @click="$emit('cancel')" />
-                <BaseButton variant="danger" @click="$emit('confirm')">削除</BaseButton>
+                <CancelButton @click="$emit('cancel')" :disabled="isSubmitting" />
+                <BaseButton variant="danger" @click="$emit('confirm')" :disabled="isSubmitting">削除</BaseButton>
               </div>
             </DialogPanel>
           </TransitionChild>
@@ -49,7 +49,7 @@ import BaseButton from '@/components/common/BaseButton.vue';
 import CancelButton from '@/components/common/buttons/CancelButton.vue';
 
 // ========================================
-// ユーティリティ関数（純粋関数）
+// 初期設定
 // ========================================
 import { formatDateTime, formatMinutes } from '@/utils/dateFormatters';
 
@@ -61,6 +61,10 @@ defineProps({
   record: {
     type: Object,
     default: null,
+  },
+  isSubmitting: {
+    type: Boolean,
+    default: false,
   },
 });
 

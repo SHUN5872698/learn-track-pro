@@ -70,7 +70,7 @@
   </MultiCardDetailLayout>
 
   <Teleport to="#app">
-    <DeleteRecordConfirmModal :is-open="isModalOpen" :record="recordToDelete" @confirm="confirmDelete" @cancel="isModalOpen = false" />
+    <DeleteRecordConfirmModal :is-open="isModalOpen" :record="recordToDelete" :is-submitting="isSubmitting" @confirm="confirmDelete" @cancel="isModalOpen = false" />
   </Teleport>
 </template>
 
@@ -128,6 +128,9 @@ const contentSessions = ref([]);
 // ページネーション
 const recordCurrentPage = ref(1);
 const recordItemsPerPage = 5;
+
+// UI状態
+const isSubmitting = ref(false);
 // 削除モーダル
 const isModalOpen = ref(false);
 const recordToDelete = ref(null);
@@ -268,37 +271,56 @@ onMounted(async () => {
 // イベントハンドラ
 // 削除モーダルを開く
 const openDeleteModal = (record) => {
+  // TODO:削除処理中の場合は新しいモーダルを開かないようにする
+  if (isSubmitting.value) {
+    return;
+  }
   recordToDelete.value = record;
   isModalOpen.value = true;
 };
 
 // 削除確認時の処理
+// API関連処理
 const confirmDelete = async () => {
-  if (recordToDelete.value) {
-    const recordId = recordToDelete.value.id;
+  if (!recordToDelete.value) {
     isModalOpen.value = false;
-    // 削除処理
+    return;
+  }
+  const recordId = recordToDelete.value.id;
+  // モーダルを先に閉じることで表示崩れを防止
+  isModalOpen.value = false;
+  // ボタンの無効化
+  isSubmitting.value = true;
+
+  try {
+    // 削除処理API
     await deleteStudySession(recordId);
 
-    // 削除したアイテムをcontentSessionsから除外
-    contentSessions.value = contentSessions.value.filter((session) => session.id !== recordId);
-
-    // 日別統計も再取得
-    try {
-      const response = await axios.get(`/api/learning-contents/${contentId.value}/statistics/daily`, {
-        params: { days: 30 },
-      });
-      dailyStatisticsData.value = response.data;
-    } catch (error) {
-      console.error('日別統計の再取得に失敗しました:', error);
-    }
-
-    // モーダルが完全に閉じた後にrecordToDeleteをクリア
-    setTimeout(() => {
-      recordToDelete.value = null;
-    }, 300);
-  } else {
-    isModalOpen.value = false;
+    // 並列でAPIデータを再取得
+    await Promise.all([
+      // 日別統計データをAPIから取得
+      axios
+        .get(`/api/learning-contents/${contentId.value}/statistics/daily`, {
+          params: { days: 30 },
+        })
+        .then((response) => {
+          dailyStatisticsData.value = response.data;
+        }),
+      // 学習セッションデータをAPIから取得
+      axios
+        .get('/api/learning-sessions', {
+          params: { learning_content_id: contentId.value },
+        })
+        .then((response) => {
+          contentSessions.value = response.data.data || [];
+        }),
+    ]);
+  } catch (error) {
+    console.error('削除処理に失敗しました:', error);
+  } finally {
+    // フォーム送信状態をリセット
+    isSubmitting.value = false;
+    // 初期化
     recordToDelete.value = null;
   }
 };

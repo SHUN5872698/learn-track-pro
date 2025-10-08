@@ -116,7 +116,7 @@
   </DashboardLayout>
 
   <Teleport to="#app">
-    <DeleteRecordConfirmModal :is-open="isModalOpen" :record="recordToDelete" @confirm="confirmDelete" @cancel="isModalOpen = false" />
+    <DeleteRecordConfirmModal :is-open="isModalOpen" :record="recordToDelete" :is-submitting="isSubmitting" @confirm="confirmDelete" @cancel="isModalOpen = false" />
   </Teleport>
 </template>
 
@@ -170,10 +170,14 @@ const { isLoading, withLoading } = useLoading();
 // ========================================
 // 状態管理
 // ========================================
-const latestSessionsByContent = ref([]); //内容別の最新学習記録
+// 内容別の最新学習記録
+const latestSessionsByContent = ref([]);
 // ページネーション
 const recordCurrentPage = ref(1);
 const recordItemsPerPage = 5;
+
+// UI状態
+const isSubmitting = ref(false);
 // 削除モーダル
 const isModalOpen = ref(false);
 const recordToDelete = ref(null);
@@ -310,7 +314,15 @@ onMounted(async () => {
 // ========================================
 // メソッド
 // ========================================
-// API呼び出し関数（function宣言に変更）
+// イベントハンドラ
+// 削除モーダルを開く
+const openDeleteModal = (record) => {
+  recordToDelete.value = record;
+  isModalOpen.value = true;
+};
+
+// API関連処理
+// 最新学習記録の取得
 async function fetchLatestSessionsByContent() {
   try {
     const response = await axios.get('/api/learning-sessions/statistics/latest-by-content');
@@ -321,39 +333,36 @@ async function fetchLatestSessionsByContent() {
   }
 }
 
-// イベントハンドラ
-// 削除モーダルを開く
-const openDeleteModal = (record) => {
-  recordToDelete.value = record;
-  isModalOpen.value = true;
-};
-
 // 削除確認時の処理
 const confirmDelete = async () => {
-  if (recordToDelete.value) {
-    const recordId = recordToDelete.value.id;
+  if (!recordToDelete.value) {
     isModalOpen.value = false;
-    // 削除処理
+    return;
+  }
+  const recordId = recordToDelete.value.id;
+  // モーダルを先に閉じることで表示崩れを防止
+  isModalOpen.value = false;
+  // ボタンの無効化
+  isSubmitting.value = true;
+
+  try {
+    // 削除処理API
     await deleteStudySession(recordId);
 
-    // 削除したアイテムをlatestSessionsByContentから除外
-    latestSessionsByContent.value = latestSessionsByContent.value.filter((session) => session.id !== recordId);
-
-    // 統計情報を再取得
-    try {
-      await reportStore.fetchStatisticsSummary();
-      await reportStore.fetchMonthlyStatistics(6);
-      await reportStore.fetchTechnologyStatistics();
-    } catch (error) {
-      console.error('統計情報の再取得に失敗しました:', error);
-    }
-
-    // モーダルが完全に閉じた後にrecordToDeleteをクリア
-    setTimeout(() => {
-      recordToDelete.value = null;
-    }, 300);
-  } else {
-    isModalOpen.value = false;
+    // withLoadingでローディング状態を管理しながらデータ再取得
+    await withLoading('delete-record', async () => {
+      await Promise.all([reportStore.fetchStatisticsSummary(), reportStore.fetchMonthlyStatistics(6), reportStore.fetchTechnologyStatistics(), fetchLatestSessionsByContent()]);
+    });
+  } catch (error) {
+    console.error('削除処理に失敗しました:', error);
+    // エラー時もリストを再取得してデータ整合性を保つ
+    await withLoading('delete-record-error', async () => {
+      await fetchLatestSessionsByContent();
+    });
+  } finally {
+    // フォーム送信状態をリセット
+    isSubmitting.value = false;
+    // 初期化
     recordToDelete.value = null;
   }
 };
