@@ -75,7 +75,7 @@
     <template #actions>
       <div class="flex justify-between pt-6 mt-6 space-x-3">
         <BaseButton @click="handleCancel" variant="secondary">キャンセル</BaseButton>
-        <BaseButton @click="handleSubmit" variant="primary" type="submit">保存</BaseButton>
+        <BaseButton type="submit" :disabled="isSubmitting" @click="handleSubmit" variant="primary">保存</BaseButton>
       </div>
     </template>
   </DetailLayout>
@@ -139,6 +139,7 @@ const nameModified = ref(false);
 const emailModified = ref(false);
 
 // UI状態
+const isSubmitting = ref(false);
 const imageError = ref(false);
 const showSuccessToast = ref(false);
 
@@ -191,8 +192,17 @@ onMounted(async () => {
 // メソッド
 // ========================================
 // イベントハンドラ
+// キャンセルボタンクリック時の処理: プロフィールページへ戻る
+const handleCancel = () => {
+  router.push('/profile');
+};
+
+// API送信処理
 // プロフィール情報の更新
 const handleSubmit = async () => {
+  // ボタンの無効化
+  isSubmitting.value = true;
+
   // 状態をリセット
   errors.name = '';
   errors.email = '';
@@ -216,7 +226,6 @@ const handleSubmit = async () => {
     return;
   }
 
-  // API送信処理
   try {
     const profileUpdateData = {
       name: formData.name,
@@ -242,11 +251,9 @@ const handleSubmit = async () => {
       // それ以外のレスポンスエラーは固定メッセージ
       apiError.value = 'エラーが発生しました。';
     }
+  } finally {
+    // フォーム送信状態をリセット
+    isSubmitting.value = false;
   }
-};
-
-// キャンセルボタンクリック時の処理: プロフィールページへ戻る
-const handleCancel = () => {
-  router.push('/profile');
 };
 </script>

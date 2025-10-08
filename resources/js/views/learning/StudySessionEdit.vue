@@ -56,7 +56,7 @@
       <div class="flex justify-between pt-6 border-t">
         <CancelButton @click="handleClose" />
         <div class="flex space-x-4">
-          <BaseButton type="submit" variant="primary">記録を更新</BaseButton>
+          <BaseButton type="submit" variant="primary" :disabled="isSubmitting">記録を更新</BaseButton>
         </div>
       </div>
     </form>
@@ -168,6 +168,7 @@ const memoModified = ref(false);
 const studiedAtModified = ref(false);
 
 // UI状態
+const isSubmitting = ref(false);
 const isUnsavedModalOpen = ref(false); // 未保存変更確認モーダルの表示状態
 const showSuccessToast = ref(false);
 
@@ -238,6 +239,7 @@ onMounted(async () => {
         // 学習コンテンツとセクションのデータを取得
         await contentStore.fetchContents();
       }
+
       await sectionStore.fetchSections(learningContentId.value);
       const session = await sessionStore.fetchLearningSession(sessionId.value);
 
@@ -264,8 +266,21 @@ onMounted(async () => {
 // ========================================
 // イベントハンドラ
 
+// キャンセル処理
+const handleClose = () => {
+  if (hasUnsavedChanges.value) {
+    // 未保存の変更がある場合、確認モーダルを表示してユーザーに破棄を促す
+    isUnsavedModalOpen.value = true;
+  } else {
+    router.back();
+  }
+};
+
 // API送信処理
+// 学習記録の登録
 const handleSubmit = async () => {
+  // ボタンの無効化
+  isSubmitting.value = true;
   // 状態をリセット
   errors.section_id = '';
   errors.study_minutes = '';
@@ -296,8 +311,6 @@ const handleSubmit = async () => {
   if (errors.section_id || errors.studied_at || errors.study_minutes || errors.memo) {
     return;
   }
-
-  // 学習記録の登録
   try {
     // mood_ratingが0またはfalsy値の場合はnullを送る
     const sessionData = {
@@ -328,16 +341,9 @@ const handleSubmit = async () => {
       // それ以外のレスポンスエラーは固定メッセージ
       apiError.value = 'エラーが発生しました。もう一度お試しください。';
     }
-  }
-};
-
-// キャンセル処理
-const handleClose = () => {
-  if (hasUnsavedChanges.value) {
-    // 未保存の変更がある場合、確認モーダルを表示してユーザーに破棄を促す
-    isUnsavedModalOpen.value = true;
-  } else {
-    router.back();
+  } finally {
+    // フォーム送信状態をリセット
+    isSubmitting.value = false;
   }
 };
 </script>
