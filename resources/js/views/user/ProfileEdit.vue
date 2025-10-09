@@ -175,7 +175,7 @@ onMounted(async () => {
   if (!authStore.isLoggedIn) {
     return;
   }
-  // ユーザー情報がなければ取得
+  // プロフィール情報がなければ取得
   if (!authStore.authUser) {
     await authStore.fetchUser();
   }
@@ -200,9 +200,6 @@ const handleCancel = () => {
 // API送信処理
 // プロフィール情報の更新
 const handleSubmit = async () => {
-  // ボタンの無効化
-  isSubmitting.value = true;
-
   // 状態をリセット
   errors.name = '';
   errors.email = '';
@@ -226,13 +223,16 @@ const handleSubmit = async () => {
     return;
   }
 
+  // ボタンの無効化
+  isSubmitting.value = true;
+  // プロフィール情報の更新
   try {
     const profileUpdateData = {
       name: formData.name,
       email: formData.email,
       avatar: formData.avatar,
     };
-    // Piniaストアのアクションを呼び出し、ユーザー情報を更新
+    // Piniaストアのアクションを呼び出し、プロフィール情報の更新
     await authStore.updateProfile(profileUpdateData);
 
     // 成功メッセージを表示し、プロフィール詳細ページへ遷移

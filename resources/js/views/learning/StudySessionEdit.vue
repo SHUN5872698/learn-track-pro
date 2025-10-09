@@ -277,10 +277,8 @@ const handleClose = () => {
 };
 
 // API送信処理
-// 学習記録の登録
+// 学習記録の更新
 const handleSubmit = async () => {
-  // ボタンの無効化
-  isSubmitting.value = true;
   // 状態をリセット
   errors.section_id = '';
   errors.study_minutes = '';
@@ -311,6 +309,11 @@ const handleSubmit = async () => {
   if (errors.section_id || errors.studied_at || errors.study_minutes || errors.memo) {
     return;
   }
+
+  // ボタンの無効化
+  isSubmitting.value = true;
+
+  // 学習記録の更新
   try {
     // mood_ratingが0またはfalsy値の場合はnullを送る
     const sessionData = {

@@ -267,8 +267,6 @@ const handleClose = () => {
 // API送信処理
 // 学習記録の登録
 const handleSubmit = async () => {
-  // ボタンの無効化
-  isSubmitting.value = true;
   // 状態をリセット
   errors.section_id = '';
   errors.study_minutes = '';
@@ -300,6 +298,10 @@ const handleSubmit = async () => {
     return;
   }
 
+  // ボタンの無効化
+  isSubmitting.value = true;
+
+  // 学習記録の登録
   try {
     const sessionData = {
       ...form,
