@@ -1,11 +1,3 @@
-## 相互リンク
-
-[開発環境](https://www.notion.so/27a9d86c12e8804cb37fe9f08313ceb2?pvs=21) 
-
-.gemini/docs/apis/endpoint-docs/セクション管理API.md
-
----
-
 ## RESTful エンドポイント
 
 ```bash

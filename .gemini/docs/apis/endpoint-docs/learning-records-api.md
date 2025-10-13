@@ -1,11 +1,3 @@
-## 相互リンク
-
-[開発環境](https://www.notion.so/27a9d86c12e8806fa870f02b9efcfcf5?pvs=21) 
-
-.gemini/docs/apis/endpoint-docs/学習記録API.md
-
----
-
 ## RESTful エンドポイント
 
 ```bash

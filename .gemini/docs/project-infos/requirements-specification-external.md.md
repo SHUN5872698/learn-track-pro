@@ -168,18 +168,23 @@ flowchart TD
 
     %% 学習内容管理
     B --> C[カードクリック]
-    C --> REC[学習記録作成]
+    C --> D[学習内容詳細画面]
 
-    B --> T[三点メニュー]
+    B --> ADDREC[記録を追加クリック]
+    ADDREC --> REC[学習記録作成]
+
+    B --> T[三点リーダー]
     T --> ED[編集選択]
     T --> DE[詳細選択]
     T --> DL[削除選択]
     T --> CO[完了/再開選択]
+    T --> REP[レポート選択]
 
     ED --> G[学習内容編集画面]
-    DE --> D[学習内容詳細画面]
+    DE --> D
     DL --> DC[削除確認モーダル]
     CO --> CS[完了/再開処理]
+    REP --> J[個別レポート]
 
     B --> O[新規作成ボタン]
     O --> F[学習内容登録画面]
@@ -187,6 +192,7 @@ flowchart TD
     %% 詳細画面からの遷移
     D --> SEC[セクションクリック]
     SEC --> RLIST[セクション別記録一覧]
+    D --> J
 
     RLIST --> REDIT[編集ボタン]
     REDIT --> REDITED[学習記録編集]
@@ -197,13 +203,12 @@ flowchart TD
     RLIST --> RADD[記録を追加]
     RADD --> REC
 
-    D --> DREC[学習を記録する]
-    DREC --> REC
-
     %% レポート関連
     B --> NAV_REPORT[サイドメニュー<br/>レポート]
-    NAV_REPORT --> I[レポート画面]
-    I --> J[学習推移詳細]
+    NAV_REPORT --> I[全体レポート]
+    I --> J[個別レポート]
+    I --> REDITED
+    J --> REDITED
 
     %% ユーザー管理
     B --> USER[ヘッダー<br/>ユーザー名]
@@ -233,6 +238,7 @@ erDiagram
     users {
         bigint id PK
         string name
+        string avatar
         string email UK
         timestamp email_verified_at
         string password
@@ -245,6 +251,7 @@ erDiagram
         bigint id PK
         string name
         string icon
+        text description
         timestamp created_at
         timestamp updated_at
     }
@@ -349,14 +356,14 @@ erDiagram
 
 学習コンテンツそのものの情報を管理するテーブルです。
 
-| データ型 | カラム名 | 属性 | 説明 |
+| **データ型** | **カラム名** | **属性** | **説明** |
 | --- | --- | --- | --- |
 | bigint | `id` | PRIMARY KEY | 学習コンテンツID (主キー) |
 | bigint | `user_id` | FOREIGN KEY | 学習コンテンツを作成したユーザーのID (users.idを参照) |
 | bigint | `technology_id` | FOREIGN KEY | 使用されている技術のID (technologies.idを参照) |
 | string | `title` | NOT NULL | コンテンツのタイトル |
 | text | `description` | NULLABLE | コンテンツの詳細な説明 |
-| int | `total_sections` | DEFAULT 0 | コンテンツの総セクション数 |
+| int | `total_sections` | DEFAULT 1, CHECK (total_sections >= 1) | コンテンツの総セクション数（最低1つ必須） |
 | int | `completed_sections` | DEFAULT 0 | 完了したセクション数 |
 | enum | `status` | DEFAULT 'not_started' | 学習状態 |
 | timestamp | `completed_at` | NULLABLE | 完了日時 |
@@ -373,6 +380,15 @@ erDiagram
 
 - `learning_contents.user_id` は `users.id` を参照します。
 - `learning_contents.technology_id` は `technologies.id` を参照します。
+
+**制約事項:**
+
+- `total_sections` は必ず1以上である必要があります（学習内容作成時に最低1つのセクションが必須）
+- アプリケーション層でのバリデーションに加え、データベース層でもCHECK制約で保護
+
+**補足:**
+
+- コンテンツの総セクション数と完了したセクション数はパフォーマンス最適化のためカウンター方式で管理
 
 **5. sections テーブル**
 
@@ -408,7 +424,7 @@ erDiagram
 | bigint | `id` | PRIMARY KEY | 学習セッションID (主キー) |
 | bigint | `user_id` | FOREIGN KEY | セッションを作成したユーザーのID (users.idを参照) |
 | bigint | `learning_content_id` | FOREIGN KEY | 関連する学習コンテンツのID (learning_contents.idを参照) |
-| bigint | `section_id` | FOREIGN KEY | 学習したセクションのID (sections.idを参照) |
+| bigint | `section_id` | FOREIGN KEY, NOT NULL | 学習したセクションのID (sections.idを参照、必須) |
 | int | `study_minutes` | NOT NULL | 学習時間（分） |
 | text | `memo` | NULLABLE | セッションのメモ |
 | int | `mood_rating` | NULLABLE | 調子評価（1-5段階） |

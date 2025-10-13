@@ -1,11 +1,3 @@
-## 相互リンク
-
-[開発環境](https://www.notion.so/2789d86c12e8801689a8c6b5f78f28d1?pvs=21) 
-
-.gemini/docs/apis/endpoint-docs/マスターデータAPI.md
-
----
-
 ## RESTful エンドポイント
 
 ```bash
@@ -495,3 +487,5 @@ GET    /api/technologies?category_id={id}     # カテゴリー別技術一覧
 - カテゴリー名は英語表記（Programming, Infrastructure等）で統一されています
 - タイムスタンプはISO 8601形式で返されます
 - 技術一覧APIでは、関連するカテゴリー情報も含めて返されます
+
+---

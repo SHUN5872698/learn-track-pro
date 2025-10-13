@@ -1,9 +1,3 @@
-## 相互リンク
-
-[開発環境](https://www.notion.so/2789d86c12e88076880ceb1dfa9ce673?pvs=21) 
-
-.gemini/docs/apis/endpoint-docs/認証・ユーザー管理API.md
-
 ## RESTful エンドポイント
 
 ```bash
@@ -621,3 +615,6 @@ is_authenticated: false
     }
     
     ```
+    
+
+---

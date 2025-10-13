@@ -1,11 +1,3 @@
-## 相互リンク
-
-[機能拡張ロードマップ](https://www.notion.so/2499d86c12e880b9ba25d1cc7e8d71f3?pvs=21) 
-
-.gemini/docs/project-infos/機能拡張ロードマップ.md
-
----
-
 ## 概要
 
 APIファーストアプローチによるMVP完成後の追加機能拡張計画。
