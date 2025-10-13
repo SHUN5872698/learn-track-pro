@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import api from '@/plugins/axios';
 
 export const useMasterDataStore = defineStore('masterData', {
   state: () => ({
@@ -30,7 +30,7 @@ export const useMasterDataStore = defineStore('masterData', {
       this.loading = true;
       this.error = null;
       try {
-        const response = await axios.get('/api/categories');
+        const response = await api.get('/api/categories');
         this.categories = response.data;
       } catch (error) {
         this.error = 'カテゴリーの読み込みに失敗しました。';
@@ -45,7 +45,7 @@ export const useMasterDataStore = defineStore('masterData', {
       this.loading = true;
       this.error = null;
       try {
-        const response = await axios.get('/api/technologies');
+        const response = await api.get('/api/technologies');
         this.technologies = response.data;
       } catch (error) {
         this.error = '技術一覧の読み込みに失敗しました。';

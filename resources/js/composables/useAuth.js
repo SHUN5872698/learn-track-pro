@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import api from '@/plugins/axios';
 import router from '@/router'; // ルーターをインポート
 
 export const useAuthStore = defineStore('auth', {
@@ -70,7 +71,7 @@ export const useAuthStore = defineStore('auth', {
     // ユーザー情報の取得: 認証済みユーザーの詳細情報をフェッチする
     async fetchUser() {
       try {
-        const response = await axios.get('/api/user');
+        const response = await api.get('/api/user');
         console.log('Pinia: fetchUser レスポンスデータ:', response.data);
         this.setAuthUser(response.data); // 取得したユーザー情報をストアに設定
         console.log('✅ Pinia: ユーザー情報取得成功', response.data);
@@ -133,7 +134,7 @@ export const useAuthStore = defineStore('auth', {
     // プロフィール更新（追加）
     async updateUserProfile(data) {
       try {
-        const response = await axios.put('/api/user/profile', data);
+        const response = await api.put('/api/user/profile', data);
         this.setAuthUser(response.data.user);
         return { success: true, data: response.data };
       } catch (error) {
