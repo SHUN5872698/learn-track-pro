@@ -1,13 +1,3 @@
-このドキュメントは、LearnTrack Proの学習記録機能に関する手動テストケースを定義します。
-
-## 相互リンク
-
-[学習記録機能](https://www.notion.so/2859d86c12e880389286c89387e39d2d?pvs=21) 
-
-.gemini/docs/tests/manual/learning-session-manual-tests.md
-
----
-
 ## **1. 学習記録作成**
 
 ### **関連ファイル**

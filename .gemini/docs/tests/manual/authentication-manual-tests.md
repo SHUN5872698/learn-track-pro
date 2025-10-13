@@ -1,13 +1,3 @@
-このドキュメントは、LearnTrack Proの認証機能に関する手動テストケースを定義します。
-
-## 相互リンク
-
-[認証機能](https://www.notion.so/2859d86c12e880d48e2dd7aeb86f8fb3?pvs=21) 
-
-.gemini/docs/tests/manual/authentication-manual-tests.md
-
----
-
 ## **1. ユーザー登録**
 
 ### **関連ファイル**

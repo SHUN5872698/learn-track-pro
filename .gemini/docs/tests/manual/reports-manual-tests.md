@@ -1,13 +1,3 @@
-このドキュメントは、LearnTrack Proのレポート・統計機能に関する手動テストケースを定義します。
-
-## 相互リンク
-
-[レポート・統計機能](https://www.notion.so/2859d86c12e880b085f2c5e1412c58f0?pvs=21) 
-
-.gemini/docs/tests/manual/reports-manual-tests.md
-
----
-
 ## **1. 全体レポート**
 
 ### **関連ファイル**

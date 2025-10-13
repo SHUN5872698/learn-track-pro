@@ -1,13 +1,3 @@
-このドキュメントは、LearnTrack Proの学習内容管理機能に関する手動テストケースを定義します。
-
-## 相互リンク
-
-[学習内容管理機能](https://www.notion.so/2859d86c12e880f697c1e925ae2e57b5?pvs=21) 
-
-.gemini/docs/tests/manual/learning-content-manual-tests.md
-
----
-
 ## **1. 学習内容一覧**
 
 ### **関連ファイル**

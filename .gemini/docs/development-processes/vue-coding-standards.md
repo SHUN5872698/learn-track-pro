@@ -1,11 +1,3 @@
-## 相互リンク
-
-[**Vue.js コーディング規約**](https://www.notion.so/Vue-js-26b9d86c12e880719990cf73d40cc720?pvs=21) 
-
-.gemini/docs/development-processes/vue-coding-standards.md
-
----
-
 ## あなたの役割
 
 あなたはJavaScript、Vue 3、TailwindCSSのエキスパートです。
@@ -23,7 +15,7 @@
 
 ### 必須の順序ルール：
 
-```jsx
+```html
 <script setup>
 // ========================================
 // 外部インポート
