@@ -19,8 +19,20 @@ api.interceptors.response.use(
     // 401/419: セッションタイムアウト → ログイン画面へ
     if (status === 401 || status === 419) {
       localStorage.removeItem('isLoggedIn');
-      // ★ router.push() ではなく window.location.href を使用 ★
       window.location.href = '/login';
+      return new Promise(() => {});
+    }
+
+    // 403: アクセス権限エラー → NotFound.vue (type=forbidden)
+    if (status === 403) {
+      window.location.href = '/not-found?type=forbidden';
+      return new Promise(() => {});
+    }
+
+    // 404: データ不存在 → NotFound.vue (type=notfound)
+    if (status === 404) {
+      window.location.href = '/not-found?type=notfound';
+      return new Promise(() => {});
     }
 
     return Promise.reject(error);
