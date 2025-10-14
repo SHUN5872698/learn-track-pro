@@ -2,6 +2,9 @@
   <component :is="layout">
     <router-view />
   </component>
+  <Teleport to="body">
+    <GlobalErrorModal />
+  </Teleport>
 </template>
 
 <script setup>
@@ -14,10 +17,12 @@ import { computed } from 'vue';
 // 内部インポート
 // ========================================
 // Piniaストア
-
-import DefaultLayout from '@/layouts/DefaultLayout.vue';
-import AuthLayout from '@/layouts/AuthLayout.vue';
 import { useAuthStore } from '@/stores/auth';
+
+// コンポーネント
+import AuthLayout from '@/layouts/AuthLayout.vue';
+import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import GlobalErrorModal from '@/components/common/GlobalErrorModal.vue';
 
 // ========================================
 // 初期設定

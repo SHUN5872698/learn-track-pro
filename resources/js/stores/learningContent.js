@@ -36,6 +36,7 @@ export const useLearningContentStore = defineStore('learningContent', {
       } catch (error) {
         this.error = '学習内容の読み込みに失敗しました。';
         console.error('学習内容のフェッチ中にエラーが発生しました:', error);
+        throw error;
       } finally {
         this.loading = false;
       }

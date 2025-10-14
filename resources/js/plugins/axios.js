@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useErrorModalStore } from '@/stores/errorModal';
 
 // Axiosインスタンスの作成
 const api = axios.create({
@@ -34,7 +35,14 @@ api.interceptors.response.use(
       window.location.href = '/not-found?type=notfound';
       return new Promise(() => {});
     }
+    // 500系エラー: サーバーエラー → GlobalErrorModal表示
+    if (status >= 500) {
+      const errorModalStore = useErrorModalStore();
+      errorModalStore.showError();
+      return Promise.reject(error);
+    }
 
+    // それ以外（422など）: エラーを伝播（各コンポーネントで処理）
     return Promise.reject(error);
   }
 );
