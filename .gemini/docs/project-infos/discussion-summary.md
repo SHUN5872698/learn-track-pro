@@ -1,30 +1,24 @@
 ```markdown
-# これまでの議論の要点まとめ（最新版：2025年10月12日更新）
+# これまでの議論の要点まとめ（最新版：2025年10月14日更新）
 
 ## 背景・経緯
 
 ### プロジェクトの概要
 
-- プロジェクト名: LearnTrack Pro - プログラミング学習管理プラットフォーム
-- 開発期間: 2025年9月3日〜10月12日（6週間）
-- 現在日: 2025年10月12日（土）
-- 開発者: 藤井俊祐氏（転職活動用ポートフォリオ）
-- 開発手法: APIファーストアプローチ with AI駆動開発（GeminiCLI + Claude）
-- **現在の状態**: ✅ MVP完成（2025年10月7日達成） → 改善フェーズ → ドキュメント整備フェーズ
+- **プロジェクト名**: LearnTrack Pro - プログラミング学習管理プラットフォーム
+- **開発期間**: 2025年9月3日〜10月14日（6週間）
+- **開発者**: 藤井俊祐氏（転職活動用ポートフォリオ）
+- **現在の状態**: ✅ MVP完成（2025年10月7日） → ✅ **Phase 0完全完了（2025年10月14日）**
 
-### 目的・目標
+### 技術スタック
 
-- プログラミング学習に特化した進捗管理システム
-- セクション単位での詳細な進捗可視化
-- 技術分野別の学習時間分析機能
-- **短期目標**: 数週間以内にAWS/Azureへデプロイ
+- **Backend**: Laravel 12.x / Sanctum / Fortify / MySQL 8.0
+- **Frontend**: Vue.js 3 (Composition API) / Pinia / Vue Router / TailwindCSS / Headless UI
+- **構成**: モノリシックSPA（Laravel/Vue同一サーバー）
 
-### 主要な制約条件
+### 主要な制約
 
-- TypeScript不使用（JavaScriptのみ）
-- Bootstrapクラス・カスタムCSS禁止（TailwindCSSのみ）
-- jQuery等レガシーライブラリ禁止
-- Options API禁止（Composition APIのみ）
+- TypeScript不使用、Bootstrapクラス禁止、jQuery禁止、Options API禁止
 - 個人開発のため実装工数を最小限に
 
 ---
@@ -34,447 +28,448 @@
 ### プロジェクトの現在地
 
 - ✅ MVP完成（2025年10月7日）
-- ✅ 認証フロー・ログアウト処理修正完了
-- ✅ バリデーション修正完了
-- ✅ デスクトップレイアウト修正完了
-- ✅ disable属性実装完了
-- ✅ 手動テストドキュメント作成完了
-- ✅ APIエラーハンドリング仕様確定（2025年10月11日）
-- ✅ ドキュメント整備方針確定（2025年10月12日）
-- ✅ ファイル命名規則確定（2025年10月12日）
+- ✅ **Phase 0完全完了（2025年10月14日）**
+    - Phase 0.0: 401/419処理（2025年10月13日）
+    - Phase 0.1-0.3: 403/404対応（2025年10月13日）
+    - Phase 0.4-0.7: 500エラー対応（2025年10月14日）
+- 📝 **Phase 0進捗: 100%完了（7/7タスク完了）**
 
-### 作成済みのドキュメント・成果物
+### 実装済みファイル（Phase 0全体）
 
-**手動テストドキュメント**:
+**フロントエンド（新規/変更）**:
 
-- .gemini/docs/tests/manual/[authentication-manual-tests.md](http://authentication-manual-tests.md)
+- `resources/js/plugins/axios.js` - 全エラーハンドリングのインターセプター
+- `resources/js/stores/errorModal.js` - エラーモーダル状態管理
+- `resources/js/components/common/GlobalErrorModal.vue` - 500エラーモーダル
+- `resources/js/views/NotFound.vue` - 403/404エラーページ（改修）
+- `resources/js/App.vue` - GlobalErrorModalの配置
+- `resources/js/stores/learningContent.js` - エラー再スロー対応
+- `resources/js/views/Dashboard.vue` - onMountedエラーハンドリング
 
-**アーキテクチャドキュメント**:
+### 作成済みの主要ドキュメント
 
-- ログアウトライフサイクルクリーンアップ処理の実装
-- Composables/Store責務分離
-
-**バリデーション**:
-
-- authValidator.js, profileValidator.js, studySessionValidator.js
-
-**仕様書**:
-
-- APIエラーハンドリング・例外処理の実装仕様書（2025年10月11日）
-
-**計画ドキュメント**:
-
-- 事前準備タスクリスト（設計・実装分割アプローチ）
-- 機能拡張ロードマップ
+- `.gemini/docs/architectures/[api-error-handling-specification.md](http://api-error-handling-specification.md)` - APIエラーハンドリング実装仕様書
+- `.gemini/docs/tests/[api-error-handling-manual-test-list.md](http://api-error-handling-manual-test-list.md)` - 手動テストリスト（全項目完了）
+- その他手動テストドキュメント、機能拡張ロードマップ
 
 ---
 
-## 技術的検討事項
+## Phase 0: デプロイ前の必須修正（✅完了）
 
-### 確定技術スタック
+### 完了タスク
 
-- Backend: Laravel 12.x (PHP 8.3+) / Laravel Sanctum / Fortify / MySQL 8.0
-- Frontend: Vue.js 3 (Composition API) / Pinia / Vue Router / TailwindCSS 3.x / Headless UI / Vite
+1. ✅ **Phase 0.0**: Axios Interceptor基本設定と401/419処理
+2. ✅ **Phase 0.1**: NotFound.vueの改修
+3. ✅ **Phase 0.2**: Axios Interceptorに403/404処理を追加
+4. ✅ **Phase 0.3**: 403/404の動作確認
+5. ✅ **Phase 0.4**: エラーモーダルストアの実装
+6. ✅ **Phase 0.5**: GlobalErrorModalの実装
+7. ✅ **Phase 0.6**: Axios Interceptorに500処理を追加
+8. ✅ **Phase 0.7**: 500エラーの段階的検証（全テスト完了）
 
-### アプリケーション構成の特性
-
-- **モノリシックSPA構成**: Laravel（バックエンド）とVue（フロントエンド）は同一サーバー上
-- Laravel障害時はVueも表示されない
-- ネットワークエラー（クライアント側）の優先度は低い
-
----
-
-## 現在の課題・検討点
-
-### 改善タスク（機能拡張ロードマップより）
-
-### Phase 0: デプロイ前の必須修正（優先度：★★★★★）
-
-1. **APIエラーハンドリング・例外処理の実装**（工数: 2.5-3日）
-    - Axios interceptorでの共通エラーハンドリング
-    - 各ページ・コンポーネントでのエラー状態管理
-    - 削除処理のエラーハンドリング
-2. **Apidogテストケースの追加**（工数: 0.5-1日）
-    - 境界値テスト（上限値）の追加
-    - 既存バリデーション項目の網羅的テスト
-
-### Phase 1: UI/UXレイアウト改善（優先度：★★★★★）
-
-- 削除確認モーダルの改善（0.5日）
-- textarea入力文字数表示（0.5日）
-- ページネーションの表示調整（0.5日）
-- 空状態（Empty State）の改善（0.5日）
-
-### Phase 2: レスポンシブ対応（優先度：★★★★★）
-
-- スマホ・タブレット対応（2-3日）
-
-### Phase 3: デプロイ作業（優先度：★★★★★）
-
-- AWS/Azure環境構築（別途見積もり）
-
-**デプロイまでの所要時間**: 合計7-9日
-
-### 後回し事項
-
-### Phase 4: デプロイ後の最適化（優先度：★★☆☆☆）
-
-- 統計計算ロジックのcomposable化
-- 進捗バーの共通コンポーネント化
-- コンポーネント細分化
-- セクション別学習時間チャート
-- 時間入力コントロールの改善
-
-### Phase 5: 機能拡張（優先度：★★☆☆☆）
-
-- ストップウォッチ機能
-- 期間切り替え機能
-- 学習履歴の詳細フィルタリング
+**Phase 0実装期間**: 2日（2025年10月13日〜14日）
 
 ---
 
 ## これまでの議論で確定した方針
 
-### 1. ドキュメント管理の基本方針（2025年10月12日確定）
+### 1. Axios Interceptorの実装パターン（★最重要）
 
-**包括的ロードマップは不要**:
+**循環参照の回避**:
 
-- 理由：Phase 4-5は実行時期が不明確、詳細すぎて変更が大変
-- 実行時には状況が変わっている可能性が高い
+- `plugins/axios.js`で`router.push()`は使わない
+- 解決策：`window.location.href = '/login'`
 
-**段階的な詳細タスクリストのアプローチを採用**:
+**Axiosインスタンスの使い分け**:
 
-- **簡易版ロードマップ**（機能拡張ロードマップ）: Phase一覧と概要のみ
-- **段階的な詳細タスクリスト**:
-    - ✅ 事前準備タスクリスト（完了）
-    - 次は「Phase 0タスクリスト」を作成
-    - その後「Phase 1タスクリスト」...
-
-**メリット**:
-
-- 実行中のフェーズに集中できる
-- 詳細度が高く実用的
-- 状況に応じて柔軟に変更可能
-
-### 2. ファイル命名規則（2025年10月12日確定）
-
-**ルール**:
-
-- 英語のケバブケース（ハイフン区切り）で統一
-- 内容が明確に分かる命名
-- ドキュメント自体のタイトルは日本語のまま
-
-**確定した命名**:
-
-1. テーブル定義書 → [`database-schema-definition.md`](http://database-schema-definition.md)
-2. 事前準備タスクリスト → [`preparation-task-list.md`](http://preparation-task-list.md)
-3. ログアウトライフサイクルクリーンアップ処理 → [`logout-lifecycle-cleanup-implementation.md`](http://logout-lifecycle-cleanup-implementation.md)
-4. 要件定義書ヒアリング継続用プロンプト → [`requirements-hearing-continuation-prompt.md`](http://requirements-hearing-continuation-prompt.md)
-5. 要件定義書 → [`requirements-specification.md`](http://requirements-specification.md)
-6. 機能拡張ロードマップ → [`feature-expansion-roadmap.md`](http://feature-expansion-roadmap.md)
-7. 簡易設計&画面フロー → [`basic-design-and-screen-flow.md`](http://basic-design-and-screen-flow.md)
-8. 認証・ユーザー管理API → [`auth-user-api.md`](http://auth-user-api.md)
-9. マスターデータAPI → [`master-data-api.md`](http://master-data-api.md)
-10. 学習内容管理API → [`learning-contents-api.md`](http://learning-contents-api.md)
-11. セクション管理API → [`sections-api.md`](http://sections-api.md)
-12. 学習記録API → [`learning-records-api.md`](http://learning-records-api.md)
-13. レポート・統計API → [`reports-api.md`](http://reports-api.md)
-14. 要件定義書（外部用） → [`requirements-specification-external.md`](http://requirements-specification-external.md)
-15. プロジェクトロードマップ → [`project-roadmap.md`](http://project-roadmap.md)
-16. Laravelディレクトリ構造 → [`laravel-directory-structure.md`](http://laravel-directory-structure.md)
-17. Vueアプリケーションディレクトリ構造 → [`vue-application-directory-structure.md`](http://vue-application-directory-structure.md)
-
-### 3. Notionデータソースのカテゴリ管理
-
-**ルール**: 既存のカテゴリのみ使用、勝手に追加しない
-
-**利用可能なカテゴリ**:
-
-- API, Architecture, Cookbook, Database, Design
-- DevelopmentProces, Infrastructure, ProjectInfo
-- Security, Task, Test, Prompt, Other
-
-### 4. APIエラーハンドリングの基本方針
-
-**対応するエラーの選定基準**:
-
-- 実際に発生する可能性が高いエラーのみ対応
-- 個人開発の工数を考慮し、現実的に必要なもののみ実装
-- ユーザーに適切なフィードバックを提供できるもの
-
-**表示方法の統一**:
-
-- モーダルまたはコンポーネント表示で統一
-- トースト通知は使用しない（視認性が低く、デザインに合わないため）
-
-### 5. 対応するHTTPステータスコード
-
-| ステータス | 対応方法 | 発生可能性 | 実装場所 |
-| --- | --- | --- | --- |
-| **401/419** | ログイン画面へリダイレクト | 高 | Axios Interceptor |
-| **403** | エラーモーダル → ダッシュボードへ | 低〜中 | Axios Interceptor |
-| **404** | エラーモーダル → ダッシュボードへ | 中〜高 | Axios Interceptor |
-| **422** | フォーム内にエラー表示（実装済み） | 低 | 各コンポーネント |
-| **429** | 実装しない | 極めて低 | - |
-| **500** | エラーモーダル（再読み込み/ダッシュボード選択） | 中〜高 | Axios Interceptor |
-
-### 6. 実装コンポーネント構成
-
-### Axios Interceptor（`resources/js/plugins/axios.js`）
-
-- 全APIリクエストのレスポンスを監視
-- ステータスコードに応じて適切な処理を実行
-
-### グローバルエラーモーダル（`resources/js/components/common/GlobalErrorModal.vue`）
-
-- エラー情報を受け取り、モーダルとして表示
-- 動的な表示内容（タイトル、メッセージ、ボタン、アイコン）
-
-### エラーモーダルストア（`resources/js/stores/errorModal.js`）
-
-- エラーモーダルの表示状態を管理
-- エラー情報を保持
-
-### 7. Conventional Commits タイプの判断基準
-
-判断フロー:
-
-```
-ステップ1: ユーザーは新しいことができるようになったか？
-  YES → feat
-  NO → 次へ
-
-ステップ2: 既存機能が正しく動作していなかったか？
-  YES → fix
-  NO → feat
-```
-
-重要: AIツール（Gemini CLI等）の提案は参考程度。最終判断は人間が行う。
-
-### 8. Composables と Store の責務分離
-
-**Store の責務**:
-
-- API通信
-- 状態管理（state）
-- シンプルなgetters
-
-**Composables の責務**:
-
-- 複数Storeの連携
-- ビジネスロジック
-- エラーハンドリング
-- 統計計算・データ加工
-
-**判断基準チートシート**:
-
-| 条件 | 実装場所 |
-| --- | --- |
-| API通信が必要 | Store |
-| 単純なデータ取得・保存 | Store |
-| 複数のStoreを使う | Composable |
-| ビジネスルールがある | Composable |
-| エラーハンドリングが複雑 | Composable |
-| 統計計算・データ加工 | Composable |
-
-### 9. フォームデータ管理の統一ルール
-
-**コンポーザブル化すべき条件**（いずれか1つ該当）:
-
-1. Create/Edit両方で使う
-2. バリデーションロジックが複雑
-3. モーダル管理などUI状態が複雑
-4. フォーマット処理が必要
-
-**reactive（コンポーネント内）でOKな条件**:
-
-1. Editのみで使う（Createがない）
-2. シンプルな入力フィールドのみ（3〜5個程度）
-3. バリデーションが単純（必須チェック程度）
-
-**ref使用ケース**:
-
-- 単一の値のみ（例：`const isLoading = ref(false)`）
-
-### 10. バリデーション実装の統一パターン
-
-**設計思想**:
-
-- Composableはフォームデータ管理のみに集中
-- バリデーションは個別関数を直接呼び出し
-- `{ isValid, message }` 形式の統一
-- エラー表示の明確な分離（Vue側 vs API側）
-
-### 11. 削除処理のdisable実装パターン
-
-**重要な順序**（HeadlessUIのFocusTrapエラー回避）:
-
-1. モーダルを閉じる
-2. アニメーション完了待機（300ms）
-3. `isSubmitting = true`
-4. 削除処理実行
-5. `isSubmitting = false`
-
-**高速連続削除の防止**:
-
-- `openDeleteModal`に`if (isSubmitting.value) return;`のガード条件追加
-- MVP完成のため仮実装、将来的にローディング表示等で改善
-
-### 12. ブランチ命名規則の判断基準
-
-| 作業内容 | プレフィックス | 例 |
+| エンドポイント | インポート | 理由 |
 | --- | --- | --- |
-| 手動テストのドキュメント作成 | docs/ | docs/manual-test-cases |
-| 自動テストコードの実装 | test/ | test/e2e-user-flow |
-| APIドキュメント作成 | docs/ | docs/api-specification |
-| README更新 | docs/ | docs/update-readme |
+| `/api/*` | `import api from '@/plugins/axios'` | 401エラー時にログイン画面へリダイレクト必要 |
+| `/fortify/*` | `import axios from 'axios'` | ログイン失敗で401は正常なレスポンス |
+| `/sanctum/*` | `import axios from 'axios'` | CSRF Cookie取得、エラー処理不要 |
+
+**重要な理解**:
+
+- `import axios from 'axios'` と `import api from '@/plugins/axios'` は**全く別のもの**
+- インポート元が違う = インスタンスが違う = インターセプターの有無が違う
 
 ---
 
-## やってはいけないこと
+### 2. APIエラーハンドリングの方針（全実装完了）
 
-### 1. HTTPステータスコードをユーザーに直接見せる
+**対応するHTTPステータスコード**:
 
-- 「403」「404」「500」という表示は避ける
-- ユーザーフレンドリーなメッセージに変換する
+| ステータス | 対応方法 | 実装場所 | 状態 |
+| --- | --- | --- | --- |
+| **401/419** | ログイン画面へリダイレクト | Axios Interceptor | ✅完了 |
+| **403** | NotFound.vue へ遷移（type=forbidden） | Axios Interceptor | ✅完了 |
+| **404** | NotFound.vue へ遷移（type=notfound） | Axios Interceptor | ✅完了 |
+| **422** | フォーム内にエラー表示 | 各コンポーネント | ✅完了 |
+| **429** | 実装しない（個人利用アプリ） | - | N/A |
+| **500** | GlobalErrorModal表示 | Axios Interceptor | ✅完了 |
 
-### 2. トースト通知の使用
+**表示方法**:
 
-- 視認性が低い
-- アプリケーションのデザインに合わない
 - モーダルまたはコンポーネント表示で統一
+- トースト通知は使用しない
 
-### 3. 部分的なデータ表示
+**エラーフロー**:
 
-- 学習記録管理アプリではデータの整合性が最重要
-- いずれか1つでもAPI取得に失敗したら、ページ全体にエラー表示
+```
+API Error → Axios Interceptor
+  ↓
+401/419 → Login画面
+403/404 → NotFound.vue
+422 → Form Error
+500+ → GlobalErrorModal
+```
 
-### 4. 過度にコードサンプルを提示すること
+---
 
-- 現在の実装を見せていない段階での詳細なコード例は無価値
-- 説明は簡潔に、要点のみを伝える
+### 3. エラーモーダルストアの初期化タイミング（★重要）
 
-### 5. AIツールの提案を無批判に受け入れる
+**問題**: トップレベルで`useErrorModalStore()`を呼ぶとPinia未初期化エラー
 
-- AIは「提案」であり「決定」ではない
-- 最終判断は人間が行う
+**解決策**:
 
-### 6. Notionページの大規模一括編集（2025年10月12日追加）
+```jsx
+// ❌ トップレベルでの呼び出し（NG）
+import { useErrorModalStore } from '@/stores/errorModal';
+const errorModalStore = useErrorModalStore(); // Pinia未初期化
 
-- `replaceContent`による全体書き換えは危険
-- mention-pageのテキスト部分が消える
-- 復元機能がないため修正が困難
-- **対策**: `replaceContentRange`で該当箇所のみ変更
+// ✅ インターセプター内での呼び出し（OK）
+if (status >= 500) {
+  const errorModalStore = useErrorModalStore(); // この時点でPinia初期化済み
+  errorModalStore.showError();
+}
+```
 
-### 7. Notionのカテゴリを勝手に追加する（2025年10月12日追加）
+**原則**: ストアは使用する直前に初期化する
 
-- 既存のカテゴリのみ使用
-- 新しいカテゴリは勝手に作成しない
+---
+
+### 4. エラー再スローの重要性（★重要）
+
+**問題**: ストアでエラーをキャッチして握りつぶすと、Axios Interceptorに到達しない
+
+**正しいパターン**:
+
+```jsx
+// stores/learningContent.js
+async fetchContents() {
+  try {
+    const response = await api.fetchLearningContents(params);
+    this.contents = [response.data.data](http://response.data.data);
+  } catch (error) {
+    this.error = '学習内容の読み込みに失敗しました。';
+    console.error('エラー:', error);
+    throw error; // ← 必須：Interceptorへエラーを伝播
+  } finally {
+    this.loading = false;
+  }
+}
+```
+
+**理由**:
+
+- モーダル表示（Interceptor）
+- 呼び出し元へのエラー通知（throw error）
+- 両方が必要
+
+---
+
+### 5. GlobalErrorModalの配置（★重要）
+
+**問題**: レイアウト内に配置すると、親要素のスタイル影響を受ける
+
+**正しい配置**:
+
+```
+<!-- App.vue -->
+<template>
+  <component :is="layout">
+    <router-view />
+  </component>
+  <GlobalErrorModal /> <!-- レイアウトの外 -->
+</template>
+```
+
+**理由**:
+
+- z-index競合を回避
+- 完全に独立した表示
+- HeadlessUI Dialogの`z-index: 50`が正しく機能
+
+---
+
+### 6. Conventional Commits タイプの判断基準
+
+**判断フロー**:
+
+1. ユーザーは新しいことができるようになったか？ → YES: `feat`
+2. 既存機能が正しく動作していなかったか？ → YES: `fix`
+3. 外部から見た動作は変わらないか？ → YES: `refactor`
+
+**Phase 0の判断**:
+
+- Phase 0.0: `feat(auth)` - 401エラー時の自動リダイレクトは新機能
+- Phase 0.1-0.3: `feat(error)` - 403/404エラーページは新機能
+- Phase 0.4-0.7: `feat(error)` - 500エラーモーダルは新機能
+
+---
+
+### 7. ドキュメント管理の方針（★重要）
+
+**活用フロー**:
+
+1. **TasksDB（初期検討）**: 内容確定前の段階的更新
+2. **AI対話**: 実装工程を具体化
+3. **開発ドキュメント管理DB（最終文書化）**: 確定内容のみ保存
+
+**ファイル命名規則**:
+
+- 英語のケバブケース（ハイフン区切り）で統一
+- 例: [`api-error-handling-specification.md`](http://api-error-handling-specification.md)
+
+**Git管理**:
+
+- TasksDBの内容はGit管理しない（変更履歴が多すぎる）
+- 開発ドキュメント管理DBの確定版のみGit管理
+- 相対パス: `.gemini/docs/{category}/{filename}.md`
+
+---
+
+## やってはいけないこと（★重要）
+
+### 1. Axios Interceptorでrouter.pushを使う
+
+**理由**: 循環参照が発生する
+
+**正しい方法**: `window.location.href = '/login'`
+
+---
+
+### 2. 全てのaxiosインポートを統一する
+
+**間違い**: useAuth.jsで全て`api`を使う
+
+**正しい**: `/api/*`は`api`、`/fortify/*`と`/sanctum/*`は`axios`
+
+---
+
+### 3. ストアでエラーを握りつぶす
+
+**間違い**:
+
+```jsx
+catch (error) {
+  console.error(error);
+  // throw error; がない
+}
+```
+
+**正しい**:
+
+```jsx
+catch (error) {
+  console.error(error);
+  throw error; // 必須
+}
+```
+
+---
+
+### 4. トップレベルでストアを初期化
+
+**間違い**:
+
+```jsx
+import { useErrorModalStore } from '@/stores/errorModal';
+const errorModalStore = useErrorModalStore(); // Pinia未初期化
+```
+
+**正しい**:
+
+```jsx
+// 使用する直前に初期化
+if (status >= 500) {
+  const errorModalStore = useErrorModalStore();
+}
+```
+
+---
+
+### 5. GlobalErrorModalをレイアウト内に配置
+
+**間違い**:
+
+```
+<template>
+  <component :is="layout">
+    <router-view />
+    <GlobalErrorModal /> <!-- レイアウトの中 -->
+  </component>
+</template>
+```
+
+**正しい**:
+
+```
+<template>
+  <component :is="layout">
+    <router-view />
+  </component>
+  <GlobalErrorModal /> <!-- レイアウトの外 -->
+</template>
+```
+
+---
+
+### 6. HTTPステータスコードをユーザーに直接見せる
+
+「403」「404」「500」という表示は避け、ユーザーフレンドリーなメッセージに変換
+
+---
+
+### 7. トースト通知の使用
+
+視認性が低く、デザインに合わない。モーダル表示で統一
+
+---
+
+### 8. 部分的なデータ表示
+
+いずれか1つでもAPI取得に失敗したら、ページ全体にエラー表示
+
+---
+
+### 9. Notionページの大規模一括編集
+
+`replaceContent`は危険（復元機能なし）。`replaceContentRange`で該当箇所のみ変更
 
 ---
 
 ## 除外・後回し事項
 
-**理由付き除外**:
-
-- 文字数カウンター（textarea）: Phase 1で実施
-- 時間入力のループ機能: Phase 4で実施
-- 高速連続削除の完全対策（ローディング、トースト）: 仮実装で対応済み
-- アニメーション最適化: Phase 4で実施
-- ネットワークエラー（クライアント側）: モノリシック構成のため発生可能性低
-- 429エラー: 個人利用アプリのため発生可能性極めて低
-
-**保留事項**:
-
-- DELETE処理時の削除確認モーダルと500エラーモーダルの連携: 実装フェーズで詳細検討
+- **ネットワークエラー（クライアント側）**: モノリシック構成のため発生可能性低
+- **429エラー**: 個人利用アプリのため発生可能性極めて低
+- **ページ遷移時の認証確認強化**: パフォーマンスとのトレードオフで現状維持
+- **DELETE処理時のモーダル連携**: 実装フェーズで検討（500エラー時は削除確認モーダルを閉じてからエラーモーダル表示）
+- **console.log/errorの削除**: Phase 1以降で検討（環境変数制御またはViteで自動削除）
 
 ---
 
 ## 次のアクション
 
-### 最優先: Phase 0（デプロイ前の必須修正）
+### Phase 0完了後の選択肢（優先度順）
 
-### 1. APIエラーハンドリングの実装（工数: 2.5-3日）
+### 選択肢1: console.log/errorの整理（工数: 0.5-1日）
 
-- Axios Interceptor実装
-- グローバルエラーモーダル実装
-- エラーモーダルストア実装
-- 統合テスト
+**方法**:
 
-### 2. Apidogテストケースの追加（工数: 0.5-1日）
+1. **環境変数制御**（推奨）
+    - `utils/logger.js`を作成
+    - 開発環境のみログ出力
+2. **Viteで自動削除**
+    - 本番ビルド時に`console.*`を完全削除
+3. **手動削除**
+    - 最もシンプルだが、再追加の手間
 
-- 境界値テスト追加
-- 既存バリデーション項目の網羅的テスト
+**判断**: 後回しでもOK（セキュリティ上の緊急性は低い）
 
-### Phase 1: UI/UXレイアウト改善（Phase 0完了後、工数: 2日）
+---
 
-- 削除確認モーダルの改善
-- textarea入力文字数表示
-- ページネーションの表示調整
-- 空状態（Empty State）の改善
+### 選択肢2: Phase 1（UI/UX改善）へ進む（工数: 要見積もり）
 
-### Phase 2: レスポンシブ対応（Phase 1完了後、工数: 2-3日）
+**内容**:
 
-- スマホ・タブレット対応
-- タッチ操作最適化
-- ハンバーガーメニュー実装
+- ローディング状態の改善
+- エラーメッセージの改善
+- アニメーション追加
 
-### Phase 3: デプロイ作業（Phase 2完了後）
+---
 
-- AWS/Azure環境構築
+### 選択肢3: Phase 2（レスポンシブ対応）へ進む（工数: 要見積もり）
+
+**内容**:
+
+- モバイル対応
+- タブレット対応
+
+---
+
+### 選択肢4: Phase 3（デプロイ準備）へ進む（工数: 要見積もり）
+
+**内容**:
+
+- 環境変数設定
+- ビルド設定
+- デプロイ手順書作成
+
+---
+
+### 推奨アクション
+
+**Phase 0完了を区切りとして、次の大きな方向性を決定する**
+
+1. ポートフォリオとして十分な品質か評価
+2. さらに改善する場合、何を優先するか決定
+3. デプロイ準備を開始するか判断
 
 ---
 
 ## 特記事項
 
-### プロジェクトの健全性
+### プロジェクトの健全性評価
 
-- コア機能完成度: 100%
-- スケジュール: MVP完成、ドキュメント整備フェーズ
-- 技術的負債: 最小限（TODO管理済み）
-- ドキュメント: 充実（仕様書・タスクリスト整備中）
+**進捗状況**: ✅ 良好
 
-**総合評価**: MVP完成、デプロイに向けた改善フェーズ開始
+- MVP完成（2025年10月7日）
+- Phase 0完全完了（2025年10月14日）
+- 2日で7タスク完了（計画通り）
+
+**技術的負債**: ✅ 最小限
+
+- console.log/errorの整理は後回しでOK
+- その他の負債なし
+
+**ドキュメント充実度**: ✅ 優良
+
+- 実装仕様書、テストリスト完備
+- ディレクトリ構造、コーディング規約整備
+- 使い分けガイド、実践フロー文書化
+
+---
 
 ### 重要な教訓
 
-### 1. AIツールとの付き合い方
+### 1. エラーハンドリングの3原則
 
-- AIは「提案」であり「決定」ではない
-- 最終判断は人間が行う
-- 過度なコードサンプルは現状を見せていない段階では無価値
+1. **再スロー**: ストアでキャッチしても`throw error`
+2. **初期化タイミング**: ストアは使用直前に初期化
+3. **配置**: GlobalErrorModalはレイアウトの外
 
-### 2. 個人開発の現実的な優先順位付け
+---
+
+### 2. デバッグの効率化
+
+- エラーログから「エラーがどこで止まったか」を特定
+- Axios Interceptorに到達しているか確認
+- ストアで握りつぶされていないか確認
+
+---
+
+### 3. ドキュメント管理の実践
+
+- TasksDB → AI対話 → 開発ドキュメント管理DB
+- Git管理は確定版のみ
+- 無駄な変更履歴を避ける
+
+---
+
+### 4. 個人開発の現実的な優先順位付け
 
 - すべてのエラーに対応する必要はない
 - 実際に発生する可能性が高いエラーのみ対応
-- 実装工数を最小限に抑える
-
-### 3. ユーザー体験の重視
-
-- HTTPステータスコードは技術者向け、一般ユーザーには不親切
-- エラーメッセージはユーザーフレンドリーに
-- トースト通知より視認性の高いモーダル表示
-
-### 4. データ整合性の重要性
-
-- 学習記録管理アプリでは部分的なデータ表示は誤解を招く
-- いずれか1つでもAPI取得に失敗したら全体エラー表示
-
-### 5. 段階的な実装アプローチ
-
-- 複雑な処理（DELETE時のモーダル連携）は保留
-- まずコア機能を実装し、後で詳細を詰める
-
-### 6. ドキュメント管理の重要性（2025年10月12日追加）
-
-- 包括的ロードマップより段階的な詳細タスクリストが実用的
-- 実行中のフェーズに集中できる構造が重要
-- ファイル命名規則の統一で管理性が向上
-
-### 7. AIアシスタントによるNotion編集のリスク（2025年10月12日追加）
-
-- 大規模一括編集は危険（復元機能なし）
-- mention-pageなどの特殊要素が消える可能性
-- 部分的な編集を心がける
+- パフォーマンスとのトレードオフを意識
 ```

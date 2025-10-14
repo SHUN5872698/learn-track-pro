@@ -140,6 +140,8 @@ tree -L 5 --dirsfirst \
 │   │   └── app.css                               # アプリケーションのメインCSSファイル
 │   │
 │   └── js/                                       # JavaScriptファイル ※詳細は別ドキュメントに記載
+│       └── plugins/                              # Vueプラグイン
+│           └── axios.js                          # Axiosのカスタム設定とインターセプター
 │
 ├── routes/                                       # アプリケーションのルーティング定義
 │   ├── api.php                                   # APIルート定義

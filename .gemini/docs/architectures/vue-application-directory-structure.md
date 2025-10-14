@@ -60,6 +60,7 @@ resources/js/
 │   │   ├── BaseButton.vue                   # 基本ボタンコンポーネント
 │   │   ├── ConfirmModal.vue                 # 確認モーダルコンポーネント
 │   │   ├── DatePickerModal.vue              # 日付選択モーダルコンポーネント
+│   │   ├── GlobalErrorModal.vue             # グローバルエラーモーダル
 │   │   ├── LoadingSpinner.vue               # ローディングスピナー
 │   │   ├── Pagination.vue                   # ページネーションコンポーネント
 │   │   ├── SectionSelector.vue              # セクション選択ドロップダウン
@@ -108,8 +109,12 @@ resources/js/
 │   ├── DetailLayout.vue                     # 詳細画面用レイアウト
 │   └── MultiCardDetailLayout.vue            # 複数カード表示用レイアウト
 │
+├── plugins/                                 # Vueプラグイン
+│   └── axios.js                             # Axiosのカスタム設定とインターセプター
+│
 ├── stores/                                  # Piniaストア
 │   ├── auth.js                              # 認証状態管理ストア
+│   ├── errorModal.js                        # エラーモーダルの表示状態管理ストア
 │   ├── learningContent.js                   # 学習コンテンツの状態管理ストア
 │   ├── learningSession.js                   # 学習セッションの状態管理ストア
 │   ├── masterData.js                        # マスターデータ（カテゴリー、技術）の状態管理ストア
@@ -161,59 +166,99 @@ resources/js/
 
 ```mermaid
 graph TD
-    subgraph Composables
-        A[useLearningData] --> B[useUser]
-        A --> C[ui/useMenuState]
-        A --> E[learning/useLearningContents]
-        A --> F[learning/useSections]
-        A --> G[learning/useLearningSessions]
-        A --> P[useSectionStatus]
-
-        E --> I[api/learningContent]
-
-        F --> K[api/sections]
-
-        G --> J[api/learningSession]
-
-        L[useAuth] --> B
-        M[useStudySessionForm] --> N[validators/studySessionValidator]
-        O[useLearningContentForm]
-        Q[useWizardForm]
-
-        B --> R[stores/auth]
-        S[stores/masterData]
-        T[stores/reports]
-
+    subgraph Views & Components
+        X[Views & Components]
     end
 
-    subgraph API
-        I
-        J
-        K
+    subgraph Composables
+        A[useLearningData]
+        B[useUser]
+        C[ui/useMenuState]
+        E[learning/useLearningContents]
+        F[learning/useSections]
+        G[learning/useLearningSessions]
+        P[useSectionStatus]
+        L[useAuth]
+        M[useStudySessionForm]
+        O[useLearningContentForm]
+        Q[useWizardForm]
     end
 
     subgraph Stores
-        R
-        S
-        T
+        R[stores/auth]
+        S[stores/masterData]
+        T[stores/reports]
+        U[stores/errorModal]
+        LC[stores/learningContent]
+        LS[stores/learningSession]
+        SC[stores/sections]
+    end
+
+    subgraph API
+        I[api/learningContent]
+        J[api/learningSession]
+        K[api/sections]
     end
 
     subgraph Validators
         N[studySessionValidator]
-        U[profileValidator]
+        V[profileValidator]
     end
 
-    subgraph Views & Components
-        V[Views & Components] --> A
-        V --> L
-        V --> M
-        V --> O
-        V --> Q
-        V --> P
-        V --> U
-        V --> S
-        V --> T
+    subgraph Plugins
+        W[plugins/axios]
     end
+
+    %% Views & Components → Composables
+    X --> A
+    X --> L
+    X --> M
+    X --> O
+    X --> Q
+    X --> P
+    X --> B
+    X --> C
+    
+    %% Views & Components → Stores直接アクセス
+    X --> S
+    X --> T
+    X --> U
+    
+    %% Views & Components → Validators
+    X --> V
+    
+    %% Views & Components → Plugins
+    X --> W
+
+    %% Composables間の依存
+    A --> B
+    A --> C
+    A --> E
+    A --> F
+    A --> G
+    A --> P
+    L --> B
+    M --> N
+    Q --> X
+
+    %% Composables → Stores
+    E --> LC
+    F --> SC
+    G --> LS
+    B --> R
+
+    %% Stores → API
+    LC --> I
+    LS --> J
+    SC --> K
+
+    %% Plugins → Stores
+    W --> U
+
+    %% API → Plugins（axios使用）
+    I --> W
+    J --> W
+    K --> W
 
     style A fill:#c9d1f3,stroke:#333,stroke-width:2px
     style L fill:#d5e8d4,stroke:#333,stroke-width:2px
@@ -222,15 +267,10 @@ graph TD
     style O fill:#d5e8d4,stroke:#333,stroke-width:2px
     style Q fill:#d5e8d4,stroke:#333,stroke-width:2px
     style N fill:#f8d5d5,stroke:#333,stroke-width:2px
-    style U fill:#f8d5d5,stroke:#333,stroke-width:2px
-    style I fill:#e0e0e0,stroke:#333,stroke-width:1px
-    style J fill:#e0e0e0,stroke:#333,stroke-width:1px
-    style K fill:#e0e0e0,stroke:#333,stroke-width:1px
-    style R fill:#e0e0e0,stroke:#333,stroke-width:1px
-    style S fill:#e0e0e0,stroke:#333,stroke-width:1px
-    style T fill:#e0e0e0,stroke:#333,stroke-width:1px
+    style V fill:#f8d5d5,stroke:#333,stroke-width:2px
+    style W fill:#ffeb99,stroke:#333,stroke-width:2px
+    style U fill:#ffb3b3,stroke:#333,stroke-width:2px
 ```
-
 ---
 
 ## なぜこの構造が良いか
