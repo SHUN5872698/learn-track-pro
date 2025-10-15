@@ -279,8 +279,8 @@ const openDeleteModal = (record) => {
   isModalOpen.value = true;
 };
 
-// 削除確認時の処理
 // API関連処理
+// 削除確認時の処理
 const confirmDelete = async () => {
   if (!recordToDelete.value) {
     isModalOpen.value = false;

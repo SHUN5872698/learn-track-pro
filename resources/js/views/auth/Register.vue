@@ -1,5 +1,5 @@
 <template>
-  <!-- 新規登録ページのメインコンテナ -->
+  <!-- 新規登録ページのメインコンポーネント -->
   <div class="flex items-center justify-center min-h-screen px-4 py-12 bg-gray-50 sm:px-6 lg:px-8">
     <!-- 新規登録フォームのカードコンテナ -->
     <div class="z-10 w-full max-w-md p-10 space-y-8 bg-white shadow-lg rounded-xl">
@@ -209,8 +209,8 @@ const validationErrors = computed(() => {
 // ========================================
 // メソッド
 // ========================================
-// イベントハンドラ
-// 登録実行
+// API送信処理
+// ユーザー登録実行
 const handleRegister = async () => {
   // 状態をリセット
   errors.name = '';
@@ -244,7 +244,7 @@ const handleRegister = async () => {
     return;
   }
 
-  // API送信処理
+  // ユーザー登録
   isSubmitting.value = true;
   try {
     await authStore.register({

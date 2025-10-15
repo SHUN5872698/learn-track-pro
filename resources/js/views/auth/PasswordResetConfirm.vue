@@ -1,5 +1,5 @@
 <template>
-  <!-- パスワードリセット実行ページのメインコンテナ -->
+  <!-- パスワードリセット実行ページのメインコンポーネント -->
   <div class="flex items-center justify-center min-h-screen px-4 py-12 bg-gray-50 sm:px-6 lg:px-8">
     <!-- パスワードリセット実行フォームのカードコンテナ -->
     <div class="z-10 w-full max-w-md p-10 space-y-8 bg-white shadow-lg rounded-xl">
@@ -209,8 +209,8 @@ onMounted(() => {
 // ========================================
 // メソッド
 // ========================================
-// イベントハンドラ
-// パスワードリセット確認処理を実行
+// API送信処理
+// パスワードリセット処理を実行
 const handlePasswordResetConfirm = async () => {
   // 状態をリセット
   errors.email = '';
@@ -240,8 +240,8 @@ const handlePasswordResetConfirm = async () => {
     return;
   }
 
-  // API送信処理
   isSubmitting.value = true;
+  // パスワードリセットを実行
   try {
     const result = await authStore.resetPassword({
       token: token.value,

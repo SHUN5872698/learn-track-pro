@@ -1,5 +1,5 @@
 <template>
-  <!-- 学習内容編集ページのメインコンテナ -->
+  <!-- 学習内容編集ページのメインコンポーネント -->
   <div v-if="isLoading" class="py-10 text-center">
     <LoadingSpinner size="lg" message="データを読み込んでいます..." />
   </div>

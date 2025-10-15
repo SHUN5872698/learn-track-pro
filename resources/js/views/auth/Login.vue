@@ -1,5 +1,5 @@
 <template>
-  <!-- ログインページのメインコンテナ -->
+  <!-- ログインページのメインコンポーネント -->
   <div class="flex items-center justify-center min-h-screen px-4 py-12 bg-gray-50 sm:px-6 lg:px-8">
     <!-- ログインフォームのカードコンテナ -->
     <div class="z-10 w-full max-w-md p-10 space-y-8 bg-white shadow-lg rounded-xl">
@@ -158,7 +158,7 @@ const validationErrors = computed(() => {
 // ========================================
 // メソッド
 // ========================================
-// イベントハンドラ
+// API送信処理
 // ログインを実行
 const handleLogin = async () => {
   // 状態をリセット
@@ -185,8 +185,8 @@ const handleLogin = async () => {
     return;
   }
 
-  // API送信処理
   isSubmitting.value = true;
+  // ログインを実行
   try {
     await authStore.login({
       email: formData.email,

@@ -97,7 +97,6 @@
                   class="relative p-1.5 mr-3 transition-all duration-200 rounded-full hover:bg-violet-100 focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   :title="getToggleTitle(section)"
                 >
-                  <!-- ↓↓↓ 固定サイズのコンテナで囲む ↓↓↓ -->
                   <div class="relative flex items-center justify-center w-6 h-6">
                     <!-- ローディングスピナー -->
                     <div v-if="updatingSectionId === section.id" class="absolute inset-0 flex items-center justify-center">
@@ -113,7 +112,6 @@
                       <CheckCircleIconOutline v-else-if="updatingSectionId !== section.id" key="incomplete" class="w-6 h-6 text-gray-400 transition-colors duration-200 hover:text-violet-600" />
                     </transition>
                   </div>
-                  <!-- ↑↑↑ ここまで ↑↑↑ -->
                 </button>
 
                 <!-- セクション情報（クリックで詳細へ） -->

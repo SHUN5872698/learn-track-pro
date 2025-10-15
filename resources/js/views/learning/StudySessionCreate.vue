@@ -1,5 +1,5 @@
 <template>
-  <!-- 学習記録作成ページのメインコンテナ -->
+  <!-- 学習記録作成ページのメインコンポーネント -->
   <div v-if="isLoading" class="py-10 text-center">
     <LoadingSpinner size="lg" message="データを読み込んでいます..." />
   </div>

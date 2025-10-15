@@ -1,5 +1,5 @@
 <template>
-  <!-- 学習内容作成ページのメインコンテナ -->
+  <!-- 学習内容作成ページのメインコンポーネント -->
   <DetailLayout>
     <!-- セクションヘッダー -->
     <template #section-header>
