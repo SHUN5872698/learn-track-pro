@@ -710,7 +710,7 @@ paths:
     get:
       summary: 学習内容別日別統計取得
       deprecated: false
-      description: ''
+      description: 個別レポート:日別学習時間チャートで使用
       tags:
         - Report
       parameters:
@@ -1717,7 +1717,264 @@ paths:
           headers: {}
       security: []
 components:
-  schemas: {}
-  securitySchemes: {}
+  schemas:
+    StatisticsSummary:
+      type: object
+      properties:
+        total_study_minutes:
+          type: integer
+        completed_courses_count:
+          type: integer
+        average_study_time_per_day:
+          type: integer
+        consecutive_study_days:
+          type: integer
+      required:
+        - total_study_minutes
+        - completed_courses_count
+        - average_study_time_per_day
+        - consecutive_study_days
+    DashboardStats:
+      type: object
+      properties:
+        active_courses:
+          type: integer
+          description: アクティブなコース数
+          example: 3
+        completed_sections:
+          type: integer
+          description: 完了したセクション数
+          example: 15
+        total_study_minutes:
+          type: integer
+          description: 総学習時間（分）
+          example: 2450
+        average_progress:
+          type: number
+          format: float
+          description: 平均進捗率（%）
+          example: 62.5
+        recent_activities:
+          type: array
+          description: 最近のアクティビティ
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: 学習内容ID
+                example: 1
+              title:
+                type: string
+                description: 学習内容タイトル
+                example: Laravel学習
+              last_studied_at:
+                type: string
+                format: date-time
+                description: 最終学習日時
+                example: '2025-08-21T15:30:00.000000Z'
+              progress_percentage:
+                type: number
+                format: float
+                description: 進捗率（%）
+                example: 30
+    WeeklyChart:
+      type: object
+      properties:
+        period:
+          type: string
+          description: 期間タイプ
+          enum:
+            - week
+            - month
+            - all
+          example: week
+        start_date:
+          type: string
+          format: date
+          description: 開始日
+          example: '2025-08-15'
+        end_date:
+          type: string
+          format: date
+          description: 終了日
+          example: '2025-08-21'
+        data:
+          type: array
+          description: 日別学習時間データ
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+                description: 日付
+                example: '2025-08-15'
+              study_minutes:
+                type: integer
+                description: 学習時間（分）
+                example: 120
+        total_minutes:
+          type: integer
+          description: 期間内総学習時間（分）
+          example: 1020
+        daily_average:
+          type: number
+          format: float
+          description: 1日平均学習時間（分）
+          example: 145.7
+    TechnologySummary:
+      type: object
+      properties:
+        period:
+          type: string
+          description: 期間タイプ
+          enum:
+            - week
+            - month
+            - all
+          example: month
+        start_date:
+          type: string
+          format: date
+          description: 開始日
+          example: '2025-08-01'
+        end_date:
+          type: string
+          format: date
+          description: 終了日
+          example: '2025-08-31'
+        data:
+          type: array
+          description: 技術別学習時間データ
+          items:
+            type: object
+            properties:
+              technology_id:
+                type: integer
+                description: 技術ID
+                example: 3
+              technology_name:
+                type: string
+                description: 技術名
+                example: Laravel
+              category_name:
+                type: string
+                description: カテゴリー名
+                example: フレームワーク
+              total_minutes:
+                type: integer
+                description: 総学習時間（分）
+                example: 1250
+              percentage:
+                type: number
+                format: float
+                description: 割合（%）
+                example: 45.5
+              learning_contents_count:
+                type: integer
+                description: 学習内容数
+                example: 2
+        total_minutes:
+          type: integer
+          description: 期間内総学習時間（分）
+          example: 2750
+    LearningHistory:
+      type: object
+      properties:
+        data:
+          type: array
+          description: 日別学習履歴
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+                description: 日付
+                example: '2025-08-21'
+              sessions:
+                type: array
+                description: 学習セッション
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: セッションID
+                      example: 10
+                    learning_content_title:
+                      type: string
+                      description: 学習内容タイトル
+                      example: Laravel学習
+                    section_title:
+                      type: string
+                      description: セクションタイトル
+                      example: データベース
+                    study_minutes:
+                      type: integer
+                      description: 学習時間（分）
+                      example: 90
+                    note:
+                      type: string
+                      description: 学習メモ
+                      nullable: true
+                      example: データベース設計について学習した
+              daily_total_minutes:
+                type: integer
+                description: 日別総学習時間（分）
+                example: 150
+        meta:
+          type: object
+          description: ページネーション情報
+          properties:
+            current_page:
+              type: integer
+              description: 現在のページ
+              example: 1
+            last_page:
+              type: integer
+              description: 最終ページ
+              example: 3
+            per_page:
+              type: integer
+              description: 1ページあたりの件数
+              example: 7
+            total:
+              type: integer
+              description: 総件数
+              example: 21
+        summary:
+          type: object
+          description: サマリー情報
+          properties:
+            period_total_minutes:
+              type: integer
+              description: 期間内総学習時間（分）
+              example: 1020
+            period_average_minutes:
+              type: number
+              format: float
+              description: 期間内1日平均学習時間（分）
+              example: 145.7
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: The given data was invalid.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          properties: {}
+  securitySchemes:
+    sanctum2:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+      description: Laravel Sanctum認証
 servers: []
 security: []

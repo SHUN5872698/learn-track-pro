@@ -298,17 +298,28 @@ paths:
                   mood_rating: null
                   session_type: ''
                   studied_at: ''
-                summary: バリデーションエラー（未入力）
+                summary: 未入力
               '3':
                 value:
                   learning_content_id: 2
                   section_id: 30
-                  study_minutes: 1441
-                  memo: Apidocで作成
+                  study_minutes: 1440
+                  memo: >-
+                    501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字
                   mood_rating: 6
                   session_type: stopwatch
                   studied_at: 2025-09-26 10:30
-                summary: バリデーションエラー
+                summary: 境界値
+              '4':
+                value:
+                  learning_content_id: 1002
+                  section_id: 97
+                  study_minutes: 120
+                  memo: Apidocで作成
+                  mood_rating: 4
+                  session_type: manual
+                  studied_at: 2025-09-26 10:30
+                summary: 成功例（users.id=2）
       responses:
         '201':
           description: 作成成功
@@ -359,7 +370,7 @@ paths:
                 $ref: '#/components/schemas/ValidationError'
               examples:
                 '2':
-                  summary: 成功例
+                  summary: 未入力
                   value:
                     message: 学習コンテンツは必須項目です。 (その他、4エラーあり)
                     errors:
@@ -380,6 +391,17 @@ paths:
                     errors:
                       study_minutes:
                         - 学習時間は24時間未満で入力してください。
+                      mood_rating:
+                        - 調子は、5以下の数値である必要があります。
+                '5':
+                  summary: 境界値
+                  value:
+                    message: 学習時間は1日（24時間）以内で入力してください。 (その他、2エラーあり)
+                    errors:
+                      study_minutes:
+                        - 学習時間は1日（24時間）以内で入力してください。
+                      memo:
+                        - メモの文字数は、500文字以下である必要があります。
                       mood_rating:
                         - 調子は、5以下の数値である必要があります。
           headers: {}
@@ -1348,16 +1370,100 @@ paths:
                   memo: Apidocで更新
                   mood_rating: null
                   studied_at: ''
-                summary: バリデーションエラー（未入力）
+                summary: 未入力
               '4':
                 value:
-                  study_minutes: 1441
-                  memo: Apidocで更新
+                  study_minutes: 1440
+                  memo: >-
+                    501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字
                   mood_rating: 6
                   session_type: stopwatch
                   studied_at: 2025-09-26 14:00
-                summary: バリデーションエラー
+                summary: 境界値
       responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      user_id:
+                        type: integer
+                      learning_content_id:
+                        type: integer
+                      section_id:
+                        type: integer
+                      study_minutes:
+                        type: integer
+                      memo:
+                        type: string
+                      mood_rating:
+                        type: integer
+                      session_type:
+                        type: string
+                      studied_at:
+                        type: string
+                      created_at:
+                        type: string
+                      updated_at:
+                        type: string
+                    required:
+                      - id
+                      - user_id
+                      - learning_content_id
+                      - section_id
+                      - study_minutes
+                      - memo
+                      - mood_rating
+                      - session_type
+                      - studied_at
+                      - created_at
+                      - updated_at
+                  message:
+                    type: string
+                required:
+                  - data
+                  - message
+              examples:
+                '7':
+                  summary: 成功例（更新）
+                  value:
+                    data:
+                      id: 170
+                      user_id: 2
+                      learning_content_id: 1002
+                      section_id: 97
+                      study_minutes: 150
+                      memo: Apidocで更新
+                      mood_rating: 5
+                      session_type: manual
+                      studied_at: '2025-09-26 14:00:00'
+                      created_at: '2025-10-15 10:41:27'
+                      updated_at: '2025-10-15 10:43:12'
+                    message: 学習記録を更新しました。
+                '10':
+                  summary: 成功例（戻す）
+                  value:
+                    data:
+                      id: 170
+                      user_id: 2
+                      learning_content_id: 1002
+                      section_id: 97
+                      study_minutes: 120
+                      memo: Apidocで作成
+                      mood_rating: 4
+                      session_type: manual
+                      studied_at: '2025-09-26 10:30:00'
+                      created_at: '2025-10-15 10:41:27'
+                      updated_at: '2025-10-15 10:44:38'
+                    message: 学習記録を更新しました。
+          headers: {}
         '301':
           description: ''
           content:
@@ -2244,13 +2350,27 @@ paths:
                 required:
                   - message
                   - errors
-              example:
-                message: 学習時間は24時間未満で入力してください。 (その他、1エラーあり)
-                errors:
-                  study_minutes:
-                    - 学習時間は24時間未満で入力してください。
-                  mood_rating:
-                    - 調子は、5以下の数値である必要があります。
+              examples:
+                '5':
+                  summary: 成功例
+                  value:
+                    message: 学習時間は24時間未満で入力してください。 (その他、1エラーあり)
+                    errors:
+                      study_minutes:
+                        - 学習時間は24時間未満で入力してください。
+                      mood_rating:
+                        - 調子は、5以下の数値である必要があります。
+                '6':
+                  summary: 境界値
+                  value:
+                    message: 学習時間は1日（24時間）以内で入力してください。 (その他、2エラーあり)
+                    errors:
+                      study_minutes:
+                        - 学習時間は1日（24時間）以内で入力してください。
+                      memo:
+                        - メモの文字数は、500文字以下である必要があります。
+                      mood_rating:
+                        - 調子は、5以下の数値である必要があります。
           headers: {}
         x-401:権限なし:
           description: ''
@@ -5660,6 +5780,21 @@ components:
             - not_started
             - in_progress
             - completed
+    StatisticsSummary:
+      type: object
+      properties:
+        total_study_minutes:
+          type: integer
+          example: 1250
+        completed_courses_count:
+          type: integer
+          example: 5
+        average_study_time_per_day:
+          type: integer
+          example: 45
+        consecutive_study_days:
+          type: integer
+          example: 7
     ValidationError:
       type: object
       properties:
@@ -5708,6 +5843,10 @@ components:
           type: integer
         total:
           type: integer
-  securitySchemes: {}
+  securitySchemes:
+    sanctum4:
+      type: apiKey
+      in: cookie
+      name: laravel_session
 servers: []
 security: []

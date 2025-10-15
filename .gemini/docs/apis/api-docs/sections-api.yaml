@@ -246,13 +246,19 @@ paths:
                   learning_content_id: null
                   title: ''
                   order: null
-                summary: バリデーションエラー
+                summary: 未入力
               '3':
                 value:
                   learning_content_id: 1000
                   title: Apidocで作成
                   order: 16
                 summary: パラメーターエラー
+              '4':
+                value:
+                  learning_content_id: 2
+                  title: 51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト5
+                  order: 16
+                summary: 境界値
       responses:
         '201':
           description: Created - セクション追加成功
@@ -680,6 +686,13 @@ paths:
                     errors:
                       learning_content_id:
                         - 選択された学習コンテンツは、有効ではありません。
+                '7':
+                  summary: 境界値
+                  value:
+                    message: タイトルの文字数は、50文字以下である必要があります。
+                    errors:
+                      title:
+                        - タイトルの文字数は、50文字以下である必要があります。
           headers: {}
         '500':
           description: ''
@@ -1260,12 +1273,17 @@ paths:
                 value:
                   title: ''
                   order: null
-                summary: バリデーションエラー
+                summary: 未入力
               '4':
                 value:
                   title: Apidocで更新
                   order: 1
                 summary: orderの重複
+              '5':
+                value:
+                  title: 51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト5
+                  order: 17
+                summary: 境界値
       responses:
         '200':
           description: OK - セクション更新成功
@@ -2078,13 +2096,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-              example:
-                message: タイトルは必須項目です。 (その他、1エラーあり)
-                errors:
-                  title:
-                    - タイトルは必須項目です。
-                  order:
-                    - orderは必須項目です。
+              examples:
+                '4':
+                  summary: 未入力
+                  value:
+                    message: タイトルは必須項目です。 (その他、1エラーあり)
+                    errors:
+                      title:
+                        - タイトルは必須項目です。
+                      order:
+                        - orderは必須項目です。
+                '9':
+                  summary: 境界値
+                  value:
+                    message: タイトルの文字数は、50文字以下である必要があります。
+                    errors:
+                      title:
+                        - タイトルの文字数は、50文字以下である必要があります。
           headers: {}
         '500':
           description: ''
@@ -4713,7 +4741,7 @@ paths:
                     - 34
                     - 35
                     - 94
-                summary: バリデーションエラー
+                summary: 未入力
       responses:
         '200':
           description: OK - セクション一括更新成功
@@ -6222,7 +6250,7 @@ components:
               type: string
           properties: {}
   securitySchemes:
-    sanctum31:
+    sanctum3:
       type: apiKey
       in: cookie
       name: laravel_session

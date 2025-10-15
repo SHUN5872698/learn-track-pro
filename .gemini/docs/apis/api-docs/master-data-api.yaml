@@ -1074,7 +1074,7 @@ components:
               type: string
               example: Programming
   securitySchemes:
-    sanctum2:
+    sanctum1:
       type: apiKey
       in: cookie
       name: laravel_session

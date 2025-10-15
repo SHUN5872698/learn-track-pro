@@ -68,11 +68,31 @@ paths:
           application/json:
             schema:
               type: string
-            example:
-              name: 田中 太郎
-              email: tanaka@example.com
-              password: password123
-              password_confirmation: password123
+            examples:
+              '1':
+                value:
+                  name: 田中 太郎
+                  email: tanaka@example.com
+                  password: password123
+                  password_confirmation: password123
+                summary: 成功
+              '2':
+                value:
+                  name: ''
+                  email: ''
+                  password: ''
+                  password_confirmation: ''
+                summary: 未入力
+              '3':
+                value:
+                  name: 51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51
+                  email: >-
+                    256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max2@testexample.com
+                  password: >-
+                    256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト2
+                  password_confirmation: >-
+                    256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト2
+                summary: 境界値
       responses:
         '201':
           description: ''
@@ -130,6 +150,36 @@ paths:
                         - メールアドレスは必須項目です。
                       password:
                         - パスワードは必須項目です。
+                '3':
+                  summary: 未入力
+                  value:
+                    message: 名前は必須項目です。 (その他、2エラーあり)
+                    errors:
+                      name:
+                        - 名前は必須項目です。
+                      email:
+                        - メールアドレスは必須項目です。
+                      password:
+                        - パスワードは必須項目です。
+                '4':
+                  summary: 境界値（名前の文字数）
+                  value:
+                    message: 名前の文字数は、50文字以下である必要があります。
+                    errors:
+                      name:
+                        - 名前の文字数は、50文字以下である必要があります。
+                '5':
+                  summary: 境界値
+                  value:
+                    message: 名前の文字数は、50文字以下である必要があります。 (その他、3エラーあり)
+                    errors:
+                      name:
+                        - 名前の文字数は、50文字以下である必要があります。
+                      email:
+                        - メールアドレスは、有効なメールアドレス形式で指定してください。
+                        - メールアドレスの文字数は、255文字以下である必要があります。
+                      password:
+                        - パスワードの文字数は、255文字以下である必要があります。
           headers: {}
       security: []
   /fortify/login:
@@ -182,6 +232,11 @@ paths:
                   email: tekisasu.bager@gmail.com
                   password: password
                 summary: 例 4
+              '5':
+                value:
+                  email: hanako.suzuki@example.com
+                  password: password
+                summary: 例 5
       responses:
         '200':
           description: OK - ログイン成功
@@ -712,12 +767,23 @@ paths:
                 value:
                   name: 田中 次郎
                   email: tanaka.new@example.com
-                summary: 例 1
+                summary: 成功（更新）
               '2':
                 value:
-                  name: 田中 次郎
-                  email: taro.yamada@example.com
-                summary: 例 2
+                  name: 田中 太郎
+                  email: tanaka.@example.com
+                summary: 成功（戻す）
+              '3':
+                value:
+                  name: ''
+                  email: ''
+                summary: 未入力
+              '4':
+                value:
+                  name: 51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51
+                  email: >-
+                    256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max2@testexample.com
+                summary: 境界値
       responses:
         '200':
           description: OK - プロフィール更新成功
@@ -749,11 +815,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-              example:
-                message: 指定のメールアドレスは既に使用されています。
-                errors:
-                  email:
-                    - 指定のメールアドレスは既に使用されています。
+              examples:
+                '1':
+                  summary: アドレス重複
+                  value:
+                    message: 指定のメールアドレスは既に使用されています。
+                    errors:
+                      email:
+                        - 指定のメールアドレスは既に使用されています。
+                '2':
+                  summary: 未入力
+                  value:
+                    message: 名前は必須項目です。 (その他、1エラーあり)
+                    errors:
+                      name:
+                        - 名前は必須項目です。
+                      email:
+                        - メールアドレスは必須項目です。
+                '3':
+                  summary: 境界値
+                  value:
+                    message: 名前の文字数は、50文字以下である必要があります。 (その他、1エラーあり)
+                    errors:
+                      name:
+                        - 名前の文字数は、50文字以下である必要があります。
+                      email:
+                        - メールアドレスの文字数は、100文字以下である必要があります。
           headers: {}
       security: []
   /api/user/password:
@@ -1031,8 +1118,7 @@ paths:
             examples:
               '1':
                 value:
-                  token: >-
-                    f54e3363df2b50b36ea5efe4c02453673f16947ab5c2fdc27d79d790e5000cd6
+                  token: ''
                   email: tekisasu.bager@gmail.com
                   password: newpassword456
                   password_confirmation: newpassword456
@@ -1058,6 +1144,16 @@ paths:
                   password: newpassword456
                   password_confirmation: newpassword456
                 summary: トークンエラー
+              '5':
+                value:
+                  token: ''
+                  email: >-
+                    256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max2@testexample.com
+                  password: >-
+                    256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト2
+                  password_confirmation: >-
+                    256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト2
+                summary: エラー（境界値）
       responses:
         '200':
           description: OK - パスワードリセット成功
@@ -1108,7 +1204,7 @@ paths:
                       email:
                         - このメールアドレスに一致するユーザーがいません。
                 '2':
-                  summary: バリデーションエラー
+                  summary: 未入力
                   value:
                     message: tokenは必須項目です。 (その他、2エラーあり)
                     errors:
@@ -1125,6 +1221,13 @@ paths:
                     errors:
                       email:
                         - このパスワード再設定トークンは無効です。
+                '6':
+                  summary: 境界値
+                  value:
+                    message: パスワードの文字数は、255文字以下である必要があります。
+                    errors:
+                      password:
+                        - パスワードの文字数は、255文字以下である必要があります。
           headers: {}
       security: []
 components:
@@ -1188,7 +1291,5 @@ components:
               type: string
           properties: {}
   securitySchemes: {}
-servers:
-  - url: http://localhost:8000
-    description: 開発環境
+servers: []
 security: []

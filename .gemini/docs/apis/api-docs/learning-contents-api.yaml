@@ -804,6 +804,15 @@ paths:
                     - title: ''
                   startImmediately: false
                 summary: バリデーションエラー
+              '3':
+                value:
+                  technology_id: 1
+                  title: Laravel REST API開発
+                  description: RESTful APIの設計から実装まで
+                  sections:
+                    - title: 環境構築
+                  startImmediately: false
+                summary: 成功例2
       responses:
         '201':
           description: Created - 学習内容作成成功
@@ -818,17 +827,17 @@ paths:
                         type: string
               example:
                 data:
-                  id: 1008
-                  user_id: 1
+                  id: 1002
+                  user_id: 2
                   technology_id: 1
-                  title: Laravel REST API開発
-                  description: RESTful APIの設計から実装まで
+                  title: Apidocで学習内容作成
+                  description: これはApidocで学習内容作成を作成したテストレコードです
                   total_sections: 3
                   completed_sections: 0
                   status: not_started
                   completed_at: null
-                  created_at: '2025-09-25 13:40:50'
-                  updated_at: '2025-09-25 13:40:50'
+                  created_at: '2025-10-15 10:18:02'
+                  updated_at: '2025-10-15 10:18:02'
                   technology:
                     id: 1
                     name: Laravel
@@ -838,27 +847,27 @@ paths:
                       id: 1
                       name: Programming
                   sections:
-                    - id: 113
-                      learning_content_id: 1008
-                      title: 環境構築
+                    - id: 97
+                      learning_content_id: 1002
+                      title: Apidocのセクション1
                       order: 1
                       status: not_started
-                      created_at: '2025-09-25 13:40:50'
-                      updated_at: '2025-09-25 13:40:50'
-                    - id: 114
-                      learning_content_id: 1008
-                      title: ルーティング設定
+                      created_at: '2025-10-15 10:18:02'
+                      updated_at: '2025-10-15 10:18:02'
+                    - id: 98
+                      learning_content_id: 1002
+                      title: Apidocのセクション2
                       order: 2
                       status: not_started
-                      created_at: '2025-09-25 13:40:50'
-                      updated_at: '2025-09-25 13:40:50'
-                    - id: 115
-                      learning_content_id: 1008
-                      title: 認証機能実装
+                      created_at: '2025-10-15 10:18:02'
+                      updated_at: '2025-10-15 10:18:02'
+                    - id: 99
+                      learning_content_id: 1002
+                      title: Apidocのセクション3
                       order: 3
                       status: not_started
-                      created_at: '2025-09-25 13:40:50'
-                      updated_at: '2025-09-25 13:40:50'
+                      created_at: '2025-10-15 10:18:02'
+                      updated_at: '2025-10-15 10:18:02'
                 message: 学習内容を作成しました。
           headers: {}
         '401':
@@ -907,6 +916,13 @@ paths:
                     errors:
                       sections:
                         - セクションは最低1つ必要です。
+                '5':
+                  summary: 境界値
+                  value:
+                    message: タイトルの文字数は、50文字以下である必要があります。
+                    errors:
+                      title:
+                        - タイトルの文字数は、50文字以下である必要があります。
           headers: {}
       security: []
   /api/learning-contents/{id}:
@@ -1425,17 +1441,17 @@ paths:
             examples:
               '1':
                 value:
-                  technology_id: 2
-                  title: Vue.js 3 実践ガイド（改訂版）
-                  description: Vue.js 3のComposition APIとTypeScriptを使ったモダンなフロントエンド開発（2025年版）
+                  technology_id: 1
+                  title: Apidocで学習内容更新
+                  description: これはApidocで学習内容を更新したテストレコードです
                   status: in_progress
-                summary: 成功例1
+                summary: 成功例（更新）
               '2':
                 value:
                   technology_id: 1
-                  title: Laravel REST API開発
-                  description: RESTful APIの設計から実装まで
-                  status: not_started
+                  title: Apidocで学習内容作成
+                  description: これはApidocで学習内容を作成したテストレコードです
+                  status: in_progress
                 summary: 成功例（戻す）
               '3':
                 value:
@@ -1443,7 +1459,15 @@ paths:
                   title: ''
                   description: ''
                   status: null
-                summary: バリデーションエラー
+                summary: 未入力
+              '4':
+                value:
+                  technology_id: 1
+                  title: 51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト5
+                  description: >-
+                    501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字
+                  status: not_started
+                summary: 境界値
       responses:
         '200':
           description: OK - 学習内容更新成功
@@ -1458,27 +1482,25 @@ paths:
                         type: string
               examples:
                 '1':
-                  summary: 成功例
+                  summary: 成功例（更新）
                   value:
                     data:
-                      id: 1001
-                      user_id: 1
-                      technology_id: 2
-                      title: Vue.js 3 実践ガイド（改訂版）
-                      description: >-
-                        Vue.js 3のComposition
-                        APIとTypeScriptを使ったモダンなフロントエンド開発（2025年版）
+                      id: 1002
+                      user_id: 2
+                      technology_id: 1
+                      title: Apidocで学習内容更新
+                      description: これはApidocで学習内容を更新したテストレコードです
                       total_sections: 3
                       completed_sections: 0
                       status: in_progress
                       completed_at: null
-                      created_at: '2025-09-25 13:13:42'
-                      updated_at: '2025-09-25 14:21:02'
+                      created_at: '2025-10-15 10:24:45'
+                      updated_at: '2025-10-15 10:31:30'
                       technology:
-                        id: 2
-                        name: Vue.js
+                        id: 1
+                        name: Laravel
                         icon: >-
-                          http://localhost:8000/assets/icons/technologies/vue-icon.png
+                          http://localhost:8000/assets/icons/technologies/laravel-icon.png
                         category:
                           id: 1
                           name: Programming
@@ -1487,17 +1509,17 @@ paths:
                   summary: 成功例（戻す）
                   value:
                     data:
-                      id: 1001
-                      user_id: 1
+                      id: 1002
+                      user_id: 2
                       technology_id: 1
-                      title: Laravel REST API開発
-                      description: RESTful APIの設計から実装まで
+                      title: Apidocで学習内容作成
+                      description: これはApidocで学習内容を作成したテストレコードです
                       total_sections: 3
                       completed_sections: 0
-                      status: not_started
+                      status: in_progress
                       completed_at: null
-                      created_at: '2025-09-25 13:13:42'
-                      updated_at: '2025-09-25 14:21:19'
+                      created_at: '2025-10-15 10:24:45'
+                      updated_at: '2025-10-15 10:32:03'
                       technology:
                         id: 1
                         name: Laravel
@@ -1534,7 +1556,7 @@ paths:
                   summary: 成功例
                   value:
                     message: この学習内容を更新する権限がありません。
-                '7':
+                '6':
                   summary: 成功例
                   value:
                     message: This action is unauthorized.
@@ -1913,15 +1935,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-              example:
-                message: 技術には、整数を指定してください。 (その他、2エラーあり)
-                errors:
-                  technology_id:
-                    - 技術には、整数を指定してください。
-                  title:
-                    - タイトルには、文字列を指定してください。
-                  status:
-                    - 選択されたstatusは、有効ではありません。
+              examples:
+                '7':
+                  summary: 未入力
+                  value:
+                    message: 技術には、整数を指定してください。 (その他、2エラーあり)
+                    errors:
+                      technology_id:
+                        - 技術には、整数を指定してください。
+                      title:
+                        - タイトルには、文字列を指定してください。
+                      status:
+                        - 選択されたstatusは、有効ではありません。
+                '8':
+                  summary: 境界値
+                  value:
+                    message: タイトルの文字数は、50文字以下である必要があります。 (その他、1エラーあり)
+                    errors:
+                      title:
+                        - タイトルの文字数は、50文字以下である必要があります。
+                      description:
+                        - 説明の文字数は、500文字以下である必要があります。
           headers: {}
       security: []
     delete:
@@ -1936,7 +1970,7 @@ paths:
           in: path
           description: 学習内容ID
           required: true
-          example: 1001
+          example: 1002
           schema:
             type: integer
             example: 6
@@ -2379,7 +2413,9 @@ paths:
     put:
       summary: 学習内容完了
       deprecated: false
-      description: 指定したIDの学習内容を完了状態にします
+      description: |-
+        指定したIDの学習内容を完了状態にします
+        すべてのセクションが完了した学習内容でないとエラーになります
       operationId: completeLearningContent
       tags:
         - Learning Contents
@@ -2742,7 +2778,9 @@ paths:
     put:
       summary: 学習内容再開
       deprecated: false
-      description: 完了した学習内容を再開します
+      description: |-
+        完了した学習内容を再開します
+        すべてのセクションが完了した学習内容でないとエラーになります
       operationId: reopenLearningContent
       tags:
         - Learning Contents
