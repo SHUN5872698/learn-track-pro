@@ -785,15 +785,24 @@ paths:
               '1':
                 value:
                   technology_id: 1
-                  title: Laravel REST API開発
-                  description: RESTful APIの設計から実装まで
+                  title: Apidocで学習内容作成
+                  description: これはApidocで学習内容を作成したテストレコードです
                   sections:
-                    - title: 環境構築
-                    - title: ルーティング設定
-                    - title: 認証機能実装
+                    - title: Apidocのセクション1
+                    - title: Apidocのセクション2
+                    - title: Apidocのセクション3
                   startImmediately: false
-                summary: 成功例
+                summary: 複数セクション
               '2':
+                value:
+                  technology_id: 1
+                  title: Apidocで学習内容作成
+                  description: これはApidocで学習内容を作成したテストレコードです
+                  sections:
+                    - title: Apidocの単体セクション1
+                  startImmediately: false
+                summary: 単体セクション
+              '3':
                 value:
                   technology_id: ''
                   title: ''
@@ -803,16 +812,23 @@ paths:
                     - title: ''
                     - title: ''
                   startImmediately: false
-                summary: バリデーションエラー
-              '3':
+                summary: 未入力
+              '4':
                 value:
                   technology_id: 1
-                  title: Laravel REST API開発
-                  description: RESTful APIの設計から実装まで
+                  title: 51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト5
+                  description: >-
+                    501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字テスト501文字
+                  status: not_started
                   sections:
-                    - title: 環境構築
+                    - title: >-
+                        51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト5
+                    - title: >-
+                        51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト5
+                    - title: >-
+                        51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト5
                   startImmediately: false
-                summary: 成功例2
+                summary: 境界値
       responses:
         '201':
           description: Created - 学習内容作成成功
@@ -919,10 +935,18 @@ paths:
                 '5':
                   summary: 境界値
                   value:
-                    message: タイトルの文字数は、50文字以下である必要があります。
+                    message: タイトルの文字数は、50文字以下である必要があります。 (その他、4エラーあり)
                     errors:
                       title:
                         - タイトルの文字数は、50文字以下である必要があります。
+                      description:
+                        - 説明の文字数は、500文字以下である必要があります。
+                      sections.0.title:
+                        - セクションのタイトルの文字数は、50文字以下である必要があります。
+                      sections.1.title:
+                        - セクションのタイトルの文字数は、50文字以下である必要があります。
+                      sections.2.title:
+                        - セクションのタイトルの文字数は、50文字以下である必要があります。
           headers: {}
       security: []
   /api/learning-contents/{id}:
