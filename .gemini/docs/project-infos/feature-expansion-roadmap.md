@@ -54,13 +54,27 @@ APIファーストアプローチによるMVP完成後の追加機能拡張計�
 
 ## Phase 1: UI/UXレイアウト改善（Phase 0完了後）
 
-### 1-1. 削除確認モーダルの改善
+### 1-1. 削除確認モーダルの改善（実装断念）
 
-必須度: ★★★★★
+必須度: ★★★★★ → 実装断念
 
 理由: stash済みコードの早期マージ、ユーザー体験向上
 
-仕様概要:
+**断念理由:**
+
+- Vue TransitionGroupの技術的制約
+    - ページネーション切替時と削除時のアニメーションを区別できない
+    - 配列の変化（ページ切替・削除）を両方検知してアニメーションが発火
+- 解決にはコンポーネント設計の根本変更が必要
+    - Pagination.vueの責務拡大（ボタン表示のみ → ページネーション全体管理）
+    - または新規コンポーネント作成（PaginatedList.vue等）
+    - いずれも単一責任原則に反し、保守性が低下
+- 影響範囲が広すぎる
+    - Reports.vue、StudyProgress.vue、SectionStudyRecords.vue等、全てのページネーション使用箇所の修正が必要
+    - 工数対効果が悪い
+- デプロイ優先のため断念
+
+**当初の仕様概要（未実装）:**
 
 - stash済みVueアニメーション実装のマージ
 - 削除対象の詳細情報表示改善
@@ -74,7 +88,7 @@ APIファーストアプローチによるMVP完成後の追加機能拡張計�
 - resources/js/components/learning/DeleteRecordConfirmModal.vue
 - resources/js/components/common/ConfirmModal.vue
 
-工数見積: 0.5日
+工数見積: 0.5日 → 実装断念
 
 ### 1-2. textarea入力文字数表示
 
