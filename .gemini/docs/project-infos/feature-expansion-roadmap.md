@@ -90,7 +90,7 @@ APIファーストアプローチによるMVP完成後の追加機能拡張計�
 
 工数見積: 0.5日 → 実装断念
 
-### 1-2. textarea入力文字数表示
+### 1-2. textarea入力文字数表示（完了）
 
 必須度: ★★★★☆
 
@@ -107,44 +107,6 @@ APIファーストアプローチによるMVP完成後の追加機能拡張計�
 - resources/js/components/learning/StudySessionFormFields.vue（メモ）
 - resources/js/views/learning/LearningContentCreate.vue（概要）
 - resources/js/views/learning/LearningContentEdit.vue（概要）
-
-工数見積: 0.5日
-
-### 1-3. ページネーションの表示調整
-
-必須度: ★★★★☆
-
-理由: レスポンシブ対応で必須、モバイル表示の最適化
-
-仕様概要:
-
-- モバイル表示時の簡易化（ページ番号の省略）
-- ページ番号の表示数調整（デスクトップ: 5個、モバイル: 3個）
-- 前後ボタンの視認性向上
-
-対象ファイル:
-
-- resources/js/components/common/Pagination.vue
-
-工数見積: 0.5日
-
-### 1-4. 空状態（Empty State）の改善
-
-必須度: ★★★☆☆
-
-理由: エラーハンドリングと関連、ユーザーガイダンス向上
-
-仕様概要:
-
-- データなし時の表示改善（アイコン、メッセージ）
-- アクションボタンの配置最適化
-- エラー状態と空状態の明確な区別
-
-対象ファイル:
-
-- resources/js/views/Dashboard.vue
-- resources/js/views/learning/LearningContentDetail.vue
-- resources/js/views/learning/SectionStudyRecords.vue
 
 工数見積: 0.5日
 
@@ -172,6 +134,24 @@ APIファーストアプローチによるMVP完成後の追加機能拡張計�
 - ブレークポイント調整
 
 工数見積: 2-3日
+
+### 2-2. ページネーションの表示調整
+
+必須度: ★★★★☆
+
+理由: レスポンシブ対応で必須、モバイル表示の最適化
+
+仕様概要:
+
+- モバイル表示時の簡易化（ページ番号の省略）
+- ページ番号の表示数調整（デスクトップ: 5個、モバイル: 3個）
+- 前後ボタンの視認性向上
+
+対象ファイル:
+
+- resources/js/components/common/Pagination.vue
+
+工数見積: 0.5日
 
 ---
 
