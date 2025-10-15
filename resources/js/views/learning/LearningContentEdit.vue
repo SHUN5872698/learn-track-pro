@@ -50,7 +50,7 @@
           />
         </div>
 
-        <!-- 内容入力フィールド -->
+        <!-- 学習メモ入力テキストエリア -->
         <div>
           <label for="description" class="block text-sm font-medium text-slate-700">概要</label>
           <textarea
@@ -64,6 +64,9 @@
             v-model="form.description"
             @input="descriptionModified = true"
           ></textarea>
+          <p class="mt-1 text-xs" :class="descriptionIsOverLimit ? 'text-red-500 font-medium' : 'text-gray-500'">
+            {{ descriptionCounterText }}
+          </p>
         </div>
 
         <!-- 学習ステータス -->
@@ -230,7 +233,7 @@ import WizardNavigation from '@/components/learning/wizard/WizardNavigation.vue'
 import WizardStepIndicator from '@/components/learning/wizard/WizardStepIndicator.vue';
 
 // バリデーションルール
-import { validateTechnology, validateTitle, validateDescription, validateSections } from '@/validators/learningContentValidator';
+import { validateTechnology, validateTitle, validateDescription, validateSections, LEARNING_CONTENT_VALIDATION_RULES } from '@/validators/learningContentValidator';
 
 // ========================================
 // ユーティリティ関数
@@ -324,6 +327,7 @@ const showSuccessToast = ref(false);
 const isSubmitting = ref(false);
 
 // 定数
+const MAX_TEXTAREA_LENGTH = LEARNING_CONTENT_VALIDATION_RULES.DESCRIPTION_MAX_LENGTH;
 const toastDuration = 2000; // 通知を表示させる時間
 
 // ========================================
@@ -404,6 +408,11 @@ const sectionChanges = computed(() => {
     };
   });
 });
+
+// 文字数カウント
+const descriptionLength = computed(() => form.description?.length || 0);
+const descriptionIsOverLimit = computed(() => descriptionLength.value > MAX_TEXTAREA_LENGTH);
+const descriptionCounterText = computed(() => `${descriptionLength.value}/${MAX_TEXTAREA_LENGTH}文字`);
 
 // ========================================
 // ライフサイクル

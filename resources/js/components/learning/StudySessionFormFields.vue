@@ -56,8 +56,10 @@
         v-model="localForm.memo"
         @input="$emit('memo-modified')"
       ></textarea>
+      <p class="mt-1 text-xs" :class="memoIsOverLimit ? 'text-red-500 font-medium' : 'text-gray-500'">
+        {{ memoCounterText }}
+      </p>
     </div>
-
     <!-- 学習中の調子評価スターアイコン -->
     <div>
       <label class="block text-sm font-medium text-slate-700">学習中の調子</label>
@@ -78,10 +80,14 @@ import { StarIcon, CalendarIcon, ClockIcon } from '@heroicons/vue/24/solid';
 // ========================================
 // 内部インポート
 // ========================================
+// コンポーネント
 import SectionSelector from '@/components/common/SectionSelector.vue';
 
+// バリデーションルール
+import { STUDY_SESSION_VALIDATION_RULES } from '@/validators/studySessionValidator.js';
+
 // ========================================
-// Props & Emits
+// 初期設定
 // ========================================
 const props = defineProps({
   modelValue: Object,
@@ -100,12 +106,23 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'openDateModal', 'openTimeModal', 'resetTimeToNow', 'section-modified', 'duration-modified', 'memo-modified', 'studied-at-modified']);
 
 // ========================================
+// 状態管理
+// ========================================
+// 定数
+const MAX_TEXTAREA_LENGTH = STUDY_SESSION_VALIDATION_RULES.MAX_MEMO_LENGTH;
+
+// ========================================
 // 算出プロパティ
 // ========================================
 const localForm = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value),
 });
+
+// 文字数カウント
+const memoLength = computed(() => localForm.value?.memo?.length || 0);
+const memoIsOverLimit = computed(() => memoLength.value > MAX_TEXTAREA_LENGTH);
+const memoCounterText = computed(() => `${memoLength.value}/${MAX_TEXTAREA_LENGTH}文字`);
 
 // ========================================
 // メソッド
