@@ -6,7 +6,7 @@
         <div class="flex items-center">
           <div class="flex-shrink-0">
             <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-violet-100 to-violet-200 rounded-xl">
-              <BookOpenIcon class="text-lg text-violet-600" />
+              <BookOpenIcon class="w-5 h-5 text-violet-600" />
             </div>
           </div>
           <div class="ml-4">

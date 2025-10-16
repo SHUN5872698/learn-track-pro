@@ -3,7 +3,7 @@
   <DashboardLayout>
     <template #header-title>学習ダッシュボード</template>
     <template #header-action>
-      <BaseButton variant="primary" :left-icon="PlusCircleIcon" @click="goToCreatePage">学習を追加</BaseButton>
+      <BaseButton variant="primary" :left-icon="PlusCircleIcon" @click="goToCreatePage" class="ml-auto">学習を追加</BaseButton>
     </template>
     <template #header-description>あなたの学習進捗を管理・追跡します</template>
 
@@ -17,22 +17,22 @@
 
       <!-- 進行中の学習コンテンツをカード形式で表示するセクション -->
       <div class="mb-6">
-        <h3 class="mb-4 text-xl font-semibold text-slate-900">進行中の学習</h3>
-        <div v-if="inProgressContents.length > 0" class="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+        <h3 class="mb-4 text-lg font-semibold md:text-xl text-slate-900">進行中の学習</h3>
+        <div v-if="inProgressContents.length > 0" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           <LearningContentCard v-for="content in inProgressContents" :key="content.id" :content="content" />
         </div>
-        <div v-else class="py-10 text-center text-slate-500">
+        <div v-else class="py-8 text-center md:py-10 text-slate-500">
           <p>進行中の学習コンテンツはありません。</p>
         </div>
       </div>
 
       <!-- 完了した学習コンテンツをカード形式で表示するセクション -->
       <div class="pt-6 mb-6 border-t border-slate-200">
-        <h3 class="mb-4 text-xl font-semibold text-slate-900">完了した学習</h3>
-        <div v-if="completedContents.length > 0" class="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+        <h3 class="mb-4 text-lg font-semibold md:text-xl text-slate-900">完了した学習</h3>
+        <div v-if="completedContents.length > 0" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
           <LearningContentCard v-for="content in completedContents" :key="content.id" :content="content" />
         </div>
-        <div v-else class="py-10 text-center text-slate-500">
+        <div v-else class="py-8 text-center md:py-10 text-slate-500">
           <p>完了した学習コンテンツはありません。</p>
         </div>
       </div>
