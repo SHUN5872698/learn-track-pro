@@ -1,0 +1,642 @@
+## 1. ログイン
+
+```markdown
+Playwright MCPを使ってLearnTrack Proにログインしてください。
+
+## 手順
+
+1. **ログインページにアクセス**
+   - URL: http://localhost:8000/login
+   - ページが完全に読み込まれるまで待機してください
+
+2. **browser_fill_formツールを使用してログイン**
+   - 以下の認証情報を一度に入力：
+     * メールアドレス: [test01@example.com](mailto:test01@example.com)
+     * パスワード: password
+   - browser_fill_formツールで両方のフィールドを同時に設定してください
+
+3. **ログインボタンをクリック**
+   - ボタンのテキスト: "ログイン"
+   - クリック後、ダッシュボードへのリダイレクトを待機
+
+4. **ログイン成功の確認**
+   - URL が http://localhost:8000/dashboard に変わることを確認
+   - ページタイトルが "LearnTrack Pro" であることを確認
+   - "学習ダッシュボード" の見出しが表示されていることを確認
+
+5. **ブラウザを開いたまま維持**
+   - ログイン状態を保持するため、ブラウザを閉じないでください
+
+## 注意事項
+- browser_typeではなく、browser_fill_formを使用してください（入力の安定性のため）
+- 各ステップ後は必ずページの状態を確認してください
+```
+
+---
+
+## 2. スクリーンショット撮影
+
+### 2-1. 単体ページ撮影用（トラブルシューティング）
+
+特定のページのみを撮影する際に使用します。
+
+```markdown
+現在のブラウザでログイン状態を維持したまま、以下の手順でスクリーンショットを撮影してください。
+
+---
+
+## 📱 撮影設定
+
+### デバイスサイズ
+
+以下の各サイズで撮影します：
+
+1. **デスクトップ**: 1280×800
+   - ファイル名プレフィックス: `desktop-`
+
+2. **モバイル**: 375×667
+   - ファイル名プレフィックス: `mobile-`
+
+### 撮影の流れ
+
+1. デスクトップサイズ（1280×800）に設定
+2. 対象ページを撮影
+3. モバイルサイズ（375×667）に設定
+4. 対象ページを撮影
+
+合計2枚のスクリーンショットが生成されます。
+
+---
+
+## 🖥️ Phase 1: デスクトップサイズでの撮影
+
+### ステップ0: ウィンドウサイズ設定
+
+**最初に一度だけ実行**:
+- `browser_resize`ツールを使用
+- 幅: 1280ピクセル
+- 高さ: 800ピクセル
+
+### 撮影対象ページと手順
+
+**重要**: 各ページで必ず以下の順序で実行してください：
+1. ページに移動
+2. 5秒間待機（SPAのレンダリング完了を待つ）
+3. 対象要素が表示されていることを確認
+4. スクリーンショット撮影
+
+---
+
+#### [ページ名]ページ
+
+**手順**:
+1. ページに移動: [URL]
+2. 5秒間待機してください
+3. [確認すべき要素]が表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-[page-name].png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
+
+---
+
+【使用例：ダッシュボードページ】
+
+#### ダッシュボードページ
+
+**手順**:
+1. ページに移動: http://localhost:8000/dashboard
+2. 5秒間待機してください
+3. 「学習ダッシュボード」の見出しまたは学習カードが表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-dashboard.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
+
+---
+
+## 📱 Phase 2: モバイルサイズでの撮影
+
+### ステップ0: ウィンドウサイズ変更
+
+**デスクトップ撮影完了後に実行**:
+- `browser_resize`ツールを使用
+- 幅: 375ピクセル
+- 高さ: 667ピクセル
+
+### 撮影対象ページと手順
+
+Phase 1と同じページを、同じ手順で撮影します。
+**ファイル名と保存先のみが異なります**：
+
+#### [ページ名]ページ
+- ファイル名: **mobile-[page-name].png**
+- 保存先: .playwright-mcp/phase2-responsive/2025-10-16/mobile/
+
+---
+
+## ⚙️ 重要な注意事項
+
+- **必ず5秒間待機してください**（Vue.jsのレンダリングに時間がかかるため）
+- スクリーンショット前に`browser_snapshot`でコンテンツの存在を確認してください
+- もし白い画面が表示された場合は、さらに3秒待機してから再度スクリーンショットを撮影してください
+- **ウィンドウサイズの変更は各Phaseの最初に1回だけ**実行してください
+
+---
+
+## ✅ 完了確認
+
+### 生成されるファイル一覧
+
+**デスクトップ（1枚）**:
+- desktop-[page-name].png
+
+**モバイル（1枚）**:
+- mobile-[page-name].png
+
+**合計**: 2枚のスクリーンショット
+
+撮影完了後、ファイル名とパスを報告してください。
+```
+
+### 2-2. Phase 2全画面一括撮影用
+
+Phase 2の8画面すべてを一度に撮影する際に使用します。
+
+```markdown
+現在のブラウザでログイン状態を維持したまま、以下の手順でスクリーンショットを撮影してください。
+
+---
+
+## 📱 撮影設定
+
+### デバイスサイズ
+
+以下の各サイズで、全8画面のスクリーンショットを撮影します：
+
+1. **デスクトップ**: 1280×800
+   - ファイル名プレフィックス: `desktop-`
+
+2. **モバイル**: 375×667
+   - ファイル名プレフィックス: `mobile-`
+
+### 撮影の流れ
+
+1. デスクトップサイズ（1280×800）に設定
+2. 全8ページを撮影
+3. モバイルサイズ（375×667）に設定
+4. 全8ページを撮影
+
+**合計16枚のスクリーンショット**が生成されます。
+
+---
+
+## 🖥️ Phase 1: デスクトップサイズでの撮影
+
+### ステップ0: ウィンドウサイズ設定
+
+**最初に一度だけ実行**:
+- `browser_resize`ツールを使用
+- 幅: 1280ピクセル
+- 高さ: 800ピクセル
+
+### 撮影対象ページと手順
+
+**重要**: 各ページで必ず以下の順序で実行してください：
+1. ページに移動
+2. 5秒間待機（SPAのレンダリング完了を待つ）
+3. 対象要素が表示されていることを確認
+4. スクリーンショット撮影
+
+---
+
+#### 1. ダッシュボード
+
+**手順**:
+1. ページに移動: http://localhost:8000/dashboard
+2. 5秒間待機してください
+3. 「学習ダッシュボード」の見出しまたは学習カードが表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-dashboard.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
+
+---
+
+#### 2. 学習内容詳細
+
+**手順**:
+1. ページに移動: http://localhost:8000/learning-contents/1000
+   - **注意**: 学習コンテンツID=1000を使用してください
+2. 5秒間待機してください
+3. セクション一覧が表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-learning-content-detail.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
+
+---
+
+#### 3. 学習内容作成
+
+**手順**:
+1. ページに移動: http://localhost:8000/learning-contents/create
+2. 5秒間待機してください
+3. 「新しい学習内容の作成」の見出しが表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-learning-content-create.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
+
+---
+
+#### 4. 学習記録作成
+
+**手順**:
+1. ページに移動: http://localhost:8000/learning-contents/1000/sessions/create
+2. 5秒間待機してください
+3. 「学習記録の追加」の見出しが表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-study-session-create.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
+
+---
+
+#### 5. 全体レポート
+
+**手順**:
+1. ページに移動: http://localhost:8000/reports
+2. 5秒間待機してください
+3. 「学習レポート」の見出しまたは統計カードが表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-reports.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
+
+---
+
+#### 6. 個別レポート
+
+**手順**:
+1. ページに移動: http://localhost:8000/learning-contents/1000/progress
+   - **注意**: 学習コンテンツID=1000を使用してください
+2. 5秒間待機してください
+3. 「個別レポート」の見出しまたは「日別学習時間」グラフが表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-study-progress.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
+
+---
+
+#### 7. セクション別記録
+
+**手順**:
+1. ページに移動: http://localhost:8000/sections/86/sessions
+   - **注意**: セクションID=86は学習記録が複数件存在するため確認に最適です
+2. 5秒間待機してください
+3. 「学習記録一覧」または「このセクションに記録を追加」ボタンが表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-section-records.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
+
+---
+
+#### 8. プロフィール
+
+**手順**:
+1. ページに移動: http://localhost:8000/profile
+2. 5秒間待機してください
+3. 「プロフィール」の見出しまたはユーザー情報が表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-profile.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
+
+---
+
+## 📱 Phase 2: モバイルサイズでの撮影
+
+### ステップ0: ウィンドウサイズ変更
+
+**デスクトップ撮影完了後に実行**:
+- `browser_resize`ツールを使用
+- 幅: 375ピクセル
+- 高さ: 667ピクセル
+
+### 撮影対象ページと手順
+
+Phase 1と同じ8ページを、同じ手順で撮影します。
+**ファイル名と保存先のみが異なります**：
+
+#### 撮影対象一覧
+
+1. **ダッシュボード**
+   - ファイル名: **mobile-dashboard.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/mobile/
+
+2. **学習内容詳細**
+   - ファイル名: **mobile-learning-content-detail.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/mobile/
+
+3. **学習内容作成**
+   - ファイル名: **mobile-learning-content-create.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/mobile/
+
+4. **学習記録作成**
+   - ファイル名: **mobile-study-session-create.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/mobile/
+
+5. **全体レポート**
+   - ファイル名: **mobile-reports.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/mobile/
+
+6. **個別レポート**
+   - ファイル名: **mobile-study-progress.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/mobile/
+
+7. **セクション別記録**
+   - ファイル名: **mobile-section-records.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/mobile/
+
+8. **プロフィール**
+   - ファイル名: **mobile-profile.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/mobile/
+
+---
+
+## ⚙️ 重要な注意事項
+
+- **必ず5秒間待機してください**（Vue.jsのレンダリングに時間がかかるため）
+- スクリーンショット前に`browser_snapshot`でコンテンツの存在を確認してください
+- もし白い画面が表示された場合は、さらに3秒待機してから再度スクリーンショットを撮影してください
+- **ウィンドウサイズの変更は各Phaseの最初に1回だけ**実行してください
+
+---
+
+## ✅ 完了確認
+
+### 生成されるファイル一覧
+
+**デスクトップ（8枚）**:
+- desktop-dashboard.png
+- desktop-learning-content-detail.png
+- desktop-learning-content-create.png
+- desktop-study-session-create.png
+- desktop-reports.png
+- desktop-study-progress.png
+- desktop-section-records.png
+- desktop-profile.png
+
+**モバイル（8枚）**:
+- mobile-dashboard.png
+- mobile-learning-content-detail.png
+- mobile-learning-content-create.png
+- mobile-study-session-create.png
+- mobile-reports.png
+- mobile-study-progress.png
+- mobile-section-records.png
+- mobile-profile.png
+
+**合計**: 16枚のスクリーンショット
+
+撮影完了後、ファイル名とパスを報告してください。
+```
+
+### 2-3. ファイル管理構造
+
+スクリーンショットは以下の構造で保存されます：
+
+```
+.playwright-mcp/
+└── phase2-responsive/
+    └── 2025-10-16/          # 撮影日付（YYYY-MM-DD）
+        ├── desktop/
+        │   ├── dashboard.png
+        │   ├── learning-content-detail.png
+        │   ├── learning-content-create.png
+        │   ├── study-session-create.png
+        │   ├── reports.png
+        │   ├── study-progress.png
+        │   ├── section-records.png
+        │   └── profile.png
+        ├── mobile/
+        │   ├── dashboard.png
+        │   ├── learning-content-detail.png
+        │   ├── learning-content-create.png
+        │   ├── study-session-create.png
+        │   ├── reports.png
+        │   ├── study-progress.png
+        │   ├── section-records.png
+        │   └── profile.png
+        └── analysis/
+            └── [gemini-report.md](http://gemini-report.md)  # Gemini CLIの分析結果
+```
+
+---
+
+## 3. レイアウト問題分析プロンプト
+
+スクリーンショットを基にレイアウトの問題を分析します。
+
+```markdown
+添付画像を見て、レイアウトの問題を分析してください。
+
+### スクリーンショット
+- `.playwright-mcp/phase2-responsive/2025-10-16/[device]/[filename].png`
+
+---
+
+## チェック項目
+
+### 1. テキスト表示
+- [ ] 長文が適切に折り返されているか
+- [ ] テキストが要素からはみ出していないか
+- [ ] 改行が正しく表示されているか
+- [ ] フォントサイズは適切か
+
+### 2. 要素の配置
+- [ ] ボタンやアイコンが見える位置にあるか
+- [ ] 要素同士が重なっていないか
+- [ ] 要素が意図しない位置に落ちていないか
+- [ ] 余白は適切か
+
+### 3. レスポンシブ対応
+- [ ] カード内の要素が適切に収まっているか
+- [ ] 横幅が制限されすぎていないか
+- [ ] 縦方向のスペースは適切か
+
+### 4. 視覚的な区別
+- [ ] 異なる情報が明確に区別できるか
+- [ ] 背景色やボーダーは適切か
+- [ ] 重要な情報が目立っているか
+
+### 5. ユーザビリティ
+- [ ] クリック可能な要素が明確か
+- [ ] 情報の優先順位が視覚的に表現されているか
+- [ ] スクロールなしで重要情報が見えるか
+
+### 6. TailwindCSS レスポンシブクラスの妥当性
+- [ ] 現在のブレークポイントクラス（md:, lg:）は適切か
+- [ ] hidden/block の切り替えは意図通りか
+- [ ] flex の方向（flex-col/flex-row）は適切か
+- [ ] グリッドのカラム数は適切か
+
+### 7. タッチ操作への配慮（モバイルのみ）
+- [ ] ボタンのタップエリアは十分か（44×44px以上推奨）
+- [ ] スワイプ/スクロール領域は明確か
+- [ ] ホバー効果に依存していないか
+
+### 8. パフォーマンス
+- [ ] 画像の読み込みは適切か
+- [ ] 不要な要素が非表示になっているか
+
+### 9. Phase 2 特有の確認（レスポンシブ対応）
+- [ ] ハンバーガーメニューは適切に表示されているか（モバイルのみ）
+- [ ] サイドバーは適切に非表示/表示されているか
+- [ ] カードのカラム数は適切か（デスクトップ: 2-3列、モバイル: 1列）
+- [ ] ページネーションの表示数は適切か（デスクトップ: 5個、モバイル: 3個）
+- [ ] フォームの幅は適切か（モバイル: フル幅、デスクトップ: max-w-2xl等）
+
+---
+
+## 報告形式
+
+以下の形式で報告してください：
+
+### 発見した問題
+1. **問題のカテゴリ**：具体的な問題の説明
+2. **問題のカテゴリ**：具体的な問題の説明
+
+### 影響度
+- 致命的：使用に支障がある
+- 高：ユーザー体験を大きく損なう
+- 中：改善が望ましい
+- 低：軽微な問題
+
+### 推奨される対応
+問題を解決するために必要な変更を簡潔に説明してください。
+
+---
+
+分析を開始してください。
+```
+
+### 使用例
+
+**シンプルな依頼（Before）**:
+
+```markdown
+添付: desktop-dashboard.png
+
+この画像のレイアウト問題を分析してください。
+```
+
+**詳細な依頼（After）**:
+
+```markdown
+添付: desktop-dashboard.png
+
+[上記の汎用プロンプトを貼り付け]
+```
+
+### 期待される出力例
+
+```markdown
+### 発見した問題
+1. **要素の配置**：学習カードが3カラムで表示されているが、1280px幅では窮屈に見える
+2. **レスポンシブ対応**：md:grid-cols-3ではなく、md:grid-cols-2 lg:grid-cols-3が適切
+3. **Phase 2 特有の確認**：ハンバーガーメニューがデスクトップサイズで表示されている（モバイル専用にすべき）
+
+### 影響度
+- 高：カードの窮屈さがユーザー体験を損なう（中）
+- 高：ハンバーガーメニューの誤表示（高）
+
+### 推奨される対応
+- カードグリッドを `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` に変更
+- ハンバーガーメニューを `block md:hidden` に変更
+- サイドバーを `hidden md:block` に変更
+```
+
+---
+
+## 4. Claude への引き継ぎテンプレート
+
+Gemini CLIの分析完了後、Claudeに修正を依頼する際のテンプレート：
+
+```markdown
+## レイアウト修正依頼
+
+### 対象ページ
+- ファイルパス: resources/js/views/[path]/[filename].vue
+- ルート: [例: /dashboard, /reports]
+- デバイスサイズ: [モバイル/デスクトップ/両方]
+
+### Gemini CLIの分析結果
+[Gemini CLIの出力をコピペ]
+
+### 現在のコード
+\`\`\`vue
+[該当コードを貼り付け]
+\`\`\`
+
+### 関連コンポーネント
+- [例: components/common/Pagination.vue]
+- [例: components/learning/LearningContentCard.vue]
+
+### 実装時の制約（Phase 2方針）
+- TailwindCSS のみ使用（カスタムCSSは最小限）
+- 2サイズ戦略（モバイル vs デスクトップ、md:プレフィックスのみ）
+- sm:プレフィックスは使用しない
+- タブレット専用調整はしない
+- 既存のコンポーネント構造を維持
+- Composition API パターンを踏襲
+- タッチ操作への配慮（ボタン最低44×44px）
+
+### 期待する対応
+上記の問題を修正してください。
+
+### 検証方法
+修正後、以下のサイズで再度スクリーンショット撮影して確認：
+- 375×667（モバイル）
+- 1280×800（デスクトップ）
+```
+
+---
+
+## 5. 修正後の確認プロンプト
+
+修正完了後、Before/After比較用のスクリーンショットを撮影します。
+
+```markdown
+修正完了後、以下を厳密に実行してください：
+
+## Before/After 比較撮影
+
+### デスクトップ（1280×800）
+1. ブラウザサイズ: 1280×800
+2. ページ移動: [URL]
+3. 5秒待機
+4. スクリーンショット撮影: `desktop-[page-name]-AFTER.png`
+5. 保存先: .playwright-mcp/phase2-responsive/2025-10-16/after/desktop/
+
+### モバイル（375×667）
+1. ブラウザサイズ: 375×667
+2. ページ移動: [URL]
+3. 5秒待機
+4. スクリーンショット撮影: `mobile-[page-name]-AFTER.png`
+5. 保存先: .playwright-mcp/phase2-responsive/2025-10-16/after/mobile/
+
+## 確認項目
+
+**撮影した画像を見て以下を確認**:
+- [ ] 指摘された問題が改善されているか
+- [ ] 新たなレイアウト崩れが発生していないか
+- [ ] モバイル/デスクトップ両方で適切に表示されているか
+- [ ] タッチ操作可能な要素のサイズは十分か（モバイル）
+
+確認結果を報告してください。
+```
+
+---
+
+## 更新履歴
+
+- 2025-10-16: Phase 2対応版に全面改訂
+    - 8画面一括撮影プロンプト追加
+    - ファイル管理構造の統一
+    - Phase 2特有のチェック項目追加
+    - Claude引き継ぎテンプレートの強化
+    - デスクトップサイズを1280×800に変更
