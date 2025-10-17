@@ -8,43 +8,43 @@
   <DetailLayout v-else>
     <!-- パンくずリスト -->
     <template #breadcrumb>
-      <nav class="flex items-center text-sm text-slate-500">
+      <nav class="flex items-center text-xs md:text-sm text-slate-500">
         <router-link to="/dashboard" class="flex items-center font-medium text-violet-600 hover:text-violet-800 hover:underline">
           <ArrowLeftIcon class="w-4 h-4 mr-1" />
           ダッシュボード
         </router-link>
         <span class="mx-2">/</span>
-        <span>{{ learningContent ? learningContent.title : '' }}</span>
+        <span> {{ learningContent ? learningContent.title : '' }} </span>
       </nav>
     </template>
 
     <!-- セクションヘッダー -->
     <template #section-header>
-      <h2 class="mb-2 text-2xl font-bold text-slate-800">{{ learningContent ? learningContent.title : '' }}</h2>
+      <h2 class="mb-2 text-xl font-bold md:text-2xl text-slate-800">{{ learningContent ? learningContent.title : '' }}</h2>
       <div v-if="learningContent" class="text-slate-600">
-        <!-- 技術とステータス情報 -->
-        <div class="flex items-center space-x-4 text-xs font-medium md:text-sm">
+        <!-- 1. 技術とステータス情報（修正：モバイルで縦並び） -->
+        <div class="flex flex-col space-y-2 text-xs font-medium md:flex-row md:items-center md:space-y-0 md:space-x-4 md:text-sm">
           <div class="flex items-center space-x-1">
             <span>技術:</span>
             <img v-if="displayTechnology.icon" :src="displayTechnology.icon" :alt="displayTechnology.name" class="w-5 h-5 mr-1" />
             <span>{{ displayTechnology.name }}</span>
           </div>
-          <div class="flex items-center space-x-1 text-xs font-medium md:text-sm">
+          <div class="flex items-center space-x-1">
             <span>ステータス:</span>
-            <div class="flex items-center text-xs font-medium md:text-sm" :class="statusDisplay.class">
+            <div class="flex items-center" :class="statusDisplay.class">
               <component :is="statusDisplay.icon" class="w-5 h-5 mr-1" />
               {{ statusDisplay.text }}
             </div>
           </div>
         </div>
-        <div class="flex items-center mt-2 space-x-4">
-          <span class="text-xs font-medium md:text-sm">作成日: {{ formatDate(learningContent.created_at) }}</span>
-          <span class="text-xs font-medium md:text-sm">最終学習日: {{ learningContent.latestSessionUpdatedAt ? formatDate(learningContent.latestSessionUpdatedAt) : '-' }}</span>
+        <div class="flex flex-col mt-2 space-y-1 text-xs font-medium md:flex-row md:items-center md:space-y-0 md:space-x-4 md:text-sm">
+          <span>作成日: {{ formatDate(learningContent.created_at) }}</span>
+          <span>最終学習日: {{ learningContent.latestSessionUpdatedAt ? formatDate(learningContent.latestSessionUpdatedAt) : '-' }}</span>
         </div>
         <!-- 説明セクション -->
         <div class="mt-4">
-          <h3 class="mb-2 text-lg font-semibold text-slate-800">概要:</h3>
-          <p class="break-words whitespace-pre-wrap text-slate-600">{{ learningContent.description }}</p>
+          <h3 class="mb-2 text-base font-semibold md:text-lg text-slate-800">概要:</h3>
+          <p class="text-sm break-words whitespace-pre-wrap md:text-base text-slate-600">{{ learningContent.description }}</p>
         </div>
       </div>
     </template>
@@ -55,26 +55,30 @@
       <div class="mb-6">
         <div class="flex items-center justify-between mb-2">
           <span class="text-sm font-medium text-slate-700">進捗</span>
-          <span class="text-sm font-semibold text-transparent bg-gradient-to-r from-violet-600 to-emerald-600 bg-clip-text">{{ learningContent.progress }}%</span>
+          <span class="text-sm font-semibold text-transparent bg-gradient-to-r from-violet-600 to-emerald-600 bg-clip-text"> {{ learningContent.progress }} %</span>
         </div>
         <div class="w-full h-3 rounded-full bg-slate-200">
           <div class="h-3 transition-all duration-500 rounded-full shadow-sm bg-gradient-to-r from-violet-500 to-emerald-500" :style="{ width: learningContent.progress + '%' }"></div>
         </div>
-        <div class="flex items-center justify-between mt-2 text-sm text-slate-600">
-          <span>{{ learningContent.completed_sections }}/{{ learningContent.total_sections }} セクション完了</span>
-          <span class="flex items-center">
-            <ClockIcon class="w-4 h-4 mr-1 text-slate-400" />
+        <!-- 進捗バーの下にセクション数と総学習時間を表示（修正：モバイルで縦並び） -->
+        <div class="flex flex-col items-start gap-2 mt-3 text-xs md:flex-row md:items-center md:justify-between md:text-sm text-slate-600">
+          <div class="flex items-center space-x-1">
+            <span class="font-medium text-violet-600"> {{ learningContent.completed_sections }} </span>
+            / {{ learningContent.total_sections }} セクション完了
+          </div>
+          <div class="flex items-center space-x-1">
+            <ClockIcon class="w-4 h-4" />
             総学習時間: {{ formatMinutes(learningContent.totalStudyMinutes) }}
-          </span>
+          </div>
         </div>
       </div>
 
       <!-- セクション一覧 -->
       <div>
-        <h3 class="mb-2 text-lg font-semibold text-slate-800">セクション一覧</h3>
+        <h3 class="mb-2 text-base font-semibold md:text-lg text-slate-800">セクション一覧</h3>
 
         <!-- 完了状態切り替えのヒント（セクション一覧の直下） -->
-        <div class="flex items-center mb-4 text-sm text-slate-500">
+        <div class="flex items-center mb-4 text-xs md:text-sm text-slate-500">
           <LightBulbIcon class="w-5 h-5 mr-2 text-yellow-500" />
           <span>チェックマークをクリックすると完了状態を切り替えられます。</span>
         </div>
@@ -88,13 +92,13 @@
 
         <div v-if="contentSections.length > 0">
           <ul class="space-y-3">
-            <li v-for="section in paginatedContentSections" :key="section.id" class="flex items-center justify-between p-4 transition-all duration-200 bg-white border rounded-lg shadow-sm hover:shadow-md hover:border-violet-300">
-              <div class="flex items-center flex-1">
+            <li v-for="section in paginatedContentSections" :key="section.id" class="flex flex-col p-4 space-y-3 transition-all duration-200 bg-white border rounded-lg shadow-sm md:flex-row md:items-center md:justify-between md:space-y-0 hover:shadow-md hover:border-violet-300">
+              <div class="flex items-center flex-1 min-w-0">
                 <!-- チェックボックス -->
                 <button
                   @click="handleToggleComplete(section, $event)"
                   :disabled="updatingSectionId === section.id"
-                  class="relative p-1.5 mr-3 transition-all duration-200 rounded-full hover:bg-violet-100 focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="relative flex-shrink-0 p-1.5 mr-3 transition-all duration-200 rounded-full hover:bg-violet-100 focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
                   :title="getToggleTitle(section)"
                 >
                   <div class="relative flex items-center justify-center w-6 h-6">
@@ -114,15 +118,15 @@
                   </div>
                 </button>
 
-                <!-- セクション情報（クリックで詳細へ） -->
-                <div @click="goToSectionRecords(section.id)" class="flex items-center flex-1 cursor-pointer">
-                  <span class="font-medium text-slate-800" :class="{ 'line-through text-gray-500': normalizeStatus(section.status) === 'completed' }"> {{ section.order }}. {{ section.title }} </span>
-                  <span class="ml-2 text-sm text-slate-500"> ({{ normalizeStatus(section.status) === 'completed' ? '完了' : '学習中' }}) </span>
+                <!-- 3. セクション情報（修正：truncateでテキスト切り詰め） -->
+                <div @click="goToSectionRecords(section.id)" class="flex flex-col flex-1 min-w-0 cursor-pointer md:flex-row md:items-center">
+                  <span class="font-medium truncate text-slate-800" :class="{ 'line-through text-gray-500': normalizeStatus(section.status) === 'completed' }" :title="section.order + '. ' + section.title"> {{ section.order }} . {{ section.title }} </span>
+                  <span class="ml-0 text-xs md:ml-2 md:text-sm text-slate-500 whitespace-nowrap"> ({{ normalizeStatus(section.status) === 'completed' ? '完了' : '学習中' }}) </span>
                 </div>
               </div>
 
-              <!-- 記録件数 -->
-              <div class="ml-4 text-sm text-slate-500">[{{ getRecordCountForSection(section.id) }}件の記録]</div>
+              <!-- 記録件数：モバイルで左寄せ、デスクトップで右寄せ -->
+              <div class="pl-10 text-xs md:pl-0 md:ml-4 md:text-sm text-slate-500 whitespace-nowrap">[ {{ getRecordCountForSection(section.id) }} 件の記録]</div>
             </li>
           </ul>
 
@@ -138,10 +142,13 @@
       <p>学習コンテンツが見つかりません。</p>
     </div>
 
+    <!-- 4. アクションボタン（修正：モバイルで縦並び） -->
     <template #actions>
-      <BackButton to="/dashboard" />
-      <BaseButton variant="info" size="md" :left-icon="ChartBarIcon" @click="goToProgressDetails"> 個別レポート </BaseButton>
-      <BaseButton variant="primary" size="md" :left-icon="PencilIcon" @click="router.push(`/learning/${learningContent.id}/edit`)" v-if="learningContent"> 内容を編集 </BaseButton>
+      <div class="flex flex-col w-full space-y-2 md:flex-row md:space-y-0 md:space-x-2 md:w-auto">
+        <BackButton to="/dashboard" class="w-full md:w-auto" />
+        <BaseButton variant="info" size="md" :left-icon="ChartBarIcon" @click="goToProgressDetails" class="w-full md:w-auto"> 個別レポート </BaseButton>
+        <BaseButton variant="primary" size="md" :left-icon="PencilIcon" @click="router.push(`/learning/${learningContent.id}/edit`)" v-if="learningContent" class="w-full md:w-auto"> 内容を編集 </BaseButton>
+      </div>
     </template>
   </DetailLayout>
 </template>
