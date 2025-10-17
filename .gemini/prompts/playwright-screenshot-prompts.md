@@ -40,6 +40,11 @@ Playwright MCPを使ってLearnTrack Proにログインしてください。
 
 特定のページのみを撮影する際に使用します。
 
+- 変更が必要な箇所
+    - `<URL>` → 例：http://localhost:8000/learning/1000
+    - [`<page-name>`](https://www.notion.so/Playwright-MCP-2809d86c12e88042bc4ce592287e1c46?pvs=21)  → 例：dashboard
+    - `<YYYY-MM-DD>` → 例：2025-10-16
+
 ```markdown
 現在のブラウザでログイン状態を維持したまま、以下の手順でスクリーンショットを撮影してください。
 
@@ -49,7 +54,7 @@ Playwright MCPを使ってLearnTrack Proにログインしてください。
 
 ### デバイスサイズ
 
-以下の各サイズで撮影します：
+以下の各サイズで、全8画面のスクリーンショットを撮影します：
 
 1. **デスクトップ**: 1280×800
    - ファイル名プレフィックス: `desktop-`
@@ -60,11 +65,11 @@ Playwright MCPを使ってLearnTrack Proにログインしてください。
 ### 撮影の流れ
 
 1. デスクトップサイズ（1280×800）に設定
-2. 対象ページを撮影
+2. 全8ページを撮影
 3. モバイルサイズ（375×667）に設定
-4. 対象ページを撮影
+4. 全8ページを撮影
 
-合計2枚のスクリーンショットが生成されます。
+**合計16枚のスクリーンショット**が生成されます。
 
 ---
 
@@ -87,29 +92,102 @@ Playwright MCPを使ってLearnTrack Proにログインしてください。
 
 ---
 
-#### [ページ名]ページ
-
-**手順**:
-1. ページに移動: [URL]
-2. 5秒間待機してください
-3. [確認すべき要素]が表示されていることを`browser_snapshot`で確認
-4. 確認できたら、フルページスクリーンショットを撮影
-   - ファイル名: **desktop-[page-name].png**
-   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
-
----
-
-【使用例：ダッシュボードページ】
-
-#### ダッシュボードページ
+#### 1. ダッシュボード
 
 **手順**:
 1. ページに移動: http://localhost:8000/dashboard
 2. 5秒間待機してください
 3. 「学習ダッシュボード」の見出しまたは学習カードが表示されていることを`browser_snapshot`で確認
 4. 確認できたら、フルページスクリーンショットを撮影
-   - ファイル名: **desktop-dashboard.png**
-   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
+   - ファイル名: **desktop-dashboard-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
+
+---
+
+#### 2. 学習内容詳細
+
+**手順**:
+1. ページに移動: http://localhost:8000/learning-contents/1000
+   - **注意**: 学習コンテンツID=1000を使用してください
+2. 5秒間待機してください
+3. セクション一覧が表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-learning-content-detail-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
+
+---
+
+#### 3. 学習内容作成
+
+**手順**:
+1. ページに移動: http://localhost:8000/learning-contents/create
+2. 5秒間待機してください
+3. 「新しい学習内容の作成」の見出しが表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-learning-content-create-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
+
+---
+
+#### 4. 学習記録作成
+
+**手順**:
+1. ページに移動: http://localhost:8000/learning-contents/1000/sessions/create
+2. 5秒間待機してください
+3. 「学習記録の追加」の見出しが表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-study-session-create-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
+
+---
+
+#### 5. 全体レポート
+
+**手順**:
+1. ページに移動: http://localhost:8000/reports
+2. 5秒間待機してください
+3. 「学習レポート」の見出しまたは統計カードが表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-reports-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
+
+---
+
+#### 6. 個別レポート
+
+**手順**:
+1. ページに移動: http://localhost:8000/learning-contents/1000/progress
+   - **注意**: 学習コンテンツID=1000を使用してください
+2. 5秒間待機してください
+3. 「個別レポート」の見出しまたは「日別学習時間」グラフが表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-study-progress-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
+
+---
+
+#### 7. セクション別記録
+
+**手順**:
+1. ページに移動: http://localhost:8000/sections/86/sessions
+   - **注意**: セクションID=86は学習記録が複数件存在するため確認に最適です
+2. 5秒間待機してください
+3. 「学習記録一覧」または「このセクションに記録を追加」ボタンが表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-section-records-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
+
+---
+
+#### 8. プロフィール
+
+**手順**:
+1. ページに移動: http://localhost:8000/profile
+2. 5秒間待機してください
+3. 「プロフィール」の見出しまたはユーザー情報が表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-profile-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
 
 ---
 
@@ -124,12 +202,42 @@ Playwright MCPを使ってLearnTrack Proにログインしてください。
 
 ### 撮影対象ページと手順
 
-Phase 1と同じページを、同じ手順で撮影します。
+Phase 1と同じ8ページを、同じ手順で撮影します。
 **ファイル名と保存先のみが異なります**：
 
-#### [ページ名]ページ
-- ファイル名: **mobile-[page-name].png**
-- 保存先: .playwright-mcp/phase2-responsive/2025-10-16/mobile/
+#### 撮影対象一覧
+
+1. **ダッシュボード**
+   - ファイル名: **mobile-dashboard-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
+
+2. **学習内容詳細**
+   - ファイル名: **mobile-learning-content-detail-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
+
+3. **学習内容作成**
+   - ファイル名: **mobile-learning-content-create-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
+
+4. **学習記録作成**
+   - ファイル名: **mobile-study-session-create-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
+
+5. **全体レポート**
+   - ファイル名: **mobile-reports-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
+
+6. **個別レポート**
+   - ファイル名: **mobile-study-progress-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
+
+7. **セクション別記録**
+   - ファイル名: **mobile-section-records-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
+
+8. **プロフィール**
+   - ファイル名: **mobile-profile-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
 
 ---
 
@@ -146,13 +254,27 @@ Phase 1と同じページを、同じ手順で撮影します。
 
 ### 生成されるファイル一覧
 
-**デスクトップ（1枚）**:
-- desktop-[page-name].png
+**デスクトップ（8枚）**:
+- desktop-dashboard-BEFORE.png
+- desktop-learning-content-detail-BEFORE.png
+- desktop-learning-content-create-BEFORE.png
+- desktop-study-session-create-BEFORE.png
+- desktop-reports-BEFORE.png
+- desktop-study-progress-BEFORE.png
+- desktop-section-records-BEFORE.png
+- desktop-profile-BEFORE.png
 
-**モバイル（1枚）**:
-- mobile-[page-name].png
+**モバイル（8枚）**:
+- mobile-dashboard-BEFORE.png
+- mobile-learning-content-detail-BEFORE.png
+- mobile-learning-content-create-BEFORE.png
+- mobile-study-session-create-BEFORE.png
+- mobile-reports-BEFORE.png
+- mobile-study-progress-BEFORE.png
+- mobile-section-records-BEFORE.png
+- mobile-profile-BEFORE.png
 
-**合計**: 2枚のスクリーンショット
+**合計**: 16枚のスクリーンショット
 
 撮影完了後、ファイル名とパスを報告してください。
 ```
@@ -160,6 +282,10 @@ Phase 1と同じページを、同じ手順で撮影します。
 ### 2-2. Phase 2全画面一括撮影用
 
 Phase 2の8画面すべてを一度に撮影する際に使用します。
+
+- 変更が必要な箇所
+    - [`<page-name>`](https://www.notion.so/Playwright-MCP-2809d86c12e88042bc4ce592287e1c46?pvs=21)  → 例：dashboard
+    - `<YYYY-MM-DD>` → 例：2025-10-16
 
 ```markdown
 現在のブラウザでログイン状態を維持したまま、以下の手順でスクリーンショットを撮影してください。
@@ -429,13 +555,16 @@ Phase 1と同じ8ページを、同じ手順で撮影します。
 
 ## 3. レイアウト問題分析プロンプト
 
-スクリーンショットを基にレイアウトの問題を分析します。
+スクリーンショットを基にレイアウトの問題を~~Gemini CLI~~に分析してもらいます
+
+- Flash 2.5では分析力に限界があるため、ProまたはClaude（推奨）への依頼を推奨します
+- Claudeを使用する場合は、スクリーンショットの添付とVueファイルをコンテキストに含める必要があります
 
 ```markdown
 添付画像を見て、レイアウトの問題を分析してください。
 
 ### スクリーンショット
-- `.playwright-mcp/phase2-responsive/2025-10-16/[device]/[filename].png`
+- `.playwright-mcp/phase2-responsive/[dir_name]/[device]/[filename].png`
 
 ---
 
@@ -489,6 +618,19 @@ Phase 1と同じ8ページを、同じ手順で撮影します。
 - [ ] カードのカラム数は適切か（デスクトップ: 2-3列、モバイル: 1列）
 - [ ] ページネーションの表示数は適切か（デスクトップ: 5個、モバイル: 3個）
 - [ ] フォームの幅は適切か（モバイル: フル幅、デスクトップ: max-w-2xl等）
+
+### 10. 個人的に気になった点
+- <ここに記入>
+
+<Claudeに依頼する場合は以下を追加>
+### 実装時の制約（Phase 2方針）
+- TailwindCSS のみ使用（カスタムCSSは最小限）
+- 2サイズ戦略（モバイル vs デスクトップ、md:プレフィックスのみ）
+- sm:プレフィックスは使用しない
+- タブレット専用調整はしない
+- 既存のコンポーネント構造を維持
+- Composition API パターンを踏襲
+- タッチ操作への配慮（ボタン最低44×44px）
 
 ---
 
@@ -568,9 +710,9 @@ Gemini CLIの分析完了後、Claudeに修正を依頼する際のテンプレ�
 [Gemini CLIの出力をコピペ]
 
 ### 現在のコード
-\`\`\`vue
-[該当コードを貼り付け]
-\`\`\`
+```vue
+<該当コードを貼り付け>
+```
 
 ### 関連コンポーネント
 - [例: components/common/Pagination.vue]
@@ -598,26 +740,31 @@ Gemini CLIの分析完了後、Claudeに修正を依頼する際のテンプレ�
 
 ## 5. 修正後の確認プロンプト
 
-修正完了後、Before/After比較用のスクリーンショットを撮影します。
+修正完了後、Before/After比較用のスクリーンショットを撮影します
 
 ```markdown
-修正完了後、以下を厳密に実行してください：
-
 ## Before/After 比較撮影
 
 ### デスクトップ（1280×800）
 1. ブラウザサイズ: 1280×800
-2. ページ移動: [URL]
+2. ページ移動: <URL>
 3. 5秒待機
-4. スクリーンショット撮影: `desktop-[page-name]-AFTER.png`
-5. 保存先: .playwright-mcp/phase2-responsive/2025-10-16/after/desktop/
+4. スクリーンショット撮影: `desktop-<page-name>-AFTER.png`
+5. 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/after/desktop/
 
 ### モバイル（375×667）
 1. ブラウザサイズ: 375×667
 2. ページ移動: [URL]
 3. 5秒待機
-4. スクリーンショット撮影: `mobile-[page-name]-AFTER.png`
-5. 保存先: .playwright-mcp/phase2-responsive/2025-10-16/after/mobile/
+4. スクリーンショット撮影: `mobile-<page-name>-AFTER.png`
+5. 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/after/mobile/
+```
+
+### Cloude版
+
+```markdown
+修正後のスクリーンショットとコードを提供します。
+問題点が解決されているか確認していただけますでしょうか？
 
 ## 確認項目
 
@@ -627,16 +774,30 @@ Gemini CLIの分析完了後、Claudeに修正を依頼する際のテンプレ�
 - [ ] モバイル/デスクトップ両方で適切に表示されているか
 - [ ] タッチ操作可能な要素のサイズは十分か（モバイル）
 
+- ファイルパス
+```vue
+<該当コードを貼り付け>
+```
+
+確認結果を報告してください。
+```
+
+### GeminCLI版
+
+```markdown
+修正完了後、以下を厳密に実行してください：
+
+## 確認項目
+
+**撮影した画像を見て以下を確認**:
+- [ ] 指摘された問題が改善されているか
+- [ ] 新たなレイアウト崩れが発生していないか
+- [ ] モバイル/デスクトップ両方で適切に表示されているか
+- [ ] タッチ操作可能な要素のサイズは十分か（モバイル）
+
+- ファイルパス
+
 確認結果を報告してください。
 ```
 
 ---
-
-## 更新履歴
-
-- 2025-10-16: Phase 2対応版に全面改訂
-    - 8画面一括撮影プロンプト追加
-    - ファイル管理構造の統一
-    - Phase 2特有のチェック項目追加
-    - Claude引き継ぎテンプレートの強化
-    - デスクトップサイズを1280×800に変更
