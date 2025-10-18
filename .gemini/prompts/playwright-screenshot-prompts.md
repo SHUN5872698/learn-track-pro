@@ -36,6 +36,56 @@ Playwright MCPを使ってLearnTrack Proにログインしてください。
 
 ## 2. スクリーンショット撮影
 
+<aside>
+💡
+
+ **スクリーンショット撮影だけなら手動撮影がおすすめです。**
+
+**Playwright MCP**
+
+- ❌ GeminiCLI待機が必要
+- ❌ コマンド入力が複雑
+- ⚠️ エラー時の再実行が面倒
+- ✅ E2Eテストの練習になる
+
+**Chrome DevTools**
+
+- ✅ 即座に撮影
+- ✅ ショートカットで簡単
+- ✅ 何度でも撮り直し可能
+- ⚠️ テスト自動化はできない
+</aside>
+
+### 2.0 Chrome DevToolsでのスクリーンショット撮影方法
+
+**1. Chrome DevToolsを開く**
+
+**2. Device Modeを有効化**
+
+**3. デバイスサイズを設定**
+
+- モバイル：375×667px
+    1. 横幅：`375`
+    2. 縦幅：`667`
+    3. ズーム：`100%`（重要）
+- デスクトップ：1280×800px
+    1. 横幅：`1280`
+    2. 縦幅：`800`
+    3. ズーム：`100%` （重要）
+1. **キャプチャ**
+    
+    ```markdown
+    ## コマンドパレットを開く
+    Cmd + Shift + P
+    
+    ### 全画面キャプチャ（**推奨**）
+    Capture full size screenshot
+    
+    ### 表示部分のみキャプチャ
+    Capture screenshot
+    ```
+    
+
 ### 2-1. 単体ページ撮影用（トラブルシューティング）
 
 特定のページのみを撮影する際に使用します。
@@ -279,7 +329,361 @@ Phase 1と同じ8ページを、同じ手順で撮影します。
 撮影完了後、ファイル名とパスを報告してください。
 ```
 
-### 2-2. Phase 2全画面一括撮影用
+### 2-2. 学習内容作成（マルチウィザード形式）
+
+学習内容作成はマルチウィザード形式なので専用プロンプトをつかう必要があります
+
+- 変更が必要な箇所
+    - `<YYYY-MM-DD>` → 例：2025-10-16
+
+```markdown
+#### 3. 学習内容作成（マルチウィザード形式）
+
+**⚠️ 重要**: この画面は3ステップのウィザード形式です。各ステップで個別にスクリーンショットを撮影してください。
+
+---
+
+## 🖥️ デスクトップ版（1280×800）
+
+### ステップ0: ウィンドウサイズ設定
+
+**最初に一度だけ実行**:
+- `browser_resize`ツールを使用
+- 幅: 1280ピクセル
+- 高さ: 800ピクセル
+
+---
+
+### ステップ1: 基本情報（入力完了後の状態を撮影）
+
+**手順**:
+1. ページに移動: http://localhost:8000/learning-contents/create
+2. 5秒間待機してください
+3. 「新しい学習内容の作成」の見出しとステップインジケーター（●━━━━○━━━━○）が表示されていることを`browser_snapshot`で確認
+
+4. **技術選択ドロップダウンをクリック**
+   - セレクタ: `button` で「技術を選択してください」というテキストを含むボタン
+   - クリック後、1秒待機
+
+5. **技術を選択**
+   - リスト内の最初の技術（例: Laravel）をクリック
+   - クリック後、1秒待機
+
+6. **タイトルを入力**
+   - `browser_fill_form`ツールを使用
+   - フィールド: `#title`
+   - 値: "Playwright MCPテスト"
+
+7. **概要を入力（任意）**
+   - `browser_fill_form`ツールを使用
+   - フィールド: `#description`
+   - 値: "Playwright MCPによる自動テスト"
+
+8. **入力完了後、1秒待機**
+
+9. **スクリーンショット撮影**（入力完了後の状態）
+   - ファイル名: **desktop-learning-content-create-step1-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
+
+---
+
+### ステップ2: セクション設定（入力完了後の状態を撮影）
+
+**手順**:
+1. **次へボタンをクリック**
+   - ボタンのテキスト: "次へ"
+   - クリック後、3秒待機（ウィザードのアニメーション完了を待つ）
+
+2. **ステップインジケーターを確認**
+   - ステップ2が強調表示されている（✓━━━●━━━○）ことを`browser_snapshot`で確認
+
+3. **セクションタイトルを入力**
+   - `browser_fill_form`ツールを使用
+   - フィールド: `#section-title-0`
+   - 値: "セクションテスト"
+
+4. **入力完了後、1秒待機**
+
+5. **スクリーンショット撮影**（入力完了後の状態）
+   - ファイル名: **desktop-learning-content-create-step2-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
+
+---
+
+### ステップ3: 確認画面
+
+**手順**:
+1. **次へボタンをクリック**
+   - ボタンのテキスト: "次へ"
+   - クリック後、3秒待機（ウィザードのアニメーション完了を待つ）
+
+2. **確認画面を確認**
+   - 「基本情報」と「セクション」のサマリーが表示されていることを`browser_snapshot`で確認
+   - ステップインジケーターがステップ3（✓━━━✓━━━●）になっていることを確認
+   - 入力した内容（技術: Laravel、タイトル: Playwright MCPテスト、セクション: セクションテスト）が表示されていることを確認
+
+3. **スクリーンショット撮影**
+   - ファイル名: **desktop-learning-content-create-step3-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
+
+---
+
+## 📱 モバイル版（375×667）
+
+### ステップ0: ウィンドウサイズ変更
+
+**デスクトップ撮影完了後に実行**:
+- `browser_resize`ツールを使用
+- 幅: 375ピクセル
+- 高さ: 667ピクセル
+
+---
+
+### ステップ1: 基本情報（入力完了後の状態を撮影）
+
+**手順**:
+1. ページに移動: http://localhost:8000/learning-contents/create
+2. 5秒間待機してください
+3. 「新しい学習内容の作成」の見出しとステップインジケーター（●━━━━○━━━━○）が表示されていることを`browser_snapshot`で確認
+
+4. **技術選択ドロップダウンをクリック**
+   - セレクタ: `button` で「技術を選択してください」というテキストを含むボタン
+   - クリック後、1秒待機
+
+5. **技術を選択**
+   - リスト内の最初の技術（例: Laravel）をクリック
+   - クリック後、1秒待機
+
+6. **タイトルを入力**
+   - `browser_fill_form`ツールを使用
+   - フィールド: `#title`
+   - 値: "Playwright MCPテスト"
+
+7. **概要を入力（任意）**
+   - `browser_fill_form`ツールを使用
+   - フィールド: `#description`
+   - 値: "Playwright MCPによる自動テスト"
+
+8. **入力完了後、1秒待機**
+
+9. **スクリーンショット撮影**（入力完了後の状態）
+   - ファイル名: **mobile-learning-content-create-step1-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
+
+---
+
+### ステップ2: セクション設定（入力完了後の状態を撮影）
+
+**手順**:
+1. **次へボタンをクリック**
+   - ボタンのテキスト: "次へ"
+   - クリック後、3秒待機（ウィザードのアニメーション完了を待つ）
+
+2. **ステップインジケーターを確認**
+   - ステップ2が強調表示されている（✓━━━●━━━○）ことを`browser_snapshot`で確認
+
+3. **セクションタイトルを入力**
+   - `browser_fill_form`ツールを使用
+   - フィールド: `#section-title-0`
+   - 値: "セクションテスト"
+
+4. **入力完了後、1秒待機**
+
+5. **スクリーンショット撮影**（入力完了後の状態）
+   - ファイル名: **mobile-learning-content-create-step2-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
+
+---
+
+### ステップ3: 確認画面
+
+**手順**:
+1. **次へボタンをクリック**
+   - ボタンのテキスト: "次へ"
+   - クリック後、3秒待機（ウィザードのアニメーション完了を待つ）
+
+2. **確認画面を確認**
+   - 「基本情報」と「セクション」のサマリーが表示されていることを`browser_snapshot`で確認
+   - ステップインジケーターがステップ3（✓━━━✓━━━●）になっていることを確認
+   - 入力した内容（技術: Laravel、タイトル: Playwright MCPテスト、セクション: セクションテスト）が表示されていることを確認
+
+3. **スクリーンショット撮影**
+   - ファイル名: **mobile-learning-content-create-step3-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
+
+---
+
+## ✅ 完了確認
+
+### 生成されるファイル一覧
+
+**デスクトップ（3枚）**:
+- desktop-learning-content-create-step1-BEFORE.png（基本情報入力完了後）
+- desktop-learning-content-create-step2-BEFORE.png（セクション設定入力完了後）
+- desktop-learning-content-create-step3-BEFORE.png（確認画面）
+
+**モバイル（3枚）**:
+- mobile-learning-content-create-step1-BEFORE.png（基本情報入力完了後）
+- mobile-learning-content-create-step2-BEFORE.png（セクション設定入力完了後）
+- mobile-learning-content-create-step3-BEFORE.png（確認画面）
+
+**合計**: 6枚のスクリーンショット
+
+撮影完了後、ファイル名とパスを報告してください。
+
+---
+```
+
+### 2-3. 学習内容編集（マルチウィザード形式）
+
+学習内容編集はマルチウィザード形式なので専用プロンプトをつかう必要があります
+
+理想的には各ステップでフォームを変更後の「ステップ3: 確認画面」のスクリーンショットを撮影すべきですが(確認画面の内容が変化するため)、時間的制約から省略します
+
+- 変更が必要な箇所
+    - `<YYYY-MM-DD>` → 例：2025-10-16
+
+```markdown
+**⚠️ 重要**: この画面は3ステップのウィザード形式です。各ステップで個別にスクリーンショットを撮影してください。
+
+---
+
+## 🖥️ デスクトップ版（1280×800）
+
+### ステップ0: ウィンドウサイズ設定
+
+**最初に一度だけ実行**:
+- `browser_resize`ツールを使用
+- 幅: 1280ピクセル
+- 高さ: 800ピクセル
+
+---
+
+### ステップ1: 基本情報（入力完了後の状態を撮影）
+
+**手順**:
+1. ページに移動: http://localhost:8000/learning/1000/edit
+2. 5秒間待機してください
+3. 「新しい学習内容の作成」の見出しとステップインジケーター（●━━━━○━━━━○）が表示されていることを`browser_snapshot`で確認
+
+4. **スクリーンショット撮影**（入力完了後の状態）
+   - ファイル名: **desktop-learning-content-edit-step1-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
+
+---
+
+### ステップ2: セクション設定（入力完了後の状態を撮影）
+
+**手順**:
+1. **次へボタンをクリック**
+   - ボタンのテキスト: "次へ"
+   - クリック後、3秒待機（ウィザードのアニメーション完了を待つ）
+
+2. **ステップインジケーターを確認**
+   - ステップ2が強調表示されている（✓━━━●━━━○）ことを`browser_snapshot`で確認
+
+3. **スクリーンショット撮影**（入力完了後の状態）
+   - ファイル名: **desktop-learning-content-edit-step2-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
+
+---
+
+### ステップ3: 確認画面
+
+**手順**:
+1. **次へボタンをクリック**
+   - ボタンのテキスト: "次へ"
+   - クリック後、3秒待機（ウィザードのアニメーション完了を待つ）
+
+2. **確認画面を確認**
+   - 「基本情報」と「セクション」のサマリーが「変更点がありません」と表示されていることを`browser_snapshot`で確認
+   - ステップインジケーターがステップ3（✓━━━✓━━━●）になっていることを確認
+
+3. **スクリーンショット撮影**
+   - ファイル名: **desktop-learning-content-edit-step3-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/desktop/
+
+---
+
+## 📱 モバイル版（375×667）
+
+### ステップ0: ウィンドウサイズ変更
+
+**デスクトップ撮影完了後に実行**:
+- `browser_resize`ツールを使用
+- 幅: 375ピクセル
+- 高さ: 667ピクセル
+
+---
+
+### ステップ1: 基本情報（入力完了後の状態を撮影）
+
+**手順**:
+1. ページに移動: http://localhost:8000/learning/1000/edit
+2. 5秒間待機してください
+3. 「新しい学習内容の作成」の見出しとステップインジケーター（●━━━━○━━━━○）が表示されていることを`browser_snapshot`で確認
+
+4. **スクリーンショット撮影**（入力完了後の状態）
+   - ファイル名: **mobile-learning-content-edit-step1-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
+
+---
+
+### ステップ2: セクション設定（入力完了後の状態を撮影）
+
+**手順**:
+1. **次へボタンをクリック**
+   - ボタンのテキスト: "次へ"
+   - クリック後、3秒待機（ウィザードのアニメーション完了を待つ）
+
+2. **ステップインジケーターを確認**
+   - ステップ2が強調表示されている（✓━━━●━━━○）ことを`browser_snapshot`で確認
+
+3. **スクリーンショット撮影**（入力完了後の状態）
+   - ファイル名: **mobile-learning-content-edit-step2-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
+
+---
+
+### ステップ3: 確認画面
+
+**手順**:
+1. **次へボタンをクリック**
+   - ボタンのテキスト: "次へ"
+   - クリック後、3秒待機（ウィザードのアニメーション完了を待つ）
+
+2. **確認画面を確認**
+   - 「基本情報」と「セクション」のサマリーが「変更点がありません」と表示されていることを`browser_snapshot`で確認
+   - ステップインジケーターがステップ3（✓━━━✓━━━●）になっていることを確認
+
+3. **スクリーンショット撮影**
+   - ファイル名: **mobile-learning-content-edit-step3-BEFORE.png**
+   - 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/mobile/
+
+---
+
+## ✅ 完了確認
+
+### 生成されるファイル一覧
+
+**デスクトップ（3枚）**:
+- desktop-learning-content-edit-step1-BEFORE.png（基本情報入力完了後）
+- desktop-learning-content-edit-step2-BEFORE.png（セクション設定入力完了後）
+- desktop-learning-content-edit-step3-BEFORE.png（確認画面）
+
+**モバイル（3枚）**:
+- mobile-learning-content-edit-step1-BEFORE.png（基本情報入力完了後）
+- mobile-learning-content-edit-step2-BEFORE.png（セクション設定入力完了後）
+- mobile-learning-content-edit-step3-BEFORE.png（確認画面）
+
+**合計**: 6枚のスクリーンショット
+
+撮影完了後、ファイル名とパスを報告してください。
+
+---
+```
+
+### 2-4. Phase 2全画面一括撮影用
 
 Phase 2の8画面すべてを一度に撮影する際に使用します。
 
@@ -521,7 +925,7 @@ Phase 1と同じ8ページを、同じ手順で撮影します。
 撮影完了後、ファイル名とパスを報告してください。
 ```
 
-### 2-3. ファイル管理構造
+### 2-5. ファイル管理構造
 
 スクリーンショットは以下の構造で保存されます：
 
@@ -530,25 +934,25 @@ Phase 1と同じ8ページを、同じ手順で撮影します。
 └── phase2-responsive/
     └── 2025-10-16/          # 撮影日付（YYYY-MM-DD）
         ├── desktop/
-        │   ├── dashboard.png
-        │   ├── learning-content-detail.png
-        │   ├── learning-content-create.png
-        │   ├── study-session-create.png
-        │   ├── reports.png
-        │   ├── study-progress.png
-        │   ├── section-records.png
-        │   └── profile.png
+        │   ├── dashboard-BEFORE.png
+        │   ├── learning-content-detail-BEFORE.png
+        │   ├── learning-content-create-BEFORE.png
+        │   ├── study-session-create-BEFORE.png
+        │   ├── reports-BEFORE.png
+        │   ├── study-progress-BEFORE.png
+        │   ├── section-records-BEFORE.png
+        │   └── profile-BEFORE.png
         ├── mobile/
-        │   ├── dashboard.png
-        │   ├── learning-content-detail.png
-        │   ├── learning-content-create.png
-        │   ├── study-session-create.png
-        │   ├── reports.png
-        │   ├── study-progress.png
-        │   ├── section-records.png
-        │   └── profile.png
+        │   ├── dashboard-BEFORE.png
+        │   ├── learning-content-detail-BEFORE.png
+        │   ├── learning-content-create-BEFORE.png
+        │   ├── study-session-create-BEFORE.png
+        │   ├── reports-BEFORE.png
+        │   ├── study-progress-BEFORE.png
+        │   ├── section-records-BEFORE.png
+        │   └── profile-BEFORE.png
         └── analysis/
-            └── [gemini-report.md](http://gemini-report.md)  # Gemini CLIの分析結果
+            └── gemini-report.md  # Gemini CLIの分析結果
 ```
 
 ---
@@ -658,7 +1062,7 @@ Phase 1と同じ8ページを、同じ手順で撮影します。
 
 ### 使用例
 
-**シンプルな依頼（Before）**:
+**シンプルな依頼（BEFORE）**:
 
 ```markdown
 添付: desktop-dashboard.png
@@ -666,7 +1070,7 @@ Phase 1と同じ8ページを、同じ手順で撮影します。
 この画像のレイアウト問題を分析してください。
 ```
 
-**詳細な依頼（After）**:
+**詳細な依頼（AFTER）**:
 
 ```markdown
 添付: desktop-dashboard.png
@@ -740,24 +1144,24 @@ Gemini CLIの分析完了後、Claudeに修正を依頼する際のテンプレ�
 
 ## 5. 修正後の確認プロンプト
 
-修正完了後、Before/After比較用のスクリーンショットを撮影します
+修正完了後、BEFORE/AFTER比較用のスクリーンショットを撮影します
 
 ```markdown
-## Before/After 比較撮影
+## BEFORE/AFTER 比較撮影
 
 ### デスクトップ（1280×800）
 1. ブラウザサイズ: 1280×800
 2. ページ移動: <URL>
 3. 5秒待機
 4. スクリーンショット撮影: `desktop-<page-name>-AFTER.png`
-5. 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/after/desktop/
+5. 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/AFTER/desktop/
 
 ### モバイル（375×667）
 1. ブラウザサイズ: 375×667
 2. ページ移動: [URL]
 3. 5秒待機
 4. スクリーンショット撮影: `mobile-<page-name>-AFTER.png`
-5. 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/after/mobile/
+5. 保存先: .playwright-mcp/phase2-responsive/<YYYY-MM-DD>/AFTER/mobile/
 ```
 
 ### Cloude版
