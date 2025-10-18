@@ -20,10 +20,10 @@
 
     <!-- セクションヘッダー -->
     <template #section-header>
-      <h2 class="mb-2 text-xl font-bold md:text-2xl text-slate-800">{{ learningContent ? learningContent.title : '' }}</h2>
-      <div v-if="learningContent" class="text-slate-600">
+      <h2 class="section-header">{{ learningContent ? learningContent.title : '' }}</h2>
+      <div v-if="learningContent">
         <!-- 1. 技術とステータス情報（修正：モバイルで縦並び） -->
-        <div class="flex flex-col space-y-2 text-xs font-medium md:flex-row md:items-center md:space-y-0 md:space-x-4 md:text-sm">
+        <div class="flex flex-col my-1 space-y-2 section-subtext md:flex-row md:items-center md:space-y-0 md:space-x-4">
           <div class="flex items-center space-x-1">
             <span>技術:</span>
             <img v-if="displayTechnology.icon" :src="displayTechnology.icon" :alt="displayTechnology.name" class="w-5 h-5 mr-1" />
@@ -37,14 +37,14 @@
             </div>
           </div>
         </div>
-        <div class="flex flex-col mt-2 space-y-1 text-xs font-medium md:flex-row md:items-center md:space-y-0 md:space-x-4 md:text-sm">
+        <div class="flex flex-col my-1 space-y-2 section-subtext md:flex-row md:items-center md:space-y-0 md:space-x-4">
           <span>作成日: {{ formatDate(learningContent.created_at) }}</span>
           <span>最終学習日: {{ learningContent.latestSessionUpdatedAt ? formatDate(learningContent.latestSessionUpdatedAt) : '-' }}</span>
         </div>
         <!-- 説明セクション -->
         <div class="mt-4">
-          <h3 class="mb-2 text-base font-semibold md:text-lg text-slate-800">概要:</h3>
-          <p class="text-sm break-words whitespace-pre-wrap md:text-base text-slate-600">{{ learningContent.description }}</p>
+          <h3 class="section-subheader">概要:</h3>
+          <p class="break-words whitespace-pre-wrap section-subtext">{{ learningContent.description }}</p>
         </div>
       </div>
     </template>
@@ -75,7 +75,7 @@
 
       <!-- セクション一覧 -->
       <div>
-        <h3 class="mb-2 text-base font-semibold md:text-lg text-slate-800">セクション一覧</h3>
+        <h3 class="section-subheader">セクション一覧</h3>
 
         <!-- 完了状態切り替えのヒント（セクション一覧の直下） -->
         <div class="flex items-center mb-4 text-xs md:text-sm text-slate-500">

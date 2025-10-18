@@ -18,7 +18,7 @@
             type="text"
             autocomplete="off"
             class="flex-1 min-w-0 px-2 py-2 text-sm placeholder-gray-400 border rounded-md shadow-sm focus:outline-none md:px-3"
-            :class="[showSectionBorder(index) ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+            :class="[showSectionBorder(index) ? 'form-input-error' : 'form-input-normal']"
             placeholder="セクションのタイトル"
             :value="section.title"
             @input="sectionTitleModified(index, $event.target.value)"

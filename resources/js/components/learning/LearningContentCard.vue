@@ -4,19 +4,19 @@
     <!-- カードヘッダー -->
     <div class="flex items-start justify-between mb-4">
       <div class="flex-1">
-        <h3 class="mb-2 text-lg font-semibold text-slate-900">{{ content.title }}</h3>
+        <h3 class="section-subheader">{{ content.title }}</h3>
         <!-- 技術とステータス情報 -->
-        <div class="space-y-1 text-slate-600">
-          <div class="flex items-center space-x-1 text-xs">
-            <span class="font-medium">技術:</span>
+        <div class="flex flex-col space-y-1 text-sm font-medium text-slate-600">
+          <div class="flex items-center space-x-1">
+            <span>技術:</span>
             <img v-if="displayTechnology.icon" :src="displayTechnology.icon" :alt="displayTechnology.name" class="w-5 h-5 mr-1" />
-            <span class="font-medium">{{ displayTechnology.name }}</span>
+            <span>{{ displayTechnology.name }}</span>
           </div>
-          <div class="flex items-center space-x-1 text-xs">
-            <span class="font-medium">ステータス:</span>
-            <div class="flex items-center font-medium" :class="statusDisplay.class">
+          <div class="flex items-center space-x-1">
+            <span>ステータス:</span>
+            <div class="flex items-center" :class="statusDisplay.class">
               <component :is="statusDisplay.icon" class="w-5 h-5 mr-1" />
-              {{ statusDisplay.text }}
+              <span>{{ statusDisplay.text }}</span>
             </div>
           </div>
         </div>

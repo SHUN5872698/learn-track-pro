@@ -1,14 +1,10 @@
 <template>
   <!-- 技術選択ドロップダウンコンポーネントのラッパー -->
   <div class="relative" ref="dropdownRef">
-    <label class="block text-sm font-medium text-slate-700">技術<span class="pl-1 text-red-500">*</span></label>
+    <label class="form-label">技術<span class="pl-1 text-red-500">*</span></label>
 
     <!-- セレクトボックス風の表示ボタン -->
-    <button
-      type="button"
-      @click="toggleDropdown"
-      :class="['flex items-center justify-between w-full px-3 py-2 mt-1 text-left bg-white border rounded-md shadow-sm focus:outline-none text-sm', hasError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
-    >
+    <button type="button" @click="toggleDropdown" :class="['flex items-center justify-between w-full px-3 py-2 mt-1 text-left bg-white border rounded-md shadow-sm focus:outline-none text-sm', hasError ? 'form-input-error' : 'form-input-normal']">
       <span :class="selectedTechnology ? 'text-slate-900' : 'text-gray-400 text-sm md:text-base'">
         {{ selectedTechnology ? selectedTechnology.name : '技術を選択してください' }}
       </span>

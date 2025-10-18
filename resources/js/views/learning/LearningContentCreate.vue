@@ -3,8 +3,8 @@
   <DetailLayout>
     <!-- セクションヘッダー -->
     <template #section-header>
-      <h2 class="mb-2 text-xl font-bold md:text-2xl text-slate-800">新しい学習内容の作成</h2>
-      <div class="text-xs font-medium text-slate-600 md:text-sm">
+      <h2 class="section-header">新しい学習内容の作成</h2>
+      <div class="section-subtext">
         <span>学習したい内容とセクションを登録します。</span>
       </div>
     </template>
@@ -12,7 +12,7 @@
     <WizardStepIndicator :current-step="currentStep" :step-names="stepNames" />
 
     <!-- Vue側のバリデーションエラー -->
-    <div v-if="validationErrors.length" class="p-4 mb-6 text-sm text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md md:text-base">
+    <div v-if="validationErrors.length" class="error-container">
       <h3 class="font-bold">入力エラー</h3>
       <ul class="mt-2 ml-2 list-disc list-inside">
         <li v-for="error in validationErrors" :key="error">{{ error }}</li>
@@ -20,7 +20,7 @@
     </div>
 
     <!-- API側のエラー -->
-    <div v-if="apiError" class="p-4 mb-6 text-sm text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md md:text-base">
+    <div v-if="apiError" class="error-container">
       <h3 class="font-bold">エラー</h3>
       <ul class="mt-2 ml-2 list-disc list-inside">
         <li>{{ apiError }}</li>
@@ -33,35 +33,25 @@
         <!-- 技術選択コンポーネント -->
         <TechnologySelector v-model="form.technology_id" :technologies="technologies" :has-error="showTechnologyBorder" @update:modelValue="technologyModified = true" />
         <div>
-          <label for="title" class="block text-sm font-medium text-slate-700">タイトル<span class="pl-1 text-red-500">*</span></label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            autocomplete="off"
-             class="block w-full px-3 py-2 mt-1 text-sm placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none"
-            :class="[showTitleBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
-            placeholder="例: Laravel完全マスター"
-            v-model="form.title"
-            @input="titleModified = true"
-          />
+          <label for="title" class="form-label">タイトル<span class="pl-1 text-red-500">*</span></label>
+          <input id="title" name="title" type="text" autocomplete="off" class="form-input-base" :class="[showTitleBorder ? 'form-input-error' : 'form-input-normal']" placeholder="例: Laravel完全マスター" v-model="form.title" @input="titleModified = true" />
         </div>
 
         <!-- 学習メモ入力テキストエリア -->
         <div>
-          <label for="description" class="block text-sm font-medium text-slate-700">概要</label>
+          <label for="description" class="form-label">概要</label>
           <textarea
             id="description"
             name="description"
             rows="5"
             autocomplete="off"
-            class="block w-full px-3 py-2 mt-1 text-sm placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none"
-            :class="[showDescriptionBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+            class="form-input-base"
+            :class="[descriptionIsOverLimit ? 'form-input-error' : 'form-input-normal']"
             placeholder="学習内容の詳細を自由に入力してください。"
             v-model="form.description"
             @input="descriptionModified = true"
           ></textarea>
-          <p class="mt-1 text-xs" :class="descriptionIsOverLimit ? 'text-red-500 font-medium' : 'text-gray-500'">
+          <p class="text-counter" :class="descriptionIsOverLimit ? 'text-counter-over' : ''">
             {{ descriptionCounterText }}
           </p>
         </div>
