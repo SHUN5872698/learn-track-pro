@@ -3,7 +3,7 @@
   <DetailLayout>
     <!-- セクションヘッダー -->
     <template #section-header>
-      <h2 class="mb-2 text-2xl font-bold text-slate-800">新しい学習内容の作成</h2>
+      <h2 class="mb-2 text-xl font-bold md:text-2xl text-slate-800">新しい学習内容の作成</h2>
       <div class="text-xs font-medium text-slate-600 md:text-sm">
         <span>学習したい内容とセクションを登録します。</span>
       </div>
@@ -12,7 +12,7 @@
     <WizardStepIndicator :current-step="currentStep" :step-names="stepNames" />
 
     <!-- Vue側のバリデーションエラー -->
-    <div v-if="validationErrors.length" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+    <div v-if="validationErrors.length" class="p-4 mb-6 text-sm text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md md:text-base">
       <h3 class="font-bold">入力エラー</h3>
       <ul class="mt-2 ml-2 list-disc list-inside">
         <li v-for="error in validationErrors" :key="error">{{ error }}</li>
@@ -20,7 +20,7 @@
     </div>
 
     <!-- API側のエラー -->
-    <div v-if="apiError" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+    <div v-if="apiError" class="p-4 mb-6 text-sm text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md md:text-base">
       <h3 class="font-bold">エラー</h3>
       <ul class="mt-2 ml-2 list-disc list-inside">
         <li>{{ apiError }}</li>
@@ -39,7 +39,7 @@
             name="title"
             type="text"
             autocomplete="off"
-            class="block w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
+             class="block w-full px-3 py-2 mt-1 text-sm placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none"
             :class="[showTitleBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
             placeholder="例: Laravel完全マスター"
             v-model="form.title"
@@ -55,7 +55,7 @@
             name="description"
             rows="5"
             autocomplete="off"
-            class="block w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
+            class="block w-full px-3 py-2 mt-1 text-sm placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none"
             :class="[showDescriptionBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
             placeholder="学習内容の詳細を自由に入力してください。"
             v-model="form.description"
@@ -76,9 +76,9 @@
       <!-- Step 3: 確認画面セクション -->
       <div v-if="currentStep === 3" class="space-y-6 animate-fade-in">
         <!-- 基本情報の確認表示 -->
-        <div class="p-6 border rounded-lg bg-slate-50">
-          <h3 class="mb-4 text-lg font-semibold border-b text-slate-800">基本情報</h3>
-          <p><span class="font-semibold">技術:</span> {{ getTechnologyName }}</p>
+        <div class="p-4 border rounded-lg md:p-6 bg-slate-50">
+          <h3 class="pb-2 mb-3 text-base font-semibold border-b md:text-lg text-slate-800">基本情報</h3>
+          <p class="text-sm break-words md:text-base"><span class="font-semibold">技術:</span> {{ getTechnologyName }}</p>
           <p><span class="font-semibold">タイトル:</span> {{ form.title }}</p>
           <div>
             <span class="font-semibold">概要:</span>

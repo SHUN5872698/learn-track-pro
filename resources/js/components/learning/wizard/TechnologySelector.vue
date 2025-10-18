@@ -7,9 +7,9 @@
     <button
       type="button"
       @click="toggleDropdown"
-      :class="['flex items-center justify-between w-full px-3 py-2 mt-1 text-left bg-white border rounded-md shadow-sm focus:outline-none sm:text-sm', hasError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
+      :class="['flex items-center justify-between w-full px-3 py-2 mt-1 text-left bg-white border rounded-md shadow-sm focus:outline-none text-sm', hasError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
     >
-      <span :class="selectedTechnology ? 'text-slate-900' : 'text-gray-400'">
+      <span :class="selectedTechnology ? 'text-slate-900' : 'text-gray-400 text-sm md:text-base'">
         {{ selectedTechnology ? selectedTechnology.name : '技術を選択してください' }}
       </span>
       <ChevronDownIcon :class="['w-5 h-5 text-gray-400 transition-transform duration-200', isDropdownOpen ? 'transform rotate-180' : '']" />

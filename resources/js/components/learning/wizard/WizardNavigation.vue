@@ -1,15 +1,15 @@
 <template>
   <!-- ウィザードのナビゲーションボタンコンテナ -->
-  <div class="flex justify-between pt-6 border-t">
+  <div class="flex flex-col pt-6 space-y-2 border-t md:flex-row md:justify-between md:space-y-0">
     <!-- キャンセルボタン: showCancelがtrueの場合に表示 -->
-    <CancelButton v-if="showCancel" @click="$emit('cancel')" />
-    <div class="flex space-x-4">
+    <CancelButton v-if="showCancel" @click="$emit('cancel')" class="w-full md:w-auto" />
+    <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-4">
       <!-- 戻るボタン: showBackがtrueの場合に表示 -->
-      <BackButton v-if="showBack" @click="$emit('back')" />
+      <BackButton v-if="showBack" @click="$emit('back')" class="w-full md:w-auto" />
       <!-- 次へボタン: showNextがtrueの場合に表示 -->
-      <BaseButton v-if="showNext" variant="primary" :right-icon="ArrowRightIcon" @click="$emit('next')">次へ</BaseButton>
+      <BaseButton v-if="showNext" variant="primary" class="w-full md:w-auto" :right-icon="ArrowRightIcon" @click="$emit('next')">次へ</BaseButton>
       <!-- 作成する/送信ボタン: showSubmitがtrueの場合に表示 -->
-      <BaseButton v-if="showSubmit" type="button" variant="primary" :disabled="isSubmitting" @click="$emit('submit')">
+      <BaseButton v-if="showSubmit" type="button" variant="primary" class="w-full md:w-auto" :disabled="isSubmitting" @click="$emit('submit')">
         {{ submitText }}
       </BaseButton>
     </div>

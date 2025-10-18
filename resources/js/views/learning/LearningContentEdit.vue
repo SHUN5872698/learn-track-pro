@@ -6,7 +6,7 @@
   <DetailLayout v-else>
     <!-- セクションヘッダー -->
     <template #section-header>
-      <h2 class="mb-2 text-2xl font-bold text-slate-800">学習内容を編集</h2>
+      <h2 class="mb-2 text-xl font-bold md:text-2xl text-slate-800">学習内容を編集</h2>
       <div class="text-xs font-medium text-slate-600 md:text-sm">
         <span>登録済みの学習内容を更新します。</span>
       </div>
@@ -15,7 +15,7 @@
     <WizardStepIndicator :current-step="currentStep" :step-names="stepNames" />
 
     <!-- Vue側のバリデーションエラー -->
-    <div v-if="validationErrors.length" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+    <div v-if="validationErrors.length" class="p-4 mb-6 text-sm text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md md:text-base">
       <h3 class="font-bold">入力エラー</h3>
       <ul class="mt-2 ml-2 list-disc list-inside">
         <li v-for="error in validationErrors" :key="error">{{ error }}</li>
@@ -23,7 +23,7 @@
     </div>
 
     <!-- API側のエラー -->
-    <div v-if="apiError" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+    <div v-if="apiError" class="p-4 mb-6 text-sm text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md md:text-base">
       <h3 class="font-bold">エラー</h3>
       <ul class="mt-2 ml-2 list-disc list-inside">
         <li>{{ apiError }}</li>
@@ -42,7 +42,7 @@
             name="title"
             type="text"
             autocomplete="off"
-            class="block w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
+            class="block w-full px-3 py-2 mt-1 text-sm placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none"
             :class="[showTitleBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
             placeholder="例: Laravel完全マスター"
             v-model="form.title"
@@ -58,21 +58,21 @@
             name="description"
             rows="5"
             autocomplete="off"
-            class="block w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
+            class="block w-full px-3 py-2 mt-1 text-sm placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none"
             :class="[showDescriptionBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
             placeholder="学習内容の詳細を自由に入力してください。"
             v-model="form.description"
             @input="descriptionModified = true"
           ></textarea>
           <p class="mt-1 text-xs" :class="descriptionIsOverLimit ? 'text-red-500 font-medium' : 'text-gray-500'">
-            {{ descriptionCounterText }}
+          {{ descriptionCounterText }}
           </p>
         </div>
 
         <!-- 学習ステータス -->
         <div class="space-y-2">
           <label class="text-sm font-medium text-gray-700">ステータス</label>
-          <div class="flex space-x-4">
+          <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-4">
             <label class="flex items-center">
               <input type="radio" v-model="form.status" value="not_started" :class="['w-4 h-4 border-gray-300 focus:ring-violet-500', form.status === 'not_started' ? 'text-slate-500' : 'text-gray-700']" />
               <span :class="['ml-2 text-sm font-medium', form.status === 'not_started' ? 'text-slate-500' : 'text-gray-700']">未着手</span>
@@ -98,15 +98,15 @@
       <!-- Step 3: 確認画面セクション -->
       <div v-if="currentStep === 3" class="space-y-6 animate-fade-in">
         <!-- 基本情報の確認表示 -->
-        <div class="p-6 border rounded-lg bg-slate-50">
-          <h3 class="mb-4 text-lg font-semibold border-b text-slate-800">基本情報</h3>
-          <div v-if="basicInfoHasChanged" class="space-y-2">
+        <div class="p-4 border rounded-lg md:p-6 bg-slate-50">
+          <h3 class="pb-2 mb-3 text-base font-semibold border-b md:text-lg text-slate-800">基本情報</h3>
+          <div v-if="basicInfoHasChanged" class="space-y-2 text-sm md:text-base">
             <p>
               <span class="font-semibold">技術:</span>
               <span v-if="originalData.technology_id !== form.technology_id" class="inline-flex items-center ml-2">
-                <span class="text-gray-400 line-through">{{ getTechnologyNameById(originalData.technology_id) }}</span>
+                <span class="text-gray-400 line-through"> {{ getTechnologyNameById(originalData.technology_id) }}</span>
                 <ArrowRightIcon class="w-4 h-4 mx-1" />
-                <span class="font-bold text-blue-600">{{ getTechnologyNameById(form.technology_id) }}</span>
+                <span class="font-bold text-blue-600"> {{ getTechnologyNameById(form.technology_id) }}</span>
               </span>
               <span v-else class="ml-2">{{ getTechnologyNameById(form.technology_id) }}</span>
             </p>
@@ -114,9 +114,9 @@
             <p>
               <span class="font-semibold">タイトル:</span>
               <span v-if="originalData.title !== form.title" class="inline-flex items-center ml-2">
-                <span class="text-gray-400 line-through">{{ originalData.title }}</span>
+                <span class="text-gray-400 line-through"> {{ originalData.title }}</span>
                 <ArrowRightIcon class="w-4 h-4 mx-1" />
-                <span class="font-bold text-blue-600">{{ form.title }}</span>
+                <span class="font-bold text-blue-600"> {{ form.title }} </span>
               </span>
               <span v-else class="ml-2">{{ form.title }}</span>
             </p>
@@ -146,13 +146,13 @@
               <span v-else class="ml-2">{{ statusMap[form.status] }}</span>
             </p>
           </div>
-          <div v-else class="text-slate-500">変更点はありません。</div>
+          <div v-else class="text-sm text-slate-500 md:text-base">変更点はありません。</div>
         </div>
         <!-- セクション情報の確認表示 -->
-        <div class="p-6 border rounded-lg bg-slate-50">
-          <h3 class="mb-4 text-lg font-semibold border-b text-slate-800">セクション</h3>
-          <div v-if="!sectionsHaveChanged" class="text-slate-500">変更点はありません。</div>
-          <div v-else>
+        <div class="p-4 border rounded-lg md:p-6 bg-slate-50">
+          <h3 class="mb-4 text-base font-semibold border-b md:text-lg text-slate-800">セクション</h3>
+          <div v-if="!sectionsHaveChanged" class="text-sm text-slate-500 md:text-base">変更点はありません。</div>
+          <div v-else class="text-sm md:text-base">
             <ul class="space-y-1 list-decimal list-inside">
               <li v-for="change in sectionChanges" :key="change.id">
                 <span v-if="change.status === 'added'" class="font-bold text-emerald-600"> + {{ change.title }} (追加) </span>
@@ -162,9 +162,7 @@
                     <ArrowRightIcon class="w-4 h-4 mx-1" />
                     <span class="font-bold text-blue-600">{{ change.title }}</span>
                   </span>
-                  <span v-else>
-                    {{ change.title }}
-                  </span>
+                  <span v-else> {{ change.title }} </span>
                   <span v-if="change.orderChanged" class="ml-2 text-xs font-semibold text-violet-600">(順序変更)</span>
                 </span>
               </li>
