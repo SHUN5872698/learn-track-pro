@@ -934,23 +934,23 @@ Phase 1と同じ8ページを、同じ手順で撮影します。
 └── phase2-responsive/
     └── 2025-10-16/          # 撮影日付（YYYY-MM-DD）
         ├── desktop/
-        │   ├── dashboard-BEFORE.png
-        │   ├── learning-content-detail-BEFORE.png
-        │   ├── learning-content-create-BEFORE.png
-        │   ├── study-session-create-BEFORE.png
-        │   ├── reports-BEFORE.png
-        │   ├── study-progress-BEFORE.png
-        │   ├── section-records-BEFORE.png
-        │   └── profile-BEFORE.png
+        │   ├── desktop-dashboard-BEFORE.png
+        │   ├── desktop-learning-content-detail-BEFORE.png
+        │   ├── desktop-learning-content-create-BEFORE.png
+        │   ├── desktop-study-session-create-BEFORE.png
+        │   ├── desktop-reports-BEFORE.png
+        │   ├── desktop-study-progress-BEFORE.png
+        │   ├── desktop-section-records-BEFORE.png
+        │   └── desktop-profile-BEFORE.png
         ├── mobile/
-        │   ├── dashboard-BEFORE.png
-        │   ├── learning-content-detail-BEFORE.png
-        │   ├── learning-content-create-BEFORE.png
-        │   ├── study-session-create-BEFORE.png
-        │   ├── reports-BEFORE.png
-        │   ├── study-progress-BEFORE.png
-        │   ├── section-records-BEFORE.png
-        │   └── profile-BEFORE.png
+        │   ├── mobile-dashboard-BEFORE.png
+        │   ├── mobile-learning-content-detail-BEFORE.png
+        │   ├── mobile-learning-content-create-BEFORE.png
+        │   ├── mobile-study-session-create-BEFORE.png
+        │   ├── mobile-reports-BEFORE.png
+        │   ├── mobile-study-progress-BEFORE.png
+        │   ├── mobile-section-records-BEFORE.png
+        │   └── mobile-profile-BEFORE.png
         └── analysis/
             └── gemini-report.md  # Gemini CLIの分析結果
 ```
@@ -1177,6 +1177,29 @@ Gemini CLIの分析完了後、Claudeに修正を依頼する際のテンプレ�
 - [ ] 新たなレイアウト崩れが発生していないか
 - [ ] モバイル/デスクトップ両方で適切に表示されているか
 - [ ] タッチ操作可能な要素のサイズは十分か（モバイル）
+- [ ] 以下の@apply適用が反映されているか
+
+### @applyチェックリスト
+#### input
+"block w-full px-3 py-2 mt-1 text-sm placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none"
+"form-input-base"
+
+'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500'
+'form-input-error' : 'form-input-normal'
+
+#### エラー表示
+"p-4 mb-6 text-sm text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md md:text-base"
+"error-container"
+
+#### フォームラベル
+"block text-sm font-medium text-slate-700"
+"form-label"
+
+#### 文字数カウンター
+"mt-1 text-xs"
+"text-counter"
+'text-red-500 font-medium' : 'text-gray-500'
+'text-counter-over' : ''
 
 - ファイルパス
 ```vue
