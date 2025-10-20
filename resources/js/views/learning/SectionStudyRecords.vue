@@ -17,9 +17,9 @@
 
     <!-- セクションヘッダー -->
     <template #section-header>
-      <h2 class="mb-2 text-2xl font-bold text-slate-800">{{ section ? section.title : '' }}</h2>
-      <div v-if="learningContent" class="text-slate-600">
-        <div class="flex items-center space-x-4 text-xs font-medium md:text-sm">
+      <h2 class="section-header">{{ section ? section.title : '' }}</h2>
+      <div v-if="learningContent">
+        <div class="flex flex-col my-1 space-y-2 section-subtext md:flex-row md:items-center md:space-y-0 md:space-x-4">
           <div class="flex items-center space-x-1">
             <span>合計学習時間: </span>
             <span>{{ totalStudyTime }}</span>
@@ -34,7 +34,7 @@
     <div v-if="section && learningContent">
       <!-- 学習記録一覧 -->
       <div>
-        <h3 class="mb-4 text-lg font-semibold text-slate-800">学習記録一覧</h3>
+        <h3 class="section-subheader">学習記録一覧</h3>
         <div v-if="paginatedRecords.length > 0" class="space-y-4">
           <LearningRecordCard v-for="record in paginatedRecords" :key="record.id" :record="record" @edit="router.push(`/learning-contents/${learningContentId}/sessions/${record.id}/edit`)" @delete="openDeleteModal(record)"> </LearningRecordCard>
           <Pagination :total-items="sectionRecords.length" :items-per-page="recordItemsPerPage" :current-page="recordCurrentPage" @update:currentPage="recordCurrentPage = $event" />
@@ -49,8 +49,10 @@
     </div>
 
     <template #actions>
-      <BackButton v-if="learningContent" :to="`/learning/${learningContent.id}`" />
-      <BaseButton v-if="learningContent && section" variant="primary" :left-icon="PlusCircleIcon" @click="goToRecordForm">このセクションに記録を追加</BaseButton>
+      <div class="flex flex-col w-full space-y-2 md:flex-row md:space-y-0 md:space-x-2 md:w-auto">
+        <BackButton v-if="learningContent" :to="`/learning/${learningContent.id}`" size="md" class="w-full md:w-auto" />
+        <BaseButton v-if="learningContent && section" variant="primary" size="md" class="w-full md:w-auto" :left-icon="PlusCircleIcon" @click="goToRecordForm">記録を追加</BaseButton>
+      </div>
     </template>
 
     <Teleport to="#app">
