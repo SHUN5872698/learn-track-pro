@@ -835,6 +835,16 @@ Phase 2の8画面すべてを一度に撮影する際に使用します。
    - ファイル名: **desktop-profile.png**
    - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
 
+#### ９. プロフィール編集
+
+**手順**:
+1. ページに移動: http://localhost:8000/profile/edit
+2. 5秒間待機してください
+3. 「プロフィール」の見出しまたはユーザー情報が表示されていることを`browser_snapshot`で確認
+4. 確認できたら、フルページスクリーンショットを撮影
+   - ファイル名: **desktop-profile-edit.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/desktop/
+
 ---
 
 ## 📱 Phase 2: モバイルサイズでの撮影
@@ -885,6 +895,10 @@ Phase 1と同じ8ページを、同じ手順で撮影します。
    - ファイル名: **mobile-profile.png**
    - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/mobile/
 
+9. **プロフィール編集**
+   - ファイル名: **mobile-profile-edit.png**
+   - 保存先: .playwright-mcp/phase2-responsive/2025-10-16/mobile/
+
 ---
 
 ## ⚙️ 重要な注意事項
@@ -929,7 +943,7 @@ Phase 1と同じ8ページを、同じ手順で撮影します。
 
 スクリーンショットは以下の構造で保存されます：
 
-```
+```bash
 .playwright-mcp/
 └── phase2-responsive/
     └── 2025-10-16/          # 撮影日付（YYYY-MM-DD）
@@ -937,20 +951,25 @@ Phase 1と同じ8ページを、同じ手順で撮影します。
         │   ├── desktop-dashboard-BEFORE.png
         │   ├── desktop-learning-content-detail-BEFORE.png
         │   ├── desktop-learning-content-create-BEFORE.png
+        │   ├── desktop-learning-content-edit-BEFORE.png
         │   ├── desktop-study-session-create-BEFORE.png
-        │   ├── desktop-reports-BEFORE.png
+        │   ├── desktop-study-session-edit-BEFORE.png
         │   ├── desktop-study-progress-BEFORE.png
+        │   ├── desktop-reports-BEFORE.png
         │   ├── desktop-section-records-BEFORE.png
         │   └── desktop-profile-BEFORE.png
         ├── mobile/
         │   ├── mobile-dashboard-BEFORE.png
         │   ├── mobile-learning-content-detail-BEFORE.png
         │   ├── mobile-learning-content-create-BEFORE.png
+        │   ├── mobile-learning-content-edit-BEFORE.png
         │   ├── mobile-study-session-create-BEFORE.png
-        │   ├── mobile-reports-BEFORE.png
+        │   ├── mobile-study-session-edit-BEFORE.png
         │   ├── mobile-study-progress-BEFORE.png
+        │   ├── mobile-reports-BEFORE.png
         │   ├── mobile-section-records-BEFORE.png
         │   └── mobile-profile-BEFORE.png
+        │   └── mobile-profile-edit-BEFORE.png
         └── analysis/
             └── gemini-report.md  # Gemini CLIの分析結果
 ```
@@ -1180,6 +1199,10 @@ Gemini CLIの分析完了後、Claudeに修正を依頼する際のテンプレ�
 - [ ] 以下の@apply適用が反映されているか
 
 ### @applyチェックリスト
+#### h2
+"mb-2 text-2xl font-bold text-slate-800"
+"section-heade"
+
 #### input
 "block w-full px-3 py-2 mt-1 text-sm placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none"
 "form-input-base"
