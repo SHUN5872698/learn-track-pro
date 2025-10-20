@@ -6,14 +6,14 @@
   <DetailLayout v-else>
     <!-- セクションヘッダー -->
     <template #section-header>
-      <h2 class="mb-2 text-2xl font-bold text-slate-800">学習記録の追加</h2>
-      <div class="text-xs font-medium text-slate-600 md:text-sm">
+      <h2 class="section-header">学習記録の追加</h2>
+      <div class="section-subtext">
         <span>{{ pageDescription }}</span>
       </div>
     </template>
 
     <!-- Vue側のバリデーションエラー -->
-    <div v-if="validationErrors.length" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+    <div v-if="validationErrors.length" class="error-container">
       <h3 class="font-bold">入力エラー</h3>
       <ul class="mt-2 ml-2 list-disc list-inside">
         <li v-for="error in validationErrors" :key="error">{{ error }}</li>
@@ -21,7 +21,7 @@
     </div>
 
     <!-- API側のエラー -->
-    <div v-if="apiError" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+    <div v-if="apiError" class="error-container">
       <h3 class="font-bold">エラー</h3>
       <ul class="mt-2 ml-2 list-disc list-inside">
         <li>{{ apiError }}</li>
@@ -35,7 +35,8 @@
         :sections="availableSections"
         :validation-errors="validationErrors"
         :learning-content-title="learningContent ? learningContent.title : ''"
-        :formatted-date="formattedDate"
+        :formatted-date-full="formattedDateFull"
+        :formatted-date-short="formattedDateShort"
         :formatted-time="formattedTime"
         :display-study-hours="displayStudyHours"
         :display-study-minutes="displayStudyMinutes"
@@ -53,11 +54,9 @@
       />
 
       <!-- アクションボタン: キャンセルと記録を保存 -->
-      <div class="flex justify-between pt-6 border-t">
-        <CancelButton @click="handleClose" />
-        <div class="flex space-x-4">
-          <BaseButton type="submit" variant="primary" :disabled="isSubmitting">記録を保存</BaseButton>
-        </div>
+      <div class="flex flex-col pt-6 space-y-2 border-t md:flex-row md:justify-between md:space-y-0">
+        <CancelButton @click="handleClose" class="w-full md:w-auto" />
+        <BaseButton type="submit" variant="primary" size="md" class="w-full md:w-auto" :disabled="isSubmitting"> 記録を保存 </BaseButton>
       </div>
     </form>
   </DetailLayout>
@@ -130,7 +129,8 @@ const { isLoading, withLoading } = useLoading();
 // useStudySessionFormから必要なプロパティとメソッドを取得
 const {
   form, // フォームデータ
-  formattedDate, // フォーマットされた日付文字列
+  formattedDateFull, // フォーマットされた日付文字列：デスクトップ用
+  formattedDateShort, // フォーマットされた日付文字列：モバイル用
   formattedTime, // フォーマットされた時刻文字列
   displayStudyHours, // 表示用の学習時間（時間）
   displayStudyMinutes, // 表示用の学習時間（分）

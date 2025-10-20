@@ -46,8 +46,9 @@ export function useStudySessionForm(initialData = null) {
     return initialFormState.value !== JSON.stringify(form);
   });
 
-  // 日時フォーマット
-  const formattedDate = computed(() => {
+  // 日時フォーマット：デスクトップ用
+  // 例：2025年08月26日
+  const formattedDateFull = computed(() => {
     if (!form.studied_at) return '日付を選択';
     const date = new Date(form.studied_at);
     return new Intl.DateTimeFormat('ja-JP', {
@@ -55,6 +56,17 @@ export function useStudySessionForm(initialData = null) {
       month: 'long',
       day: 'numeric',
     }).format(date);
+  });
+
+  // 日時フォーマット：モバイル用
+  // 例：2025/08/26
+  const formattedDateShort = computed(() => {
+    if (!form.studied_at) return '日付を選択';
+    const date = new Date(form.studied_at);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${year}/${month}/${day}`;
   });
 
   const formattedTime = computed(() => {
@@ -131,7 +143,8 @@ export function useStudySessionForm(initialData = null) {
   return {
     form,
     validationErrors,
-    formattedDate,
+    formattedDateFull,
+    formattedDateShort,
     formattedTime,
     displayStudyHours,
     displayStudyMinutes,
