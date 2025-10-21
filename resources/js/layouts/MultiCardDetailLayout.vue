@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-violet-50/30">
-    <div class="max-w-4xl p-8 mx-auto space-y-8">
+    <div class="max-w-md p-4 mx-auto space-y-8 md:max-w-4xl md:p-8">
       <!-- メインカード -->
-      <div class="p-8 border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl border-white/20">
+      <div class="p-4 border shadow-lg md:p-8 bg-white/70 backdrop-blur-md rounded-2xl border-white/20">
         <!-- パンくずリスト -->
         <DetailBreadcrumb v-if="$slots.breadcrumb">
           <slot name="breadcrumb" />

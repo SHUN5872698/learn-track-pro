@@ -8,7 +8,7 @@
 
     <!-- メインコンテンツ -->
     <main class="min-h-screen pt-20 duration-300 md:pt-24 md:pl-16 transition-padding">
-      <div class="px-4 sm:px-6 lg:px-8">
+      <div class="px-4 md:px-8">
         <router-view />
       </div>
     </main>
