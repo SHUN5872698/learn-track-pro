@@ -12,61 +12,61 @@
       <!-- 統計サマリーカード -->
       <div class="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
         <!-- 総学習時間 -->
-        <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20">
+        <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20 hover:scale-105">
           <div class="flex items-center">
             <div class="flex-shrink-0">
               <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-violet-100 to-violet-200 rounded-xl">
-                <ClockIcon class="text-lg text-violet-600" />
+                <ClockIcon class="w-10 h-10 text-violet-600" />
               </div>
             </div>
             <div class="ml-4">
-              <h3 class="text-sm font-medium text-slate-500">総学習時間</h3>
-              <p class="text-2xl font-bold text-slate-900">{{ totalStudyTime }}</p>
+              <p class="text-sm font-medium text-slate-500">総学習時間</p>
+              <p class="text-xl font-bold md:text-2xl text-slate-900">{{ totalStudyTime }}</p>
             </div>
           </div>
         </div>
 
         <!-- 完了コース数 -->
-        <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20">
+        <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20 hover:scale-105">
           <div class="flex items-center">
             <div class="flex-shrink-0">
               <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl">
-                <CheckBadgeIcon class="text-lg text-emerald-600" />
+                <CheckBadgeIcon class="w-10 h-10 text-emerald-600" />
               </div>
             </div>
             <div class="ml-4">
-              <h3 class="text-sm font-medium text-slate-500">完了コース数</h3>
-              <p class="text-2xl font-bold text-slate-900">{{ completedCoursesCount }}</p>
+              <p class="text-sm font-medium text-slate-500">完了コース数</p>
+              <p class="text-xl font-bold md:text-2xl text-slate-900">{{ completedCoursesCount }}</p>
             </div>
           </div>
         </div>
 
         <!-- 平均学習時間 -->
-        <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20">
+        <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20 hover:scale-105">
           <div class="flex items-center">
             <div class="flex-shrink-0">
               <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl">
-                <ChartBarIcon class="text-lg text-blue-600" />
+                <ChartBarIcon class="w-10 h-10 text-blue-600" />
               </div>
             </div>
             <div class="ml-4">
-              <h3 class="text-sm font-medium text-slate-500">平均学習時間/日</h3>
-              <p class="text-2xl font-bold text-slate-900">{{ averageStudyTimePerDay }}</p>
+              <p class="text-sm font-medium text-slate-500">平均学習時間</p>
+              <p class="text-xl font-bold md:text-2xl text-slate-900">{{ averageStudyTimePerDay }}</p>
             </div>
           </div>
         </div>
 
         <!-- 連続学習日数 -->
-        <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20">
+        <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20 hover:scale-105">
           <div class="flex items-center">
             <div class="flex-shrink-0">
               <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-amber-100 to-amber-200 rounded-xl">
-                <FireIcon class="text-lg text-amber-600" />
+                <FireIcon class="w-10 h-10 text-amber-600" />
               </div>
             </div>
             <div class="ml-4">
-              <h3 class="text-sm font-medium text-slate-500">連続学習日数</h3>
-              <p class="text-2xl font-bold text-slate-900">{{ consecutiveStudyDays }}日</p>
+              <p class="text-sm font-medium text-slate-500">連続学習日数</p>
+              <p class="text-xl font-bold md:text-2xl text-slate-900">{{ consecutiveStudyDays }}日</p>
             </div>
           </div>
         </div>
