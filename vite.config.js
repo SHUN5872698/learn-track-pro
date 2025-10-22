@@ -21,4 +21,13 @@ export default defineConfig({
       '@': path.resolve(__dirname, './resources/js'),
     },
   },
+  // 本番ビルド時の設定
+  build: {
+    terserOptions: {
+      compress: {
+        drop_console: true, // 本番ビルド時にconsole.*を削除
+        drop_debugger: true, // debugger文も削除
+      },
+    },
+  },
 });
