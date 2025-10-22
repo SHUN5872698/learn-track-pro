@@ -6,7 +6,7 @@
     <button
       type="button"
       @click="handleButtonClick"
-      class="flex items-center justify-between w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm hover:bg-gray-100"
+      class="flex items-center justify-between w-full px-3 py-2 mt-1 text-sm placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none hover:bg-gray-100"
       :class="[showBorder ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-violet-500 focus:border-violet-500']"
     >
       <span :class="selectedSection ? 'text-slate-900' : 'text-gray-400'">

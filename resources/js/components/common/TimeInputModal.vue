@@ -3,7 +3,6 @@
   <TransitionRoot :show="isOpen" as="div">
     <!-- ダイアログコンポーネント: モーダルのアクセシビリティと閉じるイベントを管理 -->
     <Dialog as="div" class="relative z-50" @close="$emit('close')">
-
       <!-- モーダルの背景オーバーレイ: フェードイン/アウトのアニメーション -->
       <TransitionChild as="div" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
         <div class="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm"></div>
@@ -12,7 +11,6 @@
       <!-- モーダルコンテンツのコンテナ: スクロール可能で中央に配置 -->
       <div class="fixed inset-0 overflow-y-auto">
         <div class="flex items-center justify-center min-h-full p-4">
-
           <!-- モーダルパネルのトランジション: スケールとフェードイン/アウトのアニメーション -->
           <TransitionChild enter="ease-out duration-300" enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100" leave="ease-in duration-200" leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
             <!-- モーダルパネル本体: 時間選択UIを含む -->
@@ -25,14 +23,14 @@
                 <!-- 時間入力セクション -->
                 <div>
                   <label for="hours" class="block mb-1 text-sm font-medium text-slate-700">時間</label>
-                  <input id="hours" type="number" v-model.number="selectedHours" min="0" max="23" class="block w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-violet-500 focus:border-violet-500 sm:text-sm" />
+                  <input id="hours" type="number" v-model.number="selectedHours" min="0" max="23" class="block w-24 px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-violet-500 focus:border-violet-500" />
                 </div>
                 <!-- 区切り文字 -->
                 <span class="text-2xl font-bold text-slate-700">:</span>
                 <!-- 分入力セクション -->
                 <div>
                   <label for="minutes" class="block mb-1 text-sm font-medium text-slate-700">分</label>
-                  <input id="minutes" type="number" v-model.number="selectedMinutes" min="0" max="59" class="block w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-violet-500 focus:border-violet-500 sm:text-sm" />
+                  <input id="minutes" type="number" v-model.number="selectedMinutes" min="0" max="59" class="block w-24 px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-violet-500 focus:border-violet-500" />
                 </div>
               </div>
 
