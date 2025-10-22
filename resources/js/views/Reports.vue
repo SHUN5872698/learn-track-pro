@@ -15,7 +15,7 @@
         <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20 hover:scale-105">
           <div class="flex items-center">
             <div class="flex-shrink-0">
-              <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-violet-100 to-violet-200 rounded-xl">
+              <div class="flex items-center justify-center bg-gradient-to-br from-violet-100 to-violet-200 rounded-xl">
                 <ClockIcon class="w-10 h-10 text-violet-600" />
               </div>
             </div>
@@ -30,7 +30,7 @@
         <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20 hover:scale-105">
           <div class="flex items-center">
             <div class="flex-shrink-0">
-              <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl">
+              <div class="flex items-center justify-center bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl">
                 <CheckBadgeIcon class="w-10 h-10 text-emerald-600" />
               </div>
             </div>
@@ -45,7 +45,7 @@
         <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20 hover:scale-105">
           <div class="flex items-center">
             <div class="flex-shrink-0">
-              <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl">
+              <div class="flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl">
                 <ChartBarIcon class="w-10 h-10 text-blue-600" />
               </div>
             </div>
@@ -60,7 +60,7 @@
         <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20 hover:scale-105">
           <div class="flex items-center">
             <div class="flex-shrink-0">
-              <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-amber-100 to-amber-200 rounded-xl">
+              <div class="flex items-center justify-center bg-gradient-to-br from-amber-100 to-amber-200 rounded-xl">
                 <FireIcon class="w-10 h-10 text-amber-600" />
               </div>
             </div>

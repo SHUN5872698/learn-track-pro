@@ -1,17 +1,18 @@
 <template>
+  <!-- 学習統計サマリーカード -->
   <div class="mb-8">
     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
       <!-- 学習中コース -->
       <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20 hover:scale-105">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-violet-100 to-violet-200 rounded-xl">
-              <BookOpenIcon class="w-5 h-5 text-violet-600" />
+            <div class="flex items-center justify-center bg-gradient-to-br from-violet-100 to-violet-200 rounded-xl">
+              <BookOpenIcon class="w-10 h-10 text-violet-600" />
             </div>
           </div>
           <div class="ml-4">
-            <div class="text-sm font-medium text-slate-500">学習中コース</div>
-            <div class="text-2xl font-bold text-slate-900">{{ learningContents.filter((content) => content.status !== 'completed').length }}</div>
+            <p class="text-sm font-medium text-slate-500">学習中コース</p>
+            <p class="text-xl font-bold md:text-2xl text-slate-900">{{ learningContents.filter((content) => content.status !== 'completed').length }}</p>
           </div>
         </div>
       </div>
@@ -20,13 +21,13 @@
       <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20 hover:scale-105">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl">
-              <CheckBadgeIcon class="text-lg text-emerald-600" />
+            <div class="flex items-center justify-center bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl">
+              <CheckBadgeIcon class="w-10 h-10 text-emerald-600" />
             </div>
           </div>
           <div class="ml-4">
-            <div class="text-sm font-medium text-gray-500">完了セクション</div>
-            <div class="text-2xl font-bold text-gray-900">{{ totalCompletedSections }}/{{ totalSections }}</div>
+            <p class="text-sm font-medium text-slate-500">完了セクション</p>
+            <p class="text-xl font-bold md:text-2xl text-slate-900">{{ totalCompletedSections }}/{{ totalSections }}</p>
           </div>
         </div>
       </div>
@@ -35,13 +36,13 @@
       <div class="p-6 transition-all duration-300 transform border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl border-white/20 hover:scale-105">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl">
-              <ChartBarIcon class="text-lg text-blue-600" />
+            <div class="flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl">
+              <ChartBarIcon class="w-10 h-10 text-blue-600" />
             </div>
           </div>
           <div class="ml-4">
-            <div class="text-sm font-medium text-gray-500">平均進捗</div>
-            <div class="text-2xl font-bold text-gray-900">{{ averageProgress }}%</div>
+            <p class="text-sm font-medium text-slate-500">平均進捗</p>
+            <p class="text-xl font-bold md:text-2xl text-slate-900">{{ averageProgress }}%</p>
           </div>
         </div>
       </div>
