@@ -3,7 +3,7 @@
   <DetailLayout>
     <!-- ユーザー情報がある場合のみ表示 -->
     <div v-if="authStore.authUser">
-      <h2 class="mb-2 text-2xl font-bold text-slate-800">プロフィール</h2>
+      <h2 class="section-header">プロフィール</h2>
 
       <!-- アバター部 -->
       <div class="flex justify-center mb-6">
@@ -12,7 +12,7 @@
 
       <!-- ユーザー情報: 名前、メールアドレス、登録日を表示 -->
       <div class="space-y-2 text-center">
-        <h3 class="text-2xl font-bold text-slate-900">{{ user.name }}</h3>
+        <p class="text-xl font-bold text-slate-900">{{ user.name }}</p>
         <p class="text-gray-600">{{ user.email }}</p>
         <p v-if="user.created_at" class="text-sm text-gray-500">登録日: {{ new Date(user.created_at).toLocaleDateString('ja-JP') }}</p>
       </div>
@@ -24,7 +24,9 @@
     </div>
 
     <template #actions>
-      <BaseButton v-if="authStore.authUser" to="/profile/edit" variant="primary" :left-icon="PencilIcon"> 編集 </BaseButton>
+      <div class="flex flex-col w-full space-y-2 md:flex-row md:space-y-0 md:space-x-2 md:w-auto">
+        <BaseButton v-if="authStore.authUser" class="w-full md:w-auto" to="/profile/edit" variant="primary" size="md" :left-icon="PencilIcon"> 編集 </BaseButton>
+      </div>
     </template>
   </DetailLayout>
 </template>

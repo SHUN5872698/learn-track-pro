@@ -3,14 +3,14 @@
   <DetailLayout>
     <!-- セクションヘッダー -->
     <template #section-header>
-      <h2 class="mb-2 text-2xl font-bold text-slate-800">プロフィール編集</h2>
-      <div class="text-xs font-medium text-slate-600 md:text-sm">
+      <h2 class="section-header">プロフィール編集</h2>
+      <div class="section-subtext">
         <span>プロフィール情報を編集します。</span>
       </div>
     </template>
     <div>
-      <!-- バリデーションエラー -->
-      <div v-if="validationErrors.length" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+      <!-- Vue側のバリデーションエラー -->
+      <div v-if="validationErrors.length" class="error-container">
         <h3 class="font-bold">入力エラー</h3>
         <ul class="mt-2 ml-2 list-disc list-inside">
           <li v-for="error in validationErrors" :key="error">{{ error }}</li>
@@ -18,7 +18,7 @@
       </div>
 
       <!-- API側のエラー -->
-      <div v-if="apiError" class="p-4 mb-6 text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+      <div v-if="apiError" class="error-container">
         <h3 class="font-bold">エラー</h3>
         <ul class="mt-2 ml-2 list-disc list-inside">
           <li>{{ apiError }}</li>
@@ -30,39 +30,19 @@
         <div class="space-y-6">
           <!-- 名前入力フィールド -->
           <div>
-            <label for="name" class="block text-sm font-medium text-slate-700">名前<span class="pl-1 text-red-500">*</span></label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              autocomplete="off"
-              class="block w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
-              :class="[showNameBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
-              placeholder="例: 山田 太郎"
-              v-model="formData.name"
-              @input="nameModified = true"
-            />
+            <label for="name" class="form-label">名前<span class="pl-1 text-red-500">*</span></label>
+            <input id="name" name="name" type="text" autocomplete="off" class="form-input-base" :class="[showNameBorder ? 'form-input-error' : 'form-input-normal']" placeholder="例: 山田 太郎" v-model="formData.name" @input="nameModified = true" />
           </div>
 
           <!-- メールアドレス入力フィールド -->
           <div>
-            <label for="email-address" class="block text-sm font-medium text-slate-700">メールアドレス<span class="pl-1 text-red-500">*</span></label>
-            <input
-              id="email-address"
-              name="email"
-              type="email"
-              autocomplete="off"
-              class="block w-full px-3 py-2 mt-1 placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none sm:text-sm"
-              :class="[showEmailBorder ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-violet-500 focus:ring-violet-500']"
-              placeholder="your@email.com"
-              v-model="formData.email"
-              @input="emailModified = true"
-            />
+            <label for="email-address" class="form-label">メールアドレス<span class="pl-1 text-red-500">*</span></label>
+            <input id="email-address" name="email" type="email" autocomplete="off" class="form-input-base" :class="[showEmailBorder ? 'form-input-error' : 'form-input-normal']" placeholder="your@email.com" v-model="formData.email" @input="emailModified = true" />
           </div>
 
           <!-- アバター画像表示と変更ボタン -->
           <div>
-            <label for="email-address" class="block text-sm font-medium text-slate-700">アバター画像</label>
+            <label for="email-address" class="form-label">アバター画像</label>
             <div class="flex items-center space-x-4">
               <UserAvatar :user="formData" size="md" />
               <BaseButton type="button" variant="secondary" :disabled="true">画像を変更</BaseButton>
@@ -72,12 +52,10 @@
         </div>
       </form>
     </div>
-    <template #actions>
-      <div class="flex justify-between pt-6 mt-6 space-x-3">
-        <BaseButton @click="handleCancel" variant="secondary">キャンセル</BaseButton>
-        <BaseButton type="submit" :disabled="isSubmitting" @click="handleSubmit" variant="primary">保存</BaseButton>
-      </div>
-    </template>
+    <div class="flex flex-col pt-6 space-y-2 border-t md:flex-row md:justify-between md:space-y-0">
+      <BaseButton variant="secondary" size="md" class="w-full md:w-auto" @click="handleCancel">キャンセル</BaseButton>
+      <BaseButton type="submit" variant="primary" size="md" class="w-full md:w-auto" :disabled="isSubmitting" @click="handleSubmit">保存</BaseButton>
+    </div>
   </DetailLayout>
 
   <Teleport to="#app">
