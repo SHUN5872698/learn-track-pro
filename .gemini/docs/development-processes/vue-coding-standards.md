@@ -287,3 +287,34 @@ const showSectionBorder = computed(() => {
 "bg-black/30 backdrop-blur-sm"
 
 ```
+
+## レスポンシブデザイン（TailwindCSS）
+
+### ブレークポイント戦略
+
+**基本方針：モバイルファースト**
+
+- デフォルト（プレフィックスなし）= モバイル（〜767px）
+- `md:` (768px) = **メイン境界**として使用
+- `lg:` (1024px) = 例外的に使用（可読性確保が必要な場合のみ）
+- `sm:` (640px)、`xl:` (1280px) = **使用禁止**
+
+### 使用例
+
+```html
+<!-- モバイル：縦積み、デスクトップ：横並び -->
+<div class="flex-col md:flex-row">
+<!-- モバイル：1カラム、タブレット：2カラム、デスクトップ：3カラム -->
+<div class="grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+```
+
+### 共通スタイル（@apply）
+
+以下のクラスを優先使用：
+
+- `.section-header`: ページタイトル
+- `.section-subtext`: サブテキスト
+- `.error-container`: エラー表示
+- `.form-label`, `.form-input-base`: フォーム関連
+
+詳細：[レスポンシブ対応の実装方針] ← 開発ドキュメント管理DBへのリンク
