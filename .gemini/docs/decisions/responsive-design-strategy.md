@@ -90,13 +90,22 @@ LearnTrack ProのレスポンシブWebデザイン実装方針を定義するド
 
 ### 優先度：高
 
+**.auth-header**
+
+```css
+@apply mt-6 text-3xl font-bold text-center text-transparent bg-gradient-to-r from-violet-600 to-emerald-600 bg-clip-text;
+```
+
+- 使用箇所: 認証関連の全ページのタイトル
+- 適用ファイル: Login.vue,PasswordReset.vue,PasswordResetConfirm.vue,Register.vue
+
 **.section-header**
 
 ```css
 @apply mb-2 text-xl font-bold text-slate-800 md:text-2xl;
 ```
 
-- 使用箇所: 全ページのタイトル
+- 使用箇所: ログイン後の全ページのタイトル
 - 適用ファイル: DashboardLayout.vue, LearningContentDetail.vue, Profile.vue 他
 
 **.section-subtext**
@@ -105,7 +114,7 @@ LearnTrack ProのレスポンシブWebデザイン実装方針を定義するド
 @apply text-xs font-medium text-slate-600 md:text-sm;
 ```
 
-- 使用箇所: 全ページのサブテキスト
+- 使用箇所: ログイン後の全ページのサブテキスト
 - 適用ファイル: フォーム画面全般
 
 **.section-subheader**
@@ -114,7 +123,7 @@ LearnTrack ProのレスポンシブWebデザイン実装方針を定義するド
 @apply text-base font-bold text-slate-800 md:text-lg;
 ```
 
-- 使用箇所: セクション見出し
+- 使用箇所: ログイン後の特定のセクション見出し
 - 適用ファイル: Reports.vue
 
 **.error-container**
