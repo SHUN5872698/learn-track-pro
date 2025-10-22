@@ -20,14 +20,16 @@
 
     <!-- セクションヘッダー -->
     <template #section-header>
-      <h2 class="mb-2 text-2xl font-bold text-slate-800">個別レポート: {{ learningContent ? learningContent.title : '' }}</h2>
-      <p class="text-slate-600">直近30日間の個別レポートを確認できます。</p>
+      <h2 class="section-header">個別レポート: {{ learningContent ? learningContent.title : '' }}</h2>
+      <div class="section-subtext">
+        <span>直近30日間の個別レポートを確認できます。</span>
+      </div>
     </template>
 
     <!-- メインコンテンツ（グラフ） -->
     <template #main-content>
       <div v-if="learningContent">
-        <h3 class="mb-4 text-lg font-semibold text-slate-800">日別学習時間</h3>
+        <h3 class="section-subheader">日別学習時間</h3>
         <div class="h-80">
           <LineChart :data="dailyStudyData" />
         </div>
@@ -40,7 +42,7 @@
     <!-- 追加カード（学習記録一覧） -->
     <template #additional-cards>
       <div v-if="learningContent" class="p-8 border shadow-lg bg-white/70 backdrop-blur-md rounded-2xl border-white/20">
-        <h3 class="mb-4 text-lg font-semibold text-slate-800">学習記録一覧</h3>
+        <h3 class="section-subheader">学習記録一覧</h3>
 
         <div v-if="paginatedRecords.length > 0" class="space-y-4">
           <LearningRecordCard v-for="record in paginatedRecords" :key="record.id" :record="record" @edit="router.push(`/learning-contents/${contentId}/sessions/${record.id}/edit`)" @delete="openDeleteModal(record)">
