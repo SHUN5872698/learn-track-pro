@@ -51,7 +51,7 @@
         <div class="h-3 transition-all duration-500 rounded-full shadow-sm bg-gradient-to-r from-violet-500 to-emerald-500" :style="{ width: content.progress + '%' }"></div>
       </div>
       <!-- 進捗バーの下にセクション数と総学習時間を横並びで表示 -->
-      <div class="flex flex-col items-start gap-1 mt-4 text-xs xl:flex-row xl:items-center xl:justify-between xl:text-sm text-slate-600">
+      <div class="flex flex-col items-start gap-1 mt-4 text-xs text-slate-600 md:flex-row md:items-center md:justify-between md:text-sm">
         <div class="flex items-center space-x-1">
           <span class="font-medium text-violet-600">{{ content.completed_sections }}</span>
           / {{ content.total_sections }} セクション完了
@@ -64,14 +64,14 @@
     </div>
 
     <!-- カードフッター -->
-    <div class="flex flex-col items-start pt-4 border-t sm:flex-row sm:items-center sm:justify-between border-slate-100">
+    <div class="flex flex-col items-start pt-4 border-t md:flex-row md:items-center md:justify-between border-slate-100">
       <div class="text-xs text-slate-500">最終学習日: {{ content.latestSessionUpdatedAt ? formatDate(content.latestSessionUpdatedAt) : '-' }}</div>
       <button
         @click.stop="navigateToAddRecord"
         :disabled="content.totalSections === 0"
-        :class="['flex items-center px-3 py-1.5 text-sm font-medium transition-all duration-200 rounded-lg self-end sm:px-2 sm:py-1 sm:text-xs', content.totalSections === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-violet-600 hover:bg-violet-100 hover:text-violet-800']"
+        :class="['flex items-center px-3 py-1.5 text-sm font-medium transition-all duration-200 rounded-lg self-end md:px-2 md:py-1 md:text-xs', content.totalSections === 0 ? 'text-gray-400 cursor-not-allowed' : 'text-violet-600 hover:bg-violet-100 hover:text-violet-800']"
       >
-        <PlusCircleIcon class="w-5 h-5 mr-1 sm:w-4 sm:h-4" />
+        <PlusCircleIcon class="w-5 h-5 mr-1 md:w-4 md:h-4" />
         記録を追加
       </button>
     </div>

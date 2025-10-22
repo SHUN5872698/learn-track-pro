@@ -15,7 +15,7 @@
       <div class="flex items-center">
         <router-link to="/profile" class="flex items-center space-x-3 group">
           <UserAvatar :user="user" size="sm" class="transition-all duration-200 ring-2 ring-violet-100 group-hover:ring-violet-300" />
-          <div class="hidden sm:block">
+          <div class="hidden md:block">
             <div class="text-sm font-medium transition-all duration-200 text-slate-700 group-hover:text-violet-600">
               {{ user.name }}
             </div>
