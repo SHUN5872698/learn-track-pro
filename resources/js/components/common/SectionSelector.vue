@@ -1,7 +1,7 @@
 <template>
   <!-- セクション選択ドロップダウンコンポーネントのラッパー -->
   <div class="relative" ref="dropdownRef">
-    <label class="block text-sm font-medium text-slate-700">学習セクション<span class="pl-1 text-red-500">*</span></label>
+    <label class="form-label">学習セクション<span class="pl-1 text-red-500">*</span></label>
     <!-- セレクトボックス風の表示ボタン -->
     <button
       type="button"
