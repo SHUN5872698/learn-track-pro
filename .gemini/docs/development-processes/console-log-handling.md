@@ -149,7 +149,7 @@ console.log('Sessions loaded:', this.sessions.length);
 
 ```bash
 # Docker環境で開発サーバー起動
-docker-compose exec php-apache bash -c "cd /var/www/html && npm run dev"
+docker compose exec php-apache bash -c "cd /var/www/html && npm run dev"
 # → console.logが表示される
 ```
 
@@ -157,7 +157,7 @@ docker-compose exec php-apache bash -c "cd /var/www/html && npm run dev"
 
 ```bash
 # 本番ビルド実行
-docker-compose exec php-apache bash -c "cd /var/www/html && npm run build"
+docker compose exec php-apache bash -c "cd /var/www/html && npm run build"
 
 # 確認方法
 grep -r "console.log" public/build/assets/
