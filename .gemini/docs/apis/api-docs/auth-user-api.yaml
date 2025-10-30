@@ -1,0 +1,1295 @@
+openapi: 3.0.1
+info:
+  title: 学習管理システムAPI - 認証・ユーザー関連
+  description: 学習管理システムの認証とユーザー管理に関するAPI
+  version: 1.0.0
+tags:
+  - name: Authentication
+  - name: User Management
+  - name: Password Reset
+paths:
+  /sanctum/csrf-cookie:
+    get:
+      summary: CSRF Cookie取得
+      deprecated: false
+      description: CSRFトークンを含むCookieを取得します
+      operationId: getCsrfCookie
+      tags:
+        - Authentication
+      parameters:
+        - name: Accept
+          in: header
+          description: Accept header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: Content-Type header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+      responses:
+        '204':
+          description: No Content - CSRF Cookie設定成功
+          headers: {}
+      security: []
+  /fortify/register:
+    post:
+      summary: ユーザー登録
+      deprecated: false
+      description: 新規ユーザーを登録します
+      operationId: registerUser
+      tags:
+        - Authentication
+      parameters:
+        - name: Accept
+          in: header
+          description: Accept header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: Content-Type header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+            examples:
+              '1':
+                value:
+                  name: 田中 太郎
+                  email: tanaka@example.com
+                  password: password123
+                  password_confirmation: password123
+                summary: 成功
+              '2':
+                value:
+                  name: ''
+                  email: ''
+                  password: ''
+                  password_confirmation: ''
+                summary: 未入力
+              '3':
+                value:
+                  name: 51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51
+                  email: >-
+                    256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max2@testexample.com
+                  password: >-
+                    256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト2
+                  password_confirmation: >-
+                    256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト2
+                summary: 境界値
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                title: '""'
+                type: undefined
+          headers: {}
+        '302':
+          description: ''
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+          headers: {}
+        '422':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        items:
+                          type: string
+                    required:
+                      - email
+                required:
+                  - message
+                  - errors
+              examples:
+                '1':
+                  summary: 異常例
+                  value:
+                    message: 指定のメールアドレスは既に使用されています。
+                    errors:
+                      email:
+                        - 指定のメールアドレスは既に使用されています。
+                '2':
+                  summary: 異常例
+                  value:
+                    message: 名前は必須項目です。 (その他、2エラーあり)
+                    errors:
+                      name:
+                        - 名前は必須項目です。
+                      email:
+                        - メールアドレスは必須項目です。
+                      password:
+                        - パスワードは必須項目です。
+                '3':
+                  summary: 未入力
+                  value:
+                    message: 名前は必須項目です。 (その他、2エラーあり)
+                    errors:
+                      name:
+                        - 名前は必須項目です。
+                      email:
+                        - メールアドレスは必須項目です。
+                      password:
+                        - パスワードは必須項目です。
+                '4':
+                  summary: 境界値（名前の文字数）
+                  value:
+                    message: 名前の文字数は、50文字以下である必要があります。
+                    errors:
+                      name:
+                        - 名前の文字数は、50文字以下である必要があります。
+                '5':
+                  summary: 境界値
+                  value:
+                    message: 名前の文字数は、50文字以下である必要があります。 (その他、3エラーあり)
+                    errors:
+                      name:
+                        - 名前の文字数は、50文字以下である必要があります。
+                      email:
+                        - メールアドレスは、有効なメールアドレス形式で指定してください。
+                        - メールアドレスの文字数は、255文字以下である必要があります。
+                      password:
+                        - パスワードの文字数は、255文字以下である必要があります。
+          headers: {}
+      security: []
+  /fortify/login:
+    post:
+      summary: ログイン
+      deprecated: false
+      description: ユーザー認証を行います
+      operationId: loginUser
+      tags:
+        - Authentication
+      parameters:
+        - name: Accept
+          in: header
+          description: Accept header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: Content-Type header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+            examples:
+              '1':
+                value:
+                  email: tanaka@example.com
+                  password: password123
+              '2':
+                value:
+                  email: taro.yamada@example.com
+                  password: password
+                summary: 例 2
+              '3':
+                value:
+                  email: test01@example.com
+                  password: password
+                summary: 例 3
+              '4':
+                value:
+                  email: tekisasu.bager@gmail.com
+                  password: password
+                summary: 例 4
+              '5':
+                value:
+                  email: hanako.suzuki@example.com
+                  password: password
+                summary: 例 5
+      responses:
+        '200':
+          description: OK - ログイン成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          headers: {}
+        '302':
+          description: ''
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+              example: |-
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta charset="UTF-8" />
+                        <meta http-equiv="refresh" content="0;url='http://localhost:8000'" />
+
+                        <title>Redirecting to http: //localhost:8000</title>
+                    </head>
+                    <body>
+                        Redirecting to <a href="http://localhost:8000">http: //localhost:8000</a>.
+                    </body>
+                </html>
+          headers: {}
+        '401':
+          description: Unauthorized - 認証失敗
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 認証情報が正しくありません。
+          headers: {}
+        '422':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        items:
+                          type: string
+                    required:
+                      - email
+                required:
+                  - message
+                  - errors
+              example:
+                message: 認証に失敗しました。
+                errors:
+                  email:
+                    - 認証に失敗しました。
+          headers: {}
+      security: []
+  /fortify/logout:
+    post:
+      summary: ログアウト
+      deprecated: false
+      description: ユーザーをログアウトします
+      operationId: logoutUser
+      tags:
+        - Authentication
+      parameters:
+        - name: Accept
+          in: header
+          description: Accept header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: Content-Type header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          description: Referer header
+          required: true
+          example: '{{frontend_url}}'
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '204':
+          description: No Content - ログアウト成功
+          headers: {}
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+          headers: {}
+        '419':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  exception:
+                    type: string
+                  file:
+                    type: string
+                  line:
+                    type: integer
+                  trace:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        file:
+                          type: string
+                        line:
+                          type: integer
+                        function:
+                          type: string
+                        class:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                        - file
+                        - line
+                        - function
+                        - class
+                        - type
+                required:
+                  - message
+                  - exception
+                  - file
+                  - line
+                  - trace
+              example:
+                message: CSRF token mismatch.
+                exception: Symfony\Component\HttpKernel\Exception\HttpException
+                file: >-
+                  /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php
+                line: 674
+                trace:
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php
+                    line: 617
+                    function: prepareException
+                    class: Illuminate\Foundation\Exceptions\Handler
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php
+                    line: 51
+                    function: render
+                    class: Illuminate\Foundation\Exceptions\Handler
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 224
+                    function: handleException
+                    class: Illuminate\Routing\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php
+                    line: 48
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\View\Middleware\ShareErrorsFromSession
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php
+                    line: 120
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php
+                    line: 63
+                    function: handleStatefulRequest
+                    class: Illuminate\Session\Middleware\StartSession
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Session\Middleware\StartSession
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php
+                    line: 36
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php
+                    line: 74
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Cookie\Middleware\EncryptCookies
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 137
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                    line: 821
+                    function: then
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                    line: 800
+                    function: runRouteWithinStack
+                    class: Illuminate\Routing\Router
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                    line: 764
+                    function: runRoute
+                    class: Illuminate\Routing\Router
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                    line: 753
+                    function: dispatchToRoute
+                    class: Illuminate\Routing\Router
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                    line: 200
+                    function: dispatch
+                    class: Illuminate\Routing\Router
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 180
+                    function: Illuminate\Foundation\Http\{closure}
+                    class: Illuminate\Foundation\Http\Kernel
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php
+                    line: 66
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Barryvdh\Debugbar\Middleware\InjectDebugbar
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
+                    line: 21
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
+                    line: 31
+                    function: handle
+                    class: Illuminate\Foundation\Http\Middleware\TransformsRequest
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: >-
+                      Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
+                    line: 21
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
+                    line: 51
+                    function: handle
+                    class: Illuminate\Foundation\Http\Middleware\TransformsRequest
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Foundation\Http\Middleware\TrimStrings
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php
+                    line: 27
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Http\Middleware\ValidatePostSize
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
+                    line: 109
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: >-
+                      Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
+                    line: 61
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Http\Middleware\HandleCors
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
+                    line: 58
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Http\Middleware\TrustProxies
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php
+                    line: 22
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: >-
+                      Illuminate\Foundation\Http\Middleware\InvokeDeferredCallbacks
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php
+                    line: 26
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Http\Middleware\ValidatePathEncoding
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 137
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                    line: 175
+                    function: then
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                    line: 144
+                    function: sendRequestThroughRouter
+                    class: Illuminate\Foundation\Http\Kernel
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
+                    line: 1219
+                    function: handle
+                    class: Illuminate\Foundation\Http\Kernel
+                    type: '->'
+                  - file: /var/www/html/public/index.php
+                    line: 20
+                    function: handleRequest
+                    class: Illuminate\Foundation\Application
+                    type: '->'
+          headers: {}
+      security: []
+  /api/user:
+    get:
+      summary: ユーザー情報取得
+      deprecated: false
+      description: 現在ログイン中のユーザー情報を取得します
+      operationId: getCurrentUser
+      tags:
+        - User Management
+      parameters:
+        - name: Accept
+          in: header
+          description: Accept header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: Content-Type header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          description: Referer header
+          required: true
+          example: '{{frontend_url}}'
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - ユーザー情報取得成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          headers: {}
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+          headers: {}
+      security: []
+  /api/user/profile:
+    put:
+      summary: プロフィール更新
+      deprecated: false
+      description: ユーザーのプロフィール情報を更新します
+      operationId: updateUserProfile
+      tags:
+        - User Management
+      parameters:
+        - name: Accept
+          in: header
+          description: Accept header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: Content-Type header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          description: Referer header
+          required: true
+          example: '{{frontend_url}}'
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+            examples:
+              '1':
+                value:
+                  name: 田中 次郎
+                  email: tanaka.new@example.com
+                summary: 成功（更新）
+              '2':
+                value:
+                  name: 田中 太郎
+                  email: tanaka.@example.com
+                summary: 成功（戻す）
+              '3':
+                value:
+                  name: ''
+                  email: ''
+                summary: 未入力
+              '4':
+                value:
+                  name: 51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51文字テスト51
+                  email: >-
+                    256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max2@testexample.com
+                summary: 境界値
+      responses:
+        '200':
+          description: OK - プロフィール更新成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  message:
+                    type: string
+                    example: プロフィールを更新しました
+          headers: {}
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+          headers: {}
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                '1':
+                  summary: アドレス重複
+                  value:
+                    message: 指定のメールアドレスは既に使用されています。
+                    errors:
+                      email:
+                        - 指定のメールアドレスは既に使用されています。
+                '2':
+                  summary: 未入力
+                  value:
+                    message: 名前は必須項目です。 (その他、1エラーあり)
+                    errors:
+                      name:
+                        - 名前は必須項目です。
+                      email:
+                        - メールアドレスは必須項目です。
+                '3':
+                  summary: 境界値
+                  value:
+                    message: 名前の文字数は、50文字以下である必要があります。 (その他、1エラーあり)
+                    errors:
+                      name:
+                        - 名前の文字数は、50文字以下である必要があります。
+                      email:
+                        - メールアドレスの文字数は、100文字以下である必要があります。
+          headers: {}
+      security: []
+  /api/user/password:
+    put:
+      summary: パスワード変更
+      deprecated: false
+      description: ユーザーのパスワードを変更します
+      operationId: updateUserPassword
+      tags:
+        - User Management
+      parameters:
+        - name: Accept
+          in: header
+          description: ''
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          description: ''
+          required: true
+          example: '{{frontend_url}}'
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+            example:
+              current_password: password123
+              password: newpassword456
+              password_confirmation: newpassword456
+      responses:
+        '200':
+          description: OK - パスワード変更成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: パスワードを変更しました。
+          headers: {}
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Unauthenticated.
+          headers: {}
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                message: The given data was invalid.
+                errors:
+                  current_password:
+                    - 現在のパスワードが正しくありません。
+                  password:
+                    - パスワードは8文字以上である必要があります。
+          headers: {}
+      security: []
+  /fortify/forgot-password:
+    post:
+      summary: パスワードリセット要求
+      deprecated: false
+      description: パスワードリセット用のメールを送信します
+      operationId: forgotPassword
+      tags:
+        - Password Reset
+      parameters:
+        - name: Accept
+          in: header
+          description: Accept header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: Content-Type header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: メールアドレス
+                  example: tanaka@example.com
+            examples:
+              '1':
+                value:
+                  email: test01@example.com
+                summary: 例 2
+              '2':
+                value:
+                  email: tekisasu.bager@gmail.com
+                summary: 例 3
+              '3':
+                value:
+                  email: testt9999@example.com
+                summary: 未登録
+              '4':
+                value:
+                  email: ''
+                summary: 未入力
+      responses:
+        '200':
+          description: OK - パスワードリセットメール送信成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: パスワードリセット用のメールを送信しました。
+              example:
+                message: パスワードリセットメールを送信しました。
+          headers: {}
+        '302':
+          description: ''
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+              example: |-
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta charset="UTF-8" />
+                        <meta http-equiv="refresh" content="0;url='http://localhost:8000'" />
+
+                        <title>Redirecting to http: //localhost:8000</title>
+                    </head>
+                    <body>
+                        Redirecting to <a href="http://localhost:8000">http: //localhost:8000</a>.
+                    </body>
+                </html>
+          headers: {}
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                '3':
+                  summary: レコードなし
+                  value:
+                    message: このメールアドレスに一致するユーザーがいません。
+                    errors:
+                      email:
+                        - このメールアドレスに一致するユーザーがいません。
+                '4':
+                  summary: 未入力
+                  value:
+                    message: メールアドレスは必須項目です。
+                    errors:
+                      email:
+                        - メールアドレスは必須項目です。
+          headers: {}
+      security: []
+  /fortify/reset-password:
+    post:
+      summary: パスワードリセット実行
+      deprecated: false
+      description: >-
+        トークンを使用してパスワードをリセットします
+
+
+        【トークンの取得方法】
+
+        エンドポイント8（/fortify/forgot-password）のレスポンスにはトークンが含まれません。これはセキュリティ上の意図的な設計です。トークンはメール内のURLにのみ含まれます。
+
+
+        【テスト手順】
+
+        1. エンドポイント8でメール送信を実行
+
+        2. 受信メールのリンクからトークンをコピー（URLの/reset-password/の後の文字列）
+
+        3. このエンドポイントのtokenフィールドに貼り付けて実行
+
+
+        【メール内のURL例】
+
+        http://localhost:5173/reset-password/abc123def456ghi789?email=tanaka@example.com
+
+        → abc123def456ghi789 の部分がトークンです
+      operationId: resetPassword
+      tags:
+        - Password Reset
+      parameters:
+        - name: Accept
+          in: header
+          description: Accept header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: Content-Type header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - email
+                - password
+                - password_confirmation
+              properties:
+                token:
+                  type: string
+                  description: リセットトークン
+                  example: sample_reset_token
+                email:
+                  type: string
+                  format: email
+                  description: メールアドレス
+                  example: tanaka@example.com
+                password:
+                  type: string
+                  format: password
+                  description: 新しいパスワード
+                  example: newpassword456
+                password_confirmation:
+                  type: string
+                  format: password
+                  description: 新しいパスワード（確認）
+                  example: newpassword456
+            examples:
+              '1':
+                value:
+                  token: ''
+                  email: tekisasu.bager@gmail.com
+                  password: newpassword456
+                  password_confirmation: newpassword456
+                summary: 例 1
+              '2':
+                value:
+                  token: sample_reset_token
+                  email: testt9999@example.com
+                  password: newpassword456
+                  password_confirmation: newpassword456
+                summary: 未登録
+              '3':
+                value:
+                  token: ''
+                  email: ''
+                  password: ''
+                  password_confirmation: ''
+                summary: 未入力
+              '4':
+                value:
+                  token: sample_reset_token
+                  email: tekisasu.bager@gmail.com
+                  password: newpassword456
+                  password_confirmation: newpassword456
+                summary: トークンエラー
+              '5':
+                value:
+                  token: ''
+                  email: >-
+                    256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max256max2@testexample.com
+                  password: >-
+                    256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト2
+                  password_confirmation: >-
+                    256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト2
+                summary: エラー（境界値）
+      responses:
+        '200':
+          description: OK - パスワードリセット成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: パスワードをリセットしました。
+              example:
+                message: パスワードが再設定されました。
+          headers: {}
+        '302':
+          description: ''
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+              example: |-
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta charset="UTF-8" />
+                        <meta http-equiv="refresh" content="0;url='http://localhost:8000'" />
+
+                        <title>Redirecting to http: //localhost:8000</title>
+                    </head>
+                    <body>
+                        Redirecting to <a href="http://localhost:8000">http: //localhost:8000</a>.
+                    </body>
+                </html>
+          headers: {}
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                '1':
+                  summary: 未登録
+                  value:
+                    message: このメールアドレスに一致するユーザーがいません。
+                    errors:
+                      email:
+                        - このメールアドレスに一致するユーザーがいません。
+                '2':
+                  summary: 未入力
+                  value:
+                    message: tokenは必須項目です。 (その他、2エラーあり)
+                    errors:
+                      token:
+                        - tokenは必須項目です。
+                      email:
+                        - メールアドレスは必須項目です。
+                      password:
+                        - パスワードは必須項目です。
+                '3':
+                  summary: トークンエラー
+                  value:
+                    message: このパスワード再設定トークンは無効です。
+                    errors:
+                      email:
+                        - このパスワード再設定トークンは無効です。
+                '6':
+                  summary: 境界値
+                  value:
+                    message: パスワードの文字数は、255文字以下である必要があります。
+                    errors:
+                      password:
+                        - パスワードの文字数は、255文字以下である必要があります。
+          headers: {}
+      security: []
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 26
+        name:
+          type: string
+          example: 田中 太郎
+        email:
+          type: string
+          format: email
+          example: tanaka@example.com
+        email_verified_at:
+          type: string
+          nullable: true
+          example: null
+        avatar:
+          type: string
+          nullable: true
+          example: null
+        two_factor_secret:
+          type: string
+          nullable: true
+          example: null
+        two_factor_recovery_codes:
+          type: string
+          nullable: true
+          example: null
+        two_factor_confirmed_at:
+          type: string
+          nullable: true
+          example: null
+        created_at:
+          type: string
+          example: '2025-09-23 22:49:50'
+        updated_at:
+          type: string
+          example: '2025-09-23 22:49:50'
+        has_avatar:
+          type: boolean
+          example: false
+        initials:
+          type: string
+          example: 田中
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: The given data was invalid.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          properties: {}
+  securitySchemes: {}
+servers: []
+security: []

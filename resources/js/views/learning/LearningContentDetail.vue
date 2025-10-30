@@ -1,0 +1,392 @@
+<template>
+  <!-- 学習コンテンツ詳細コンポーネント -->
+  <div v-if="isLoading" class="py-10 text-center">
+    <LoadingSpinner size="lg" message="データを読み込んでいます..." />
+  </div>
+
+  <!-- データ取得後にDetailLayoutを表示 -->
+  <DetailLayout v-else>
+    <!-- パンくずリスト -->
+    <template #breadcrumb>
+      <nav class="flex items-center text-xs md:text-sm text-slate-500">
+        <router-link to="/dashboard" class="flex items-center font-medium text-violet-600 hover:text-violet-800 hover:underline">
+          <ArrowLeftIcon class="w-4 h-4 mr-1" />
+          ダッシュボード
+        </router-link>
+        <span class="mx-2">/</span>
+        <span> {{ learningContent ? learningContent.title : '' }} </span>
+      </nav>
+    </template>
+
+    <!-- セクションヘッダー -->
+    <template #section-header>
+      <h2 class="section-header">{{ learningContent ? learningContent.title : '' }}</h2>
+      <div v-if="learningContent">
+        <!-- 1. 技術とステータス情報（修正：モバイルで縦並び） -->
+        <div class="flex flex-col my-1 space-y-2 section-subtext md:flex-row md:items-center md:space-y-0 md:space-x-4">
+          <div class="flex items-center space-x-1">
+            <span>技術:</span>
+            <img v-if="displayTechnology.icon" :src="displayTechnology.icon" :alt="displayTechnology.name" class="w-5 h-5 mr-1" />
+            <span>{{ displayTechnology.name }}</span>
+          </div>
+          <div class="flex items-center space-x-1">
+            <span>ステータス:</span>
+            <div class="flex items-center" :class="statusDisplay.class">
+              <component :is="statusDisplay.icon" class="w-5 h-5 mr-1" />
+              {{ statusDisplay.text }}
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col my-1 space-y-2 section-subtext md:flex-row md:items-center md:space-y-0 md:space-x-4">
+          <span>作成日: {{ formatDate(learningContent.created_at) }}</span>
+          <span>最終学習日: {{ learningContent.latestSessionUpdatedAt ? formatDate(learningContent.latestSessionUpdatedAt) : '-' }}</span>
+        </div>
+        <!-- 説明セクション -->
+        <div class="mt-4">
+          <h3 class="section-subheader">概要:</h3>
+          <p class="break-words whitespace-pre-wrap section-subtext">{{ learningContent.description }}</p>
+        </div>
+      </div>
+    </template>
+
+    <!-- メインコンテンツ -->
+    <div v-if="learningContent">
+      <!-- 進捗表示セクション -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm font-medium text-slate-700">進捗</span>
+          <span class="text-sm font-semibold text-transparent bg-gradient-to-r from-violet-600 to-emerald-600 bg-clip-text"> {{ learningContent.progress }} %</span>
+        </div>
+        <div class="w-full h-3 rounded-full bg-slate-200">
+          <div class="h-3 transition-all duration-500 rounded-full shadow-sm bg-gradient-to-r from-violet-500 to-emerald-500" :style="{ width: learningContent.progress + '%' }"></div>
+        </div>
+        <!-- 進捗バーの下にセクション数と総学習時間を表示（修正：モバイルで縦並び） -->
+        <div class="flex flex-col items-start gap-2 mt-3 text-xs md:flex-row md:items-center md:justify-between md:text-sm text-slate-600">
+          <div class="flex items-center space-x-1">
+            <span class="font-medium text-violet-600"> {{ learningContent.completed_sections }} </span>
+            / {{ learningContent.total_sections }} セクション完了
+          </div>
+          <div class="flex items-center space-x-1">
+            <ClockIcon class="w-4 h-4" />
+            総学習時間: {{ formatMinutes(learningContent.totalStudyMinutes) }}
+          </div>
+        </div>
+      </div>
+
+      <!-- セクション一覧 -->
+      <div>
+        <h3 class="section-subheader">セクション一覧</h3>
+
+        <!-- 完了状態切り替えのヒント（セクション一覧の直下） -->
+        <div class="flex items-center mb-4 text-xs md:text-sm text-slate-500">
+          <LightBulbIcon class="w-5 h-5 mr-2 text-yellow-500" />
+          <span>チェックマークをクリックすると完了状態を切り替えられます。</span>
+        </div>
+
+        <!-- API側のエラー -->
+        <div v-if="apiError" class="mb-4 text-sm text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md">
+          <ul class="mt-2 ml-2 list-disc list-inside">
+            <li>{{ apiError }}</li>
+          </ul>
+        </div>
+
+        <div v-if="contentSections.length > 0">
+          <ul class="space-y-3">
+            <li v-for="section in paginatedContentSections" :key="section.id" class="flex flex-col p-4 space-y-3 transition-all duration-200 bg-white border rounded-lg shadow-sm md:flex-row md:items-center md:justify-between md:space-y-0 hover:shadow-md hover:border-violet-300">
+              <div class="flex items-center flex-1 min-w-0">
+                <!-- チェックボックス -->
+                <button
+                  @click="handleToggleComplete(section, $event)"
+                  :disabled="updatingSectionId === section.id"
+                  class="relative flex-shrink-0 p-1.5 mr-3 transition-all duration-200 rounded-full hover:bg-violet-100 focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  :title="getToggleTitle(section)"
+                >
+                  <div class="relative flex items-center justify-center w-6 h-6">
+                    <!-- ローディングスピナー -->
+                    <div v-if="updatingSectionId === section.id" class="absolute inset-0 flex items-center justify-center">
+                      <svg class="w-6 h-6 text-violet-600 animate-spin" xmlns="<http://www.w3.org/2000/svg>" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    </div>
+
+                    <!-- チェックアイコン -->
+                    <transition name="check" mode="out-in">
+                      <CheckCircleIconSolid v-if="normalizeStatus(section.status) === 'completed' && updatingSectionId !== section.id" key="completed" class="w-6 h-6 text-emerald-500 hover:text-emerald-600" />
+                      <CheckCircleIconOutline v-else-if="updatingSectionId !== section.id" key="incomplete" class="w-6 h-6 text-gray-400 transition-colors duration-200 hover:text-violet-600" />
+                    </transition>
+                  </div>
+                </button>
+
+                <!-- 3. セクション情報（修正：truncateでテキスト切り詰め） -->
+                <div @click="goToSectionRecords(section.id)" class="flex flex-col flex-1 min-w-0 cursor-pointer md:flex-row md:items-center">
+                  <span class="font-medium truncate text-slate-800" :class="{ 'line-through text-gray-500': normalizeStatus(section.status) === 'completed' }" :title="section.order + '. ' + section.title"> {{ section.order }} . {{ section.title }} </span>
+                  <span class="ml-0 text-xs md:ml-2 md:text-sm text-slate-500 whitespace-nowrap"> ({{ normalizeStatus(section.status) === 'completed' ? '完了' : '学習中' }}) </span>
+                </div>
+              </div>
+
+              <!-- 記録件数：モバイルで左寄せ、デスクトップで右寄せ -->
+              <div class="pl-10 text-xs md:pl-0 md:ml-4 md:text-sm text-slate-500 whitespace-nowrap">[ {{ getRecordCountForSection(section.id) }} 件の記録]</div>
+            </li>
+          </ul>
+
+          <Pagination :total-items="contentSections.length" :items-per-page="sectionItemsPerPage" :current-page="sectionCurrentPage" @update:currentPage="sectionCurrentPage = $event" />
+        </div>
+
+        <div v-else class="py-10 text-center text-slate-500">
+          <p>この学習コンテンツには、まだセクションが登録されていません。</p>
+        </div>
+      </div>
+    </div>
+    <div v-else class="text-center text-slate-500">
+      <p>学習コンテンツが見つかりません。</p>
+    </div>
+
+    <!-- 4. アクションボタン（修正：モバイルで縦並び） -->
+    <template #actions>
+      <div class="flex flex-col w-full space-y-2 md:flex-row md:space-y-0 md:space-x-2 md:w-auto">
+        <BackButton to="/dashboard" class="w-full md:w-auto" />
+        <BaseButton variant="info" size="md" :left-icon="ChartBarIcon" @click="goToProgressDetails" class="w-full md:w-auto"> 個別レポート </BaseButton>
+        <BaseButton variant="primary" size="md" :left-icon="PencilIcon" @click="router.push(`/learning/${learningContent.id}/edit`)" v-if="learningContent" class="w-full md:w-auto"> 内容を編集 </BaseButton>
+      </div>
+    </template>
+  </DetailLayout>
+</template>
+
+<script setup>
+// ========================================
+// 外部インポート
+// ========================================
+import { computed, ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { PlayCircleIcon, DocumentIcon, PencilIcon, ClockIcon, ArrowLeftIcon, ChartBarIcon, CheckCircleIcon as CheckCircleIconSolid, LightBulbIcon } from '@heroicons/vue/24/solid';
+import { CheckCircleIcon as CheckCircleIconOutline } from '@heroicons/vue/24/outline';
+
+// ========================================
+// 内部インポート
+// ========================================
+// Piniaストア
+import { useAuthStore } from '@/stores/auth';
+import { useSectionStore } from '@/stores/sections';
+import { useLearningSessionStore } from '@/stores/learningSession';
+
+// コンポーザブル
+import { useLearningData } from '@/composables/useLearningData';
+import { useSections } from '@/composables/learning/useSections';
+import { useLoading } from '@/composables/ui/useLoading';
+
+// コンポーネント
+import DetailLayout from '@/layouts/DetailLayout.vue';
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue';
+import BaseButton from '@/components/common/BaseButton.vue';
+import BackButton from '@/components/common/buttons/BackButton.vue';
+import Pagination from '@/components/common/Pagination.vue';
+
+// ========================================
+// ユーティリティ関数（純粋関数）
+// ========================================
+// 日付文字列を整形するヘルパー関数
+const formatDate = (dateString) => {
+  if (!dateString || dateString === 'N/A') return 'N/A';
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  return new Date(dateString).toLocaleDateString('ja-JP', options);
+};
+
+// 分を「X時間Y分」形式に整形するヘルパー関数
+const formatMinutes = (totalMinutes) => {
+  if (totalMinutes === 0) return '0分';
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  let result = '';
+  if (hours > 0) {
+    result += `${hours}時間 `;
+  }
+  if (minutes > 0) {
+    result += `${minutes}分`;
+  }
+  return result.trim();
+};
+
+// ========================================
+// 初期設定
+// ========================================
+const route = useRoute();
+const router = useRouter();
+
+// コンポーザブル
+const authStore = useAuthStore();
+const { learningContents, learningContentsRaw, getRecordCountForSection, technologies, fetchContents } = useLearningData();
+const { updateSectionStatus, normalizeStatus, toggleSectionComplete } = useSections();
+const { isLoading, withLoading } = useLoading();
+const sectionStore = useSectionStore();
+const sessionStore = useLearningSessionStore();
+
+// ========================================
+// 状態管理
+// ========================================
+// API側のエラー
+const apiError = ref('');
+
+// ページネーション
+const sectionCurrentPage = ref(1);
+const sectionItemsPerPage = 10;
+
+// 更新中のセクションIDを管理（nullの場合は更新中でない）
+const updatingSectionId = ref(null);
+
+// ========================================
+// 算出プロパティ
+// ========================================
+// ルートパラメータから学習コンテンツIDを取得
+const learningContentId = computed(() => parseInt(route.params.id, 10));
+
+// 算出プロパティで現在の学習コンテンツ情報を取得
+const learningContent = computed(() => {
+  const content = learningContents.value.find((c) => c.id === learningContentId.value);
+  if (!content) return null;
+
+  const rawContent = learningContentsRaw.value.find((c) => c.id === learningContentId.value);
+  return {
+    ...content,
+    created_at: rawContent ? rawContent.created_at : 'N/A',
+    updated_at: rawContent ? rawContent.updated_at : 'N/A',
+    totalStudyMinutes: content.totalStudyMinutes,
+  };
+});
+
+// 学習コンテンツのステータスに応じた表示テキストとアイコンを算出
+const statusDisplay = computed(() => {
+  if (!learningContent.value) return { text: '', class: '', icon: null };
+  switch (learningContent.value.status) {
+    case 'completed':
+      return { text: '完了済', class: 'text-emerald-600', icon: CheckCircleIconSolid };
+    case 'in_progress':
+      return { text: '学習中', class: 'text-blue-600', icon: PlayCircleIcon };
+    case 'not_started':
+      return { text: '未着手', class: 'text-slate-500', icon: DocumentIcon };
+    default:
+      return { text: learningContent.value.status, class: 'text-slate-500', icon: DocumentIcon };
+  }
+});
+
+// 現在の学習コンテンツに紐づくセクションをフィルタリングし、並び順でソート
+const contentSections = computed(() => {
+  if (!learningContent.value) return [];
+  return sectionStore.sections.filter((s) => s.learning_content_id === learningContent.value.id).sort((a, b) => a.order - b.order);
+});
+
+// ページネーションされたセクションリスト
+const paginatedContentSections = computed(() => {
+  const startIndex = (sectionCurrentPage.value - 1) * sectionItemsPerPage;
+  const endIndex = startIndex + sectionItemsPerPage;
+  return contentSections.value.slice(startIndex, endIndex);
+});
+
+// 技術アイコンと名前を表示するための算出プロパティ
+const displayTechnology = computed(() => {
+  if (!learningContent.value) return { name: '不明', icon: '' };
+  const tech = technologies.value.find((t) => t.id === learningContent.value.technology_id);
+  return tech || { name: '不明', icon: '' };
+});
+
+// ツールチップテキストを動的に生成
+const getToggleTitle = (section) => {
+  if (updatingSectionId.value === section.id) {
+    return '更新中...';
+  }
+  return normalizeStatus(section.status) === 'completed' ? 'クリックで未完了にする' : 'クリックで完了にする';
+};
+
+// ========================================
+// ライフサイクル
+// ========================================
+onMounted(async () => {
+  // ログアウト中は処理をスキップ
+  if (!authStore.isLoggedIn) {
+    return;
+  }
+  await withLoading('learning-detail-init', async () => {
+    // データが読み込まれていない場合は先に読み込む
+    if (learningContents.value.length === 0) {
+      await fetchContents();
+    }
+    // 並列実行でパフォーマンス向上
+    await Promise.all([
+      sectionStore.fetchSections(learningContentId.value),
+      // 現在の学習コンテンツのセッションのみ取得
+      sessionStore.fetchLearningSessions({
+        learning_content_id: learningContentId.value,
+        all: 'true', // 全件取得フラグ
+      }),
+    ]);
+  });
+});
+
+// ========================================
+// メソッド
+// ========================================
+// イベントハンドラ
+// セクションクリック時にそのセクションの学習記録一覧ページへ遷移
+const goToSectionRecords = (sectionId) => {
+  router.push(`/learning/${learningContentId.value}/section/${sectionId}`);
+};
+
+// 個別レポートページへの遷移処理
+const goToProgressDetails = () => {
+  router.push(`/learning/${learningContentId.value}/progress`);
+};
+
+// API送信処理
+// セクションの完了状態の更新
+const handleToggleComplete = async (section, event) => {
+  // 学習記録詳細ページへの遷移をブロック
+  event.stopPropagation();
+  // API側エラーをリセット
+  apiError.value = '';
+
+  // 既に更新中の場合は処理をスキップ
+  if (updatingSectionId.value !== null) {
+    return;
+  }
+  // 更新中フラグを立てる
+  updatingSectionId.value = section.id;
+
+  try {
+    const newStatus = toggleSectionComplete(section);
+    // Piniaストアのアクションを呼び出し、セクションの完了状態の更新
+    await updateSectionStatus(section.id, newStatus);
+    // 学習コンテンツの統計を更新
+    const learningContent = learningContents.value.find((c) => c.id === learningContentId.value);
+    if (learningContent) {
+      learningContent.completed_sections = contentSections.value.filter((s) => s.status === 'completed').length;
+    }
+  } catch (error) {
+    console.error('セクション状態更新エラー:', error);
+    if (error?.response?.status === 422) {
+      // Laravel側のバリデーションエラー（422）の場合
+      apiError.value = '入力データに問題があります。';
+    } else {
+      // それ以外のレスポンスエラーは固定メッセージ
+      apiError.value = 'エラーが発生しました。';
+    }
+  } finally {
+    // 更新完了後にフラグをクリア
+    updatingSectionId.value = null;
+  }
+};
+</script>
+
+<style scoped>
+.check-enter-active,
+.check-leave-active {
+  transition: all 0.2s ease;
+}
+.check-enter-from {
+  transform: scale(0.8);
+  opacity: 0;
+}
+.check-leave-to {
+  transform: scale(1.2);
+  opacity: 0;
+}
+</style>

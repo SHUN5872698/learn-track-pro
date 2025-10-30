@@ -22,3 +22,10 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Gemini
+.gemini/outputs/
+.gemini/settings.json
+
+# MCP
+.playwright-mcp/

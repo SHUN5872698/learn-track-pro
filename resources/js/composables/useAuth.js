@@ -1,0 +1,149 @@
+import { defineStore } from 'pinia';
+import axios from 'axios';
+import api from '@/plugins/axios';
+import router from '@/router'; // ルーターをインポート
+
+export const useAuthStore = defineStore('auth', {
+  state: () => ({
+    user: null,
+    isLoggedIn: false,
+    loading: false,
+    errors: {},
+  }),
+
+  getters: {
+    authUser: (state) => state.user,
+    authLoading: (state) => state.loading,
+    authErrors: (state) => state.errors,
+    hasAuthErrors: (state) => Object.keys(state.errors).length > 0,
+  },
+
+  actions: {
+    setAuthLoading(status) {
+      this.loading = status;
+    },
+
+    setAuthUser(user) {
+      this.user = user;
+      this.isLoggedIn = !!user;
+    },
+
+    setAuthErrors(errors) {
+      this.errors = errors;
+    },
+
+    clearAuthErrors() {
+      this.errors = {};
+    },
+
+    // ログイン処理: ユーザー認証と状態更新を行う
+    async login(credentials) {
+      this.setAuthLoading(true);
+      this.clearAuthErrors();
+
+      try {
+        // SPA認証のためにCSRF Cookieを取得
+        console.log('🔄 Pinia: CSRF Cookie取得開始');
+        await axios.get('/sanctum/csrf-cookie');
+        console.log('✅ Pinia: CSRF Cookie取得完了');
+
+        // Fortifyのログインエンドポイントへリクエスト
+        console.log('🔄 Pinia: ログイン実行開始');
+        const response = await axios.post('/fortify/login', credentials);
+        console.log('✅ Pinia: ログイン成功', response);
+
+        // ログイン状態を永続化するためローカルストレージに保存
+        localStorage.setItem('isLoggedIn', 'true');
+        await this.fetchUser(); // ログイン成功後、ユーザー情報を取得
+      } catch (error) {
+        // ログイン失敗時のエラー情報を設定し、呼び出し元にエラーを再スロー
+        console.error('❌ Pinia: ログイン失敗', error);
+        const errorData = error?.response?.data?.errors ?? {
+          general: [error?.response?.data?.message || error?.message || 'ログインに失敗しました'],
+        };
+        this.setAuthErrors(errorData);
+        throw error;
+      } finally {
+        this.setAuthLoading(false);
+      }
+    },
+
+    // ユーザー情報の取得: 認証済みユーザーの詳細情報をフェッチする
+    async fetchUser() {
+      try {
+        const response = await api.get('/api/user');
+        console.log('Pinia: fetchUser レスポンスデータ:', response.data);
+        this.setAuthUser(response.data); // 取得したユーザー情報をストアに設定
+        console.log('✅ Pinia: ユーザー情報取得成功', response.data);
+      } catch (error) {
+        this.setAuthUser(null); // エラー時はユーザー情報をクリア
+        // 401エラーは未ログイン状態として扱い、それ以外は予期せぬエラーとしてログ
+        if (error.response && error.response.status === 401) {
+          console.log('ℹ️ Pinia: 未ログイン状態を確認しました。');
+          localStorage.removeItem('isLoggedIn');
+        } else {
+          console.error('❌ Pinia: ユーザー情報取得で予期せぬエラーが発生しました', error);
+        }
+      }
+    },
+
+    // ログアウト処理: ユーザーセッションを終了させる（修正版）
+    async logout() {
+      this.setAuthLoading(true);
+      try {
+        console.log('🔄 Pinia: ログアウト実行開始');
+        const response = await axios.post('/fortify/logout');
+        console.log('✅ Pinia: ログアウト成功', response);
+      } catch (error) {
+        console.error('❌ Pinia: ログアウト失敗', error);
+      } finally {
+        // 成功・失敗に関わらず、必ずローカル状態をクリア
+        this.setAuthUser(null); // これでisLoggedInがfalseになる
+        localStorage.removeItem('isLoggedIn');
+        this.setAuthLoading(false);
+
+        // ログインページへリダイレクト
+        await router.push('/login');
+      }
+    },
+
+    // ユーザー登録処理: 新規ユーザーを登録し、成功すれば自動ログインする
+    async register(payload) {
+      this.setAuthLoading(true);
+      this.clearAuthErrors();
+      try {
+        await axios.get('/sanctum/csrf-cookie'); // SPA認証のためにCSRF Cookieを取得
+        await axios.post('/fortify/register', payload); // Fortifyの登録エンドポイントへリクエスト
+        // 登録成功後、ユーザーの利便性のため自動的にログイン
+        await this.login({
+          email: payload.email,
+          password: payload.password,
+        });
+      } catch (error) {
+        // 登録失敗時のエラー情報を設定し、呼び出し元にエラーを再スロー
+        const errorData = error?.response?.data?.errors ?? {
+          general: [error?.response?.data?.message || error?.message || 'ユーザー登録に失敗しました'],
+        };
+        this.setAuthErrors(errorData);
+        throw error;
+      } finally {
+        this.setAuthLoading(false);
+      }
+    },
+
+    // プロフィール更新（追加）
+    async updateUserProfile(data) {
+      try {
+        const response = await api.put('/api/user/profile', data);
+        this.setAuthUser(response.data.user);
+        return { success: true, data: response.data };
+      } catch (error) {
+        console.error('❌ Pinia: プロフィール更新失敗', error);
+        return {
+          success: false,
+          message: error?.response?.data?.message || 'プロフィール更新に失敗しました',
+        };
+      }
+    },
+  },
+});

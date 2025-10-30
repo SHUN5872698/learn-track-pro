@@ -1,11 +1,59 @@
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+html,
+body {
+  overflow-y: scroll;
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+@layer components {
+  /* ページヘッダー */
+  .auth-header {
+    @apply mt-6 text-3xl font-bold text-center text-transparent bg-gradient-to-r from-violet-600 to-emerald-600 bg-clip-text;
+  }
+
+  .section-header {
+    @apply mb-2 text-xl font-bold text-slate-800 md:text-2xl;
+  }
+
+  .section-subheader {
+    @apply mb-2 text-base font-semibold text-slate-800 md:text-lg;
+  }
+
+  .section-subtext {
+    @apply text-sm font-medium text-slate-600 md:text-base;
+  }
+
+  /* エラー表示 */
+  .error-container {
+    @apply p-4 mb-6 text-sm text-red-800 bg-red-100 border-l-4 border-red-500 rounded-md md:text-base;
+  }
+
+  /* フォーム入力フィールド */
+  .form-input-base {
+    @apply block w-full px-3 py-2 mt-1 text-sm placeholder-gray-400 border rounded-md shadow-sm appearance-none focus:outline-none;
+  }
+
+  .form-input-normal {
+    @apply border-gray-300 focus:border-violet-500 focus:ring-violet-500;
+  }
+
+  .form-input-error {
+    @apply border-red-500 focus:border-red-500 focus:ring-red-500;
+  }
+
+  /* フォームラベル */
+  .form-label {
+    @apply block text-sm font-medium text-slate-700;
+  }
+
+  /* 文字数カウンター */
+  .text-counter {
+    @apply mt-1 text-xs text-gray-500;
+  }
+
+  .text-counter-over {
+    @apply font-medium text-red-500;
+  }
 }
