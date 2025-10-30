@@ -31,7 +31,7 @@
 
 ## 最重要基本原則
 **このプロジェクトに関するいかなるタスクを実行する前にも、Gemini CLIは必ず以下の記憶ファイルを読み込み、そこに記載されたルールを絶対的な制約として厳守すること。**
-- **記憶ファイル**: .gemini/memorys/gemini-cli-behavior-rules.md
+- **記憶ファイル**: `.gemini/memorys/gemini-cli-behavior-rules.md`
 
 ---
 
@@ -57,24 +57,28 @@
 - **Backend:**
   - PHP 8.3+
   - Laravel 12.x
-  - Laravel Fortify (認証)
-  - Laravel Sanctum (SPA認証)
+  - Laravel Fortify （認証）
+  - Laravel Sanctum （SPA認証）
   - MySQL 8.0
-  - Docker (開発環境)
 
 - **Frontend:**
-  - Vue 3 (Composition API + `<script setup>`)
-  - JavaScript (TypeScript未使用)
+  - Vue 3 （Composition API + `<script setup>`）
   - TailwindCSS 3.4
-  - Heroicons (アイコンライブラリ)
-  - Vite (ビルドツール)
-  - Vue Router (SPA ルーティング)
-  - Pinia (状態管理)
-  - Chart.js (データビジュアライゼーション)
+  - JavaScript （TypeScript未使用）
+  - Vite （ビルドツール）
+  - Vue Router （SPA ルーティング）
+  - Pinia （状態管理）
+  - VueDraggable （ドラッグ&ドロップ）
+  - Headless UI（UIライブラリ）
+  - Heroicons （アイコンライブラリ）
+  - Chart.js （データビジュアライゼーション）
 
 - **Database:**
-  - MySQL 8.0 (Docker環境)
+  - MySQL 8.0 （Docker環境）
   - セッション管理: データベース
+
+- **Infrastructure:**
+  - Docker（Laravel + Apache + MySQL + phpmyadmin）
 
 ## 実装状況
 詳細は以下のドキュメントを参照：
@@ -90,10 +94,11 @@
 
 - **フロントエンド設計:**
   - コンポーネント駆動開発
-  - components/ - 再利用可能なUIコンポーネント
-  - composables/ - ビジネスロジック・状態管理
-  - views/ - ページコンポーネント
-  - layouts/ - レイアウトコンポーネント
+  - `components/` （再利用可能なUIコンポーネント）
+  - `composables/` （ビジネスロジック・状態管理）
+  - `stores/` （Pinia Storeによる状態管理）
+  - `views/` （ページコンポーネント）
+  - `layouts/` （レイアウトコンポーネント）
 
 ---
 
@@ -102,6 +107,7 @@
 ## コーディング規約
 - **Laravel:** `.gemini/docs/development-processes/laravel-coding-standards.md`
 - **Vue.js:** `.gemini/docs/development-processes/vue-coding-standards.md`
+- **TailwindCSS:** `.gemini/docs/decisions/responsive-design-strategy.md`
 
 ---
 
@@ -126,23 +132,23 @@
 ## 主要コマンド
 ```bash
 # Docker環境起動
-docker-compose up -d
+docker compose up -d
 
 # Dockerコンテナにアクセス
-docker-compose exec php-apache bash
+docker compose exec php-apache bash
 
 # Laravel開発サーバー起動（コンテナ内で実行）
-docker-compose exec php-apache php artisan serve --host=0.0.0.0
+docker compose exec php-apache php artisan serve --host=0.0.0.0
 
 # マイグレーション実行
-docker-compose exec php-apache php artisan migrate
+docker compose exec php-apache php artisan migrate
 
 # キャッシュクリア
-docker-compose exec php-apache php artisan config:clear
-docker-compose exec php-apache php artisan cache:clear
+docker compose exec php-apache php artisan config:clear
+docker compose exec php-apache php artisan cache:clear
 
 # Seeder実行
-docker-compose exec php-apache php artisan db:seed
+docker compose exec php-apache php artisan db:seed
 
 # Vite開発サーバー起動（ホストOS上で実行）
 npm run dev
@@ -151,11 +157,11 @@ npm run dev
 npm run build
 
 # Composerコマンド
-docker-compose exec php-apache composer install
-docker-compose exec php-apache composer update
+docker compose exec php-apache composer install
+docker compose exec php-apache composer update
 
 # Artisanコマンドの汎用形式
-docker-compose exec php-apache php artisan [コマンド]
+docker compose exec php-apache php artisan [コマンド]
 ```
 
 ## ディレクトリ構造
