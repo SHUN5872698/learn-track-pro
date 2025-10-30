@@ -1,6 +1,3 @@
-以下が更新された`.gemini/GEMINI.md`ファイルです：
-
-```markdown
 # 1. ペルソナ
 
 ## 役割定義
@@ -81,9 +78,9 @@
 
 ## 実装状況
 詳細は以下のドキュメントを参照：
-- 開発計画、実装済み機能: `.gemini/docs/tasks/事前準備タスクリスト（設計・実装分割アプローチ）.md`
-- テーブル定義書: `.gemini/docs/databases/テーブル定義書.md`
-- 簡易設計&画面フロー: `.gemini/docs/designs/簡易設計&画面フロー.md`
+- 要件定義書: `.gemini/docs/project-infos/requirements-specification.md`
+- テーブル定義書: `.gemini/docs/databases/database-schema-definition.md`
+- 簡易設計&画面フロー: `.gemini/docs/designs/basic-design-and-screen-flow.md`
 
 ## アーキテクチャ
 - **バックエンド設計:**
@@ -162,40 +159,8 @@ docker-compose exec php-apache php artisan [コマンド]
 ```
 
 ## ディレクトリ構造
-```
-├── app/
-│   ├── Actions/Fortify/      # Fortify認証アクション
-│   ├── Enums/                 # アプリケーション定数
-│   ├── Http/
-│   │   ├── Controllers/       # Thinコントローラー
-│   │   ├── Requests/          # フォームリクエスト
-│   │   └── Resources/         # APIリソース
-│   ├── Models/                # Eloquentモデル
-│   ├── Repositories/          # リポジトリ層
-│   └── Services/              # サービス層
-├── resources/
-│   ├── js/
-│   │   ├── components/        # UIコンポーネント
-│   │   ├── composables/       # ロジック・状態管理
-│   │   ├── layouts/           # レイアウト
-│   │   ├── utils/             # ユーティリティ
-│   │   ├── validators/        # バリデーション
-│   │   ├── views/             # ページコンポーネント
-│   │   ├── app.js             # エントリーポイント
-│   │   ├── App.vue            # ルートコンポーネント
-│   │   ├── bootstrap.js       # API設定
-│   │   └── router.js          # ルート定義
-│   └── views/
-│       └── app.blade.php      # SPAエントリー
-├── routes/
-│   ├── api.php                # APIルート
-│   └── web.php                # Webルート
-└── .gemini/
-    ├── docs/                  # ドキュメント
-    ├── memorys/               # 記憶ファイル
-    ├── outputs/               # 出力ファイル
-    └── prompts/               # プロンプト
-```
+- **Laravel:** `.gemini/docs/architectures/laravel-directory-structure.md`
+- **Vue.js:** `.gemini/docs/architectures/vue-application-directory-structure.md`
 
 ## ワークフロー
 
@@ -288,4 +253,3 @@ docker-compose exec php-apache php artisan [コマンド]
 - 新機能追加時は段階的な実装を提案
 - エラーハンドリングを適切に実装
 - LaravelとVue.jsの規約ファイルを必ず参照
-```
