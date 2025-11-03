@@ -11,5 +11,3 @@ CHANGELOG.md export-ignore
 .styleci.yml export-ignore
 
 config/cors.php merge=ours
-.gitignore merge=ours
-.gemini/ -merge
