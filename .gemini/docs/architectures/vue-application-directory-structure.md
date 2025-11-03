@@ -1,0 +1,463 @@
+## 基本方針
+
+このプロジェクトの規模（MVP + 拡張機能）を考慮し、シンプルさと整理のバランスを重視した構造を採用します。
+
+---
+
+## 構造更新プロンプト
+
+```markdown
+.gemini/docs/architectures/Vueアプリケーションディレクトリ構造.md
+
+## 指示
+1. `tree ./resources/js/ -a -L 3 --dirsfirst -I 'node_modules|.DS_Store|.git|*.backup'`コマンドを実行してください。
+2. `## 現在のディレクトリ構造`を、treeコマンドの結果と突き合わせて更新してください。
+3. 追加ファイルとディレクトリがない場合は報告してください。
+
+### 注意点
+- 更新する際はディレクトリの並び順は変更しないでください
+- 新しく追加した項目には、必ずそのファイルやディレクトリの役割を簡潔にコメントとして追記してください
+- 既存の項目もコメントが不足している場合は補足してください。ただし現在のコメントのように簡潔な内容を心がけてください
+```
+
+```markdown
+.gemini/docs/architectures/Vueアプリケーションディレクトリ構造.md
+
+## 指示
+- インポート関係図 `を、現在のディレクトリ構造と突き合わせて更新してください。
+
+### 注意点
+- composables と validators を中心に、views/components/layouts との依存関係を明示してください
+- ダミーデータや将来実装予定の部分は、コメントアウトまたはラベルで区別してください
+
+```
+
+---
+
+## 現在のディレクトリ構造
+
+```bash
+resources/js/
+├── api/                                     # APIクライアント定義
+│   ├── learningContent.js                   # 学習コンテンツ関連API
+│   ├── learningSession.js                   # 学習セッション関連API
+│   ├── reports.js                           # レポート関連API
+│   └── sections.js                          # セクション関連API
+│
+├── components/                              # 再利用可能なUIコンポーネント
+│   ├── charts/                              # グラフ関連コンポーネント
+│   │   ├── BarChart.vue                     # 棒グラフコンポーネント
+│   │   ├── LineChart.vue                    # 折れ線グラフコンポーネント
+│   │   └── PieChart.vue                     # 円グラフコンポーネント
+│   │
+│   ├── common/                              # 汎用コンポーネント
+│   │   ├── buttons/                         # ボタン群
+│   │   │   ├── BackButton.vue               # 戻るボタン
+│   │   │   ├── CancelButton.vue             # キャンセルボタン
+│   │   │   └── DeleteButton.vue             # 削除ボタン
+│   │   ├── AppHeader.vue                    # アプリケーションヘッダー
+│   │   ├── AppSidebar.vue                   # アプリケーションサイドバー
+│   │   ├── BaseButton.vue                   # 基本ボタンコンポーネント
+│   │   ├── ConfirmModal.vue                 # 確認モーダルコンポーネント
+│   │   ├── DatePickerModal.vue              # 日付選択モーダルコンポーネント
+│   │   ├── GlobalErrorModal.vue             # グローバルエラーモーダル
+│   │   ├── LoadingSpinner.vue               # ローディングスピナー
+│   │   ├── Pagination.vue                   # ページネーションコンポーネント
+│   │   ├── SectionSelector.vue              # セクション選択ドロップダウン
+│   │   ├── SuccessToast.vue                 # 完了通知アラート
+│   │   ├── TimeInputModal.vue               # 時間入力モーダルコンポーネント
+│   │   └── UserAvatar.vue                   # ユーザーアバターコンポーネント
+│   │
+│   ├── layout/                              # レイアウト関連コンポーネント
+│   │   ├── DetailBreadcrumb.vue             # 詳細画面のパンくずリスト
+│   │   └── DetailSectionHeader.vue          # 詳細画面のセクションヘッダー
+│   │
+│   └── learning/                            # 学習管理関連コンポーネント
+│       ├── wizard/                          # ウィザード形式のコンポーネント
+│       │   ├── SectionListEditor.vue        # セクションリスト編集
+│       │   ├── TechnologySelector.vue       # 技術選択ドロップダウン
+│       │   ├── WizardNavigation.vue         # ウィザードナビゲーションボタン
+│       │   └── WizardStepIndicator.vue      # ウィザードステップインジケーター
+│       ├── DeleteRecordConfirmModal.vue     # 学習記録削除確認モーダル
+│       ├── LearningContentCard.vue          # 学習コンテンツカード
+│       ├── LearningRecordCard.vue           # 学習記録カード
+│       ├── StatsOverview.vue                # 統計概要コンポーネント
+│       └── StudySessionFormFields.vue       # 学習記録フォームフィールド
+│
+├── composables/                             # 共有ロジック・状態管理（Vue Composition APIを活用）
+│   ├── learning/                            # 学習ドメイン固有のコアロジック
+│   │   ├── useLearningContents.js           # 学習コンテンツのCRUD操作と関連ロジック
+│   │   ├── useLearningSessions.js           # 学習セッション（記録）のCRUD操作と関連ロジック
+│   │   └── useSections.js                   # セクションのCRUD操作と関連ロジック
+│   │
+│   ├── ui/                                  # UIの状態管理とヘルパー関数
+│   │   ├── useLoading.js                    # ローディング状態管理
+│   │   └── useMenuState.js                  # グローバルなメニュー開閉状態管理ロジック
+│   │
+│   ├── useAuth.js                           # 認証（ログイン、ログアウト、登録）と認証状態管理ロジック
+│   ├── useLearningContentForm.js            # 学習内容フォームのデータ管理、初期化、バリデーションロジック
+│   ├── useLearningData.js                   # 全ての学習関連データを集約・提供するファサード（データ操作のハブ）
+│   ├── useSectionStatus.js                  # セクションのステータス管理、完了判定、統計計算ロジック
+│   ├── useStudySessionForm.js               # 学習記録フォームのデータ管理、初期化、バリデーションロジック
+│   ├── useUser.js                           # ユーザー情報の状態管理、プロフィール更新、イニシャル生成ロジック
+│   └── useWizardForm.js                     # ウィザード形式フォームのステップ管理とバリデーション実行ロジック
+│
+├── layouts/                                 # レイアウトコンポーネント
+│   ├── AuthLayout.vue                       # 認証画面用レイアウト
+│   ├── DashboardLayout.vue                  # ダッシュボード画面用レイアウト
+│   ├── DefaultLayout.vue                    # デフォルトレイアウト
+│   ├── DetailLayout.vue                     # 詳細画面用レイアウト
+│   └── MultiCardDetailLayout.vue            # 複数カード表示用レイアウト
+│
+├── plugins/                                 # Vueプラグイン
+│   └── axios.js                             # Axiosのカスタム設定とインターセプター
+│
+├── stores/                                  # Piniaストア
+│   ├── auth.js                              # 認証状態管理ストア
+│   ├── errorModal.js                        # エラーモーダルの表示状態管理ストア
+│   ├── learningContent.js                   # 学習コンテンツの状態管理ストア
+│   ├── learningSession.js                   # 学習セッションの状態管理ストア
+│   ├── masterData.js                        # マスターデータ（カテゴリー、技術）の状態管理ストア
+│   ├── reports.js                           # レポート関連ストア
+│   └── sections.js                          # セクションの状態管理ストア
+│
+├── utils/                                   # ユーティリティ関数
+│   ├── chartColors.js                       # チャートの色定義
+│   └── dateFormatters.js                    # 日付と時刻のフォーマット関数
+│
+├── validators/                              # フォーム入力のバリデーションロジック
+│   ├── authValidator.js                     # 認証関連の入力値バリデーション
+│   ├── learningContentValidator.js          # 学習内容関連の入力値バリデーション
+│   ├── profileValidator.js                  # ユーザープロフィール関連の入力値バリデーション
+│   └── studySessionValidator.js             # 学習セッション（記録）関連の入力値バリデーション
+│
+├── views/                                   # ルーティング対象のページ
+│   ├── auth/                                # 認証関連ページ
+│   │   ├── Login.vue                        # ログイン画面
+│   │   ├── PasswordReset.vue                # パスワードリセット画面
+│   │   ├── PasswordResetConfirm.vue         # パスワードリセット実行画面
+│   │   └── Register.vue                     # 新規登録画面
+│   ├── learning/                            # 学習管理関連ページ
+│   │   ├── LearningContentCreate.vue        # 学習内容新規作成画面
+│   │   ├── LearningContentDetail.vue        # 学習内容詳細画面
+│   │   ├── LearningContentEdit.vue          # 学習内容編集画面
+│   │   ├── SectionStudyRecords.vue          # セクション別学習記録一覧画面
+│   │   ├── StudyProgress.vue                # 個別レポート画面
+│   │   ├── StudySessionCreate.vue           # 学習記録作成画面
+│   │   └── StudySessionEdit.vue             # 学習記録編集画面
+│   ├── user/                                # ユーザー関連ページ
+│   │   ├── Profile.vue                      # プロフィール表示画面
+│   │   └── ProfileEdit.vue                  # プロフィール編集画面
+│   │
+│   ├── Dashboard.vue                        # ダッシュボード画面
+│   ├── NotFound.vue                         # 404 Not Found画面
+│   └── Reports.vue                          # 全体レポート画面
+│
+├── app.js                                   # Vueアプリケーションのエントリーポイント
+├── App.vue                                  # ルートコンポーネント
+├── bootstrap.js                             # アプリケーションの初期設定（Axiosなど）
+└── router.js                                # Vue Router設定
+
+```
+
+---
+
+## インポート関係図
+
+```mermaid
+graph TD
+    subgraph Views & Components
+        X[Views & Components]
+    end
+
+    subgraph Composables
+        A[useLearningData]
+        B[useUser]
+        C[ui/useMenuState]
+        E[learning/useLearningContents]
+        F[learning/useSections]
+        G[learning/useLearningSessions]
+        P[useSectionStatus]
+        L[useAuth]
+        M[useStudySessionForm]
+        O[useLearningContentForm]
+        Q[useWizardForm]
+    end
+
+    subgraph Stores
+        R[stores/auth]
+        S[stores/masterData]
+        T[stores/reports]
+        U[stores/errorModal]
+        LC[stores/learningContent]
+        LS[stores/learningSession]
+        SC[stores/sections]
+    end
+
+    subgraph API
+        I[api/learningContent]
+        J[api/learningSession]
+        K[api/sections]
+    end
+
+    subgraph Validators
+        N[studySessionValidator]
+        V[profileValidator]
+    end
+
+    subgraph Plugins
+        W[plugins/axios]
+    end
+
+    %% Views & Components → Composables
+    X --> A
+    X --> L
+    X --> M
+    X --> O
+    X --> Q
+    X --> P
+    X --> B
+    X --> C
+    
+    %% Views & Components → Stores直接アクセス
+    X --> S
+    X --> T
+    X --> U
+    
+    %% Views & Components → Validators
+    X --> V
+    
+    %% Views & Components → Plugins
+    X --> W
+
+    %% Composables間の依存
+    A --> B
+    A --> C
+    A --> E
+    A --> F
+    A --> G
+    A --> P
+    L --> B
+    M --> N
+    Q --> X
+
+    %% Composables → Stores
+    E --> LC
+    F --> SC
+    G --> LS
+    B --> R
+
+    %% Stores → API
+    LC --> I
+    LS --> J
+    SC --> K
+
+    %% Plugins → Stores
+    W --> U
+
+    %% API → Plugins（axios使用）
+    I --> W
+    J --> W
+    K --> W
+
+    style A fill:#c9d1f3,stroke:#333,stroke-width:2px
+    style L fill:#d5e8d4,stroke:#333,stroke-width:2px
+    style M fill:#d5e8d4,stroke:#333,stroke-width:2px
+    style P fill:#c9d1f3,stroke:#333,stroke-width:2px
+    style O fill:#d5e8d4,stroke:#333,stroke-width:2px
+    style Q fill:#d5e8d4,stroke:#333,stroke-width:2px
+    style N fill:#f8d5d5,stroke:#333,stroke-width:2px
+    style V fill:#f8d5d5,stroke:#333,stroke-width:2px
+    style W fill:#ffeb99,stroke:#333,stroke-width:2px
+    style U fill:#ffb3b3,stroke:#333,stroke-width:2px
+```
+---
+
+## なぜこの構造が良いか
+
+1. 直感的な配置
+- ページはviews/
+- 部品はcomponents/
+- ロジックはcomposables/
+1. 適度な整理
+- 認証関連：views/auth/とcomponents/auth/
+- 学習関連：components/learning/
+- 機能ごとにまとまっているが、過度に複雑ではない
+1. 現実的な規模感
+- features/のような深い階層は避ける
+- MVPの規模に適している
+- 将来の拡張も可能
+
+---
+
+## 各ディレクトリの役割
+
+### /views
+
+- ルーターで直接アクセスされるページコンポーネント
+- 各ページはレイアウトとコンポーネントを組み合わせる
+
+### /components
+
+- 再利用可能なUIコンポーネント
+- 機能別にサブフォルダで整理（auth, learning, common）
+
+### /composables
+
+- Vue 3 Composition APIを使った共有ロジック
+- **ビジネスロジック層**として機能
+- 複数のStoreを連携して複雑な処理を実現
+- 状態管理、バリデーション、エラーハンドリング
+
+### /stores
+
+- Pinia Storeによる状態管理
+- **API通信・状態管理層**として機能
+- Laravel APIとの通信を担当
+- シンプルなデータの取得・保存・更新のみ
+
+### /layouts
+
+- ページ全体のレイアウトを定義
+- ヘッダー、サイドバー、フッターの配置
+
+---
+
+## Composables と Store の責務分離
+
+### 基本原則
+
+```mermaid
+graph LR
+    A[Vue Components] --> B[Composables<br/>ビジネスロジック層]
+    B --> C[Store<br/>API通信・状態管理層]
+    C --> D[Laravel API]
+
+    style B fill:#51cf66
+    style C fill:#339af0
+
+```
+
+### Store の責務（API通信・状態管理）
+
+**役割：**
+
+- Laravel APIとの通信
+- レスポンスデータの保存
+- 単純な状態の取得・更新
+
+**実装例：**
+
+```jsx
+// stores/learningSession.js
+export const useLearningSessionStore = defineStore('learningSession', {
+  state: () => ({
+    sessions: [],
+    loading: false,
+    error: null,
+  }),
+
+  actions: {
+    // API通信のみ
+    async fetchLearningSessions() {
+      this.loading = true;
+      const response = await api.fetchLearningSessions();
+      this.sessions = response.data;
+      this.loading = false;
+    },
+
+    async createLearningSession(data) {
+      const response = await api.createLearningSession(data);
+      this.sessions.push(response.data);
+    },
+  },
+
+  getters: {
+    // シンプルなフィルタリングのみ
+    sessionById: (state) => (id) => {
+      return state.sessions.find(s => s.id === id);
+    },
+  },
+});
+
+```
+
+### Composables の責務（ビジネスロジック）
+
+**役割：**
+
+- 複数のStoreを連携
+- ビジネスルールの実装
+- エラーハンドリング
+- 統計計算・データ加工
+
+**実装例：**
+
+```jsx
+// composables/learning/useLearningSessions.js
+export const useLearningSessions = () => {
+  const sessionStore = useLearningSessionStore();
+  const contentStore = useLearningContentStore();
+  const sectionStore = useSectionStore();
+
+  // 複数Storeを連携したビジネスロジック
+  const addStudySession = async (sessionData) => {
+    try {
+      // 1. セッション作成
+      await sessionStore.createLearningSession(sessionData);
+
+      // 2. 関連する学習内容の統計を更新（連携）
+      await contentStore.fetchLearningContent(sessionData.learning_content_id);
+
+      // 3. 関連するセクションのステータスを更新（連携）
+      await sectionStore.fetchSection(sessionData.section_id);
+
+      return true;
+    } catch (error) {
+      console.error('学習記録の追加に失敗:', error);
+      return false;
+    }
+  };
+
+  return { addStudySession };
+};
+
+```
+
+### 判断基準チートシート
+
+| 条件 | 実装場所 |
+| --- | --- |
+| API通信が必要 | **Store** |
+| 単純なデータ取得・保存 | **Store** |
+| 複数のStoreを使う | **Composable** |
+| ビジネスルールがある | **Composable** |
+| エラーハンドリングが複雑 | **Composable** |
+| 統計計算・データ加工 | **Composable** |
+| 状態の連携・同期 | **Composable** |
+
+### 実際のプロジェクト構造
+
+```
+composables/learning/
+├── useLearningContents.js    → learningContentStore を使用
+├── useLearningSessions.js     → learningSessionStore を使用
+└── useSections.js             → sectionStore を使用
+
+composables/
+└── useLearningData.js         → 上記3つのComposableを統合（ファサード）
+
+stores/
+├── learningContent.js         → API通信のみ
+├── learningSession.js         → API通信のみ
+└── section.js                 → API通信のみ
+
+```
+
+**ポイント：**
+
+- 各Composableは対応するStoreを1つ持つ
+- Composableは複数のStoreを連携できる
+- `useLearningData.js` が全体のファサードとして機能
+
+---

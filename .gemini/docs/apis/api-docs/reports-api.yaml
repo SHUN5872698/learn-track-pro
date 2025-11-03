@@ -1,0 +1,1980 @@
+openapi: 3.0.1
+info:
+  title: 学習管理システムAPI - レポート・統計
+  description: 学習管理システムのレポートと統計情報を提供するAPI
+  version: 1.0.0
+tags:
+  - name: Report
+paths:
+  /api/learning-sessions/statistics/summary:
+    get:
+      summary: 学習統計サマリー取得
+      deprecated: false
+      description: ''
+      tags:
+        - Report
+      parameters:
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          example: application/json
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          example: application/json
+          schema:
+            type: string
+        - name: Referer
+          in: header
+          description: ''
+          required: false
+          example: '{{frontend_url}}'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_study_minutes:
+                    type: integer
+                  completed_courses_count:
+                    type: integer
+                  average_study_time_per_day:
+                    type: integer
+                  consecutive_study_days:
+                    type: integer
+                required:
+                  - total_study_minutes
+                  - completed_courses_count
+                  - average_study_time_per_day
+                  - consecutive_study_days
+              example:
+                total_study_minutes: 18120
+                completed_courses_count: 1
+                average_study_time_per_day: 191
+                consecutive_study_days: 0
+          headers: {}
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+              example:
+                message: Unauthenticated.
+          headers: {}
+      security: []
+  /api/learning-sessions/statistics/monthly:
+    get:
+      summary: 月別統計取得
+      deprecated: false
+      description: ''
+      tags:
+        - Report
+      parameters:
+        - name: months
+          in: query
+          description: '取得する月数（デフォルト: 6）'
+          required: false
+          example: 6
+          schema:
+            type: integer
+            default: 6
+        - name: Accept
+          in: header
+          description: ''
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          description: ''
+          required: true
+          example: '{{frontend_url}}'
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    month:
+                      type: string
+                      example: 2025-09
+                    total_minutes:
+                      type: string
+                  required:
+                    - month
+                    - total_minutes
+              examples:
+                '1':
+                  summary: months=6の場合
+                  value:
+                    - month: 2025-06
+                      total_minutes: '3595'
+                    - month: 2025-07
+                      total_minutes: '3600'
+                    - month: 2025-08
+                      total_minutes: '2525'
+                    - month: 2025-09
+                      total_minutes: '6210'
+                '2':
+                  summary: months=0の場合
+                  value:
+                    - month: 2025-09
+                      total_minutes: '6210'
+          headers: {}
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+              example:
+                message: Unauthenticated.
+          headers: {}
+      security: []
+  /api/learning-sessions/statistics/by-technology:
+    get:
+      summary: 技術別統計取得
+      deprecated: false
+      description: ''
+      tags:
+        - Report
+      parameters:
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          example: application/json
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          example: application/json
+          schema:
+            type: string
+        - name: Referer
+          in: header
+          description: ''
+          required: false
+          example: '{{frontend_url}}'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    technology_name:
+                      type: string
+                      example: Vue.js
+                    total_minutes:
+                      type: string
+                  required:
+                    - technology_name
+                    - total_minutes
+              examples:
+                '1':
+                  summary: 成功例
+                  value:
+                    technology_name: Laravel
+                    total_minutes: '9135'
+                '2':
+                  summary: 成功例
+                  value:
+                    technology_name: Docker
+                    total_minutes: '5940'
+                '3':
+                  summary: 成功例
+                  value:
+                    technology_name: Vue.js
+                    total_minutes: '1530'
+                '4':
+                  summary: 成功例
+                  value:
+                    technology_name: React
+                    total_minutes: '960'
+                '5':
+                  summary: 成功例
+                  value:
+                    technology_name: PHP
+                    total_minutes: '705'
+          headers: {}
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+              example:
+                message: Unauthenticated.
+          headers: {}
+      security: []
+  /api/learning-sessions/statistics/daily:
+    get:
+      summary: 日別統計取得
+      deprecated: false
+      description: ''
+      tags:
+        - Report
+      parameters:
+        - name: days
+          in: query
+          description: 取得する日数
+          required: false
+          example: 30
+          schema:
+            type: integer
+            default: 30
+        - name: Accept
+          in: header
+          description: ''
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          description: ''
+          required: true
+          example: '{{frontend_url}}'
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      example: '2025-09-26'
+                    total_minutes:
+                      type: string
+                  required:
+                    - date
+                    - total_minutes
+              examples:
+                '1':
+                  summary: 成功例
+                  value:
+                    - date: '2025-08-28'
+                      total_minutes: '210'
+                    - date: '2025-08-29'
+                      total_minutes: '30'
+                    - date: '2025-08-30'
+                      total_minutes: '45'
+                    - date: '2025-08-31'
+                      total_minutes: '90'
+                    - date: '2025-09-01'
+                      total_minutes: '390'
+                    - date: '2025-09-02'
+                      total_minutes: '165'
+                    - date: '2025-09-03'
+                      total_minutes: '420'
+                    - date: '2025-09-04'
+                      total_minutes: '255'
+                    - date: '2025-09-05'
+                      total_minutes: '45'
+                    - date: '2025-09-06'
+                      total_minutes: '450'
+                    - date: '2025-09-07'
+                      total_minutes: '180'
+                    - date: '2025-09-08'
+                      total_minutes: '330'
+                    - date: '2025-09-09'
+                      total_minutes: '330'
+                    - date: '2025-09-10'
+                      total_minutes: '420'
+                    - date: '2025-09-11'
+                      total_minutes: '420'
+                    - date: '2025-09-12'
+                      total_minutes: '390'
+                    - date: '2025-09-13'
+                      total_minutes: '370'
+                    - date: '2025-09-14'
+                      total_minutes: '210'
+                    - date: '2025-09-15'
+                      total_minutes: '380'
+                    - date: '2025-09-16'
+                      total_minutes: '360'
+                    - date: '2025-09-17'
+                      total_minutes: '135'
+                    - date: '2025-09-18'
+                      total_minutes: '300'
+                    - date: '2025-09-19'
+                      total_minutes: '150'
+                    - date: '2025-09-20'
+                      total_minutes: '270'
+                    - date: '2025-09-21'
+                      total_minutes: '90'
+                    - date: '2025-09-26'
+                      total_minutes: '150'
+                '2':
+                  summary: 成功例（days=0の場合）
+                  value: []
+          headers: {}
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+              example:
+                message: Unauthenticated.
+          headers: {}
+      security: []
+  /api/learning-sessions/statistics/latest-by-content:
+    get:
+      summary: 学習内容別最新記録取得
+      deprecated: false
+      description: ''
+      tags:
+        - Report
+      parameters:
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          example: application/json
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          example: application/json
+          schema:
+            type: string
+        - name: Referer
+          in: header
+          description: ''
+          required: false
+          example: '{{frontend_url}}'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        user_id:
+                          type: integer
+                        learning_content_id:
+                          type: integer
+                        section_id:
+                          type: integer
+                        study_minutes:
+                          type: integer
+                        memo:
+                          type: string
+                        mood_rating:
+                          type: integer
+                        session_type:
+                          type: string
+                        studied_at:
+                          type: string
+                        created_at:
+                          type: string
+                        updated_at:
+                          type: string
+                        learning_content:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            user_id:
+                              type: integer
+                            technology_id:
+                              type: integer
+                            title:
+                              type: string
+                            description:
+                              type: string
+                            total_sections:
+                              type: integer
+                            completed_sections:
+                              type: integer
+                            status:
+                              type: string
+                            completed_at:
+                              type: string
+                              nullable: true
+                            created_at:
+                              type: string
+                            updated_at:
+                              type: string
+                          required:
+                            - id
+                            - user_id
+                            - technology_id
+                            - title
+                            - description
+                            - total_sections
+                            - completed_sections
+                            - status
+                            - completed_at
+                            - created_at
+                            - updated_at
+                        section:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            learning_content_id:
+                              type: integer
+                            title:
+                              type: string
+                            order:
+                              type: integer
+                            status:
+                              type: string
+                            created_at:
+                              type: string
+                            updated_at:
+                              type: string
+                          required:
+                            - id
+                            - learning_content_id
+                            - title
+                            - order
+                            - status
+                            - created_at
+                            - updated_at
+                      required:
+                        - id
+                        - user_id
+                        - learning_content_id
+                        - section_id
+                        - study_minutes
+                        - memo
+                        - mood_rating
+                        - session_type
+                        - studied_at
+                        - created_at
+                        - updated_at
+                        - learning_content
+                        - section
+                required:
+                  - data
+              example:
+                data:
+                  - id: 139
+                    user_id: 1
+                    learning_content_id: 2
+                    section_id: 30
+                    study_minutes: 150
+                    memo: Apidocで更新
+                    mood_rating: 5
+                    session_type: manual
+                    studied_at: '2025-09-26 14:00:00'
+                    created_at: '2025-09-26 22:08:05'
+                    updated_at: '2025-09-26 22:54:36'
+                    learning_content:
+                      id: 2
+                      user_id: 1
+                      technology_id: 2
+                      title: Vue.js 3 実践ガイド
+                      description: Vue.js 3のComposition APIとTypeScriptを使ったモダンなフロントエンド開発
+                      total_sections: 15
+                      completed_sections: 9
+                      status: in_progress
+                      completed_at: null
+                      created_at: '2025-09-13 12:30:46'
+                      updated_at: '2025-09-13 12:30:46'
+                    section:
+                      id: 30
+                      learning_content_id: 2
+                      title: カスタムディレクティブ
+                      order: 10
+                      status: not_started
+                      created_at: '2025-09-13 12:53:19'
+                      updated_at: '2025-09-13 12:53:19'
+                  - id: 131
+                    user_id: 1
+                    learning_content_id: 4
+                    section_id: 80
+                    study_minutes: 90
+                    memo: イメージスキャン
+                    mood_rating: 4
+                    session_type: manual
+                    studied_at: '2025-09-21 10:00:00'
+                    created_at: '2025-09-13 13:15:43'
+                    updated_at: '2025-09-13 13:15:43'
+                    learning_content:
+                      id: 4
+                      user_id: 1
+                      technology_id: 18
+                      title: Dockerの基礎学習
+                      description: コンテナ化の基礎とDockerの再確認
+                      total_sections: 10
+                      completed_sections: 9
+                      status: in_progress
+                      completed_at: null
+                      created_at: '2025-09-13 12:30:46'
+                      updated_at: '2025-09-13 12:30:46'
+                    section:
+                      id: 80
+                      learning_content_id: 4
+                      title: セキュリティとベストプラクティス
+                      order: 10
+                      status: in_progress
+                      created_at: '2025-09-13 12:53:19'
+                      updated_at: '2025-09-13 12:53:19'
+                  - id: 64
+                    user_id: 1
+                    learning_content_id: 5
+                    section_id: 59
+                    study_minutes: 120
+                    memo: 既存コードの移行計画
+                    mood_rating: 3
+                    session_type: manual
+                    studied_at: '2025-09-01 14:00:00'
+                    created_at: '2025-09-13 13:15:43'
+                    updated_at: '2025-09-13 13:15:43'
+                    learning_content:
+                      id: 5
+                      user_id: 1
+                      technology_id: 4
+                      title: PHP8.5の内容確認
+                      description: PHP8.5で実装されるRFCの確認
+                      total_sections: 10
+                      completed_sections: 10
+                      status: in_progress
+                      completed_at: null
+                      created_at: '2025-09-13 12:30:46'
+                      updated_at: '2025-09-13 12:30:46'
+                    section:
+                      id: 59
+                      learning_content_id: 5
+                      title: 移行ガイド
+                      order: 10
+                      status: completed
+                      created_at: '2025-09-13 12:53:19'
+                      updated_at: '2025-09-13 12:53:19'
+                  - id: 54
+                    user_id: 1
+                    learning_content_id: 1
+                    section_id: 20
+                    study_minutes: 90
+                    memo: 最終確認とまとめ
+                    mood_rating: 5
+                    session_type: manual
+                    studied_at: '2025-08-28 17:00:00'
+                    created_at: '2025-09-13 13:15:43'
+                    updated_at: '2025-09-13 13:15:43'
+                    learning_content:
+                      id: 1
+                      user_id: 1
+                      technology_id: 1
+                      title: Laravel完全マスター
+                      description: Laravelの基礎から応用まで、実践的なWebアプリケーション開発を学習
+                      total_sections: 20
+                      completed_sections: 20
+                      status: completed
+                      completed_at: '2024-08-25 00:00:00'
+                      created_at: '2025-09-13 12:30:46'
+                      updated_at: '2025-09-13 12:30:46'
+                    section:
+                      id: 20
+                      learning_content_id: 1
+                      title: デプロイ
+                      order: 20
+                      status: completed
+                      created_at: '2025-09-13 12:53:19'
+                      updated_at: '2025-09-13 12:53:19'
+                  - id: 79
+                    user_id: 1
+                    learning_content_id: 3
+                    section_id: 41
+                    study_minutes: 180
+                    memo: React.memoとuseMemo
+                    mood_rating: 5
+                    session_type: manual
+                    studied_at: '2024-09-07 10:30:00'
+                    created_at: '2025-09-13 13:15:43'
+                    updated_at: '2025-09-13 13:15:43'
+                    learning_content:
+                      id: 3
+                      user_id: 1
+                      technology_id: 3
+                      title: React基礎からNext.jsまで
+                      description: Reactの基礎概念からNext.jsを使った本格的なWebアプリケーション開発まで
+                      total_sections: 10
+                      completed_sections: 6
+                      status: in_progress
+                      completed_at: null
+                      created_at: '2025-09-13 12:30:46'
+                      updated_at: '2025-09-13 12:30:46'
+                    section:
+                      id: 41
+                      learning_content_id: 3
+                      title: パフォーマンス最適化
+                      order: 6
+                      status: completed
+                      created_at: '2025-09-13 12:53:19'
+                      updated_at: '2025-09-13 12:53:19'
+          headers: {}
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+              example:
+                message: Unauthenticated.
+          headers: {}
+      security: []
+  /api/learning-contents/{learningContentId}/statistics/daily:
+    get:
+      summary: 学習内容別日別統計取得
+      deprecated: false
+      description: 個別レポート:日別学習時間チャートで使用
+      tags:
+        - Report
+      parameters:
+        - name: learningContentId
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: integer
+        - name: days
+          in: query
+          description: '取得する日数（デフォルト: 30）'
+          required: false
+          example: 30
+          schema:
+            type: integer
+            default: 30
+        - name: Accept
+          in: header
+          description: ''
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          description: ''
+          required: true
+          example: '{{frontend_url}}'
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                    total_minutes:
+                      type: string
+              examples:
+                '1':
+                  summary: 成功例(days=0の場合)
+                  value: []
+                '6':
+                  summary: 成功例
+                  value:
+                    - date: '2025-06-01'
+                      total_minutes: '120'
+                    - date: '2025-06-02'
+                      total_minutes: '90'
+                    - date: '2025-06-03'
+                      total_minutes: '180'
+                    - date: '2025-06-04'
+                      total_minutes: '150'
+                    - date: '2025-06-05'
+                      total_minutes: '75'
+                    - date: '2025-06-08'
+                      total_minutes: '240'
+                    - date: '2025-06-09'
+                      total_minutes: '120'
+                    - date: '2025-06-10'
+                      total_minutes: '90'
+                    - date: '2025-06-12'
+                      total_minutes: '200'
+                    - date: '2025-06-13'
+                      total_minutes: '160'
+                    - date: '2025-06-15'
+                      total_minutes: '150'
+                    - date: '2025-06-16'
+                      total_minutes: '120'
+                    - date: '2025-06-17'
+                      total_minutes: '80'
+                    - date: '2025-06-19'
+                      total_minutes: '300'
+                    - date: '2025-06-20'
+                      total_minutes: '180'
+                    - date: '2025-06-22'
+                      total_minutes: '240'
+                    - date: '2025-06-23'
+                      total_minutes: '200'
+                    - date: '2025-06-24'
+                      total_minutes: '120'
+                    - date: '2025-06-26'
+                      total_minutes: '180'
+                    - date: '2025-06-27'
+                      total_minutes: '150'
+                    - date: '2025-06-28'
+                      total_minutes: '90'
+                    - date: '2025-06-30'
+                      total_minutes: '360'
+                    - date: '2025-07-01'
+                      total_minutes: '210'
+                    - date: '2025-07-02'
+                      total_minutes: '120'
+                    - date: '2025-07-04'
+                      total_minutes: '180'
+                    - date: '2025-07-05'
+                      total_minutes: '100'
+                    - date: '2025-07-07'
+                      total_minutes: '270'
+                    - date: '2025-07-08'
+                      total_minutes: '200'
+                    - date: '2025-07-09'
+                      total_minutes: '150'
+                    - date: '2025-07-11'
+                      total_minutes: '240'
+                    - date: '2025-07-12'
+                      total_minutes: '180'
+                    - date: '2025-07-13'
+                      total_minutes: '120'
+                    - date: '2025-07-15'
+                      total_minutes: '200'
+                    - date: '2025-07-16'
+                      total_minutes: '160'
+                    - date: '2025-07-18'
+                      total_minutes: '180'
+                    - date: '2025-07-19'
+                      total_minutes: '140'
+                    - date: '2025-07-20'
+                      total_minutes: '90'
+                    - date: '2025-07-22'
+                      total_minutes: '220'
+                    - date: '2025-07-23'
+                      total_minutes: '150'
+                    - date: '2025-07-25'
+                      total_minutes: '180'
+                    - date: '2025-07-26'
+                      total_minutes: '120'
+                    - date: '2025-07-27'
+                      total_minutes: '90'
+                    - date: '2025-07-29'
+                      total_minutes: '160'
+                    - date: '2025-07-30'
+                      total_minutes: '140'
+                    - date: '2025-08-01'
+                      total_minutes: '300'
+                    - date: '2025-08-02'
+                      total_minutes: '200'
+                    - date: '2025-08-03'
+                      total_minutes: '120'
+                    - date: '2025-08-05'
+                      total_minutes: '240'
+                    - date: '2025-08-06'
+                      total_minutes: '180'
+                    - date: '2025-08-07'
+                      total_minutes: '150'
+                    - date: '2025-08-25'
+                      total_minutes: '360'
+                    - date: '2025-08-26'
+                      total_minutes: '180'
+                    - date: '2025-08-27'
+                      total_minutes: '120'
+                    - date: '2025-08-28'
+                      total_minutes: '90'
+          headers: {}
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+              example:
+                message: Unauthenticated.
+          headers: {}
+        '403':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  exception:
+                    type: string
+                  file:
+                    type: string
+                  line:
+                    type: integer
+                  trace:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        file:
+                          type: string
+                        line:
+                          type: integer
+                        function:
+                          type: string
+                        class:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                        - file
+                        - line
+                        - function
+                        - class
+                        - type
+                required:
+                  - message
+                  - exception
+                  - file
+                  - line
+                  - trace
+              example:
+                message: This action is unauthorized.
+                exception: >-
+                  Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+                file: >-
+                  /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php
+                line: 673
+                trace:
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php
+                    line: 617
+                    function: prepareException
+                    class: Illuminate\Foundation\Exceptions\Handler
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php
+                    line: 51
+                    function: render
+                    class: Illuminate\Foundation\Exceptions\Handler
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 182
+                    function: handleException
+                    class: Illuminate\Routing\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
+                    line: 50
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Routing\Middleware\SubstituteBindings
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php
+                    line: 63
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Auth\Middleware\Authenticate
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php
+                    line: 26
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 180
+                    function: Laravel\Sanctum\Http\Middleware\{closure}
+                    class: >-
+                      Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/sanctum/src/Http/Middleware/AuthenticateSession.php
+                    line: 66
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Laravel\Sanctum\Http\Middleware\AuthenticateSession
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php
+                    line: 87
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php
+                    line: 120
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php
+                    line: 63
+                    function: handleStatefulRequest
+                    class: Illuminate\Session\Middleware\StartSession
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Session\Middleware\StartSession
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php
+                    line: 36
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php
+                    line: 74
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Cookie\Middleware\EncryptCookies
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php
+                    line: 61
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 201
+                    function: Laravel\Sanctum\Http\Middleware\{closure}
+                    class: >-
+                      Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 137
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php
+                    line: 25
+                    function: then
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: >-
+                      Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 137
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                    line: 821
+                    function: then
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                    line: 800
+                    function: runRouteWithinStack
+                    class: Illuminate\Routing\Router
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                    line: 764
+                    function: runRoute
+                    class: Illuminate\Routing\Router
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                    line: 753
+                    function: dispatchToRoute
+                    class: Illuminate\Routing\Router
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                    line: 200
+                    function: dispatch
+                    class: Illuminate\Routing\Router
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 180
+                    function: Illuminate\Foundation\Http\{closure}
+                    class: Illuminate\Foundation\Http\Kernel
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php
+                    line: 66
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Barryvdh\Debugbar\Middleware\InjectDebugbar
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
+                    line: 21
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
+                    line: 31
+                    function: handle
+                    class: Illuminate\Foundation\Http\Middleware\TransformsRequest
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: >-
+                      Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
+                    line: 21
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
+                    line: 51
+                    function: handle
+                    class: Illuminate\Foundation\Http\Middleware\TransformsRequest
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Foundation\Http\Middleware\TrimStrings
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php
+                    line: 27
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Http\Middleware\ValidatePostSize
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
+                    line: 109
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: >-
+                      Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
+                    line: 61
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Http\Middleware\HandleCors
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
+                    line: 58
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Http\Middleware\TrustProxies
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php
+                    line: 22
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: >-
+                      Illuminate\Foundation\Http\Middleware\InvokeDeferredCallbacks
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php
+                    line: 26
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Http\Middleware\ValidatePathEncoding
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 137
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                    line: 175
+                    function: then
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                    line: 144
+                    function: sendRequestThroughRouter
+                    class: Illuminate\Foundation\Http\Kernel
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
+                    line: 1219
+                    function: handle
+                    class: Illuminate\Foundation\Http\Kernel
+                    type: '->'
+                  - file: /var/www/html/public/index.php
+                    line: 20
+                    function: handleRequest
+                    class: Illuminate\Foundation\Application
+                    type: '->'
+          headers: {}
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  exception:
+                    type: string
+                  file:
+                    type: string
+                  line:
+                    type: integer
+                  trace:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        file:
+                          type: string
+                        line:
+                          type: integer
+                        function:
+                          type: string
+                        class:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                        - file
+                        - line
+                        - function
+                        - class
+                        - type
+                required:
+                  - message
+                  - exception
+                  - file
+                  - line
+                  - trace
+              example:
+                message: No query results for model [App\Models\LearningContent] 9999
+                exception: Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+                file: >-
+                  /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php
+                line: 669
+                trace:
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php
+                    line: 617
+                    function: prepareException
+                    class: Illuminate\Foundation\Exceptions\Handler
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php
+                    line: 51
+                    function: render
+                    class: Illuminate\Foundation\Exceptions\Handler
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 182
+                    function: handleException
+                    class: Illuminate\Routing\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php
+                    line: 50
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Routing\Middleware\SubstituteBindings
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php
+                    line: 63
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Auth\Middleware\Authenticate
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php
+                    line: 26
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 180
+                    function: Laravel\Sanctum\Http\Middleware\{closure}
+                    class: >-
+                      Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/sanctum/src/Http/Middleware/AuthenticateSession.php
+                    line: 66
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Laravel\Sanctum\Http\Middleware\AuthenticateSession
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php
+                    line: 87
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Foundation\Http\Middleware\VerifyCsrfToken
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php
+                    line: 120
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php
+                    line: 63
+                    function: handleStatefulRequest
+                    class: Illuminate\Session\Middleware\StartSession
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Session\Middleware\StartSession
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php
+                    line: 36
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php
+                    line: 74
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Cookie\Middleware\EncryptCookies
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php
+                    line: 61
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 201
+                    function: Laravel\Sanctum\Http\Middleware\{closure}
+                    class: >-
+                      Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 137
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php
+                    line: 25
+                    function: then
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: >-
+                      Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 137
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                    line: 821
+                    function: then
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                    line: 800
+                    function: runRouteWithinStack
+                    class: Illuminate\Routing\Router
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                    line: 764
+                    function: runRoute
+                    class: Illuminate\Routing\Router
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                    line: 753
+                    function: dispatchToRoute
+                    class: Illuminate\Routing\Router
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                    line: 200
+                    function: dispatch
+                    class: Illuminate\Routing\Router
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 180
+                    function: Illuminate\Foundation\Http\{closure}
+                    class: Illuminate\Foundation\Http\Kernel
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php
+                    line: 66
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Barryvdh\Debugbar\Middleware\InjectDebugbar
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
+                    line: 21
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
+                    line: 31
+                    function: handle
+                    class: Illuminate\Foundation\Http\Middleware\TransformsRequest
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: >-
+                      Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
+                    line: 21
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
+                    line: 51
+                    function: handle
+                    class: Illuminate\Foundation\Http\Middleware\TransformsRequest
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Foundation\Http\Middleware\TrimStrings
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php
+                    line: 27
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Http\Middleware\ValidatePostSize
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
+                    line: 109
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: >-
+                      Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
+                    line: 61
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Http\Middleware\HandleCors
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
+                    line: 58
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Http\Middleware\TrustProxies
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php
+                    line: 22
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: >-
+                      Illuminate\Foundation\Http\Middleware\InvokeDeferredCallbacks
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php
+                    line: 26
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 219
+                    function: handle
+                    class: Illuminate\Http\Middleware\ValidatePathEncoding
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                    line: 137
+                    function: Illuminate\Pipeline\{closure}
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                    line: 175
+                    function: then
+                    class: Illuminate\Pipeline\Pipeline
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                    line: 144
+                    function: sendRequestThroughRouter
+                    class: Illuminate\Foundation\Http\Kernel
+                    type: '->'
+                  - file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
+                    line: 1219
+                    function: handle
+                    class: Illuminate\Foundation\Http\Kernel
+                    type: '->'
+                  - file: /var/www/html/public/index.php
+                    line: 20
+                    function: handleRequest
+                    class: Illuminate\Foundation\Application
+                    type: '->'
+          headers: {}
+        x-200:成功:
+          description: ''
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+              example: |
+                <!DOCTYPE html>
+                <html lang="ja">
+
+                <head>
+                  <meta charset="UTF-8" />
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                  <meta name="csrf-token" content="2hLjRtR64E613jWvj25PWO2paOIMu4ZJm6YLzXfL">
+                  <title>LearnTrack Pro</title>
+                  &lt;script type="module" src="http://0.0.0.0:5173/@vite/client">&lt;/script&gt;<link rel="stylesheet" href="http://0.0.0.0:5173/resources/css/app.css" />&lt;script type="module" src="http://0.0.0.0:5173/resources/js/app.js">&lt;/script&gt;</head>
+
+                <body>
+                  <div id="app"></div>
+                </body>
+
+                </html>
+          headers: {}
+      security: []
+components:
+  schemas:
+    StatisticsSummary:
+      type: object
+      properties:
+        total_study_minutes:
+          type: integer
+        completed_courses_count:
+          type: integer
+        average_study_time_per_day:
+          type: integer
+        consecutive_study_days:
+          type: integer
+      required:
+        - total_study_minutes
+        - completed_courses_count
+        - average_study_time_per_day
+        - consecutive_study_days
+    DashboardStats:
+      type: object
+      properties:
+        active_courses:
+          type: integer
+          description: アクティブなコース数
+          example: 3
+        completed_sections:
+          type: integer
+          description: 完了したセクション数
+          example: 15
+        total_study_minutes:
+          type: integer
+          description: 総学習時間（分）
+          example: 2450
+        average_progress:
+          type: number
+          format: float
+          description: 平均進捗率（%）
+          example: 62.5
+        recent_activities:
+          type: array
+          description: 最近のアクティビティ
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: 学習内容ID
+                example: 1
+              title:
+                type: string
+                description: 学習内容タイトル
+                example: Laravel学習
+              last_studied_at:
+                type: string
+                format: date-time
+                description: 最終学習日時
+                example: '2025-08-21T15:30:00.000000Z'
+              progress_percentage:
+                type: number
+                format: float
+                description: 進捗率（%）
+                example: 30
+    WeeklyChart:
+      type: object
+      properties:
+        period:
+          type: string
+          description: 期間タイプ
+          enum:
+            - week
+            - month
+            - all
+          example: week
+        start_date:
+          type: string
+          format: date
+          description: 開始日
+          example: '2025-08-15'
+        end_date:
+          type: string
+          format: date
+          description: 終了日
+          example: '2025-08-21'
+        data:
+          type: array
+          description: 日別学習時間データ
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+                description: 日付
+                example: '2025-08-15'
+              study_minutes:
+                type: integer
+                description: 学習時間（分）
+                example: 120
+        total_minutes:
+          type: integer
+          description: 期間内総学習時間（分）
+          example: 1020
+        daily_average:
+          type: number
+          format: float
+          description: 1日平均学習時間（分）
+          example: 145.7
+    TechnologySummary:
+      type: object
+      properties:
+        period:
+          type: string
+          description: 期間タイプ
+          enum:
+            - week
+            - month
+            - all
+          example: month
+        start_date:
+          type: string
+          format: date
+          description: 開始日
+          example: '2025-08-01'
+        end_date:
+          type: string
+          format: date
+          description: 終了日
+          example: '2025-08-31'
+        data:
+          type: array
+          description: 技術別学習時間データ
+          items:
+            type: object
+            properties:
+              technology_id:
+                type: integer
+                description: 技術ID
+                example: 3
+              technology_name:
+                type: string
+                description: 技術名
+                example: Laravel
+              category_name:
+                type: string
+                description: カテゴリー名
+                example: フレームワーク
+              total_minutes:
+                type: integer
+                description: 総学習時間（分）
+                example: 1250
+              percentage:
+                type: number
+                format: float
+                description: 割合（%）
+                example: 45.5
+              learning_contents_count:
+                type: integer
+                description: 学習内容数
+                example: 2
+        total_minutes:
+          type: integer
+          description: 期間内総学習時間（分）
+          example: 2750
+    LearningHistory:
+      type: object
+      properties:
+        data:
+          type: array
+          description: 日別学習履歴
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+                description: 日付
+                example: '2025-08-21'
+              sessions:
+                type: array
+                description: 学習セッション
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: セッションID
+                      example: 10
+                    learning_content_title:
+                      type: string
+                      description: 学習内容タイトル
+                      example: Laravel学習
+                    section_title:
+                      type: string
+                      description: セクションタイトル
+                      example: データベース
+                    study_minutes:
+                      type: integer
+                      description: 学習時間（分）
+                      example: 90
+                    note:
+                      type: string
+                      description: 学習メモ
+                      nullable: true
+                      example: データベース設計について学習した
+              daily_total_minutes:
+                type: integer
+                description: 日別総学習時間（分）
+                example: 150
+        meta:
+          type: object
+          description: ページネーション情報
+          properties:
+            current_page:
+              type: integer
+              description: 現在のページ
+              example: 1
+            last_page:
+              type: integer
+              description: 最終ページ
+              example: 3
+            per_page:
+              type: integer
+              description: 1ページあたりの件数
+              example: 7
+            total:
+              type: integer
+              description: 総件数
+              example: 21
+        summary:
+          type: object
+          description: サマリー情報
+          properties:
+            period_total_minutes:
+              type: integer
+              description: 期間内総学習時間（分）
+              example: 1020
+            period_average_minutes:
+              type: number
+              format: float
+              description: 期間内1日平均学習時間（分）
+              example: 145.7
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: The given data was invalid.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          properties: {}
+  securitySchemes:
+    sanctum2:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+      description: Laravel Sanctum認証
+servers: []
+security: []

@@ -1,0 +1,1088 @@
+openapi: 3.0.1
+info:
+  title: 学習管理システムAPI - マスターデータ
+  description: 学習管理システムのマスターデータ（カテゴリー、技術）を管理するAPI
+  version: 1.0.0
+tags:
+  - name: Master Data
+paths:
+  /api/categories:
+    get:
+      summary: カテゴリー一覧取得
+      deprecated: false
+      description: 全カテゴリーの一覧を取得します
+      operationId: getCategories
+      tags:
+        - Master Data
+      parameters:
+        - name: Accept
+          in: header
+          description: Accept header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: Content-Type header
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          description: Referer header
+          required: true
+          example: '{{frontend_url}}'
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - カテゴリー一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    icon:
+                      type: string
+                    description:
+                      type: string
+                    created_at:
+                      type: string
+                    updated_at:
+                      type: string
+                  required:
+                    - id
+                    - name
+                    - icon
+                    - description
+                    - created_at
+                    - updated_at
+              example:
+                - id: 1
+                  name: Programming
+                  icon: >-
+                    http://localhost:8000/assets/icons/technologies/programming-icon.png
+                  description: プログラミング言語、フレームワーク、ライブラリ
+                  created_at: '2025-09-13 11:47:01'
+                  updated_at: '2025-09-13 11:47:01'
+                - id: 2
+                  name: Infrastructure
+                  icon: >-
+                    http://localhost:8000/assets/icons/technologies/infrastructure-icon.png
+                  description: サーバー、ネットワーク、クラウド、コンテナ技術
+                  created_at: '2025-09-13 11:47:01'
+                  updated_at: '2025-09-13 11:47:01'
+                - id: 3
+                  name: Service
+                  icon: >-
+                    http://localhost:8000/assets/icons/technologies/service-icon.png
+                  description: Webサービス、開発ツール、生産性向上ツール
+                  created_at: '2025-09-13 11:47:01'
+                  updated_at: '2025-09-13 11:47:01'
+                - id: 4
+                  name: Development
+                  icon: >-
+                    http://localhost:8000/assets/icons/technologies/development-icon.png
+                  description: 設計、開発手法、プロジェクト管理、実践的な開発
+                  created_at: '2025-09-13 11:47:01'
+                  updated_at: '2025-09-13 11:47:01'
+                - id: 5
+                  name: AI
+                  icon: http://localhost:8000/assets/icons/technologies/ai-icon.png
+                  description: AI、機械学習、LLM、プロンプトエンジニアリング
+                  created_at: '2025-09-13 11:47:01'
+                  updated_at: '2025-09-13 11:47:01'
+                - id: 6
+                  name: Other
+                  icon: >-
+                    http://localhost:8000/assets/icons/technologies/other-icon.png
+                  description: ビジネススキル、マインドセット、その他の学習
+                  created_at: '2025-09-13 11:47:01'
+                  updated_at: '2025-09-13 11:47:01'
+          headers: {}
+      security: []
+  /api/technologies:
+    get:
+      summary: 技術一覧取得
+      deprecated: false
+      description: 技術の一覧を取得します。カテゴリーIDでフィルタリング可能です
+      operationId: getTechnologies
+      tags:
+        - Master Data
+      parameters:
+        - name: category_id
+          in: query
+          description: カテゴリーIDでフィルタ
+          required: false
+          example: 0
+          schema:
+            type: integer
+            example: 1
+        - name: Accept
+          in: header
+          description: ''
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+          schema:
+            type: string
+            default: application/json
+        - name: Referer
+          in: header
+          description: ''
+          required: true
+          example: '{{frontend_url}}'
+          schema:
+            type: string
+            default: <http://localhost:5173>
+      responses:
+        '200':
+          description: OK - 技術一覧取得成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Technology'
+              examples:
+                '1':
+                  summary: 成功例
+                  value:
+                    - id: 1
+                      category_id: 1
+                      name: Laravel
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/laravel-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 2
+                      category_id: 1
+                      name: Vue.js
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/vue-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 3
+                      category_id: 1
+                      name: React
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/react-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 4
+                      category_id: 1
+                      name: PHP
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/php-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 5
+                      category_id: 1
+                      name: JavaScript
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/javascript-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 6
+                      category_id: 1
+                      name: TypeScript
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/typescript-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 7
+                      category_id: 1
+                      name: Python
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/python-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 8
+                      category_id: 1
+                      name: Ruby
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/ruby-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 9
+                      category_id: 1
+                      name: Java
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/java-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 10
+                      category_id: 1
+                      name: HTML
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/html-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 11
+                      category_id: 1
+                      name: CSS
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/css-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 12
+                      category_id: 1
+                      name: Next.js
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/next-js-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 13
+                      category_id: 1
+                      name: TailwindCSS
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/tailwindcss-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 14
+                      category_id: 2
+                      name: Linux
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/linux-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 2
+                        name: Infrastructure
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/infrastructure-icon.png
+                        description: サーバー、ネットワーク、クラウド、コンテナ技術
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 15
+                      category_id: 2
+                      name: Nginx
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/nginx-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 2
+                        name: Infrastructure
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/infrastructure-icon.png
+                        description: サーバー、ネットワーク、クラウド、コンテナ技術
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 16
+                      category_id: 2
+                      name: Apache
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/apache-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 2
+                        name: Infrastructure
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/infrastructure-icon.png
+                        description: サーバー、ネットワーク、クラウド、コンテナ技術
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 17
+                      category_id: 2
+                      name: Network
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/network-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 2
+                        name: Infrastructure
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/infrastructure-icon.png
+                        description: サーバー、ネットワーク、クラウド、コンテナ技術
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 18
+                      category_id: 2
+                      name: Docker
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/docker-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 2
+                        name: Infrastructure
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/infrastructure-icon.png
+                        description: サーバー、ネットワーク、クラウド、コンテナ技術
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 19
+                      category_id: 2
+                      name: AWS
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/aws-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 2
+                        name: Infrastructure
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/infrastructure-icon.png
+                        description: サーバー、ネットワーク、クラウド、コンテナ技術
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 20
+                      category_id: 2
+                      name: Azure
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/azure-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 2
+                        name: Infrastructure
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/infrastructure-icon.png
+                        description: サーバー、ネットワーク、クラウド、コンテナ技術
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 21
+                      category_id: 3
+                      name: Git
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/git-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 3
+                        name: Service
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/service-icon.png
+                        description: Webサービス、開発ツール、生産性向上ツール
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 22
+                      category_id: 3
+                      name: GitHub
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/github-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 3
+                        name: Service
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/service-icon.png
+                        description: Webサービス、開発ツール、生産性向上ツール
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 23
+                      category_id: 3
+                      name: VSCode
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/vscode-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 3
+                        name: Service
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/service-icon.png
+                        description: Webサービス、開発ツール、生産性向上ツール
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 24
+                      category_id: 3
+                      name: Obsidian
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/obsidian-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 3
+                        name: Service
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/service-icon.png
+                        description: Webサービス、開発ツール、生産性向上ツール
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 25
+                      category_id: 3
+                      name: SendGrid
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/sendgrid-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 3
+                        name: Service
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/service-icon.png
+                        description: Webサービス、開発ツール、生産性向上ツール
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 26
+                      category_id: 3
+                      name: Figma
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/figma-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 3
+                        name: Service
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/service-icon.png
+                        description: Webサービス、開発ツール、生産性向上ツール
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 27
+                      category_id: 4
+                      name: 開発
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/agile-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 4
+                        name: Development
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/development-icon.png
+                        description: 設計、開発手法、プロジェクト管理、実践的な開発
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 28
+                      category_id: 4
+                      name: システム設計
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/development-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 4
+                        name: Development
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/development-icon.png
+                        description: 設計、開発手法、プロジェクト管理、実践的な開発
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 29
+                      category_id: 4
+                      name: UI/UX設計
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/system-design-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 4
+                        name: Development
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/development-icon.png
+                        description: 設計、開発手法、プロジェクト管理、実践的な開発
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 30
+                      category_id: 4
+                      name: アジャイル開発
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/ui:ux-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 4
+                        name: Development
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/development-icon.png
+                        description: 設計、開発手法、プロジェクト管理、実践的な開発
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 31
+                      category_id: 4
+                      name: テスト駆動開発
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/test-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 4
+                        name: Development
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/development-icon.png
+                        description: 設計、開発手法、プロジェクト管理、実践的な開発
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 32
+                      category_id: 5
+                      name: ChatGPT
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/chatgpt-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 5
+                        name: AI
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/ai-icon.png
+                        description: AI、機械学習、LLM、プロンプトエンジニアリング
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 33
+                      category_id: 5
+                      name: Claude
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/claude-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 5
+                        name: AI
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/ai-icon.png
+                        description: AI、機械学習、LLM、プロンプトエンジニアリング
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 34
+                      category_id: 5
+                      name: Gemini
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/gemini-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 5
+                        name: AI
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/ai-icon.png
+                        description: AI、機械学習、LLM、プロンプトエンジニアリング
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 35
+                      category_id: 5
+                      name: LangChain
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/langchain-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 5
+                        name: AI
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/ai-icon.png
+                        description: AI、機械学習、LLM、プロンプトエンジニアリング
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 36
+                      category_id: 5
+                      name: Prompt Engineering
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/prompt-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 5
+                        name: AI
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/ai-icon.png
+                        description: AI、機械学習、LLM、プロンプトエンジニアリング
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 37
+                      category_id: 6
+                      name: ビジネススキル
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/business-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 6
+                        name: Other
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/other-icon.png
+                        description: ビジネススキル、マインドセット、その他の学習
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 38
+                      category_id: 6
+                      name: マインドセット
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/mind-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 6
+                        name: Other
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/other-icon.png
+                        description: ビジネススキル、マインドセット、その他の学習
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 39
+                      category_id: 6
+                      name: その他
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/other-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 6
+                        name: Other
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/other-icon.png
+                        description: ビジネススキル、マインドセット、その他の学習
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                '2':
+                  summary: カテゴリーID=1でフィルタした例
+                  value:
+                    - id: 1
+                      category_id: 1
+                      name: Laravel
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/laravel-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 2
+                      category_id: 1
+                      name: Vue.js
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/vue-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 3
+                      category_id: 1
+                      name: React
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/react-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 4
+                      category_id: 1
+                      name: PHP
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/php-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 5
+                      category_id: 1
+                      name: JavaScript
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/javascript-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 6
+                      category_id: 1
+                      name: TypeScript
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/typescript-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 7
+                      category_id: 1
+                      name: Python
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/python-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 8
+                      category_id: 1
+                      name: Ruby
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/ruby-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 9
+                      category_id: 1
+                      name: Java
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/java-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 10
+                      category_id: 1
+                      name: HTML
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/html-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 11
+                      category_id: 1
+                      name: CSS
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/css-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 12
+                      category_id: 1
+                      name: Next.js
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/next-js-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+                    - id: 13
+                      category_id: 1
+                      name: TailwindCSS
+                      icon: >-
+                        http://localhost:8000/assets/icons/technologies/tailwindcss-icon.png
+                      created_at: '2025-09-13 12:04:28'
+                      updated_at: '2025-09-13 12:04:28'
+                      category:
+                        id: 1
+                        name: Programming
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/programming-icon.png
+                        description: プログラミング言語、フレームワーク、ライブラリ
+                        created_at: '2025-09-13 11:47:01'
+                        updated_at: '2025-09-13 11:47:01'
+          headers: {}
+        x-200:全件取得:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    category_id:
+                      type: integer
+                    name:
+                      type: string
+                    icon:
+                      type: string
+                    created_at:
+                      type: string
+                    updated_at:
+                      type: string
+                    category:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        icon:
+                          type: string
+                        description:
+                          type: string
+                        created_at:
+                          type: string
+                        updated_at:
+                          type: string
+                      required:
+                        - id
+                        - name
+                        - icon
+                        - description
+                        - created_at
+                        - updated_at
+                  required:
+                    - id
+                    - category_id
+                    - name
+                    - icon
+                    - created_at
+                    - updated_at
+                    - category
+          headers: {}
+      security: []
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: カテゴリーID
+          example: 1
+        name:
+          type: string
+          description: カテゴリー名
+          example: Programming
+        icon:
+          type: string
+          description: アイコンURL又はBase64データ
+          example: ...
+        description:
+          type: string
+          description: カテゴリーの説明
+          example: プログラミング言語、フレームワーク、ライブラリ
+        created_at:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2023-01-01 00:00:00'
+        updated_at:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: '2023-01-01 00:00:00'
+    Technology:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 技術ID
+          example: 1
+        category_id:
+          type: integer
+          description: カテゴリーID
+          example: 1
+        name:
+          type: string
+          description: 技術名
+          example: Laravel
+        icon:
+          type: string
+          description: アイコンのパス
+          example: http://localhost:8000/assets/icons/technologies/laravel-icon.png
+        created_at:
+          type: string
+          format: date-time
+          description: 作成日時
+          example: '2023-01-01 00:00:00'
+        updated_at:
+          type: string
+          format: date-time
+          description: 更新日時
+          example: '2023-01-01 00:00:00'
+        category:
+          type: object
+          description: 関連カテゴリー情報
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: Programming
+  securitySchemes:
+    sanctum1:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+      description: Laravel Sanctum認証
+    sanctum21:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+      description: Laravel Sanctum認証
+servers: []
+security: []
