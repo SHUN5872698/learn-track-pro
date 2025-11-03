@@ -4,6 +4,15 @@
 
 **採用方針**: Viteのビルド時自動削除（環境変数制御は不採用）
 
+<aside>
+💡
+
+**技術的背景**
+
+- Vite 4以降はデフォルトで**esbuild**を使用しており、**terserは使われていません**。
+- そのため、`esbuild`の設定で本番ビルド時にconsole.*を削除します。
+</aside>
+
 ---
 
 ## 背景・問題
@@ -56,7 +65,7 @@ Sessions loaded: 53
 
 ### Viteのビルド時自動削除
 
-`vite.config.js`の`terserOptions`で本番ビルド時に自動削除する方式を採用。
+`vite.config.js`の`esbuild`設定で本番ビルド時に自動削除する方式を採用。
 
 ### 選定理由
 
@@ -88,7 +97,6 @@ Sessions loaded: 53
 ### 1. vite.config.jsの修正
 
 ```jsx
-// vite.config.js
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
@@ -114,14 +122,13 @@ export default defineConfig({
   },
   // 本番ビルド時の設定
   build: {
-    terserOptions: {
-      compress: {
-        drop_console: true,     // 本番ビルド時にconsole.*を削除
-        drop_debugger: true,    // debugger文も削除
-      },
+    minify: 'esbuild',  // デフォルトなので省略可
+    esbuild: {
+      drop: ['console', 'debugger'],
     },
   },
 });
+
 ```
 
 ### 2. 既存のconsole.logは修正不要
@@ -135,11 +142,15 @@ console.log('API Response:', response);
 console.log('Sessions loaded:', this.sessions.length);
 ```
 
-**理由：**
+<aside>
+📌
+
+**理由**
 
 - 開発中（`npm run dev`）は便利に使える
 - 本番ビルド（`npm run build`）時に自動削除される
 - ファイル修正が不要で工数最小
+</aside>
 
 ---
 
@@ -187,12 +198,82 @@ grep -r "console.log" public/build/assets/
 補足：
 
 - デプロイ方法の検討は独立して進められる
-- `terserOptions`の設定はどの環境でも有効
+- `esbuild`の設定はどの環境でも有効
 - Phase 3で自由にデプロイ方法を選択できる
 
 ---
 
 ## 今後の拡張（Phase 4以降）
+
+### 環境ごとの細かい制御が必要になった場合
+
+**選択肢1. terserを明示的に使用**
+
+```jsx
+// vite.config.js
+export default defineConfig({
+  // ... 既存の設定 ...
+  build: {
+    minify: 'terser',  // terserを明示的に指定
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+  },
+});
+```
+
+```bash
+# terserのインストールが必要
+npm install terser --save-dev
+```
+
+<aside>
+✅
+
+**メリット**
+
+- より細かい制御が可能
+- 特定のconsoleメソッドのみ残すことも可能
+</aside>
+
+<aside>
+🚫
+
+**デメリット**
+
+- esbuildより遅い
+- 追加パッケージが必要
+</aside>
+
+**選択肢2：vite-plugin-remove-console プラグイン**
+
+```jsx
+// vite.config.js
+import removeConsole from 'vite-plugin-remove-console';
+export default defineConfig({
+  plugins: [
+    vue(),
+    laravel({...}),
+    removeConsole(),  // 本番ビルド時のみ自動適用
+  ],
+});
+```
+
+```bash
+npm install vite-plugin-remove-console --save-dev
+```
+
+<aside>
+✅
+
+**メリット**
+
+- 環境ごとの細かい制御が可能
+- console.errorのみ残すなどの設定も簡単
+</aside>
 
 ### 環境変数制御が必要になるケース
 
@@ -267,3 +348,5 @@ Viteのビルド時自動削除を採用
 
 - [Building for Production - Vite](https://vitejs.dev/guide/build.html)
 - [Terser Options](https://terser.org/docs/api-reference#compress-options)
+
+---
