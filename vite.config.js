@@ -23,11 +23,9 @@ export default defineConfig({
   },
   // 本番ビルド時の設定
   build: {
-    terserOptions: {
-      compress: {
-        drop_console: true, // 本番ビルド時にconsole.*を削除
-        drop_debugger: true, // debugger文も削除
-      },
+    minify: 'esbuild',
+    esbuild: {
+      drop: ['console', 'debugger'],
     },
   },
 });
