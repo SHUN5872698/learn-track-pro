@@ -20,8 +20,8 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        env('FRONTEND_URL', 'http://210.131.212.205'),
-        env('APP_URL', 'http://210.131.212.205'),
+        env('FRONTEND_URL', 'https://learn-track-pro.xvps.jp'),
+        env('APP_URL', 'https://learn-track-pro.xvps.jp'),
     ],
 
     'allowed_origins_patterns' => [],
