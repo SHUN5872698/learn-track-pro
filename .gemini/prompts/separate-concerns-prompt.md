@@ -156,10 +156,11 @@ Gitのステージングされた変更を分析し、Conventional Commitsガイ
 
 すべての評価が完了したら、分離された関心事の塊を上記の出力形式で**直ちに出力してください。**
 
-- **出力先ファイル**: [.gemini/outputs/separated-concerns.md](../outputs/separated-concerns.md)
+- 出力先ファイル: [.gemini/outputs/separated-concerns.md](../outputs/separated-concerns.md)
 
 **重要**:
-- このタスクは、ファイルへの出力をもって**完全に完了**します。
-- **コミットメッセージの生成や、コミットを提案するような追加のアクションは一切行わないでください。**
-- **出力後、必ず出力先ファイルを読み込み、内容が正しく書き込まれていることを確認してください。**
-- **確認が取れたら「ファイルに出力しました」と報告して終了**
+- このタスクは、ファイルへの出力をもって完全に完了します。
+- コミットメッセージの生成や、コミットを提案するような追加のアクションは一切行わないでください。
+- 出力後、必ず`.gitignore`や`.geminiignore`、`.git/info/exclude`の設定を無視して出力先ファイルを読み込み、内容が正しく書き込まれていることを確認してください。
+  - `read_many_files`ツールを使用し、`file_filtering_options={"respect_gemini_ignore": False, "respect_git_ignore": False}`を指定すること
+- 確認が取れたら「ファイルに出力しました」と報告して終了
