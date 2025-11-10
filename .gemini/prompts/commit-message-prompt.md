@@ -162,7 +162,9 @@ Vue 3 Composition API向けのルールセットを追加し、コード品質�
 1. コミットメッセージを生成
 2. チェックリストで確認
 3. **必ず** `.gemini/outputs/commit-message-for-docs.md` に出力
-4. **以下の形式でチェック結果を報告**：
+4. 出力後、必ず`.gitignore`や`.geminiignore`、`.git/info/exclude`の設定を無視して出力先ファイルを読み込み、内容が正しく書き込まれていることを確認してください。
+  - `read_many_files`ツールを使用し、`file_filtering_options={"respect_gemini_ignore": False, "respect_git_ignore": False}`を指定すること
+5. **以下の形式でチェック結果を報告**：
 
 ---
 ### ✅ チェックリスト結果

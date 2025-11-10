@@ -209,6 +209,7 @@ docker compose exec php-apache php artisan [コマンド]
 **目的**: Gitのステージングされた変更を分析し、Conventional Commits仕様に基づいた論理的な関心事の塊に分離します。
 **アクション**:
 1. プロンプト [.gemini/prompts/separate-concerns-prompt.md](./prompts/separate-concerns-prompt.md) を読み込み、その指示に従って関心の分離と出力を行います。
+2. **出力ファイルの読み込み時は、必ず無視設定を無効にすること**: `.gitignore`や`.geminiignore`、`.git/info/exclude`の設定を無視して読み込むこと。
 
 ### `workflow:generate-commit-message`
 **目的**: 指定された論理的な関心事の塊に基づき、Conventional Commits仕様に準拠したコミットメッセージを生成し、指定されたファイルに出力します。
@@ -216,7 +217,8 @@ docker compose exec php-apache php artisan [コマンド]
 以下の「関心事の塊」セクションに、`workflow:separate-concerns`で分離された論理的な関心事の塊（タイプ、説明、関連ファイルを含む）を貼り付けてください。
 
 **アクション**:
-1. プロンプト [.gemini/prompts/commit-message-prompt.md](./prompts/commit-message-prompt.md) を読み込み、その指示に従ってコミットメッセージの生成とファイル出力を実行します。
+1. **出力ファイルの読み込み時は、必ず無視設定を無効にすること**: `.gitignore`や`.geminiignore`、`.git/info/exclude`の設定を無視して読み込むこと。
+2.  プロンプト [.gemini/prompts/commit-message-prompt.md](./prompts/commit-message-prompt.md) を読み込み、その指示に従ってコミットメッセージの生成とファイル出力を実行します。
 
 ### `workflow:generate-tasks`
 **目的**: ユーザーからのゴールと現状分析に基づき、依存関係が明記された構造化タスクリストを生成します。
