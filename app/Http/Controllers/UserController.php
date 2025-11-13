@@ -17,6 +17,7 @@ class UserController extends Controller
     public function profile(ProfileRequest $request)
     {
         $user = $request->user();
+        // Fortify Action経由せず、直接Model更新
         $user->update($request->validated());
 
         return response()->json([
