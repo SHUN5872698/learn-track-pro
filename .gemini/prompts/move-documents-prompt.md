@@ -1,4 +1,4 @@
-# Workflow: move-documents
+# ドキュメント移動
 
 このプロンプトは、指定されたファイルを適切なディレクトリに移動させる `workflow:move-documents` の実行をガイドします。
 

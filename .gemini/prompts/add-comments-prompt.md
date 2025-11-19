@@ -1,4 +1,4 @@
-# Workflow: add-comments
+# コメント追加
 
 このプロンプトは、コードに意図を説明するコメントを自動的に追加する `workflow:add-comments` の実行をガイドします。
 
