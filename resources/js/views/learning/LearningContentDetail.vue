@@ -341,7 +341,7 @@ const goToProgressDetails = () => {
 const handleToggleComplete = async (section, event) => {
   // 学習記録詳細ページへの遷移をブロック
   event.stopPropagation();
-  // API側エラーをリセット
+  // NOTE: API側エラーリセットは必ずボタン非活性化解除前に実行すること
   apiError.value = '';
 
   // 既に更新中の場合は処理をスキップ

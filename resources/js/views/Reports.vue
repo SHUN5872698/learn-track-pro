@@ -342,7 +342,7 @@ const confirmDelete = async () => {
   const recordId = recordToDelete.value.id;
   // モーダルを先に閉じることで表示崩れを防止
   isModalOpen.value = false;
-  // ボタンの無効化
+  // ボタンの無効化（二重送信防止）
   isSubmitting.value = true;
 
   try {
@@ -360,9 +360,7 @@ const confirmDelete = async () => {
       await fetchLatestSessionsByContent();
     });
   } finally {
-    // フォーム送信状態をリセット
     isSubmitting.value = false;
-    // 初期化
     recordToDelete.value = null;
   }
 };

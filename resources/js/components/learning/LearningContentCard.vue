@@ -349,7 +349,7 @@ const handleReopen = () => {
 // 削除確認モーダルで「削除」がクリックされた時の処理
 const confirmDelete = async () => {
   console.log('削除が確認されました:', props.content.title);
-  // ボタンの無効化
+  // ボタンの無効化（二重送信防止）
   isSubmitting.value = true;
   try {
     await deleteLearningContent(props.content.id); // 実際の削除処理

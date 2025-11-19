@@ -267,7 +267,7 @@ const handleClose = () => {
 // API送信処理
 // 学習記録の登録
 const handleSubmit = async () => {
-  // 状態をリセット
+  // バリデーション実行前に状態をリセット
   errors.section_id = '';
   errors.study_minutes = '';
   errors.studied_at = '';
@@ -298,7 +298,7 @@ const handleSubmit = async () => {
     return;
   }
 
-  // ボタンの無効化
+  // ボタンの無効化（二重送信防止）
   isSubmitting.value = true;
 
   // 学習記録の登録
@@ -327,7 +327,6 @@ const handleSubmit = async () => {
       apiError.value = 'エラーが発生しました。もう一度お試しください。';
     }
   } finally {
-    // フォーム送信状態をリセット
     isSubmitting.value = false;
   }
 };

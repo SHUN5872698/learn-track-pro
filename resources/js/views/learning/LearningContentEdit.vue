@@ -226,35 +226,67 @@ import { validateTechnology, validateTitle, validateDescription, validateSection
 // ========================================
 // ユーティリティ関数
 // ========================================
-// LCSアルゴリズム: 順序変更を正確に検出するために使用
+/**
+ * LCS（Longest Common Subsequence：最長共通部分列）アルゴリズム
+ *
+ * 目的: 編集画面でセクションの「順序変更」を正確に検出するために使用
+ *
+ * 背景:
+ * - セクションは追加・削除・タイトル変更・順序変更の4つの操作がある
+ * - 単純な配列比較では「順序変更」と「削除+追加」を区別できない
+ * - LCSを使うことで、元の順序を保持している要素を特定できる
+ *
+ * 例:
+ * - 元: [1, 2, 3, 4]
+ * - 新: [1, 3, 2, 4]
+ * - LCS: [1, 3, 4] → 2は順序が変わった（1と3の間から3と4の間に移動）
+ *
+ * アルゴリズム:
+ * 1. 動的計画法で各位置でのLCSの長さを計算（dp配列）
+ * 2. dp配列をバックトラックして実際のLCS要素を抽出
+ *
+ * @param {Array} arr1 - 元の配列（編集前のセクションID配列）
+ * @param {Array} arr2 - 新しい配列（編集後のセクションID配列）
+ * @returns {Array} - 最長共通部分列（順序が保たれているID配列）
+ */
 function findLCS(arr1, arr2) {
   const m = arr1.length;
   const n = arr2.length;
+
+  // ステップ1: 動的計画法でLCSの長さを計算
+  // dp[i][j] = arr1の最初のi要素とarr2の最初のj要素のLCSの長さ
   const dp = Array(m + 1)
     .fill(0)
     .map(() => Array(n + 1).fill(0));
 
+  // dpテーブルを構築
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
       if (arr1[i - 1] === arr2[j - 1]) {
+        // 要素が一致する場合、LCSの長さを1増やす
         dp[i][j] = dp[i - 1][j - 1] + 1;
       } else {
+        // 一致しない場合、片方を除いた時の最大値を取る
         dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
       }
     }
   }
 
+  // ステップ2: dpテーブルをバックトラックしてLCSの実際の要素を取得
   const lcs = [];
   let i = m,
     j = n;
   while (i > 0 && j > 0) {
     if (arr1[i - 1] === arr2[j - 1]) {
+      // 要素が一致する場合、それはLCSの一部
       lcs.unshift(arr1[i - 1]);
       i--;
       j--;
     } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      // arr1の要素をスキップ
       i--;
     } else {
+      // arr2の要素をスキップ
       j--;
     }
   }
@@ -345,7 +377,12 @@ const validationErrors = computed(() => {
   return messages;
 });
 
-// データ取得用
+// 文字数カウント
+const descriptionLength = computed(() => form.description?.length || 0);
+const descriptionIsOverLimit = computed(() => descriptionLength.value > MAX_TEXTAREA_LENGTH);
+const descriptionCounterText = computed(() => `${descriptionLength.value}/${MAX_TEXTAREA_LENGTH}文字`);
+
+// 確認画面での差分表示
 const basicInfoHasChanged = computed(() => {
   if (!originalData.value) return false;
   // いずれかのフィールドが変更されていれば確認画面で差分表示する
@@ -397,11 +434,6 @@ const sectionChanges = computed(() => {
   });
 });
 
-// 文字数カウント
-const descriptionLength = computed(() => form.description?.length || 0);
-const descriptionIsOverLimit = computed(() => descriptionLength.value > MAX_TEXTAREA_LENGTH);
-const descriptionCounterText = computed(() => `${descriptionLength.value}/${MAX_TEXTAREA_LENGTH}文字`);
-
 // ========================================
 // ライフサイクル
 // ========================================
@@ -444,35 +476,28 @@ onMounted(async () => {
 // イベントハンドラ
 // ウィザードナビゲーション
 const handleNext = () => {
-  // エラーをリセット
+  // バリデーション実行前に状態をリセット
   errors.technology_id = '';
   errors.title = '';
   errors.description = '';
   errors.sections = '';
-
-  // 修正フラグをリセット
   technologyModified.value = false;
   titleModified.value = false;
   descriptionModified.value = false;
 
   if (currentStep.value === 1) {
     // ステップ1（基本情報）のバリデーション
-
-    // すべてのバリデーションを実行
     const technologyResult = validateTechnology(form.technology_id);
     const titleResult = validateTitle(form.title);
     const descriptionResult = validateDescription(form.description);
-
-    // すべてのエラーを設定
+    // エラーを設定
     if (!technologyResult.isValid) errors.technology_id = technologyResult.message;
     if (!titleResult.isValid) errors.title = titleResult.message;
     if (!descriptionResult.isValid) errors.description = descriptionResult.message;
-
-    // 最後に一括チェック
+    // 一括チェック
     if (errors.technology_id || errors.title || errors.description) {
       return;
     }
-
     // 全て成功したら次のステップへ
     nextStep();
   } else if (currentStep.value === 2) {
@@ -482,8 +507,7 @@ const handleNext = () => {
       errors.sections = sectionsResult.message;
       return;
     }
-    // 成功したら次のステップへ
-    nextStep();
+    nextStep(); // 成功したら次のステップへ
   }
 };
 
@@ -572,9 +596,9 @@ const getTechnologyNameById = (id) => {
 // API送信処理
 // 学習記録とセクションの更新
 const handleSubmit = async () => {
-  // API側エラーをリセット
+  // NOTE: API側エラーリセットは必ずボタン非活性化解除前に実行すること
   apiError.value = '';
-  // ボタンの無効化
+  // ボタンの無効化（二重送信防止）
   isSubmitting.value = true;
 
   try {

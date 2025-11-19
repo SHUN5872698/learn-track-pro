@@ -117,7 +117,7 @@ const validationErrors = computed(() => {
 // API送信処理
 // パスワードリセットメール送信を実行
 const handlePasswordReset = async () => {
-  // 状態をリセット
+  // バリデーション実行前に状態をリセット
   errors.email = '';
   apiError.value = '';
   successMessage.value = '';
@@ -136,7 +136,7 @@ const handlePasswordReset = async () => {
     const message = await authStore.forgotPassword(formData.email);
     successMessage.value = message;
 
-    // 3秒後にログイン画面へ遷移
+    // ログイン画面へ遷移
     setTimeout(() => {
       router.push('/login');
     }, 3000);
@@ -152,7 +152,6 @@ const handlePasswordReset = async () => {
       apiError.value = 'エラーが発生しました。';
     }
   } finally {
-    // フォーム送信状態をリセット
     isSubmitting.value = false;
   }
 };

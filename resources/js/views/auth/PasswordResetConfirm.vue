@@ -187,7 +187,7 @@ onMounted(() => {
 // API送信処理
 // パスワードリセット処理を実行
 const handlePasswordResetConfirm = async () => {
-  // 状態をリセット
+  // バリデーション実行前に状態をリセット
   errors.email = '';
   errors.password = '';
   errors.passwordConfirm = '';
@@ -244,7 +244,6 @@ const handlePasswordResetConfirm = async () => {
       apiError.value = 'エラーが発生しました。';
     }
   } finally {
-    // フォーム送信状態をリセット
     isSubmitting.value = false;
   }
 };

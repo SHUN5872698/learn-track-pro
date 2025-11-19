@@ -74,6 +74,86 @@ const { learningContents, fetchContents, fetchLearningSessions } = useLearningDa
 const { isLoading, withLoading } = useLoading();
 
 // ========================================
+// 算出プロパティ
+// ========================================
+/**
+ * 進行中の学習コンテンツをフィルタリングし、優先度順にソート
+ *
+ * ソートの優先順位（上から順に適用）:
+ * 1. 最新の学習記録がある学習コンテンツを先頭に配置
+ * 2. 「学習中」を「未着手」より先頭に配置
+ * 3. 学習コンテンツ自体の更新日時が新しいものを先頭に配置
+ *
+ * sort()の比較関数の仕組み:
+ * - 負の値を返す → a（第1引数）をb（第2引数）より前に配置
+ * - 正の値を返す → b（第2引数）をa（第1引数）より前に配置
+ * - 0を返す → 順序を変更しない
+ */
+const inProgressContents = computed(() => {
+  return learningContents.value
+    .filter((content) => content.status === 'in_progress' || content.status === 'not_started')
+    .sort((a, b) => {
+      // a, b = 比較対象の2つの学習コンテンツオブジェクト
+      // 優先度1: 最新の学習記録日時で比較
+      if (a.latestSessionUpdatedAt && b.latestSessionUpdatedAt) {
+        const timeDiff = new Date(b.latestSessionUpdatedAt).getTime() - new Date(a.latestSessionUpdatedAt).getTime();
+        if (timeDiff !== 0) {
+          // b（第2引数）の方が新しい → 正の値 → bを前に配置
+          // a（第1引数）の方が新しい → 負の値 → aを前に配置
+          return timeDiff;
+        }
+      } else if (a.latestSessionUpdatedAt) {
+        // aのみ学習記録あり → aを前に配置
+        return -1;
+      } else if (b.latestSessionUpdatedAt) {
+        // bのみ学習記録あり → bを前に配置
+        return 1;
+      }
+      // 優先度2: 「学習中」を「未着手」より前に配置
+      if (a.status === 'in_progress' && b.status === 'not_started') return -1; // aを前に
+      if (a.status === 'not_started' && b.status === 'in_progress') return 1; // bを前に
+      // 優先度3: 学習コンテンツ自体の更新日時で比較（新しいものを前に）
+      // b（第2引数）の方が新しい → 正の値 → bを前に配置
+      // a（第1引数）の方が新しい → 負の値 → aを前に配置
+      return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+    });
+});
+
+/**
+ * 完了した学習コンテンツをフィルタリングし、優先度順にソート
+ *
+ * ソートの優先順位（上から順に適用）:
+ * 1. 最新の学習記録がある学習コンテンツを先頭に配置
+ * 2. 学習コンテンツ自体の更新日時が新しいものを先頭に配置
+ */
+const completedContents = computed(() => {
+  return learningContents.value
+    .filter((content) => content.status === 'completed')
+    .sort((a, b) => {
+      // a, b = 比較対象の2つの学習コンテンツオブジェクト
+      // 優先度1: 最新の学習記録日時で比較
+      if (a.latestSessionUpdatedAt && b.latestSessionUpdatedAt) {
+        const timeDiff = new Date(b.latestSessionUpdatedAt).getTime() - new Date(a.latestSessionUpdatedAt).getTime();
+        if (timeDiff !== 0) {
+          // b（第2引数）の方が新しい → 正の値 → bを前に配置
+          // a（第1引数）の方が新しい → 負の値 → aを前に配置
+          return timeDiff;
+        }
+      } else if (a.latestSessionUpdatedAt) {
+        // aのみ学習記録あり → aを前に配置
+        return -1;
+      } else if (b.latestSessionUpdatedAt) {
+        // bのみ学習記録あり → bを前に配置
+        return 1;
+      }
+      // 優先度2: 学習コンテンツ自体の更新日時で比較（新しいものを前に）
+      // b（第2引数）の方が新しい → 正の値 → bを前に配置
+      // a（第1引数）の方が新しい → 負の値 → aを前に配置
+      return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+    });
+});
+
+// ========================================
 // ライフサイクル
 // ========================================
 onMounted(async () => {
@@ -82,55 +162,6 @@ onMounted(async () => {
     // 並列実行でパフォーマンス向上
     await Promise.all([fetchContents(), fetchLearningSessions()]);
   });
-});
-
-// ========================================
-// 算出プロパティ
-// ========================================
-// 進行中の学習コンテンツをフィルタリングし、指定された基準でソート
-const inProgressContents = computed(() => {
-  return learningContents.value
-    .filter((content) => content.status === 'in_progress' || content.status === 'not_started')
-    .sort((a, b) => {
-      // 1. latestSessionUpdatedAtが最新のものを優先
-      if (a.latestSessionUpdatedAt && b.latestSessionUpdatedAt) {
-        if (new Date(b.latestSessionUpdatedAt).getTime() !== new Date(a.latestSessionUpdatedAt).getTime()) {
-          return new Date(b.latestSessionUpdatedAt).getTime() - new Date(a.latestSessionUpdatedAt).getTime();
-        }
-      } else if (a.latestSessionUpdatedAt) {
-        return -1; // aにのみlatestSessionUpdatedAtがある場合、aを優先
-      } else if (b.latestSessionUpdatedAt) {
-        return 1; // bにのみlatestSessionUpdatedAtがある場合、bを優先
-      }
-
-      // 2. statusがin_progressのものを優先
-      if (a.status === 'in_progress' && b.status === 'not_started') return -1;
-      if (a.status === 'not_started' && b.status === 'in_progress') return 1;
-
-      // 3. statusが同じ場合、updated_atが最新のものを優先
-      return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
-    });
-});
-
-// 完了した学習コンテンツをフィルタリングし、指定された基準でソート
-const completedContents = computed(() => {
-  return learningContents.value
-    .filter((content) => content.status === 'completed')
-    .sort((a, b) => {
-      // 1. latestSessionUpdatedAtが最新のものを優先
-      if (a.latestSessionUpdatedAt && b.latestSessionUpdatedAt) {
-        if (new Date(b.latestSessionUpdatedAt).getTime() !== new Date(a.latestSessionUpdatedAt).getTime()) {
-          return new Date(b.latestSessionUpdatedAt).getTime() - new Date(a.latestSessionUpdatedAt).getTime();
-        }
-      } else if (a.latestSessionUpdatedAt) {
-        return -1; // aにのみlatestSessionUpdatedAtがある場合、aを優先
-      } else if (b.latestSessionUpdatedAt) {
-        return 1; // bにのみlatestSessionUpdatedAtがある場合、bを優先
-      }
-
-      // 2. updated_atが最新のものを優先
-      return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
-    });
 });
 
 // ========================================
