@@ -152,7 +152,6 @@ Vue 3 Composition API向けのルールセットを追加し、コード品質�
 
 ## 必須チェックリスト（生成後に自己確認）
 - チェックしたかを最終的に報告してください
-
 - [ ] 絶対に使ってはいけない表現
 - [ ] タイトルは50文字以内か
 - [ ] 説明文は1行で完結しているか
@@ -161,17 +160,14 @@ Vue 3 Composition API向けのルールセットを追加し、コード品質�
 - [ ] **ファイルに出力したか** ← ⚠️最重要
 
 ## 最終アクション（絶対に実行）
-
 1. コミットメッセージを生成
 2. チェックリストで確認
-3. **必ず** `.gemini/outputs/commit-message-for-docs.md` に出力
-4. 出力後、必ず`.gitignore`や`.geminiignore`、`.git/info/exclude`の設定を無視して出力先ファイルを読み込み、内容が正しく書き込まれていることを確認してください。
-  - `read_many_files`ツールを使用し、`file_filtering_options={"respect_gemini_ignore": False, "respect_git_ignore": False}`を指定すること
-5. **以下の形式でチェック結果を報告**：
+3. **必ず**`.gemini/outputs/commit-message-for-docs.md` に出力
+4. `run_shell_command`ツールで`cat .gemini/outputs/commit-message-for-docs.md`を実行し、内容が正しく書き込まれていることを確認
+5. **確認した内容に基づいて以下の形式でチェック結果を報告**：
 
 ---
 ### ✅ チェックリスト結果
-
 - [ ] 絶対に使ってはいけない表現: ✅ 違反なし / ❌ 違反あり（修正済み）
 - [ ] タイトルは50文字以内: ✅ OK / ❌ NG
 - [ ] 説明文は1行で完結: ✅ OK / ❌ NG
@@ -185,3 +181,4 @@ Vue 3 Composition API向けのルールセットを追加し、コード品質�
 **重要**:
 - チェック結果の報告なしで終了しない
 - 違反があった場合は修正してから出力すること
+- 改善点をユーザーに求めることは禁止
