@@ -793,9 +793,35 @@ SectionListEditor.vueの実装について教えてください。
    - learningContentValidator.jsの使用
 ```
 
+### セクションの追加/削除
+
+- **追加**: `new_${Date.now()}`の一時IDを持つオブジェクトを配列に`push`
+- **削除**: `splice`で配列から削除。編集モードかつ既存セクションの場合は`request-delete`イベントを発火（モーダル表示用）
+- **最低数制御**: `localSections.length <= 1`の場合、削除ボタンを`disabled`にしてツールチップを表示
+
+### ドラッグ&ドロップ
+
+- **ライブラリ**: `vuedraggable`を使用
+- **順序更新**: ドロップ終了時（`@end`）に配列のインデックスに基づいて`order`プロパティを再計算（1から連番）
+
+### セクション一括更新のデータ構造
+
+- **生成タイミング**: `handleSubmit`実行時（API送信直前）
+- **新規セクション**: 一時ID（`new_...`）を`null`に変換して送信
+- **削除セクション**: 削除確定時に`deletedSections`配列に退避し、`deleted_section_ids`として送信
+
+### バリデーション
+
+- **実装場所**: `learningContentValidator.js`に集約
+- **ルール**: タイトル必須、最大50文字、セクション数1以上をチェック
+
 ### 私の理解
 
-（GeminiCLIからの回答を貼り付け後、ここに記入してください）
+- UI上での配列操作（`push`/`splice`）とAPI送信用のデータ変換を明確に分離している
+- 一時ID（`new_${Date.now()}`）は追加時に生成し、`handleSubmit`実行時に`null`に変換してAPI送信
+- `splice(index, 1)`で配列から要素を削除し、後続要素が自動的に詰まる動作を理解
+- ドラッグ&ドロップ後の`@end`イベントで`order`を再計算し、見た目とデータの整合性を保証
+- バリデーションはフロントエンド（`learningContentValidator.js`）とバックエンド（`BulkUpdateSectionsRequest`）の2段階で実施
 
 ### 質問5: 完了/再開機能の実装
 
