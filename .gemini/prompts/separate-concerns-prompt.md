@@ -11,7 +11,8 @@ Gitのステージングされた変更を分析し、Conventional Commitsガイ
 **すべての判定基準はConventional Commits公式仕様に基づいています。**
 
 ### 最重要ルール
-- **必ず `git status -s && git diff --cached && git log -n 10 --pretty=format:'%s%n%b%n---' --no-merges` を実行し、ステージングされた変更内容を正確に把握すること。**
+- **必ず `.gemini/scripts/safe-commands.sh git-diff-staged` を実行し、ステージングされた変更内容を正確に把握すること。**
+  - このスクリプトは `git status -s && git diff --cached && git log -n 10` を自動承認で実行します
 - **変更の意図や背景（特にコード差分から直接読み取れない情報）がある場合は、ユーザーに確認すること。**
 
 ### 評価手順
