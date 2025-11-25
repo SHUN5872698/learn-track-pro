@@ -318,7 +318,7 @@ class LearningSessionController extends Controller
     public function dailyStatisticsByContent(Request $request, $contentId)
     {
         // 学習コンテンツの所有者確認
-        $learningContent = \App\Models\LearningContent::findOrFail($contentId);
+        $learningContent = LearningContent::findOrFail($contentId);
         $this->authorize('view', $learningContent);
 
         // リクエストから日数を取得（デフォルトは30日）
