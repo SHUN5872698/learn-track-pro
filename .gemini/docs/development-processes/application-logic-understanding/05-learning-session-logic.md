@@ -51,53 +51,27 @@ LearningSessionControllerの実装について教えてください。
 
 ### 集計メソッドの実装
 
-| メソッド | 役割 | 実装内容 |
-| --- | --- | --- |
-| `statisticsSummary` | 総学習時間、連続学習日数などのサマリー | UserモデルのリレーションとCarbonを使用した計算 |
-| `monthlyStatistics` | 月ごとの学習時間推移 | `DATE_FORMAT`を用いたSQL集計 |
-| `technologyStatistics` | 技術ごとの学習時間割合 | `DB::table`を用いたJoinと集計 |
-| `dailyStatistics` | 日ごとの学習時間推移 | `DATE`関数を用いたSQL集計 |
-
-### 実装コード例（statisticsSummary）
-
-```php
-public function statisticsSummary()
-{
-    $user = Auth::user();
-    // リレーション経由でsum
-    $totalMinutes = $user->learningSessions()->sum('study_minutes');
-
-    // 複雑なロジック（連続学習日数）もController内に記述
-    $studyDays = $user->learningSessions()
-        ->selectRaw('DATE(studied_at) as date')
-        // ...省略
-        ->pluck('date');
-
-    // ...連続日数計算ロジック
-
-    return response()->json([
-        'total_study_minutes' => (int) $totalMinutes,
-        // ...
-    ]);
-}
-
-```
+| メソッド | 役割 |
+| --- | --- |
+| `statisticsSummary` | 総学習時間、連続学習日数などのサマリー |
+| `monthlyStatistics` | 月ごとの学習時間推移 |
+| `technologyStatistics` | 技術ごとの学習時間割合 |
+| `dailyStatistics` | 日ごとの学習時間推移 |
 
 ### なぜServiceレイヤーを使わないのか
 
 **判断理由**:
 
-1. **開発スピードとシンプルさ**:
-    - 現状の規模では、Controllerに記述しても可読性を著しく損なわないと判断
-    - ファイル数を増やさず、ロジックの所在を明確にする（「統計APIのロジックはControllerにある」）
-2. **Eloquent/DBファサードの強力さ**:
-    - Laravelの機能を使えば、複雑なSQLも数行で書けるため、Serviceに切り出すほどのコード量にならない場合が多い
-3. **将来的なリファクタリング**:
-    - ロジックが肥大化した時点でService（例: `LearningStatisticsService`）に切り出す方針
+1. **開発スピードとシンプルさ**: 現状の規模では、Controllerに記述しても可読性を著しく損なわないと判断
+2. **Eloquent/DBファサードの強力さ**: Laravelの機能を使えば、複雑なSQLも数行で書けるため、Serviceに切り出すほどのコード量にならない
+3. **将来的なリファクタリング**: ロジックが肥大化した時点でService（例: `LearningStatisticsService`）に切り出す方針
 
 ### 私の理解
 
-- 
+- 集計メソッドは全体レポートと個別レポートページで使用
+    - `LearningSessionController`に配置したのは学習記録リソースの統計情報として自然と判断
+- `statisticsSummary`のビジネスロジックが肥大化しているため、将来的にサービス層に切り出す候補
+- 開発スピード優先でController内に実装したが、複数リソース横断の複合レポートが必要になれば`ReportController`を検討
 
 ### 質問2: Resourceクラスと日付フォーマット
 
@@ -124,36 +98,15 @@ LearningSessionResourceでのレスポンス整形について教えてくださ
 
 ### 日付フォーマットの制御
 
-**LearningSessionResource.php**:
-
-```php
-public function toArray(Request $request): array
-{
-    return [
-        // ...
-        // Resource内で明示的にフォーマット指定
-        'studied_at' => $this->studied_at?->format('Y-m-d H:i:s'),
-        'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-        // ...
-    ];
-}
-
-```
-
-**Model (LearningSession.php)**:
-
-```php
-protected function serializeDate(DateTimeInterface $date): string
-{
-    // Resource使用時は無視されるが、直接json_encodeされた場合のために定義
-    return $date->setTimezone(config('app.timezone'))->format('Y-m-d H:i:s');
-}
-
-```
+- **Resource内**: `$this->studied_at?->format('Y-m-d H:i:s')`で明示的にフォーマット指定
+- **Model内**: `serializeDate`メソッドで直接json_encodeされた場合のフォールバック定義
 
 ### 私の理解
 
-- 
+- フロントエンドへのJsonレスポンス形式を認証を除くすべての機能でResource内で統一（開発速度優先で認証は標準機能のまま）
+- Apidoc検証時にdate型の時刻がアジア東京にならず、Resource内で明示的にフォーマット指定が必要と判明
+- Model内の`serializeDate`は仕様変更時の事故防止のため残している
+- `whenLoaded`の動作（Eager Load時のみ関連データを含める仕組み）は要確認
 
 ### 質問3: 認可（Authorization）
 
@@ -169,6 +122,22 @@ protected function serializeDate(DateTimeInterface $date): string
 2. Policyクラスは使用していますか？
 
 ```
+
+### 実装内容
+
+**Controller**:
+
+- `$this->authorize('view', $learningSession)`: Policyのviewメソッドを呼び出し
+
+**LearningSessionPolicy**:
+
+- `view`, `update`, `delete`: `$user->id === $learningSession->user_id` をチェック
+- これにより、IDを知っていても他人の記録にはアクセスできない（403 Forbidden）
+
+### 私の理解
+
+- `authorize`の認可の仕組みは学習内容管理ロジック理解で理解済み
+- 自身の記録は本人しか変更できない仕組みを確認、Policyで「ユーザーに紐づいた内容のみ操作可能」を実装
 
 ### 実装内容
 
@@ -190,6 +159,9 @@ public function show(LearningSession $learningSession)
 - これにより、IDを知っていても他人の記録にはアクセスできない（403 Forbidden）
 
 ### 私の理解
+
+- **学習記録の操作における権限チェックはどのように実装されていますか？**：authorizeの認可の仕組みは学習内容管理ロジック理解で理解
+    - 自身の記録は本人しか変更できないしくみになっていることを確認
 
 ### まとめ
 
