@@ -92,6 +92,7 @@ class LearningSession extends Model
      *
      * @param DateTimeInterface $date
      * @return string
+     * @phpstan-param \DateTime|\Carbon\Carbon $date
      */
     protected function serializeDate(DateTimeInterface $date): string
     {
