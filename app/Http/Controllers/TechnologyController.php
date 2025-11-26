@@ -22,36 +22,4 @@ class TechnologyController extends Controller
 
         return response()->json($query->get());
     }
-
-    /**
-     * 新しく作成された技術情報をストレージに保存
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * 指定された技術情報を表示
-     */
-    public function show(Technology $technology)
-    {
-        //
-    }
-
-    /**
-     * 指定された技術情報をストレージで更新
-     */
-    public function update(Request $request, Technology $technology)
-    {
-        //
-    }
-
-    /**
-     * 指定された技術情報をストレージから削除
-     */
-    public function destroy(Technology $technology)
-    {
-        //
-    }
 }

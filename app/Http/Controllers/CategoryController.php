@@ -15,36 +15,4 @@ class CategoryController extends Controller
     {
         return response()->json(Category::all());
     }
-
-    /**
-     * 新しく作成された技術カテゴリをストレージに保存
-     */
-    public function store(StoreCategoryRequest $request)
-    {
-        //
-    }
-
-    /**
-     * 指定された技術カテゴリを表示
-     */
-    public function show(Category $category)
-    {
-        //
-    }
-
-    /**
-     * 指定された技術カテゴリをストレージで更新
-     */
-    public function update(UpdateCategoryRequest $request, Category $category)
-    {
-        //
-    }
-
-    /**
-     * 指定された技術カテゴリをストレージから削除
-     */
-    public function destroy(Category $category)
-    {
-        //
-    }
 }
