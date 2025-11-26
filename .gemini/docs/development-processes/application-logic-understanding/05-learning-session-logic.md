@@ -260,6 +260,10 @@ stores/learningSession.jsの実装を教えてください。
 
 ### 私の理解
 
+- `createLearningSession`はAPI成功後にサーバー返却データをそのまま使用し、再フェッチを回避してパフォーマンスを向上（楽観的更新）
+- `sessions`は特定のページアクセス時（一覧、セクション別）にのみ取得し、不要なデータロードを回避
+- Piniaで管理することでキャッシュを活用し、変更時は該当データのみ更新することで整合性を維持
+
 ### 質問2: Composableの責務分離
 
 プロンプト
@@ -302,7 +306,9 @@ stores/learningSession.jsの実装を教えてください。
 
 ### 私の理解
 
-- 
+- Storeは状態管理、Composableは複数Storeの連携による複雑な処理という原則に基づき実装
+- `useLearningSessions`がドメイン操作、`useStudySessionForm`がフォームUIロジックを担当し、責務が明確に分離されている
+- `useLearningSessions`が他のStoreの状態変更も実行している点は、将来的な結合度の観点で注意が必要
 
 ### 質問3: 学習記録作成・編集フローの実装
 
@@ -315,7 +321,7 @@ StudySessionCreate.vue / StudySessionEdit.vueの実装について教えてく�
 
 #### 確認したいこと
 1. フォームの初期化プロセスは？
-   - クエリパラメータ（section_id）の処理
+   - クエリパラメーター（section_id）の処理
    - 編集時のデータロード
 2. バリデーションとエラーハンドリングは？
    - クライアントサイド（validators/studySessionValidator.js）
@@ -328,7 +334,7 @@ StudySessionCreate.vue / StudySessionEdit.vueの実装について教えてく�
 
 ### フォームの初期化プロセス
 
-- **作成時**: `useStudySessionForm`の`initializeForm`で初期値を設定。URLクエリパラメータに`section_id`があれば初期選択状態にする。
+- **作成時**: `useStudySessionForm`の`initializeForm`で初期値を設定。URLクエリパラメーターに`section_id`があれば初期選択状態にする。
 - **編集時**: `onMounted`でデータをフェッチし、取得したデータでフォームを初期化。
 
 ### バリデーションとエラーハンドリング
@@ -343,6 +349,10 @@ StudySessionCreate.vue / StudySessionEdit.vueの実装について教えてく�
 - **入力**: モーダルコンポーネント（`DatePickerModal`, `TimeInputModal`）を使用し、選択結果をISO文字列に再構築してフォームに反映。
 
 ### 私の理解
+
+- `initializeForm`は同期処理のため遅延がなく、別途ローディング表示は不要（マスターデータ取得待ちのみLoadingSpinnerで対応）
+- APIとフロントエンドで日付フォーマットを統一（ISO文字列）することで、データ不整合を防止
+- バリデーションはクライアントサイドでの即時フィードバックと、サーバーサイドでの整合性チェックの二段構えで実装
 
 ### 質問4: 学習記録カードと削除フロー
 
@@ -378,7 +388,9 @@ LearningRecordCard.vueの実装について教えてください。
 
 ### 私の理解
 
-- 
+- 日付フォーマット統一のため、共通のユーティリティ関数を使用し、アプリケーション全体での表記揺れを防止
+- ダッシュボードの複雑な表示に対応するため、スロットを活用してコンポーネントを分割し、関心を分離
+- 削除フローはイベント発火による親コンポーネントへの委譲パターンを採用し、カードコンポーネントの独立性を維持
 
 ---
 
