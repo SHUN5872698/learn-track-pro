@@ -6,9 +6,9 @@ import { useLearningContentStore } from '@/stores/learningContent';
 export const useSectionStore = defineStore('sections', {
   // ストアの状態を定義
   state: () => ({
-    sections: [], // セクションのリスト
+    sections: [], // セクション一覧
     loading: false, // APIリクエスト中のローディング状態
-    error: null, // エラーメッセージ
+    error: null, // API/コンソール用エラーメッセージ（単一文字列：ウィザード全体のエラーのみ扱う）
   }),
 
   // 状態から派生した値（キャッシュされる）

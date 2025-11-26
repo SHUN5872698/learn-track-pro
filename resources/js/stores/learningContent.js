@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 import * as api from '@/api/learningContent';
 
-// 学習コンテンツの状態管理を行うPiniaストア
+// 学習内容の状態管理を行うPiniaストア
 export const useLearningContentStore = defineStore('learningContent', {
   // ストアの状態を定義
   state: () => ({
-    contents: [], // 学習コンテンツのリスト
+    contents: [], // 学習内容一覧
     pagination: {}, // ページネーション情報（複数ページ間の移動で使用）
     loading: false, // APIリクエスト中のローディング状態（ローディング表示制御用）
     error: null, // API/コンソール用エラーメッセージ（単一文字列：ウィザード全体のエラーのみ扱う）
@@ -13,7 +13,7 @@ export const useLearningContentStore = defineStore('learningContent', {
 
   // 状態から派生した値（キャッシュされる）
   getters: {
-    // IDに基づいて特定の学習コンテンツを検索（詳細ページ遷移時のキャッシュ活用のため）
+    // IDに基づいて特定の学習内容を検索（詳細ページ遷移時のキャッシュ活用のため）
     contentById: (state) => (id) => {
       return state.contents.find((content) => content.id === id);
     },
@@ -21,13 +21,13 @@ export const useLearningContentStore = defineStore('learningContent', {
 
   // 状態を変更するアクション
   actions: {
-    // 学習コンテンツのリストを取得
+    // 学習内容一覧を取得
     async fetchContents(page = 1) {
       this.loading = true;
       this.error = null;
       try {
         const params = { page, per_page: 20 };
-        // APIレスポンスには学習コンテンツ本体とページネーション情報が混在しているため、一旦responseで受け取る
+        // APIレスポンスには学習内容本体とページネーション情報が混在しているため、一旦responseで受け取る
         const response = await api.fetchLearningContents(params);
 
         // コンテンツ本体とページネーション情報を分けてストアに保存（一覧表示とページ移動UIで別々に使用するため）
@@ -42,7 +42,7 @@ export const useLearningContentStore = defineStore('learningContent', {
       }
     },
 
-    // 新しい学習コンテンツを作成
+    // 新しい学習内容を作成
     async createContent(data) {
       this.loading = true;
       this.error = null;
@@ -57,7 +57,7 @@ export const useLearningContentStore = defineStore('learningContent', {
           const sectionStore = useSectionStore();
           sectionStore.sections.push(...newContent.sections);
         }
-        // 新規作成後のリスト表示を最新の状態にするため再フェッチ
+        // 新規作成後一覧表示を最新の状態にするため再フェッチ
         await this.fetchContents();
         return newContent;
       } catch (error) {
@@ -69,7 +69,7 @@ export const useLearningContentStore = defineStore('learningContent', {
       }
     },
 
-    // 既存の学習コンテンツを更新
+    // 既存の学習内容を更新
     async updateContent(id, data) {
       this.loading = true;
       try {
@@ -89,7 +89,7 @@ export const useLearningContentStore = defineStore('learningContent', {
       }
     },
 
-    // 学習コンテンツを削除
+    // 学習内容を削除
     async deleteContent(id) {
       this.loading = true;
       try {
@@ -104,7 +104,7 @@ export const useLearningContentStore = defineStore('learningContent', {
       }
     },
 
-    // 学習コンテンツのステータス（完了/再開）を更新
+    // 学習内容のステータス（完了/再開）を更新
     // ステータス更新処理の重複を避けるため、汎用ヘルパーとして定義
     async _updateStatus(apiCall, id, successMessage) {
       this.loading = true;
@@ -125,12 +125,12 @@ export const useLearningContentStore = defineStore('learningContent', {
       }
     },
 
-    // 学習コンテンツを完了状態に設定
+    // 学習内容を完了状態に設定
     completeContent(id) {
       return this._updateStatus(api.completeLearningContent, id, '学習を完了しました。');
     },
 
-    // 学習コンテンツを再開状態に設定
+    // 学習内容を再開状態に設定
     reopenContent(id) {
       return this._updateStatus(api.reopenLearningContent, id, '学習を再開しました。');
     },
@@ -149,7 +149,7 @@ export const useLearningContentStore = defineStore('learningContent', {
       this.fetchContents();
     },
 
-    // 学習コンテンツの統計情報を更新（セクション変更時の即座反映のため、fetchContents()を待たずに手動更新）
+    // 学習内容の統計情報を更新（セクション変更時の即座反映のため、fetchContents()を待たずに手動更新）
     updateContentStats({ contentId, completed_sections, total_sections }) {
       const index = this.contents.findIndex((c) => c.id === contentId);
       // findIndex()が見つからない場合-1を返すため、存在チェックしてからストア更新（エラー防止）

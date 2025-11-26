@@ -16,7 +16,7 @@ export const useReportStore = defineStore('reports', {
     dailyData: [], // 日別学習時間データ
     technologyData: [], // 技術別学習時間データ
     loading: false, // APIリクエスト中のローディング状態
-    error: null, // エラーメッセージ
+    error: null, // API/コンソール用エラーメッセージ（単一文字列：ウィザード全体のエラーのみ扱う）
   }),
 
   // 状態を変更するアクション

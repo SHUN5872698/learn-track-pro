@@ -3,10 +3,10 @@ import api from '@/plugins/axios';
 
 export const useMasterDataStore = defineStore('masterData', {
   state: () => ({
-    categories: [],
-    technologies: [],
-    loading: false,
-    error: null,
+    categories: [], // カテゴリー一覧
+    technologies: [], // 技術一覧
+    loading: false, // APIリクエスト中のローディング状態
+    error: null, // API/コンソール用エラーメッセージ（単一文字列：ウィザード全体のエラーのみ扱う）
   }),
 
   getters: {
