@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 class TechnologyController extends Controller
 {
     /**
-     * リソースの一覧を表示
+     * 技術情報一覧を取得
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
@@ -22,7 +24,7 @@ class TechnologyController extends Controller
     }
 
     /**
-     * 新しく作成されたリソースをストレージに保存
+     * 新しく作成された技術情報をストレージに保存
      */
     public function store(Request $request)
     {
@@ -30,7 +32,7 @@ class TechnologyController extends Controller
     }
 
     /**
-     * 指定されたリソースを表示
+     * 指定された技術情報を表示
      */
     public function show(Technology $technology)
     {
@@ -38,7 +40,7 @@ class TechnologyController extends Controller
     }
 
     /**
-     * 指定されたリソースをストレージで更新
+     * 指定された技術情報をストレージで更新
      */
     public function update(Request $request, Technology $technology)
     {
@@ -46,7 +48,7 @@ class TechnologyController extends Controller
     }
 
     /**
-     * 指定されたリソースをストレージから削除
+     * 指定された技術情報をストレージから削除
      */
     public function destroy(Technology $technology)
     {

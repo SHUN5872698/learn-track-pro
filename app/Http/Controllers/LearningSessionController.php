@@ -25,7 +25,7 @@ class LearningSessionController extends Controller
      */
     public function index(Request $request)
     {
-        // 認証済みユーザーの学習記録を、関連する学習コンテンツとセクション情報と共に取得
+        // 認証済みユーザーの学習記録を、関連する学習内容とセクション情報と共に取得
         $query = LearningSession::where('user_id', auth()->id())
             ->with(['learningContent', 'section']);
 
@@ -73,7 +73,7 @@ class LearningSessionController extends Controller
     {
         // ユーザーが学習記録を閲覧する権限があるか確認
         $this->authorize('view', $learningSession);
-        // 関連する学習コンテンツの技術情報とセクションをEager Load
+        // 関連する学習内容の技術情報とセクションをEager Load
         $learningSession->load(['learningContent.technology', 'section']);
 
         return new LearningSessionResource($learningSession);
@@ -118,10 +118,10 @@ class LearningSessionController extends Controller
      */
     public function byContent(LearningContent $learningContent)
     {
-        // ユーザーが学習コンテンツを閲覧する権限があるか確認
+        // ユーザーが学習内容を閲覧する権限があるか確認
         $this->authorize('view', $learningContent);
 
-        // 指定された学習コンテンツに紐づく学習記録を、セクション情報と共に取得
+        // 指定された学習内容に紐づく学習記録を、セクション情報と共に取得
         // 学習日時の降順で並び替えて20件ずつページネーション
         $sessions = $learningContent->learningSessions()
             ->with(['section'])
@@ -138,7 +138,7 @@ class LearningSessionController extends Controller
      */
     public function bySection(Section $section)
     {
-        // ユーザーがセクションの学習コンテンツを更新する権限があるか確認
+        // ユーザーがセクションの学習内容を更新する権限があるか確認
         $this->authorize('update', $section->learningContent);
 
         // 指定されたセクションに紐づく学習記録を取得
@@ -150,7 +150,7 @@ class LearningSessionController extends Controller
     }
 
     /**
-     * 統計サマリーを取得
+     * 全体レポート用の統計データを取得
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -162,7 +162,7 @@ class LearningSessionController extends Controller
         // ユーザーの総学習時間（分）を計算（未来の日付も含む）
         $totalMinutes = $user->learningSessions()->sum('study_minutes');
 
-        // ユーザーが完了した学習コンテンツの数をカウント
+        // ユーザーが完了した学習内容数をカウント
         $completedCourses = $user->learningContents()->where('status', 'completed')->count();
 
         // 学習を行ったユニークな日付を取得（今日以前のみ）
@@ -309,7 +309,7 @@ class LearningSessionController extends Controller
     }
 
     /**
-     * 特定の学習コンテンツの日ごとの統計を取得
+     * 特定の学習内容日ごとの統計を取得
      *
      * @param Request $request
      * @param int $contentId
@@ -317,14 +317,14 @@ class LearningSessionController extends Controller
      */
     public function dailyStatisticsByContent(Request $request, $contentId)
     {
-        // 学習コンテンツの所有者確認
+        // 学習内容の所有者確認
         $learningContent = LearningContent::findOrFail($contentId);
         $this->authorize('view', $learningContent);
 
         // リクエストから日数を取得（デフォルトは30日）
         $days = $request->input('days', 30);
 
-        // 指定された学習コンテンツの日ごとの総学習時間を集計
+        // 指定された学習内容日ごとの総学習時間を集計
         // DATE関数で日付部分のみ抽出し、指定日数分のデータを取得
         $data = $learningContent->learningSessions()
             ->selectRaw('DATE(studied_at) as date, SUM(study_minutes) as total_minutes')

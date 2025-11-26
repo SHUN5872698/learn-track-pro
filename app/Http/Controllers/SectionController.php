@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Gate;
 final class SectionController extends Controller
 {
     /**
-     * 指定した学習コンテンツのセクション一覧を取得
+     * 指定した学習内容のセクション一覧を取得
      *
      * @param LearningContent $learningContent
      * @return JsonResponse

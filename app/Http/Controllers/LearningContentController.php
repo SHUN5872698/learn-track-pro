@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Gate;
 class LearningContentController extends Controller
 {
     /**
-     * 学習コンテンツの一覧を取得
+     * 学習内容一覧を取得
      *
      * @param Request $request
-     * @return void
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Request $request)
     {
@@ -32,10 +32,10 @@ class LearningContentController extends Controller
     }
 
     /**
-     * 新しい学習コンテンツを保存
+     * 新しい学習内容を保存
      *
      * @param StoreLearningContentRequest $request
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreLearningContentRequest $request)
     {
@@ -75,10 +75,10 @@ class LearningContentController extends Controller
     }
 
     /**
-     * 指定された学習コンテンツの詳細を取得
+     * 指定された学習内容の詳細を取得
      *
      * @param LearningContent $learningContent
-     * @return void
+     * @return \App\Http\Resources\LearningContentResource
      */
     public function show(LearningContent $learningContent)
     {
@@ -91,11 +91,11 @@ class LearningContentController extends Controller
     }
 
     /**
-     * 指定された学習コンテンツを更新
+     * 指定された学習内容を更新
      *
      * @param UpdateLearningContentRequest $request
      * @param LearningContent $learningContent
-     * @return void
+     * @return \App\Http\Resources\LearningContentResource
      */
     public function update(UpdateLearningContentRequest $request, LearningContent $learningContent)
     {
@@ -109,10 +109,10 @@ class LearningContentController extends Controller
     }
 
     /**
-     * 指定された学習コンテンツを削除
+     * 指定された学習内容を削除
      *
      * @param LearningContent $learningContent
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(LearningContent $learningContent)
     {
@@ -123,10 +123,10 @@ class LearningContentController extends Controller
     }
 
     /**
-     * 指定された学習コンテンツを完了状態にする
+     * 指定された学習内容を完了状態にする
      *
      * @param LearningContent $learningContent
-     * @return void
+     * @return \App\Http\Resources\LearningContentResource|\Illuminate\Http\JsonResponse
      */
     public function complete(LearningContent $learningContent)
     {
@@ -150,10 +150,10 @@ class LearningContentController extends Controller
     }
 
     /**
-     * 指定された学習コンテンツを再開状態にする
+     * 指定された学習内容を再開状態にする
      *
      * @param LearningContent $learningContent
-     * @return void
+     * @return \App\Http\Resources\LearningContentResource|\Illuminate\Http\JsonResponse
      */
     public function reopen(LearningContent $learningContent)
     {
