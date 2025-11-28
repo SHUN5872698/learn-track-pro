@@ -165,12 +165,17 @@ LearningSession::whereIn('id', function ($query) {
 @resources/js/components/charts/PieChart.vue
 @resources/js/components/charts/LineChart.vue
 @resources/js/components/learning/LearningRecordCard.vue
+@resources/js/components/learning/StatsOverview.vue
 
 ### Composable
 @resources/js/composables/useLearningData.js
 
+### API
+@resources/js/api/reports.js
+
 ### Utils
 @resources/js/utils/chartColors.js
+@resources/js/utils/dateFormatters.js
 ```
 
 ### 質問1: Storeの構造とAPI連携
@@ -315,6 +320,50 @@ LearningSession::whereIn('id', function ($query) {
 - デフォルト挙動ではユーザーに優しくない部分（目盛り、凡例）を独自ロジックで改善
 - リアクティブな再描画コストとUX向上のトレードオフを理解
 
+### 質問6: ユーティリティ関数とAPIレイヤーの組織化
+
+プロンプト
+
+```markdown
+### 質問6: ユーティリティ関数とAPIレイヤーの組織化
+
+`dateFormatters.js`と`api/reports.js`の実装について教えてください。
+
+#### 確認したいこと
+1. `dateFormatters.js`の役割は？
+   - 日付フォーマット関数の再利用
+   - 純粋関数としての設計
+2. `api/reports.js`の役割は？
+   - APIエンドポイントの一元管理
+   - Storeとの分離
+3. なぜAPIレイヤーを分離したのか？
+
+```
+
+### dateFormatters.jsの役割
+
+- **純粋関数**: 入力値のみに依存し、副作用なく結果を返す設計
+- **再利用性**: 複数のコンポーネント（`Reports.vue`、`StudyProgress.vue`、`LearningRecordCard.vue`など）で同じフォーマットロジックを使用
+- **一貫性**: 日付表示形式を一箱所で管理し、アプリ全体で統一されたUIを実現
+
+### api/reports.jsの役列
+
+- **エンドポイントの一元管理**: 統計関連の全APIエンドポイントを`reportApi`オブジェクトに集約
+- **パラメータ管理**: デフォルト値（`months = 6`、`days = 30`）をAPIレイヤーで定義
+- **Storeとの分離**: StoreはAPI呼び出しと状態管理に集中、APIレイヤーはHTTP通信の詳細を隠蔽
+
+### APIレイヤー分離の理由
+
+- **テスト容易性**: API呼び出し部分をモック化しやすくする
+- **保守性**: エンドポイントURL変更時に1箱所だけ修正すればよい
+- **再利用性**: 複数のStoreやComposableから同じAPI関数を呼び出せる
+
+### 私の理解
+
+- **関心事の分離**: 日付フォーマットやAPI通信を独立したモジュールとして切り出すことで、コードの可読性と保守性が向上
+- **DRY原則**: 同じロジックを複数箇所に書かず、一箱所に集約することでバグの温床を減らす
+- **パラメータ管理**: 現在は各APIレイヤーで個別に定義しているため、保守性向上のために共通モジュール化も検討の余地あり
+
 ---
 
 ## 統合理解と説明練習
@@ -327,8 +376,7 @@ LearningSession::whereIn('id', function ($query) {
 **あなたの答え**:
 
 ```
-[転職活動時に記入]
-
+［転職活動時に記入］
 ```
 
 ### 質問2: 統計データの集計処理でパフォーマンスを意識した点は？
@@ -339,8 +387,7 @@ LearningSession::whereIn('id', function ($query) {
 **あなたの答え**:
 
 ```
-[転職活動時に記入]
-
+［転職活動時に記入］
 ```
 
 ### 質問3: 最新の学習記録を取得するクエリで工夫した点は？
@@ -351,7 +398,7 @@ LearningSession::whereIn('id', function ($query) {
 **あなたの答え**:
 
 ```
-[転職活動時に記入]
+［転職活動時に記入］
 
 ```
 
@@ -363,8 +410,7 @@ LearningSession::whereIn('id', function ($query) {
 **あなたの答え**:
 
 ```
-[転職活動時に記入]
-
+［転職活動時に記入］
 ```
 
 ### 質問5: グラフのY軸目盛りを動的に調整している意図は？
@@ -373,7 +419,7 @@ LearningSession::whereIn('id', function ($query) {
 ライブラリ（Chart.js）のデフォルト挙動に満足せず、ユーザーにとっての見やすさ（UX）を追求する姿勢があるかを確認したい。
 
 **あなたの答え**:
-[後で記入]
+［転職活動時に記入］
 
 ### 質問6: フロントエンドでのデータ整形（0埋めやタイムゾーン処理）で注意した点は？
 
@@ -383,8 +429,7 @@ LearningSession::whereIn('id', function ($query) {
 **あなたの答え**:
 
 ```
-[転職活動時に記入]
-
+［転職活動時に記入］
 ```
 
 ### 質問7: 全体レポートと個別レポートで状態管理の方法を変えている理由は？
@@ -395,8 +440,7 @@ Global State（Pinia）とLocal State（ref）の使い分け基準、コンポ�
 **あなたの答え**:
 
 ```
-[転職活動時に記入]
-
+［転職活動時に記入］
 ```
 
 ---

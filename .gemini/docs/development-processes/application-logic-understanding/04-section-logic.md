@@ -204,6 +204,9 @@ SectionControllerのindexメソッドやstoreメソッドのレスポンスに�
 ### Store
 @resources/js/stores/sections.js
 
+### Composable
+@resources/js/composables/learning/useSections.js
+
 ### Component
 @resources/js/views/learning/LearningContentDetail.vue
 @resources/js/components/learning/SectionList.vue
@@ -272,6 +275,34 @@ stores/sections.jsの実装について教えてください。
 - **UI更新戦略**: サーバーサイドとの完全同期を優先し、レスポンスを正として扱うことでフロントエンドとバックエンドの矛盾を防いでいる。
 - **進捗率の再計算**: セクションのステータス更新をトリガーに、`sections.js`内で親ストアの進捗率を再計算・更新している。
 - **設計のポイント**: 「ビジネスロジックはComposable、状態管理はStore」という責務分離の原則が守られている。
+
+### 質問3: Composableによるロジック集約（useSections.js）
+
+プロンプト
+
+```markdown
+### 質問3: Composableによるロジック集約
+
+composables/learning/useSections.jsの実装について教えてください。
+- updateSectionsメソッドで行っているデータ変換（ID変換など）の目的は？
+- Storeとの連携において、どのような役割を果たしていますか？
+
+```
+
+### データ変換（Adapterパターン）
+
+- **ID変換**: 新規作成されたセクションの一時ID（`new_`始まり）を`null`に変換してBackendに送信。これによりBackendは新規作成と認識できる。
+- **Order自動採番**: 配列のインデックスに基づいて`order`プロパティを再計算し、見た目通りの順序でデータを送信。
+
+### Store連携の役割
+
+- **ファサード**: コンポーネントはStoreの複雑なアクション（`bulkUpdateSections`など）を直接意識せず、Composableのメソッドを呼ぶだけで済む。
+- **ロジックの隠蔽**: データ変換やエラーハンドリングなどの詳細ロジックをComposable内に隠蔽し、コンポーネントのコードをシンプルに保つ。
+
+### 私の理解
+
+- **Adapterとしての役割**: フロントエンドの操作モデル（一時ID、配列順序）とバックエンドのデータモデル（DB ID、orderカラム）のギャップを埋める重要な変換層。
+- **再利用性**: 複数のコンポーネント（詳細画面、編集ウィザードなど）で同じロジックを再利用可能にしている。
 
 ---
 
