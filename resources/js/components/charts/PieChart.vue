@@ -30,7 +30,7 @@ const props = defineProps({
 // ========================================
 // 算出プロパティ
 // ========================================
-// チャートのオプションを動的に設定
+// データの最大値に応じてY軸のスケール（目盛り間隔・最大値）を動的に調整
 const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
@@ -42,7 +42,8 @@ const chartOptions = computed(() => ({
         font: {
           size: 12,
         },
-        // 凡例のラベルをカスタマイズして、各項目の割合（パーセンテージ）を表示
+        // ラベルをカスタマイズ
+        // データセットの合計値を計算し、各項目の割合（パーセンテージ）を表示
         generateLabels: function (chart) {
           const data = chart.data;
           if (!data.labels?.length || !data.datasets?.length) {
@@ -66,20 +67,26 @@ const chartOptions = computed(() => ({
     },
     tooltip: {
       callbacks: {
-        // ツールチップのラベルをカスタマイズして、学習時間を「時間:分」形式で表示
+        // グラフツールチップのラベルをカスタマイズ（学習時間を「時間:分」形式で表示）
         label: function (context) {
-          const label = context.label || '';
-          const value = context.raw || 0;
-          const dataset = context.dataset;
+          const label = context.label || ''; // X軸のラベル（例: '月曜日'）
+          const value = context.raw || 0; // Y軸の値（学習時間）
+          const dataset = context.dataset; // データセット全体
+
+          // 全体比率パーセンテージ計算
           const total = dataset.data?.reduce((a, b) => a + b, 0) || 0;
           const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
 
+          // 学習時間値（分）を「時間:分」の直感的な形式に変換
           if (value >= 60) {
-            const hours = Math.floor(value / 60);
-            const minutes = value % 60;
+            const hours = Math.floor(value / 60); // 時間部分を計算 (例: 135分 -> 2時間)
+            const minutes = value % 60; // 分部分を計算 (例: 135分 -> 15分)
             const timeStr = minutes > 0 ? `${hours}時間${minutes}分` : `${hours}時間`;
             return `${label}: ${timeStr} (${percentage}%)`;
           }
+
+          // 60分未満の場合は「分」としてそのまま表示
+          // 例: 月曜日: 45分 (8.0%)
           return `${label}: ${value}分 (${percentage}%)`;
         },
       },

@@ -59,6 +59,7 @@
           <Pagination :total-items="allContentSessionsRecords.length" :items-per-page="recordItemsPerPage" :current-page="recordCurrentPage" @update:currentPage="recordCurrentPage = $event" />
         </div>
 
+        <!-- 学習記録が存在しない（未着手）場合の表示 -->
         <div v-else class="py-10 text-center text-slate-500">
           <p>この学習コンテンツの学習記録はまだありません。</p>
         </div>
@@ -197,7 +198,9 @@ const dailyStudyData = computed(() => {
   // Chart.jsのデータ形式に変換（シンプルに）
   const chartData = {
     labels: apiData.map((item) => {
-      const date = new Date(item.date + 'T00:00:00'); // タイムゾーン問題を回避
+      // タイムゾーン問題を回避: "YYYY-MM-DD"に"T00:00:00"を付与してローカルタイムとして解釈させる
+      // これを行わないと、ブラウザによってはUTCと解釈され、前日の日付になってしまう可能性がある
+      const date = new Date(item.date + 'T00:00:00');
       const isToday = item.date === today;
       const label = date.toLocaleDateString('ja-JP', {
         month: 'numeric',
@@ -213,7 +216,7 @@ const dailyStudyData = computed(() => {
         tension: 0.3,
         fill: true,
         data: apiData.map((item) => Number(item.total_minutes || 0)),
-        // 今日のポイントを視覚的に区別
+        // 今日のポイントを視覚的に区別（オレンジ色）し、ユーザーが現在位置を把握しやすくする
         pointBackgroundColor: apiData.map((item) => (item.date === today ? '#f59e0b' : '#7c3aed')),
         pointRadius: apiData.map((item) => (item.date === today ? 6 : 3)),
       },
@@ -238,9 +241,9 @@ onMounted(async () => {
       await fetchContents();
     }
 
-    // 並列でAPIデータを取得
+    // 並列でAPIデータを取得: 独立したリクエストを同時に開始し、待ち時間を短縮
     await Promise.all([
-      // 日別統計データをAPIから取得
+      // 日別統計データをAPIから取得（直近30日分）
       axios
         .get(`/api/learning-contents/${contentId.value}/statistics/daily`, {
           params: { days: 30 },
@@ -298,7 +301,7 @@ const confirmDelete = async () => {
     // 削除処理API
     await deleteStudySession(recordId);
 
-    // 並列でAPIデータを再取得
+    // 並列でAPIデータを再取得: 削除により統計情報が変化するため、関連データをリフレッシュして整合性を保つ
     await Promise.all([
       // 日別統計データをAPIから取得
       axios

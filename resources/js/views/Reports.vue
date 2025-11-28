@@ -188,6 +188,7 @@ const recordToDelete = ref(null);
 // --- データ集計ロジック ---
 // 全ての学習セッションの合計学習時間を計算し、フォーマットして返す
 const totalStudyTime = computed(() => {
+  // TODO: 現在のバックエンド実装では、将来の日付の学習記録も集計に含まれてしまう既知の問題があるため、将来的にバックエンド側での修正が必要
   const totalMinutes = reportStore.statisticsSummary.total_study_minutes;
   return formatMinutes(totalMinutes);
 });
@@ -215,7 +216,8 @@ const monthlyStudyData = computed(() => {
   const sixMonthsAgo = new Date();
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
 
-  // 初期化
+  // 初期化: 過去6ヶ月分のキー（YYYY-MM）を生成し、値を0で埋める
+  // これにより、APIデータが存在しない月もグラフ上で0として表示され、X軸が途切れるのを防ぐ
   for (let i = 0; i < 6; i++) {
     const date = new Date(sixMonthsAgo);
     date.setMonth(date.getMonth() + i);
@@ -223,7 +225,8 @@ const monthlyStudyData = computed(() => {
     monthlyTotals[monthKey] = 0;
   }
 
-  // APIデータをマージ
+  // APIデータをマージ: 実績がある月のデータを上書きする
+  // APIは学習記録がない月を返さないため、ここで合成してグラフ上のデータ欠落（0分の月）を防ぐ
   reportStore.monthlyData.forEach((item) => {
     if (monthlyTotals.hasOwnProperty(item.month)) {
       monthlyTotals[item.month] = item.total_minutes;
@@ -248,8 +251,10 @@ const techStudyData = computed(() => {
   const techData = reportStore.technologyData;
 
   let displayData;
+  // データ数が10件を超える場合、視認性向上のため上位9件を表示し、残りを「その他」として集約
   if (techData.length > 10) {
     const top9 = techData.slice(0, 9);
+    // 10件目以降の学習時間を合算
     const othersTotal = techData.slice(9).reduce((sum, item) => sum + Number(item.total_minutes || 0), 0);
     displayData = [
       ...top9.map((item) => ({
@@ -257,6 +262,7 @@ const techStudyData = computed(() => {
         minutes: Number(item.total_minutes || 0),
       })),
     ];
+    // 合算値が0より大きい場合のみ「その他」を追加
     if (othersTotal > 0) {
       displayData.push({ name: 'その他', minutes: othersTotal });
     }
@@ -306,7 +312,7 @@ onMounted(async () => {
     if (learningContents.value.length === 0) {
       await fetchContents();
     }
-    // 並列実行でパフォーマンス向上
+    // 並列実行(パフォーマンス向上、ローディング表示の最適化)
     await Promise.all([reportStore.fetchStatisticsSummary(), reportStore.fetchMonthlyStatistics(6), reportStore.fetchTechnologyStatistics(), fetchLatestSessionsByContent()]);
   });
 });
@@ -325,6 +331,8 @@ const openDeleteModal = (record) => {
 // 最新学習記録の取得
 async function fetchLatestSessionsByContent() {
   try {
+    // 学習内容ごとの最新セッションを取得（サブクエリで各コンテンツのMAX(id)を抽出）
+    // NOTE: N+1問題を回避するため、バックエンド側でEager Loading(with('learningContent', 'section'))が適用されている
     const response = await axios.get('/api/learning-sessions/statistics/latest-by-content');
     latestSessionsByContent.value = response.data.data || [];
   } catch (error) {
@@ -350,6 +358,7 @@ const confirmDelete = async () => {
     await deleteStudySession(recordId);
 
     // withLoadingでローディング状態を管理しながらデータ再取得
+    // 削除により統計情報（総学習時間、月別推移など）が変化するため、全ての関連データを再フェッチして整合性を保つ
     await withLoading('delete-record', async () => {
       await Promise.all([reportStore.fetchStatisticsSummary(), reportStore.fetchMonthlyStatistics(6), reportStore.fetchTechnologyStatistics(), fetchLatestSessionsByContent()]);
     });

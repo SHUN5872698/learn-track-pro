@@ -157,9 +157,8 @@ const completedContents = computed(() => {
 // ライフサイクル
 // ========================================
 onMounted(async () => {
-  // withLoadingで非同期処理をラップ
   await withLoading('dashboard-init', async () => {
-    // 並列実行でパフォーマンス向上
+    // 並列実行(パフォーマンス向上、ローディング表示の最適化)
     await Promise.all([fetchContents(), fetchLearningSessions()]);
   });
 });
