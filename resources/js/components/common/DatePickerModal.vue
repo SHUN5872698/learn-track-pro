@@ -1,16 +1,17 @@
 <template>
+  <!-- カレンダーモーダルコンポーネント -->
   <TransitionRoot :show="isOpen" as="template">
     <Dialog as="div" class="relative z-50" @close="$emit('close')">
       <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
         <div class="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm"></div>
       </TransitionChild>
-
+      <!-- モーダルコンテナ -->
       <div class="fixed inset-0 overflow-y-auto">
         <div class="flex items-center justify-center min-h-full p-4 text-center">
           <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100" leave="ease-in duration-200" leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
             <DialogPanel class="w-full max-w-md p-8 transform border shadow-xl bg-white/90 backdrop-blur-md rounded-2xl border-white/20">
+              <!-- モーダルヘッダー -->
               <h3 class="mb-6 text-xl font-bold text-center text-slate-900">日付を選択</h3>
-
               <!-- カレンダーヘッダー -->
               <div class="flex items-center justify-between mb-4">
                 <BaseButton @click="prevMonth" variant="ghost" size="md" shape="circle" :icon-only="true">
