@@ -148,7 +148,7 @@ LearningSession::whereIn('id', function ($query) {
 ### 概要
 
 レポート画面では、複数のAPIエンドポイントからデータを取得し、Chart.jsを用いて視覚的に表示します。
-非同期処理の並列実行や、グラフ用データの整形ロジックが主なポイントです。
+特に、グラフの目盛り調整や配色、UIコンポーネントの再利用性において、ユーザー体験を高めるための独自の工夫が施されています。
 
 **主要ファイル**:
 
@@ -163,10 +163,14 @@ LearningSession::whereIn('id', function ($query) {
 ### Component
 @resources/js/components/charts/BarChart.vue
 @resources/js/components/charts/PieChart.vue
+@resources/js/components/charts/LineChart.vue
 @resources/js/components/learning/LearningRecordCard.vue
 
 ### Composable
 @resources/js/composables/useLearningData.js
+
+### Utils
+@resources/js/utils/chartColors.js
 ```
 
 ### 質問1: Storeの構造とAPI連携
@@ -186,18 +190,20 @@ LearningSession::whereIn('id', function ($query) {
 
 ### Stateの構造
 
-- `statisticsSummary`: サマリー情報（オブジェクト）。
-- `monthlyData`: 月別データ（配列）。
-- `technologyData`: 技術別データ（配列）。
-- `dailyData`: 日別データ（配列）。
-- `loading`: 全体的なローディング状態。
+- `statisticsSummary`: サマリー情報
+- `monthlyData`, `technologyData`, `dailyData`: 各グラフ用の配列データ
+- `loading`: 全体的なローディング状態
 
 ### API連携
 
-- 各統計データごとに独立したAction（`fetchStatisticsSummary`, `fetchMonthlyStatistics`など）を用意。
-- 画面側で必要なデータだけを選択して取得できる設計。
+- 各統計データごとに独立したActionを用意
+- 画面側で必要なデータだけを選択して取得できる設計
 
 ### 私の理解
+
+- 複数APIを管理するため、全体・個別レポートで異なるActionを実行する設計を確認
+- `months = 6` などのマジックナンバーは将来的に定数化を検討
+- エラーハンドリングはVue側の状態管理と共通`axios.js`で分担
 
 ### 質問2: データの可視化と整形（Reports.vue）
 
@@ -217,17 +223,14 @@ LearningSession::whereIn('id', function ($query) {
 
 ### データ整形ロジック
 
-**月別データ（`monthlyStudyData`）**:
-
-- **0埋め**: 直近6ヶ月分の月キーを生成し、APIデータが存在しない月は0分として埋める処理を実装。これによりグラフのX軸が途切れないようにしている。
-
-**技術別データ（`techStudyData`）**:
-
-- **上位表示**: データ数が多い場合、上位9件を表示し、それ以外を「その他」として合算するロジックをComputedプロパティ内で実装。円グラフが見づらくなるのを防いでいる。
+- **月別データ（`monthlyStudyData`）**: 直近6ヶ月分の月キーを生成し、APIデータが存在しない月は0分として埋める（X軸途切れ防止）
+- **技術別データ（`techStudyData`）** 上位9件を表示し、それ以外を「その他」として合算（円グラフの視認性確保）
 
 ### 私の理解
 
-- 
+- Chart.jsの仕様（labels/datasets）に合わせたデータ変換ロジックを実装
+- バックエンド（実績のみ返却）とフロントエンド（全期間表示）のギャップを埋めるAdapter処理を理解
+- 円グラフ配色は`chartColors.js`で主要技術に固定色を割り当て、一貫性を確保
 
 ### 質問3: 非同期データの並列取得
 
@@ -247,27 +250,14 @@ LearningSession::whereIn('id', function ($query) {
 
 ### 実装内容
 
-```jsx
-await withLoading('reports-init', async () => {
-  await Promise.all([
-    reportStore.fetchStatisticsSummary(),
-    reportStore.fetchMonthlyStatistics(6),
-    reportStore.fetchTechnologyStatistics(),
-    fetchLatestSessionsByContent()
-  ]);
-});
-
-```
-
-**解説**:
-
-1. **Promise.all**: 4つの独立したAPIリクエストを並列に開始。
-2. **メリット**: 全てのリクエストを直列（awaitの連続）で待つよりも、トータルの待ち時間が短縮される（最も遅いリクエストの時間で済む）。
-3. **ローディング**: `withLoading`コンポーザブルを使い、全ての処理が完了するまでローディングスピナーを表示。
+- `Promise.all` で4つのAPIリクエストを並列実行
+- `withLoading` コンポーザブルで全処理完了までスピナーを表示
 
 ### 私の理解
 
-- 
+- 直列実行（awaitの連続）より高速な並列実行を採用
+- 「全てのデータが揃ってからレポートを表示する」というUX方針と合致
+- `Promise.all`は1つでも失敗すると全体がrejectされるリスクを認識（現状は共通エラーハンドリングで対応）
 
 ### 質問4: 個別レポート画面（StudyProgress.vue）の実装
 
@@ -285,32 +275,17 @@ await withLoading('reports-init', async () => {
 
 ```
 
-### データの変換とタイムゾーン
+### 実装のポイント
 
-**実装**:
-
-```jsx
-const date = new Date(item.date + 'T00:00:00');
-
-```
-
-**解説**:
-APIから返ってくる日付文字列（例: "2025-11-26"）をそのまま`new Date()`すると、ブラウザによってはUTCとして解釈され、日本時間（JST）では前日になってしまうことがあります。
-これを防ぐため、明示的に時刻部分（`T00:00:00`）を付与して、ローカルタイムとして扱われるようにしています。
-
-### ページネーションとデータソース
-
-- **Reports.vue**: ストア（`reportStore`）や複数のAPIからデータを集約して表示。
-- **StudyProgress.vue**: 特定のコンテンツIDに紐づくセッションのみをAPIから取得し、`contentSessions`というローカルなrefで管理。ページネーションのロジック自体（`slice`を使う方法）は共通ですが、データソースのスコープが異なります。
-
-### 削除時の二重送信防止
-
-- `isSubmitting`フラグを使用。
-- `openDeleteModal`内で`if (isSubmitting.value) return;`とすることで、削除処理中に再度モーダルを開こうとする操作をブロックしています。
+- **タイムゾーン**: 日付文字列に `T00:00:00` を付与してローカルタイムとして処理（日付ズレ防止）
+- **データスコープ**: 特定コンテンツ専用のため、Storeではなくローカルな `ref` で管理
+- **二重送信防止**: `isSubmitting` フラグで削除処理中の再操作をブロック
 
 ### 私の理解
 
-- 
+- 全体レポート（Global State）と個別レポート（Local State）でデータのスコープを適切に使い分け
+- `new Date()` の挙動を理解し、明示的な時刻付与でタイムゾーン問題を回避
+- ボタン連打対策としてフラグ制御を導入済み
 
 ### 質問5: Chart.jsラッパーコンポーネント（BarChart / PieChart）の深掘り
 
@@ -328,52 +303,17 @@ APIから返ってくる日付文字列（例: "2025-11-26"）をそのまま`ne
 
 ```
 
-### chartOptionsをcomputedにする理由
+### 実装詳細
 
-**理由**:
-データ（`props.data`）が変化した際に、グラフのオプション（特にY軸の最大値やツールチップの内容など）も動的に再計算させるためです。
-例えば、学習時間が0分の時と100時間の時では、適切なY軸のスケールが異なります。`computed`にすることで、データ更新に合わせてグラフの見た目を自動的に最適化できます。
-
-### Y軸目盛りの動的計算（BarChart）
-
-**ロジック**:
-
-```jsx
-if (maxValue <= 300) {
-  stepSize = 60; // 1時間刻み
-} else if (maxValue <= 600) {
-  stepSize = 120; // 2時間刻み
-} // ...
-
-```
-
-**意図**:
-Chart.jsのデフォルト設定では、中途半端な数値（例: 1.5時間など）で目盛りが引かれることがあります。
-学習時間は「時間単位」で把握したいため、データの最大値に応じて「1時間刻み」「5時間刻み」など、人間が見やすいキリの良い数値を強制的に設定しています。
-
-### パーセンテージ表示のカスタマイズ（PieChart）
-
-**実装（凡例）**:
-
-```jsx
-generateLabels: function (chart) {
-  // ...
-  const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
-  return {
-    text: `${label} (${percentage}%)`,
-    // ...
-  };
-}
-
-```
-
-**解説**:
-Chart.js標準の凡例はラベル名しか表示しません。
-`generateLabels`コールバックをオーバーライドし、データセットの合計値を計算した上で、各項目の割合（%）を算出し、ラベルテキストに結合して返しています。これにより、グラフを見なくても数値的な割合が把握できるようになります。
+- **computed**: データの最大値に応じてY軸スケールを動的に再計算するため
+- **Y軸目盛り**: 「1.5時間」のような中途半端な数値を避け、「1時間刻み」などに強制
+- **凡例**: `generateLabels` をオーバーライドし、パーセンテージを表示
 
 ### 私の理解
 
-- 
+- データの増減に合わせてグラフの見た目を最適化するため `computed` を採用
+- デフォルト挙動ではユーザーに優しくない部分（目盛り、凡例）を独自ロジックで改善
+- リアクティブな再描画コストとUX向上のトレードオフを理解
 
 ---
 
