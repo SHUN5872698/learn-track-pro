@@ -1,6 +1,6 @@
 import { reactive, computed, ref } from 'vue';
 
-// 学習コンテンツのフォームデータと変更検知を管理するComposable
+// 学習内容のフォームデータと変更検知を管理するComposable
 export function useLearningContentForm(initialData = null) {
   // フォームのデフォルト状態を定義
   const defaultState = {

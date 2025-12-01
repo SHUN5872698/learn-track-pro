@@ -46,7 +46,7 @@ tree -L 5 --dirsfirst \
 │   │   ├── Controllers/                          # アプリケーションのビジネスロジックをサービス層に委譲するThinコントローラー
 │   │   │   ├── CategoryController.php            # カテゴリー関連のHTTPリクエストを処理
 │   │   │   ├── Controller.php                    # 全てのコントローラーの基底クラス
-│   │   │   ├── LearningContentController.php     # 学習コンテンツ関連のHTTPリクエストを処理
+│   │   │   ├── LearningContentController.php     # 学習内容関連のHTTPリクエストを処理
 │   │   │   ├── LearningSessionController.php     # 学習セッション関連のHTTPリクエストを処理
 │   │   │   ├── SectionController.php             # セクション関連のHTTPリクエストを処理
 │   │   │   ├── TechnologyController.php          # 技術関連のHTTPリクエストを処理
@@ -55,30 +55,30 @@ tree -L 5 --dirsfirst \
 │   │   │   ├── User/                             # ユーザー関連のリクエスト
 │   │   │   │   └── ProfileRequest.php            # プロフィール更新時のバリデーション
 │   │   │   ├── BulkUpdateSectionsRequest.php     # セクション一括更新時のバリデーション
-│   │   │   ├── StoreLearningContentRequest.php   # 学習コンテンツ作成時のバリデーション
+│   │   │   ├── StoreLearningContentRequest.php   # 学習内容作成時のバリデーション
 │   │   │   ├── StoreLearningSessionRequest.php   # 学習セッション作成時のバリデーション
 │   │   │   ├── StoreSectionRequest.php           # セクション作成時のバリデーション
-│   │   │   ├── UpdateLearningContentRequest.php  # 学習コンテンツ更新時のバリデーション
+│   │   │   ├── UpdateLearningContentRequest.php  # 学習内容更新時のバリデーション
 │   │   │   ├── UpdateLearningSessionRequest.php  # 学習セッション更新時のバリデーション
 │   │   │   ├── UpdateSectionRequest.php          # セクション更新時のバリデーション
 │   │   │   └── UpdateSectionStatusRequest.php    # セクションステータス更新時のバリデーション
 │   │   └── Resources/                            # APIレスポンスのデータ変換と整形
 │   │       ├── CategoryResource.php              # カテゴリーデータのリソース変換
-│   │       ├── LearningContentResource.php       # 学習コンテンツデータのリソース変換
+│   │       ├── LearningContentResource.php       # 学習内容データのリソース変換
 │   │       ├── LearningSessionResource.php       # 学習セッションデータのリソース変換
 │   │       ├── SectionResource.php               # セクションデータのリソース変換
 │   │       └── TechnologyResource.php            # 技術データのリソース変換
 │   │
 │   ├── Models/                                   # データベーステーブルと対話するためのEloquentモデル
 │   │   ├── Category.php                          # カテゴリーモデル
-│   │   ├── LearningContent.php                   # 学習コンテンツモデル
+│   │   ├── LearningContent.php                   # 学習内容モデル
 │   │   ├── LearningSession.php                   # 学習セッションモデル
 │   │   ├── Section.php                           # セクションモデル
 │   │   ├── Technology.php                        # 技術モデル
 │   │   └── User.php                              # ユーザーモデル
 │   │
 │   ├── Policies/                                 # モデルの認可ロジックを定義
-│   │   ├── LearningContentPolicy.php             # 学習コンテンツの認可ポリシー
+│   │   ├── LearningContentPolicy.php             # 学習内容の認可ポリシー
 │   │   └── LearningSessionPolicy.php             # 学習セッションの認可ポリシー
 │   │
 │   └── Providers/                                # サービスコンテナへのサービス登録やイベント登録を行うサービスプロバイダ
@@ -117,14 +117,14 @@ tree -L 5 --dirsfirst \
 │   │   ├── 2025_09_11_161032_create_personal_access_tokens_table.php    # パーソナルアクセストークンテーブル作成マイグレーション
 │   │   ├── 2025_09_12_101352_create_categories_table.php                # カテゴリーテーブル作成マイグレーション
 │   │   ├── 2025_09_12_101354_create_technologies_table.php              # 技術テーブル作成マイグレーション
-│   │   ├── 2025_09_12_101355_create_learning_contents_table.php         # 学習コンテンツテーブル作成マイグレーション
+│   │   ├── 2025_09_12_101355_create_learning_contents_table.php         # 学習内容テーブル作成マイグレーション
 │   │   ├── 2025_09_12_101358_create_sections_table.php                  # セクションテーブル作成マイグレーション
 │   │   └── 2025_09_12_112014_create_learning_sessions_table.php         # 学習セッションテーブル作成マイグレーション
 │   │
 │   ├── seeders/                                  # データベースに初期データやテストデータを投入するシーダー
 │   │   ├── CategorySeeder.php                    # カテゴリーデータのシーダー
 │   │   ├── DatabaseSeeder.php                    # 全てのシーダーを呼び出すメインシーダー
-│   │   ├── LearningContentSeeder.php             # 学習コンテンツデータのシーダー
+│   │   ├── LearningContentSeeder.php             # 学習内容データのシーダー
 │   │   ├── LearningSessionSeeder.php             # 学習セッションデータのシーダー
 │   │   ├── SectionSeeder.php                     # セクションデータのシーダー
 │   │   ├── TechnologySeeder.php                  # 技術データのシーダー

@@ -39,7 +39,7 @@
 ```bash
 resources/js/
 ├── api/                                     # APIクライアント定義
-│   ├── learningContent.js                   # 学習コンテンツ関連API
+│   ├── learningContent.js                   # 学習内容関連API
 │   ├── learningSession.js                   # 学習セッション関連API
 │   ├── reports.js                           # レポート関連API
 │   └── sections.js                          # セクション関連API
@@ -79,14 +79,14 @@ resources/js/
 │       │   ├── WizardNavigation.vue         # ウィザードナビゲーションボタン
 │       │   └── WizardStepIndicator.vue      # ウィザードステップインジケーター
 │       ├── DeleteRecordConfirmModal.vue     # 学習記録削除確認モーダル
-│       ├── LearningContentCard.vue          # 学習コンテンツカード
+│       ├── LearningContentCard.vue          # 学習内容カード
 │       ├── LearningRecordCard.vue           # 学習記録カード
 │       ├── StatsOverview.vue                # 統計概要コンポーネント
 │       └── StudySessionFormFields.vue       # 学習記録フォームフィールド
 │
 ├── composables/                             # 共有ロジック・状態管理（Vue Composition APIを活用）
 │   ├── learning/                            # 学習ドメイン固有のコアロジック
-│   │   ├── useLearningContents.js           # 学習コンテンツのCRUD操作と関連ロジック
+│   │   ├── useLearningContents.js           # 学習内容のCRUD操作と関連ロジック
 │   │   ├── useLearningSessions.js           # 学習セッション（記録）のCRUD操作と関連ロジック
 │   │   └── useSections.js                   # セクションのCRUD操作と関連ロジック
 │   │
@@ -115,7 +115,7 @@ resources/js/
 ├── stores/                                  # Piniaストア
 │   ├── auth.js                              # 認証状態管理ストア
 │   ├── errorModal.js                        # エラーモーダルの表示状態管理ストア
-│   ├── learningContent.js                   # 学習コンテンツの状態管理ストア
+│   ├── learningContent.js                   # 学習内容の状態管理ストア
 │   ├── learningSession.js                   # 学習セッションの状態管理ストア
 │   ├── masterData.js                        # マスターデータ（カテゴリー、技術）の状態管理ストア
 │   ├── reports.js                           # レポート関連ストア
@@ -271,6 +271,7 @@ graph TD
     style W fill:#ffeb99,stroke:#333,stroke-width:2px
     style U fill:#ffb3b3,stroke:#333,stroke-width:2px
 ```
+
 ---
 
 ## なぜこの構造が良いか

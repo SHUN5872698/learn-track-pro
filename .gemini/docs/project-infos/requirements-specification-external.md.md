@@ -337,7 +337,7 @@ erDiagram
 
 **3. technologies テーブル**
 
-学習コンテンツで利用される技術情報を管理するテーブルです。Seederで初期データを投入し、ユーザーは選択のみ可能です。
+学習内容で利用される技術情報を管理するテーブルです。Seederで初期データを投入し、ユーザーは選択のみ可能です。
 
 | データ型 | カラム名 | 属性 | 説明 |
 | --- | --- | --- | --- |
@@ -354,12 +354,12 @@ erDiagram
 
 **4. learning_contents テーブル**
 
-学習コンテンツそのものの情報を管理するテーブルです。
+学習内容そのものの情報を管理するテーブルです。
 
 | **データ型** | **カラム名** | **属性** | **説明** |
 | --- | --- | --- | --- |
-| bigint | `id` | PRIMARY KEY | 学習コンテンツID (主キー) |
-| bigint | `user_id` | FOREIGN KEY | 学習コンテンツを作成したユーザーのID (users.idを参照) |
+| bigint | `id` | PRIMARY KEY | 学習内容ID (主キー) |
+| bigint | `user_id` | FOREIGN KEY | 学習内容を作成したユーザーのID (users.idを参照) |
 | bigint | `technology_id` | FOREIGN KEY | 使用されている技術のID (technologies.idを参照) |
 | string | `title` | NOT NULL | コンテンツのタイトル |
 | text | `description` | NULLABLE | コンテンツの詳細な説明 |
@@ -392,12 +392,12 @@ erDiagram
 
 **5. sections テーブル**
 
-学習コンテンツ内のセクション情報を管理するテーブルです。
+学習内容内のセクション情報を管理するテーブルです。
 
 | データ型 | カラム名 | 属性 | 説明 |
 | --- | --- | --- | --- |
 | bigint | `id` | PRIMARY KEY | セクションID (主キー) |
-| bigint | `learning_content_id` | FOREIGN KEY | 所属する学習コンテンツのID (learning_contents.idを参照) |
+| bigint | `learning_content_id` | FOREIGN KEY | 所属する学習内容のID (learning_contents.idを参照) |
 | string | `title` | NOT NULL | セクションのタイトル |
 | int | `order` | NOT NULL | セクションの並び順 |
 | enum | `status` | DEFAULT 'not_started' | セクションのステータス ('not_started', 'in_progress', 'completed') |
@@ -423,7 +423,7 @@ erDiagram
 | --- | --- | --- | --- |
 | bigint | `id` | PRIMARY KEY | 学習セッションID (主キー) |
 | bigint | `user_id` | FOREIGN KEY | セッションを作成したユーザーのID (users.idを参照) |
-| bigint | `learning_content_id` | FOREIGN KEY | 関連する学習コンテンツのID (learning_contents.idを参照) |
+| bigint | `learning_content_id` | FOREIGN KEY | 関連する学習内容のID (learning_contents.idを参照) |
 | bigint | `section_id` | FOREIGN KEY, NOT NULL | 学習したセクションのID (sections.idを参照、必須) |
 | int | `study_minutes` | NOT NULL | 学習時間（分） |
 | text | `memo` | NULLABLE | セッションのメモ |

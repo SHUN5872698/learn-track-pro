@@ -58,9 +58,9 @@ export const useLearningData = () => {
 
   return {
     user, // 現在ログイン中のユーザー情報
-    learningContents, // 学習セッション集計済みの学習コンテンツリスト
+    learningContents, // 学習セッション集計済みの学習内容リスト
     learningContentsRaw, // 集計前の生データ（編集画面などで使用）
-    sections: computed(() => sectionStore.sections), // 全学習コンテンツのセクション一覧
+    sections: computed(() => sectionStore.sections), // 全学習内容のセクション一覧
     learningSessions: computed(() => sessionStore.sessions), // 全学習記録
     technologies, // 技術マスターデータ
     loading, // API通信中のローディング状態

@@ -118,7 +118,7 @@ export const useLearningContentStore = defineStore('learningContent', {
         }
         return { success: true, message: successMessage };
       } catch (error) {
-        console.error(`学習コンテンツのステータス更新中にエラーが発生しました (ID: ${id}):`, error);
+        console.error(`学習内容のステータス更新中にエラーが発生しました (ID: ${id}):`, error);
         return { success: false, error };
       } finally {
         this.loading = false;

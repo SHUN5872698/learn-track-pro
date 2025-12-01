@@ -193,7 +193,7 @@ const totalStudyTime = computed(() => {
   return formatMinutes(totalMinutes);
 });
 
-// ステータスが「completed」の学習コンテンツの数をカウントする
+// ステータスが「completed」の学習内容の数をカウントする
 const completedCoursesCount = computed(() => {
   return reportStore.statisticsSummary.completed_courses_count;
 });

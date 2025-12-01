@@ -13,7 +13,7 @@ export const useSectionStore = defineStore('sections', {
 
   // 状態から派生した値（キャッシュされる）
   getters: {
-    // 指定された学習コンテンツIDに紐づくセクションをフィルタリングして取得
+    // 指定された学習内容IDに紐づくセクションをフィルタリングして取得
     sectionsByContentId: (state) => (contentId) => {
       return state.sections.filter((section) => section.learning_content_id === contentId);
     },
@@ -25,7 +25,7 @@ export const useSectionStore = defineStore('sections', {
 
   // 状態を変更するアクション
   actions: {
-    // 指定された学習コンテンツIDのセクションをAPIから非同期でフェッチ
+    // 指定された学習内容IDのセクションをAPIから非同期でフェッチ
     async fetchSections(learningContentId) {
       this.loading = true;
       this.error = null;
@@ -49,7 +49,7 @@ export const useSectionStore = defineStore('sections', {
       try {
         const response = await api.createSection(data);
         this.sections.push(response.data.data);
-        // 学習コンテンツの統計情報を更新
+        // 学習内容の統計情報を更新
         const learningContentStore = useLearningContentStore();
         await learningContentStore.fetchContents(); // 更新された統計情報を取得するために再フェッチ
       } catch (error) {
@@ -85,7 +85,7 @@ export const useSectionStore = defineStore('sections', {
         if (!sectionToDelete) return;
         await api.deleteSection(id);
         this.sections = this.sections.filter((s) => s.id !== id);
-        // 学習コンテンツの統計情報を更新
+        // 学習内容の統計情報を更新
         const learningContentStore = useLearningContentStore();
         await learningContentStore.fetchContents(); // 更新された統計情報を取得するために再フェッチ
       } catch (error) {

@@ -29,7 +29,7 @@ export const deleteLearningSession = (id) => {
 };
 
 // Nested routes
-// 特定の学習コンテンツに紐づく学習セッションを取得するAPIリクエスト
+// 特定の学習内容に紐づく学習セッションを取得するAPIリクエスト
 export const fetchSessionsByContent = (contentId) => {
   return api.get(`${BASE_URL}/learning-contents/${contentId}/sessions`);
 };

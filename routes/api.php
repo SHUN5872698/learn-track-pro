@@ -15,7 +15,7 @@ use App\Http\Controllers\LearningSessionController;
 |
 | エンドポイント一覧:
 | - 公開API: カテゴリー、技術情報
-| - 認証API: ユーザー、学習コンテンツ、セクション、学習セッション、統計
+| - 認証API: ユーザー、学習内容、セクション、学習セッション、統計
 |
 */
 
@@ -39,7 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // ----------------------------------------
-    // 学習コンテンツ管理
+    // 学習内容管理
     // ----------------------------------------
     Route::apiResource('learning-contents', LearningContentController::class);
 

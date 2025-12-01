@@ -84,7 +84,7 @@ export const useLearningSessions = () => {
   };
 
   /**
-   * 特定の学習コンテンツに紐づく全ての学習記録を取得
+   * 特定の学習内容に紐づく全ての学習記録を取得
    */
   const fetchSessionsByContentId = async (contentId) => {
     try {

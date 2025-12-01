@@ -35,7 +35,7 @@
         </div>
       </div>
       <div v-else class="text-center text-slate-500">
-        <p>学習コンテンツが見つかりません。</p>
+        <p>学習内容が見つかりません。</p>
       </div>
     </template>
 
@@ -61,7 +61,7 @@
 
         <!-- 学習記録が存在しない（未着手）場合の表示 -->
         <div v-else class="py-10 text-center text-slate-500">
-          <p>この学習コンテンツの学習記録はまだありません。</p>
+          <p>この学習内容の学習記録はまだありません。</p>
         </div>
 
         <!-- アクションボタン -->
@@ -125,7 +125,7 @@ const { isLoading, withLoading } = useLoading();
 // ========================================
 // 日別統計データを格納するリアクティブな参照
 const dailyStatisticsData = ref([]);
-// 特定の学習コンテンツに紐づくセッションデータを格納するリアクティブな参照
+// 特定の学習内容に紐づくセッションデータを格納するリアクティブな参照
 const contentSessions = ref([]);
 
 // ページネーション
@@ -141,9 +141,9 @@ const recordToDelete = ref(null);
 // ========================================
 // 算出プロパティ
 // ========================================
-// ルートパラメータから学習コンテンツIDを取得
+// ルートパラメータから学習内容IDを取得
 const contentId = computed(() => parseInt(route.params.id, 10));
-// 取得したコンテンツIDに基づいて、学習コンテンツの情報を算出
+// 取得したコンテンツIDに基づいて、学習内容の情報を算出
 const learningContent = computed(() => learningContents.value.find((c) => c.id === contentId.value));
 
 // 学習記録一覧（contentSessionsを使うように変更）
@@ -236,7 +236,7 @@ onMounted(async () => {
   }
 
   await withLoading('study-progress-init', async () => {
-    // 学習コンテンツがまだロードされていない場合、ロードをトリガー
+    // 学習内容がまだロードされていない場合、ロードをトリガー
     if (learningContents.value.length === 0) {
       await fetchContents();
     }

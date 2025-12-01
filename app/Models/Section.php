@@ -53,7 +53,7 @@ class Section extends Model
     }
 
     /**
-     * このセクションに関連する学習コンテンツを取得
+     * このセクションに関連する学習内容を取得
      *
      * @return BelongsTo
      */

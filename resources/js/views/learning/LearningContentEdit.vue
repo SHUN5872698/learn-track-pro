@@ -543,7 +543,7 @@ const cancelSectionDelete = () => {
 
 // ヘルパー関数
 /**
- * 既存の学習コンテンツデータを読み込み、フォームに設定する
+ * 既存の学習内容データを読み込み、フォームに設定する
  *
  * この関数は2つのデータソースを統合する：
  * 1. learningContentsRaw: 基本情報（タイトル、概要、技術など）
@@ -554,7 +554,7 @@ const cancelSectionDelete = () => {
  * - form: 編集用フォームデータとして設定
  */
 const loadContentData = () => {
-  // 学習コンテンツの基本情報を取得
+  // 学習内容の基本情報を取得
   const content = learningContentsRaw.value.find((c) => c.id === contentId);
   if (content) {
     // このコンテンツに紐づくセクション情報を取得し、
@@ -609,7 +609,7 @@ const handleSubmit = async () => {
       technology_id: form.technology_id,
       status: form.status,
     };
-    // Piniaストアのアクションを呼び出し、学習コンテンツの基本情報を更新
+    // Piniaストアのアクションを呼び出し、学習内容の基本情報を更新
     await contentStore.updateContent(contentId, basicInfo);
 
     // セクションデータの送信（index + 1 を使用）

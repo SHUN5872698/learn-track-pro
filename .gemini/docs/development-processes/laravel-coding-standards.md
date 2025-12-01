@@ -249,7 +249,7 @@ class LearningContentNotFoundException extends Exception
     public function render($request): JsonResponse
     {
         return response()->json([
-            'message' => '学習コンテンツが見つかりません。'
+            'message' => 'が見つかりません。'
         ], 404);
     }
 }

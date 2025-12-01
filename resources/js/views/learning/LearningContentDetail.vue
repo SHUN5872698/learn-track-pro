@@ -1,5 +1,5 @@
 <template>
-  <!-- 学習コンテンツ詳細コンポーネント -->
+  <!-- 学習内容詳細コンポーネント -->
   <div v-if="isLoading" class="py-10 text-center">
     <LoadingSpinner size="lg" message="データを読み込んでいます..." />
   </div>
@@ -134,12 +134,12 @@
         </div>
 
         <div v-else class="py-10 text-center text-slate-500">
-          <p>この学習コンテンツには、まだセクションが登録されていません。</p>
+          <p>この学習内容には、まだセクションが登録されていません。</p>
         </div>
       </div>
     </div>
     <div v-else class="text-center text-slate-500">
-      <p>学習コンテンツが見つかりません。</p>
+      <p>学習内容が見つかりません。</p>
     </div>
 
     <!-- 4. アクションボタン（修正：モバイルで縦並び） -->
@@ -237,10 +237,10 @@ const updatingSectionId = ref(null);
 // ========================================
 // 算出プロパティ
 // ========================================
-// ルートパラメータから学習コンテンツIDを取得
+// ルートパラメータから学習内容IDを取得
 const learningContentId = computed(() => parseInt(route.params.id, 10));
 
-// 算出プロパティで現在の学習コンテンツ情報を取得
+// 算出プロパティで現在の学習内容情報を取得
 const learningContent = computed(() => {
   const content = learningContents.value.find((c) => c.id === learningContentId.value);
   if (!content) return null;
@@ -254,7 +254,7 @@ const learningContent = computed(() => {
   };
 });
 
-// 学習コンテンツのステータスに応じた表示テキストとアイコンを算出
+// 学習内容のステータスに応じた表示テキストとアイコンを算出
 const statusDisplay = computed(() => {
   if (!learningContent.value) return { text: '', class: '', icon: null };
   switch (learningContent.value.status) {
@@ -269,7 +269,7 @@ const statusDisplay = computed(() => {
   }
 });
 
-// 現在の学習コンテンツに紐づくセクションをフィルタリングし、並び順でソート
+// 現在の学習内容に紐づくセクションをフィルタリングし、並び順でソート
 const contentSections = computed(() => {
   if (!learningContent.value) return [];
   return sectionStore.sections.filter((s) => s.learning_content_id === learningContent.value.id).sort((a, b) => a.order - b.order);
@@ -313,7 +313,7 @@ onMounted(async () => {
     // 並列実行でパフォーマンス向上
     await Promise.all([
       sectionStore.fetchSections(learningContentId.value),
-      // 現在の学習コンテンツのセッションのみ取得
+      // 現在の学習内容のセッションのみ取得
       sessionStore.fetchLearningSessions({
         learning_content_id: learningContentId.value,
         all: 'true', // 全件取得フラグ
@@ -355,7 +355,7 @@ const handleToggleComplete = async (section, event) => {
     const newStatus = toggleSectionComplete(section);
     // Piniaストアのアクションを呼び出し、セクションの完了状態の更新
     await updateSectionStatus(section.id, newStatus);
-    // 学習コンテンツの統計を更新
+    // 学習内容の統計を更新
     const learningContent = learningContents.value.find((c) => c.id === learningContentId.value);
     if (learningContent) {
       learningContent.completed_sections = contentSections.value.filter((s) => s.status === 'completed').length;

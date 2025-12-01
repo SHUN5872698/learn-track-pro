@@ -4,15 +4,15 @@
 
 **コントローラー:**
 
-- **app/Http/Controllers/TechnologyController.php**: `index` - 学習記録作成フォームで選択可能な学習コンテンツのリストを取得するために利用されます。
+- **app/Http/Controllers/TechnologyController.php**: `index` - 学習記録作成フォームで選択可能な学習内容のリストを取得するために利用されます。
 - **app/Http/Controllers/SectionController.php**: `index` - 学習記録作成フォームで選択可能なセクションのリストを取得するために利用されます。
 - **app/Http/Controllers/LearningSessionController.php**: `store` - 新しい学習記録をデータベースに保存します。
 - **app/Http/Requests/StoreLearningSessionRequest.php**: 学習記録作成リクエストのサーバーサイドバリデーションルールを定義します。
 
 **Piniaストア:**
 
-- **resources/js/stores/learningContent.js**: `fetchContents` - 学習コンテンツ一覧データをAPIから取得し、ストアに保存します。
-- **resources/js/stores/sections.js**: `fetchSections` - 指定された学習コンテンツのセクション一覧データをAPIから取得し、ストアに保存します。
+- **resources/js/stores/learningContent.js**: `fetchContents` - 学習内容一覧データをAPIから取得し、ストアに保存します。
+- **resources/js/stores/sections.js**: `fetchSections` - 指定された学習内容のセクション一覧データをAPIから取得し、ストアに保存します。
 - **resources/js/stores/learningSession.js**: `createLearningSession` - 学習記録作成APIを呼び出し、ストアに新しい学習記録を追加します。
 
 **Composables:**
@@ -37,14 +37,14 @@
 
 ### **1.1 ページへのアクセス**:
 
-- [x]  ダッシュボードの学習コンテンツカードから「記録を追加」ボタンをクリックして、学習記録作成ページ (`/learning-contents/:id/record`) に遷移することを確認してください。
-- [x]  学習コンテンツ詳細ページから「記録を追加」ボタンをクリックして、学習記録作成ページに遷移することを確認してください。
+- [x]  ダッシュボードの学習内容カードから「記録を追加」ボタンをクリックして、学習記録作成ページ (`/learning-contents/:id/record`) に遷移することを確認してください。
+- [x]  学習内容詳細ページから「記録を追加」ボタンをクリックして、学習記録作成ページに遷移することを確認してください。
 - [x]  セクション別学習記録一覧ページから「このセクションに記録を追加」ボタンをクリックして、学習記録作成ページに遷移し、セクションが初期選択されていることを確認してください。
 
 ### **1.2 正常な学習記録作成**:
 
 - [x]  学習セクションを選択し、学習日、学習時間、メモ（任意）、調子（任意）を入力して「記録を保存」ボタンをクリックしてください。
-- [x]  保存後、学習コンテンツ詳細ページまたはセクション別学習記録一覧ページにリダイレクトされ、作成した記録が表示されることを確認してください。
+- [x]  保存後、学習内容詳細ページまたはセクション別学習記録一覧ページにリダイレクトされ、作成した記録が表示されることを確認してください。
 
 ### **1.3 日付選択機能**:
 
@@ -112,7 +112,7 @@
 
 **コントローラー:**
 
-- **app/Http/Controllers/LearningContentController.php**: `index` - 学習記録編集フォームで選択可能な学習コンテンツのリストを取得するために利用されます。
+- **app/Http/Controllers/LearningContentController.php**: `index` - 学習記録編集フォームで選択可能な学習内容のリストを取得するために利用されます。
 - **app/Http/Controllers/SectionController.php**: `index` - 学習記録編集フォームで選択可能なセクションのリストを取得するために利用されます。
 - **app/Http/Controllers/LearningSessionController.php**: `show` - 編集対象の学習記録の詳細を取得します。
 - **app/Http/Controllers/LearningSessionController.php**: `update` - 既存の学習記録をデータベースで更新します。
@@ -120,8 +120,8 @@
 
 **Piniaストア:**
 
-- **resources/js/stores/learningContent.js**: `fetchContents` - 学習コンテンツ一覧データをAPIから取得し、ストアに保存します。
-- **resources/js/stores/sections.js**: `fetchSections` - 指定された学習コンテンツのセクション一覧データをAPIから取得し、ストアに保存します。
+- **resources/js/stores/learningContent.js**: `fetchContents` - 学習内容一覧データをAPIから取得し、ストアに保存します。
+- **resources/js/stores/sections.js**: `fetchSections` - 指定された学習内容のセクション一覧データをAPIから取得し、ストアに保存します。
 - **resources/js/stores/learningSession.js**: `fetchLearningSession` - 編集対象の学習記録データをAPIから取得し、ストアに保存します。
 - **resources/js/stores/learningSession.js**: `updateLearningSession` - 学習記録更新APIを呼び出し、ストアの学習記録を更新します。
 
@@ -207,7 +207,7 @@
 - [x]  モーダルに削除対象の記録の詳細（日時、学習時間、メモ）が表示されることを確認してください。
     - 全体レポートページでは「学習内容名」「セクション名」、個別レポートページでは「セクション名」を表示させたほうが親切かもしれません。
 - [x]  確認モーダルで「削除」を選択すると、学習記録が一覧から削除されることを確認してください。
-- [x]  削除後、関連する学習コンテンツの統計情報（総学習時間、完了セクション数など）が正しく更新されることを確認してください。
+- [x]  削除後、関連する学習内容の統計情報（総学習時間、完了セクション数など）が正しく更新されることを確認してください。
 
 ### 3.2 ローディング表示:
 
@@ -225,20 +225,20 @@
 
 **コントローラー:**
 
-- **app/Http/Controllers/LearningContentController.php**: `show` - 学習コンテンツのタイトルなどを表示するために利用されます。
+- **app/Http/Controllers/LearningContentController.php**: `show` - 学習内容のタイトルなどを表示するために利用されます。
 - **app/Http/Controllers/SectionController.php**: `index` - セクションのタイトルなどを表示するために利用されます。
 - **app/Http/Controllers/LearningSessionController.php**: `bySection` - 指定されたセクションに紐づく学習記録一覧を取得します。
 - **app/Http/Controllers/LearningSessionController.php**: `destroy` - 学習記録の削除処理に利用されます。
 
 **Piniaストア:**
 
-- **resources/js/stores/learningContent.js**: `fetchContents` - 学習コンテンツ一覧データをAPIから取得し、ストアに保存します。
-- **resources/js/stores/sections.js**: `fetchSections` - 指定された学習コンテンツのセクション一覧データをAPIから取得し、ストアに保存します。
+- **resources/js/stores/learningContent.js**: `fetchContents` - 学習内容一覧データをAPIから取得し、ストアに保存します。
+- **resources/js/stores/sections.js**: `fetchSections` - 指定された学習内容のセクション一覧データをAPIから取得し、ストアに保存します。
 - **resources/js/stores/learningSession.js**: `fetchLearningSessions` - 指定されたセクションの学習記録一覧データをAPIから取得し、ストアに保存します。
 
 **Composables:**
 
-- **resources/js/composables/useLearningData.js**: `learningContents`、`sections` - 学習コンテンツとセクションのデータを提供します。`deleteStudySession`アクションを呼び出します。
+- **resources/js/composables/useLearningData.js**: `learningContents`、`sections` - 学習内容とセクションのデータを提供します。`deleteStudySession`アクションを呼び出します。
 - **resources/js/composables/ui/useLoading.js**: データ読み込み中のローディング状態を管理します。
 
 **コンポーネント:**
@@ -254,7 +254,7 @@
 
 ### 4.1 **ページへのアクセス**:
 
-- [x]  学習コンテンツ詳細ページからセクションをクリックして、セクション別学習記録一覧ページ (`/learning/:id/section/:sectionId`) に遷移することを確認してください。
+- [x]  学習内容詳細ページからセクションをクリックして、セクション別学習記録一覧ページ (`/learning/:id/section/:sectionId`) に遷移することを確認してください。
 
 ### 4.2 **記録の表示**:
 

@@ -78,20 +78,20 @@ const { learningContents } = useLearningData();
 // ========================================
 // 算出プロパティ
 // ========================================
-// 学習コンテンツの進捗計算
+// 学習内容の進捗計算
 const averageProgress = computed(() => {
-  // 学習コンテンツがない場合は平均進捗を0とする
+  // 学習内容がない場合は平均進捗を0とする
   if (props.learningContents.length === 0) return 0;
   const total = props.learningContents.reduce((sum, content) => sum + content.progress, 0);
   return Math.round(total / props.learningContents.length);
 });
 
-// 全ての学習コンテンツの完了セクション数を合計
+// 全ての学習内容の完了セクション数を合計
 const totalCompletedSections = computed(() => {
   return props.learningContents.reduce((sum, content) => sum + content.completed_sections, 0);
 });
 
-// 全ての学習コンテンツの総セクション数を合計
+// 全ての学習内容の総セクション数を合計
 const totalSections = computed(() => {
   return props.learningContents.reduce((sum, content) => sum + (content.total_sections || 0), 0);
 });

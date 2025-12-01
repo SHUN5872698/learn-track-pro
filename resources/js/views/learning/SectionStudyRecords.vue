@@ -126,11 +126,11 @@ const isSubmitting = ref(false);
 // ========================================
 // 算出プロパティ
 // ========================================
-// ルートパラメータから学習コンテンツIDとセクションIDを取得
+// ルートパラメータから学習内容IDとセクションIDを取得
 const learningContentId = computed(() => parseInt(route.params.id, 10));
 const sectionId = computed(() => parseInt(route.params.sectionId, 10));
 
-// 算出プロパティで現在の学習コンテンツとセクション情報を取得
+// 算出プロパティで現在の学習内容とセクション情報を取得
 const learningContent = computed(() => learningContents.value.find((c) => c.id === learningContentId.value));
 const section = computed(() => sections.value.find((s) => s.id === sectionId.value));
 
@@ -161,7 +161,7 @@ onMounted(async () => {
     return;
   }
   await withLoading('section-records-init', async () => {
-    // 学習コンテンツを取得
+    // 学習内容を取得
     if (learningContents.value.length === 0) {
       await fetchContents();
     }

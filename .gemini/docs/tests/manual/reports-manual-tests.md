@@ -15,11 +15,11 @@
 
 - **resources/js/stores/auth.js**: ユーザーの認証状態を管理します。`Reports.vue`ではログイン状態の確認に利用されます。
 - **resources/js/stores/reports.js**: レポート関連の統計データを管理します。`Reports.vue`では各種統計データ（サマリー、月別、技術別）の取得と表示に利用されます。
-- **resources/js/stores/learningContent.js**: 学習コンテンツのデータを管理します。`Reports.vue`では`useLearningData`コンポーザブルを介して学習コンテンツのデータを取得しています。
+- **resources/js/stores/learningContent.js**: 学習内容のデータを管理します。`Reports.vue`では`useLearningData`コンポーザブルを介して学習内容のデータを取得しています。
 
 **Composables:**
 
-- **resources/js/composables/useLearningData.js**: 学習コンテンツや学習記録に関するデータと操作ロジックを集約します。`Reports.vue`では学習コンテンツの取得、学習記録の削除、最新学習記録の取得などに利用されます。
+- **resources/js/composables/useLearningData.js**: 学習内容や学習記録に関するデータと操作ロジックを集約します。`Reports.vue`では学習内容の取得、学習記録の削除、最新学習記録の取得などに利用されます。
 - **resources/js/composables/ui/useLoading.js**: ローディング状態を管理します。`Reports.vue`ではデータ取得中のローディング表示に利用されます。
 
 **コンポーネント:**
@@ -88,19 +88,19 @@
 **コントローラー:**
 
 - **app/Http/Controllers/LearningSessionController.php**:
-    - `dailyStatisticsByContent`: `/api/learning-contents/{contentId}/statistics/daily` (GET) - 特定の学習コンテンツの日別統計データを取得するために利用されます。
-    - `index`: `/api/learning-sessions` (GET) - 特定の学習コンテンツに紐づく学習記録一覧を取得するために利用されます。
+    - `dailyStatisticsByContent`: `/api/learning-contents/{contentId}/statistics/daily` (GET) - 特定の学習内容の日別統計データを取得するために利用されます。
+    - `index`: `/api/learning-sessions` (GET) - 特定の学習内容に紐づく学習記録一覧を取得するために利用されます。
     - `destroy`: `/api/learning-sessions/{id}` (DELETE) - 学習記録の削除処理に利用されます。
 
 **Piniaストア:**
 
 - **resources/js/stores/auth.js**: ユーザーの認証状態を管理します。`StudyProgress.vue`ではログイン状態の確認に利用されます。
-- **resources/js/stores/learningContent.js**: 学習コンテンツのデータを管理します。`StudyProgress.vue`では`useLearningData`コンポーザブルを介して学習コンテンツのデータを取得しています。
+- **resources/js/stores/learningContent.js**: 学習内容のデータを管理します。`StudyProgress.vue`では`useLearningData`コンポーザブルを介して学習内容のデータを取得しています。
 - **resources/js/stores/sections.js**: セクションのデータを管理します。`StudyProgress.vue`では`useLearningData`コンポーザブルを介してセクションのデータを取得しています。
 
 **Composables:**
 
-- **resources/js/composables/useLearningData.js**: 学習コンテンツや学習記録に関するデータと操作ロジックを集約します。`StudyProgress.vue`では学習コンテンツの取得、学習記録の削除などに利用されます。
+- **resources/js/composables/useLearningData.js**: 学習内容や学習記録に関するデータと操作ロジックを集約します。`StudyProgress.vue`では学習内容の取得、学習記録の削除などに利用されます。
 - **resources/js/composables/ui/useLoading.js**: ローディング状態を管理します。`StudyProgress.vue`ではデータ取得中のローディング表示に利用されます。
 
 **コンポーネント:**
@@ -119,7 +119,7 @@
 
 ### 2.1 ページへのアクセス:
 
-- [x]  学習コンテンツ詳細ページまたはダッシュボードの学習コンテンツカードメニューから「レポート」を選択して、個別レポートページ (`/learning/:id/progress`) に遷移することを確認してください。
+- [x]  学習内容詳細ページまたはダッシュボードの学習内容カードメニューから「レポート」を選択して、個別レポートページ (`/learning/:id/progress`) に遷移することを確認してください。
 
 ### 2.2 日別学習時間グラフ:
 
@@ -131,9 +131,9 @@
 
 ### 2.3 学習記録一覧:
 
-- [x]  「学習記録一覧」セクションに、その学習コンテンツに紐づく全ての学習記録がカード形式で表示されることを確認してください。
+- [x]  「学習記録一覧」セクションに、その学習内容に紐づく全ての学習記録がカード形式で表示されることを確認してください。
 - [x]  各カードに日時、学習時間、メモ、調子、セクションタイトルが表示されることを確認してください。
-- [x]  学習記録がない場合、「この学習コンテンツの学習記録はまだありません。」と表示されることを確認してください。
+- [x]  学習記録がない場合、「この学習内容の学習記録はまだありません。」と表示されることを確認してください。
 - [x]  学習記録カードの編集ボタン、削除ボタンが正しく機能することを確認してください。
 - [x]  セクションタイトルをクリックすると、セクション別学習記録一覧ページに遷移することを確認してください。
 
@@ -143,7 +143,7 @@
 
 ### 2.5 「戻る」ボタン:
 
-- [x]  「戻る」ボタンをクリックすると、前のページ（通常は学習コンテンツ詳細ページ）に戻ることを確認してください。
+- [x]  「戻る」ボタンをクリックすると、前のページ（通常は学習内容詳細ページ）に戻ることを確認してください。
 
 ### 2.6 ローディング表示:
 
