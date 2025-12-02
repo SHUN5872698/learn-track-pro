@@ -1,12 +1,98 @@
 ## RESTful エンドポイント
 
 ```bash
-GET    /api/learning-contents/{id}/sections                      # セクション一覧
+GET    /api/learning-contents/{learningContentId}/sections                      # セクション一覧
 POST   /api/sections                                             # セクション追加
-PUT    /api/sections/{id}                                        # セクション編集
-PUT    /api/sections/{id}/status                                 # ステータス変更
+PUT    /api/sections/{sectionId}                                        # セクション編集
+PUT    /api/sections/{sectionId}/status                                 # ステータス変更
 PUT    /api/learning-contents/{learningContentId}/sections/bulk  # セクション一括更新
-DELETE /api/sections/{id}                                        # セクション削除
+DELETE /api/sections/{sectionId}                                        # セクション削除
+```
+
+---
+
+## カスタムスクリプト
+
+### Post-processor: 環境変数更新
+
+**セクション一覧取得（GET）Post-processor**
+
+```jsx
+// セクション一覧取得成功時に環境変数を設定
+const response = pm.response.json();
+
+if (pm.response.code === 200) {
+    const sections = response.data?.sections || response.data || response.sections || response;
+    
+    if (Array.isArray(sections) && sections.length > 0) {
+        // 最初のセクションのIDを保存（編集・削除用）
+        pm.environment.set('section_id', sections[0].id);
+        console.log("✅ section_id 設定:", sections[0].id);
+        
+        // 各セクションのIDを個別に保存（一括更新用）
+        sections.slice(0, 3).forEach((section, index) => {
+            pm.environment.set(`section_id_${index + 1}`, section.id);
+        });
+        console.log("✅ section_id_1〜" + Math.min(sections.length, 3) + " 設定完了");
+        
+        // セクション数を保存
+        pm.environment.set('total_sections', sections.length);
+        console.log("✅ total_sections 設定:", sections.length);
+        
+        // 最大order番号を取得して次のorderを計算（作成用）
+        const maxOrder = Math.max(...sections.map(s => s.order));
+        pm.environment.set('next_section_order', maxOrder + 1);
+        console.log("✅ next_section_order 設定:", maxOrder + 1);
+    }
+}
+```
+
+**セクション作成（POST /api/sections）**
+
+```jsx
+// セクション作成成功時にIDを更新
+const response = pm.response.json();
+
+if (pm.response.code === 201 && response.data && response.data.id) {
+    pm.environment.set('section_id', response.data.id);
+    console.log("✅ section_id 設定:", response.data.id);
+    
+    // total_sectionsを+1、next_section_orderを更新
+    const currentTotal = parseInt(pm.environment.get('total_sections') || '0');
+    pm.environment.set('total_sections', currentTotal + 1);
+    pm.environment.set('next_section_order', response.data.order + 1);
+    console.log("✅ total_sections 更新:", currentTotal + 1);
+    console.log("✅ next_section_order 更新:", response.data.order + 1);
+}
+```
+
+**セクション一括更新（PUT）Post-processor**
+
+```jsx
+// セクション一括更新成功時にsection_id_1〜3を削除
+// 理由: 動的値を使用する場合、IDを再利用すると不整合が起きやすいため
+if (pm.response.code === 200) {
+    pm.environment.unset('section_id_1');
+    pm.environment.unset('section_id_2');
+    pm.environment.unset('section_id_3');
+    console.log("🗑️ section_id_1〜3 削除（一括更新完了）");
+}
+
+```
+
+**セクション削除（DELETE /api/sections/{section_id}）**
+
+```jsx
+// セクション削除成功時に環境変数を初期化
+if (pm.response.code === 200 || pm.response.code === 204) {
+    pm.environment.set('section_id', '');
+    console.log("🗑️ section_id 初期化");
+    
+    // total_sectionsを-1
+    const currentTotal = parseInt(pm.environment.get('total_sections') || '1');
+    pm.environment.set('total_sections', Math.max(currentTotal - 1, 1));
+    console.log("✅ total_sections 更新:", Math.max(currentTotal - 1, 1));
+}
 ```
 
 ---
@@ -14,7 +100,7 @@ DELETE /api/sections/{id}                                        # セクショ�
 ## 1. セクション一覧取得
 
 - **Method**: GET
-- **URL**: `/api/learning-contents/{id}/sections`
+- **URL**: `/api/learning-contents/{learningContentId}/sections`
 
 **Headers**:
 
@@ -249,10 +335,10 @@ DELETE /api/sections/{id}                                        # セクショ�
     
     ```json
     {
-        "message": "学習内容は必須項目です。 (その他、2エラーあり)",
+        "message": "学習コンテンツは必須項目です。 (その他、2エラーあり)",
         "errors": {
             "learning_content_id": [
-                "学習内容は必須項目です。"
+                "学習コンテンツは必須項目です。"
             ],
             "title": [
                 "タイトルは必須項目です。"
@@ -272,7 +358,7 @@ DELETE /api/sections/{id}                                        # セクショ�
 ## 3. セクション編集
 
 - **Method**: PUT
-- **URL**: `/api/sections/{id}`
+- **URL**: `/api/sections/{sectionId}`
 
 **Headers**:
 
@@ -360,7 +446,7 @@ DELETE /api/sections/{id}                                        # セクショ�
 ## 4. セクションステータス変更
 
 - **Method**: PUT
-- **URL**: `/api/sections/{id}/status`
+- **URL**: `/api/sections/{sectionId}/status`
 
 **Headers**:
 
@@ -919,7 +1005,7 @@ DELETE /api/sections/{id}                                        # セクショ�
 ## 6. セクション削除
 
 - **Method**: DELETE
-- **URL**: `/api/sections/{id}`
+- **URL**: `/api/sections/{sectionId}`
 
 **Headers**:
 

@@ -93,6 +93,13 @@ paths:
                   password_confirmation: >-
                     256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト256文字テスト2
                 summary: 境界値
+              '4':
+                value:
+                  name: '{{$person.fullName}}'
+                  email: '{{$internet.email}}'
+                  password: password
+                  password_confirmation: password
+                summary: 動的値
       responses:
         '201':
           description: ''
@@ -101,36 +108,6 @@ paths:
               schema:
                 title: '""'
                 type: undefined
-          headers: {}
-        '302':
-          description: ''
-          content:
-            '*/*':
-              schema:
-                type: object
-                properties: {}
-          headers: {}
-        '422':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  errors:
-                    type: object
-                    properties:
-                      email:
-                        type: array
-                        items:
-                          type: string
-                    required:
-                      - email
-                required:
-                  - message
-                  - errors
               examples:
                 '1':
                   summary: 異常例
@@ -181,12 +158,42 @@ paths:
                       password:
                         - パスワードの文字数は、255文字以下である必要があります。
           headers: {}
+        '302':
+          description: ''
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+          headers: {}
+        '422':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        items:
+                          type: string
+                    required:
+                      - email
+                required:
+                  - message
+                  - errors
+          headers: {}
       security: []
   /fortify/login:
     post:
       summary: ログイン
       deprecated: false
-      description: ユーザー認証を行います
+      description: ユーザー認証を実行します
       operationId: loginUser
       tags:
         - Authentication
@@ -244,6 +251,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+              examples:
+                '1':
+                  summary: 成功例
+                  value: |-
+                    <!DOCTYPE html>
+                    <html>
+                        <head>
+                            <meta charset="UTF-8" />
+                            <meta http-equiv="refresh" content="0;url='http://localhost:8000'" />
+
+                            <title>Redirecting to http: //localhost:8000</title>
+                        </head>
+                        <body>
+                            Redirecting to <a href="http://localhost:8000">http: //localhost:8000</a>.
+                        </body>
+                    </html>
+                '2':
+                  summary: 成功例
+                  value:
+                    message: 認証に失敗しました。
+                    errors:
+                      email:
+                        - 認証に失敗しました。
           headers: {}
         '302':
           description: ''
@@ -252,19 +282,6 @@ paths:
               schema:
                 type: object
                 properties: {}
-              example: |-
-                <!DOCTYPE html>
-                <html>
-                    <head>
-                        <meta charset="UTF-8" />
-                        <meta http-equiv="refresh" content="0;url='http://localhost:8000'" />
-
-                        <title>Redirecting to http: //localhost:8000</title>
-                    </head>
-                    <body>
-                        Redirecting to <a href="http://localhost:8000">http: //localhost:8000</a>.
-                    </body>
-                </html>
           headers: {}
         '401':
           description: Unauthorized - 認証失敗
@@ -298,11 +315,6 @@ paths:
                 required:
                   - message
                   - errors
-              example:
-                message: 認証に失敗しました。
-                errors:
-                  email:
-                    - 認証に失敗しました。
           headers: {}
       security: []
   /fortify/logout:
@@ -396,279 +408,6 @@ paths:
                   - file
                   - line
                   - trace
-              example:
-                message: CSRF token mismatch.
-                exception: Symfony\Component\HttpKernel\Exception\HttpException
-                file: >-
-                  /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php
-                line: 674
-                trace:
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php
-                    line: 617
-                    function: prepareException
-                    class: Illuminate\Foundation\Exceptions\Handler
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php
-                    line: 51
-                    function: render
-                    class: Illuminate\Foundation\Exceptions\Handler
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 224
-                    function: handleException
-                    class: Illuminate\Routing\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php
-                    line: 48
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\View\Middleware\ShareErrorsFromSession
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php
-                    line: 120
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php
-                    line: 63
-                    function: handleStatefulRequest
-                    class: Illuminate\Session\Middleware\StartSession
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\Session\Middleware\StartSession
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php
-                    line: 36
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php
-                    line: 74
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\Cookie\Middleware\EncryptCookies
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 137
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                    line: 821
-                    function: then
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                    line: 800
-                    function: runRouteWithinStack
-                    class: Illuminate\Routing\Router
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                    line: 764
-                    function: runRoute
-                    class: Illuminate\Routing\Router
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                    line: 753
-                    function: dispatchToRoute
-                    class: Illuminate\Routing\Router
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                    line: 200
-                    function: dispatch
-                    class: Illuminate\Routing\Router
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 180
-                    function: Illuminate\Foundation\Http\{closure}
-                    class: Illuminate\Foundation\Http\Kernel
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php
-                    line: 66
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Barryvdh\Debugbar\Middleware\InjectDebugbar
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
-                    line: 21
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
-                    line: 31
-                    function: handle
-                    class: Illuminate\Foundation\Http\Middleware\TransformsRequest
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: >-
-                      Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
-                    line: 21
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
-                    line: 51
-                    function: handle
-                    class: Illuminate\Foundation\Http\Middleware\TransformsRequest
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\Foundation\Http\Middleware\TrimStrings
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php
-                    line: 27
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\Http\Middleware\ValidatePostSize
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
-                    line: 109
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: >-
-                      Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
-                    line: 61
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\Http\Middleware\HandleCors
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
-                    line: 58
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\Http\Middleware\TrustProxies
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php
-                    line: 22
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: >-
-                      Illuminate\Foundation\Http\Middleware\InvokeDeferredCallbacks
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php
-                    line: 26
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\Http\Middleware\ValidatePathEncoding
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 137
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                    line: 175
-                    function: then
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                    line: 144
-                    function: sendRequestThroughRouter
-                    class: Illuminate\Foundation\Http\Kernel
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
-                    line: 1219
-                    function: handle
-                    class: Illuminate\Foundation\Http\Kernel
-                    type: '->'
-                  - file: /var/www/html/public/index.php
-                    line: 20
-                    function: handleRequest
-                    class: Illuminate\Foundation\Application
-                    type: '->'
           headers: {}
       security: []
   /api/user:
@@ -765,8 +504,8 @@ paths:
             examples:
               '1':
                 value:
-                  name: 田中 次郎
-                  email: tanaka.new@example.com
+                  name: '{{$person.fullName}}'
+                  email: '{{$internet.email}}'
                 summary: 成功（更新）
               '2':
                 value:
@@ -797,24 +536,6 @@ paths:
                   message:
                     type: string
                     example: プロフィールを更新しました
-          headers: {}
-        '401':
-          description: Unauthorized - 認証が必要です
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Unauthenticated.
-          headers: {}
-        '422':
-          description: Unprocessable Entity - バリデーションエラー
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
               examples:
                 '1':
                   summary: アドレス重複
@@ -841,6 +562,24 @@ paths:
                         - 名前の文字数は、50文字以下である必要があります。
                       email:
                         - メールアドレスの文字数は、100文字以下である必要があります。
+          headers: {}
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+          headers: {}
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
           headers: {}
       security: []
   /api/user/password:
@@ -895,8 +634,24 @@ paths:
                 properties:
                   message:
                     type: string
-              example:
-                message: パスワードを変更しました。
+              examples:
+                '1':
+                  summary: 成功例
+                  value:
+                    message: パスワードを変更しました。
+                '2':
+                  summary: 成功例
+                  value:
+                    message: Unauthenticated.
+                '3':
+                  summary: 成功例
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      current_password:
+                        - 現在のパスワードが正しくありません。
+                      password:
+                        - パスワードは8文字以上である必要があります。
           headers: {}
         '401':
           description: Unauthorized - 認証が必要です
@@ -907,8 +662,6 @@ paths:
                 properties:
                   message:
                     type: string
-              example:
-                message: Unauthenticated.
           headers: {}
         '422':
           description: Unprocessable Entity - バリデーションエラー
@@ -916,13 +669,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-              example:
-                message: The given data was invalid.
-                errors:
-                  current_password:
-                    - 現在のパスワードが正しくありません。
-                  password:
-                    - パスワードは8文字以上である必要があります。
           headers: {}
       security: []
   /fortify/forgot-password:
@@ -991,37 +737,26 @@ paths:
                   status:
                     type: string
                     example: パスワードリセット用のメールを送信しました。
-              example:
-                message: パスワードリセットメールを送信しました。
-          headers: {}
-        '302':
-          description: ''
-          content:
-            '*/*':
-              schema:
-                type: object
-                properties: {}
-              example: |-
-                <!DOCTYPE html>
-                <html>
-                    <head>
-                        <meta charset="UTF-8" />
-                        <meta http-equiv="refresh" content="0;url='http://localhost:8000'" />
-
-                        <title>Redirecting to http: //localhost:8000</title>
-                    </head>
-                    <body>
-                        Redirecting to <a href="http://localhost:8000">http: //localhost:8000</a>.
-                    </body>
-                </html>
-          headers: {}
-        '422':
-          description: Unprocessable Entity - バリデーションエラー
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
               examples:
+                '1':
+                  summary: 成功例
+                  value:
+                    message: パスワードリセットメールを送信しました。
+                '2':
+                  summary: 成功例
+                  value: |-
+                    <!DOCTYPE html>
+                    <html>
+                        <head>
+                            <meta charset="UTF-8" />
+                            <meta http-equiv="refresh" content="0;url='http://localhost:8000'" />
+
+                            <title>Redirecting to http: //localhost:8000</title>
+                        </head>
+                        <body>
+                            Redirecting to <a href="http://localhost:8000">http: //localhost:8000</a>.
+                        </body>
+                    </html>
                 '3':
                   summary: レコードなし
                   value:
@@ -1037,13 +772,28 @@ paths:
                       email:
                         - メールアドレスは必須項目です。
           headers: {}
+        '302':
+          description: ''
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+          headers: {}
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          headers: {}
       security: []
   /fortify/reset-password:
     post:
       summary: パスワードリセット実行
       deprecated: false
       description: >-
-        トークンを使用してパスワードをリセットします
+        トークンを使用してパスワードをリセットを実行します
 
 
         【トークンの取得方法】
@@ -1165,45 +915,34 @@ paths:
                   status:
                     type: string
                     example: パスワードをリセットしました。
-              example:
-                message: パスワードが再設定されました。
-          headers: {}
-        '302':
-          description: ''
-          content:
-            '*/*':
-              schema:
-                type: object
-                properties: {}
-              example: |-
-                <!DOCTYPE html>
-                <html>
-                    <head>
-                        <meta charset="UTF-8" />
-                        <meta http-equiv="refresh" content="0;url='http://localhost:8000'" />
-
-                        <title>Redirecting to http: //localhost:8000</title>
-                    </head>
-                    <body>
-                        Redirecting to <a href="http://localhost:8000">http: //localhost:8000</a>.
-                    </body>
-                </html>
-          headers: {}
-        '422':
-          description: Unprocessable Entity - バリデーションエラー
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
               examples:
                 '1':
+                  summary: 成功例
+                  value:
+                    message: パスワードが再設定されました。
+                '2':
+                  summary: 成功例
+                  value: |-
+                    <!DOCTYPE html>
+                    <html>
+                        <head>
+                            <meta charset="UTF-8" />
+                            <meta http-equiv="refresh" content="0;url='http://localhost:8000'" />
+
+                            <title>Redirecting to http: //localhost:8000</title>
+                        </head>
+                        <body>
+                            Redirecting to <a href="http://localhost:8000">http: //localhost:8000</a>.
+                        </body>
+                    </html>
+                '3':
                   summary: 未登録
                   value:
                     message: このメールアドレスに一致するユーザーがいません。
                     errors:
                       email:
                         - このメールアドレスに一致するユーザーがいません。
-                '2':
+                '4':
                   summary: 未入力
                   value:
                     message: tokenは必須項目です。 (その他、2エラーあり)
@@ -1214,7 +953,7 @@ paths:
                         - メールアドレスは必須項目です。
                       password:
                         - パスワードは必須項目です。
-                '3':
+                '5':
                   summary: トークンエラー
                   value:
                     message: このパスワード再設定トークンは無効です。
@@ -1228,6 +967,21 @@ paths:
                     errors:
                       password:
                         - パスワードの文字数は、255文字以下である必要があります。
+          headers: {}
+        '302':
+          description: ''
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+          headers: {}
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
           headers: {}
       security: []
 components:
@@ -1290,6 +1044,18 @@ components:
             items:
               type: string
           properties: {}
-  securitySchemes: {}
-servers: []
+  securitySchemes:
+    sanctum11:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+      description: Laravel Sanctum認証
+    sanctum111:
+      type: apiKey
+      in: cookie
+      name: laravel_session
+      description: Laravel Sanctum認証
+servers:
+  - url: http://localhost:8000
+    description: 開発環境
 security: []

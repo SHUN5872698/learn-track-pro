@@ -18,6 +18,55 @@ PUT    /api/user/profile
 
 ---
 
+## カスタムスクリプト
+
+### Post-processor: 環境変数更新
+
+**ユーザー登録（POST /fortify/register）**
+
+```jsx
+// ユーザー登録成功時にリクエストボディからメールアドレスを環境変数に保存
+if (pm.response.code === 201) {
+    const requestBody = JSON.parse(pm.request.body.raw);
+    
+    if (requestBody.email) {
+        pm.environment.set('auth_email', requestBody.email);
+        console.log("✅ auth_email 設定:", requestBody.email);
+    }
+}
+```
+
+**ログイン（POST /fortify/login）Post-processor**
+
+```jsx
+if (pm.response.code === 200) {
+    pm.environment.set('is_authenticated', 'true');
+    
+    // リクエストボディからメールアドレスを取得
+    const requestBody = JSON.parse(pm.request.body.raw);
+    if (requestBody.email) {
+        pm.environment.set('auth_email', requestBody.email);
+        console.log("✅ auth_email 設定:", requestBody.email);
+    }
+    
+    console.log("✅ ログイン成功");
+}
+```
+
+**ログアウト（POST /fortify/logout）**
+
+```jsx
+// ログアウト成功時に環境変数を初期化
+if (pm.response.code === 204) {
+    pm.environment.set('is_authenticated', 'false');
+    pm.environment.set('auth_email', '');
+    console.log("✅ ログアウト成功");
+    console.log("🗑️ auth_email 初期化");
+}
+```
+
+---
+
 ## 環境変数設定
 
 ```

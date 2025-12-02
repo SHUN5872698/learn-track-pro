@@ -3,11 +3,38 @@
 ```bash
 GET    /api/learning-sessions                                       # 学習記録一覧
 POST   /api/learning-sessions                                       # 学習記録作成
-GET    /api/learning-sessions/{id}                                  # 学習記録詳細
-PUT    /api/learning-sessions/{id}                                  # 学習記録更新
-DELETE /api/learning-sessions/{id}                                  # 学習記録削除
+GET    /api/learning-sessions/{learningSessionId}                                  # 学習記録詳細
+PUT    /api/learning-sessions/{learningSessionId}                                  # 学習記録更新
+DELETE /api/learning-sessions/{learningSessionId}                                  # 学習記録削除
 GET    /api/sections/{sectionId}/sessions                           # セクション別学習記録
 GET    /api/learning-contents/{learningContentId}/sessions          # 学習内容別学習記録
+```
+
+---
+
+## カスタムスクリプト
+
+### Post-processor: 環境変数更新
+
+**学習記録作成（POST /api/learning-sessions）**
+
+```jsx
+const response = pm.response.json();
+
+if (pm.response.code === 201 && response.data && response.data.id) {
+    pm.environment.set('learning_session_id', response.data.id);
+    console.log("✅ learning_session_id 設定:", response.data.id);
+}
+```
+
+**学習記録削除（DELETE /api/learning-sessions/{learning_session_id}）**
+
+```jsx
+// 学習記録削除成功時に環境変数を初期化
+if (pm.response.code === 200 || pm.response.code === 204) {
+    pm.environment.unset('learning_session_id');
+    console.log("🗑️ learning_session_id 初期化");
+}
 ```
 
 ---
@@ -177,10 +204,10 @@ GET    /api/learning-contents/{learningContentId}/sessions          # 学習内�
     
     ```json
     {
-        "message": "学習内容は必須項目です。 (その他、4エラーあり)",
+        "message": "学習コンテンツは必須項目です。 (その他、4エラーあり)",
         "errors": {
             "learning_content_id": [
-                "学習内容は必須項目です。"
+                "学習コンテンツは必須項目です。"
             ],
             "section_id": [
                 "セクションは必須項目です。"
@@ -218,7 +245,7 @@ GET    /api/learning-contents/{learningContentId}/sessions          # 学習内�
 ## 3. 学習記録詳細取得
 
 - **Method**: GET
-- **URL**: `/api/learning-sessions/{id}`
+- **URL**: `/api/learning-sessions/{learningSessionId}`
 
 **Headers**:
 
@@ -308,7 +335,7 @@ GET    /api/learning-contents/{learningContentId}/sessions          # 学習内�
 ## 4. 学習記録更新
 
 - **Method**: PUT
-- **URL**: `/api/learning-sessions/{id}`
+- **URL**: `/api/learning-sessions/{learningSessionId}`
 
 **Headers**:
 
@@ -392,7 +419,7 @@ GET    /api/learning-contents/{learningContentId}/sessions          # 学習内�
 ## 5. 学習記録削除
 
 - **Method**: DELETE
-- **URL**: `/api/learning-sessions/{id}`
+- **URL**: `/api/learning-sessions/{learningSessionId}`
 
 **Headers**:
 

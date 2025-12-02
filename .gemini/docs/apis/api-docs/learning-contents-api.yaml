@@ -10,7 +10,11 @@ paths:
     get:
       summary: 学習内容一覧取得
       deprecated: false
-      description: ログインユーザーの学習内容一覧を取得します
+      description: >-
+        ログインユーザーの学習内容一覧を取得します
+
+
+        ※動的値を使用する場合は、学習内容を作成して環境変数`{{learning_content_id}}`と`{{section_id}}`を更新してください
       operationId: getLearningContents
       tags:
         - Learning Contents
@@ -841,68 +845,53 @@ paths:
                     properties:
                       message:
                         type: string
-              example:
-                data:
-                  id: 1002
-                  user_id: 2
-                  technology_id: 1
-                  title: Apidocで学習内容作成
-                  description: これはApidocで学習内容作成を作成したテストレコードです
-                  total_sections: 3
-                  completed_sections: 0
-                  status: not_started
-                  completed_at: null
-                  created_at: '2025-10-15 10:18:02'
-                  updated_at: '2025-10-15 10:18:02'
-                  technology:
-                    id: 1
-                    name: Laravel
-                    icon: >-
-                      http://localhost:8000/assets/icons/technologies/laravel-icon.png
-                    category:
-                      id: 1
-                      name: Programming
-                  sections:
-                    - id: 97
-                      learning_content_id: 1002
-                      title: Apidocのセクション1
-                      order: 1
-                      status: not_started
-                      created_at: '2025-10-15 10:18:02'
-                      updated_at: '2025-10-15 10:18:02'
-                    - id: 98
-                      learning_content_id: 1002
-                      title: Apidocのセクション2
-                      order: 2
-                      status: not_started
-                      created_at: '2025-10-15 10:18:02'
-                      updated_at: '2025-10-15 10:18:02'
-                    - id: 99
-                      learning_content_id: 1002
-                      title: Apidocのセクション3
-                      order: 3
-                      status: not_started
-                      created_at: '2025-10-15 10:18:02'
-                      updated_at: '2025-10-15 10:18:02'
-                message: 学習内容を作成しました。
-          headers: {}
-        '401':
-          description: Unauthorized - 認証が必要です
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-          headers: {}
-        '422':
-          description: Unprocessable Entity - バリデーションエラー
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
               examples:
+                '1':
+                  summary: 成功例
+                  value:
+                    data:
+                      id: 1002
+                      user_id: 2
+                      technology_id: 1
+                      title: Apidocで学習内容作成
+                      description: これはApidocで学習内容作成を作成したテストレコードです
+                      total_sections: 3
+                      completed_sections: 0
+                      status: not_started
+                      completed_at: null
+                      created_at: '2025-10-15 10:18:02'
+                      updated_at: '2025-10-15 10:18:02'
+                      technology:
+                        id: 1
+                        name: Laravel
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/laravel-icon.png
+                        category:
+                          id: 1
+                          name: Programming
+                      sections:
+                        - id: 97
+                          learning_content_id: 1002
+                          title: Apidocのセクション1
+                          order: 1
+                          status: not_started
+                          created_at: '2025-10-15 10:18:02'
+                          updated_at: '2025-10-15 10:18:02'
+                        - id: 98
+                          learning_content_id: 1002
+                          title: Apidocのセクション2
+                          order: 2
+                          status: not_started
+                          created_at: '2025-10-15 10:18:02'
+                          updated_at: '2025-10-15 10:18:02'
+                        - id: 99
+                          learning_content_id: 1002
+                          title: Apidocのセクション3
+                          order: 3
+                          status: not_started
+                          created_at: '2025-10-15 10:18:02'
+                          updated_at: '2025-10-15 10:18:02'
+                    message: 学習内容を作成しました。
                 '2':
                   summary: 異常例
                   value:
@@ -948,24 +937,44 @@ paths:
                       sections.2.title:
                         - セクションのタイトルの文字数は、50文字以下である必要があります。
           headers: {}
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+          headers: {}
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          headers: {}
       security: []
-  /api/learning-contents/{id}:
+  /api/learning-contents/{learningContentId}:
     get:
       summary: 学習内容詳細取得
       deprecated: false
-      description: 指定したIDの学習内容の詳細を取得します
+      description: >-
+        指定したIDの学習内容の詳細を取得します
+
+
+        ※動的値を使用する場合は、学習内容を作成して環境変数`{{learning_content_id}}`と`{{section_id}}`を更新してください
       operationId: getLearningContent
       tags:
         - Learning Contents
       parameters:
-        - name: id
+        - name: learningContentId
           in: path
-          description: 学習内容ID
+          description: ''
           required: true
-          example: 2
+          example: '{{learning_content_id}}'
           schema:
-            type: integer
-            example: 2
+            type: string
         - name: Accept
           in: header
           description: ''
@@ -997,50 +1006,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LearningContentDetail'
-          headers: {}
-        '301':
-          description: ''
-          content:
-            '*/*':
-              schema:
-                type: object
-                properties: {}
-          headers: {}
-        '401':
-          description: Unauthorized - 認証が必要です
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              example:
-                message: Unauthenticated.
-          headers: {}
-        '403':
-          description: Forbidden - アクセス権限がありません
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              example:
-                message: この学習内容へのアクセス権限がありません。
-          headers: {}
-        '404':
-          description: Not Found - 学習内容が見つかりません
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
               examples:
                 '1':
+                  summary: 成功例
+                  value:
+                    message: Unauthenticated.
+                '2':
+                  summary: 成功例
+                  value:
+                    message: この学習内容へのアクセス権限がありません。
+                '3':
                   summary: 異常例
                   value:
                     message: >-
@@ -1395,23 +1370,64 @@ paths:
                   value:
                     message: 学習内容が見つかりません。
           headers: {}
+        '301':
+          description: ''
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties: {}
+          headers: {}
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+          headers: {}
+        '403':
+          description: Forbidden - アクセス権限がありません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+          headers: {}
+        '404':
+          description: Not Found - 学習内容が見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+          headers: {}
       security: []
     put:
       summary: 学習内容編集
       deprecated: false
-      description: 指定したIDの学習内容を更新します
+      description: >-
+        指定したIDの学習内容を更新します
+
+
+        ※動的値を使用する場合は、学習内容を作成して環境変数`{{learning_content_id}}`と`{{section_id}}`を更新してください
       operationId: updateLearningContent
       tags:
         - Learning Contents
       parameters:
-        - name: id
+        - name: learningContentId
           in: path
-          description: 学習内容ID
+          description: ''
           required: true
-          example: 1001
+          example: '{{learning_content_id}}'
           schema:
-            type: integer
-            example: 2
+            type: string
         - name: Accept
           in: header
           description: ''
@@ -1529,7 +1545,7 @@ paths:
                           id: 1
                           name: Programming
                     message: 学習内容を更新しました。
-                '5':
+                '2':
                   summary: 成功例（戻す）
                   value:
                     data:
@@ -1553,34 +1569,15 @@ paths:
                           id: 1
                           name: Programming
                     message: 学習内容を更新しました。
-          headers: {}
-        '401':
-          description: Unauthorized - 認証が必要です
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              example:
-                message: Unauthenticated.
-          headers: {}
-        '403':
-          description: Forbidden - アクセス権限がありません
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              examples:
                 '3':
                   summary: 成功例
                   value:
+                    message: Unauthenticated.
+                '4':
+                  summary: 成功例
+                  value:
                     message: この学習内容を更新する権限がありません。
-                '6':
+                '5':
                   summary: 成功例
                   value:
                     message: This action is unauthorized.
@@ -1940,26 +1937,10 @@ paths:
                         function: handleRequest
                         class: Illuminate\Foundation\Application
                         type: '->'
-          headers: {}
-        '404':
-          description: Not Found - 学習内容が見つかりません
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              example:
-                message: 学習内容が見つかりません。
-          headers: {}
-        '422':
-          description: Unprocessable Entity - バリデーションエラー
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-              examples:
+                '6':
+                  summary: 成功例
+                  value:
+                    message: 学習内容が見つかりません。
                 '7':
                   summary: 未入力
                   value:
@@ -1981,23 +1962,62 @@ paths:
                       description:
                         - 説明の文字数は、500文字以下である必要があります。
           headers: {}
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+          headers: {}
+        '403':
+          description: Forbidden - アクセス権限がありません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+          headers: {}
+        '404':
+          description: Not Found - 学習内容が見つかりません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+          headers: {}
+        '422':
+          description: Unprocessable Entity - バリデーションエラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          headers: {}
       security: []
     delete:
       summary: 学習内容削除
       deprecated: false
-      description: 指定したIDの学習内容を削除します
+      description: >-
+        指定したIDの学習内容を削除します
+
+
+        ※動的値を使用する場合は、学習内容を作成して環境変数`{{learning_content_id}}`と`{{section_id}}`を更新してください
       operationId: deleteLearningContent
       tags:
         - Learning Contents
       parameters:
-        - name: id
+        - name: learningContentId
           in: path
-          description: 学習内容ID
+          description: ''
           required: true
-          example: 1002
           schema:
-            type: integer
-            example: 6
+            type: string
         - name: Accept
           in: header
           description: ''
@@ -2032,30 +2052,12 @@ paths:
                 properties:
                   message:
                     type: string
-          headers: {}
-        '401':
-          description: Unauthorized - 認証が必要です
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              example:
-                message: Unauthenticated.
-          headers: {}
-        '403':
-          description: Forbidden - アクセス権限がありません
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
               examples:
                 '1':
+                  summary: 成功例
+                  value:
+                    message: Unauthenticated.
+                '2':
                   summary: 成功例
                   value:
                     message: This action is unauthorized.
@@ -2419,6 +2421,30 @@ paths:
                   summary: 成功例
                   value:
                     message: この学習内容を削除する権限がありません。
+                '4':
+                  summary: 成功例
+                  value:
+                    message: 学習内容が見つかりません。
+          headers: {}
+        '401':
+          description: Unauthorized - 認証が必要です
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+          headers: {}
+        '403':
+          description: Forbidden - アクセス権限がありません
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
           headers: {}
         '404':
           description: Not Found - 学習内容が見つかりません
@@ -2429,29 +2455,26 @@ paths:
                 properties:
                   message:
                     type: string
-              example:
-                message: 学習内容が見つかりません。
           headers: {}
       security: []
-  /api/learning-contents/{id}/complete:
+  /api/learning-contents/{learningContentId}/complete:
     put:
       summary: 学習内容完了
       deprecated: false
       description: |-
         指定したIDの学習内容を完了状態にします
-        すべてのセクションが完了した学習内容でないとエラーになります
+
+        ※すべてのセクションが完了した学習内容でないとエラーになります
       operationId: completeLearningContent
       tags:
         - Learning Contents
       parameters:
-        - name: id
+        - name: learningContentId
           in: path
-          description: 学習内容ID
+          description: ''
           required: true
-          example: 5
           schema:
-            type: integer
-            example: 5
+            type: string
         - name: Accept
           in: header
           description: ''
@@ -2495,6 +2518,234 @@ paths:
                     properties:
                       message:
                         type: string
+              examples:
+                '1':
+                  summary: 成功例
+                  value:
+                    message: Unauthenticated.
+                '2':
+                  summary: 成功例
+                  value:
+                    message: この学習内容を更新する権限がありません。
+                '3':
+                  summary: 成功例
+                  value:
+                    message: 学習内容が見つかりません。
+                '4':
+                  summary: 成功例
+                  value:
+                    message: >-
+                      The PUT method is not supported for route
+                      api/learning-contents//complete. Supported methods: GET,
+                      HEAD.
+                    exception: >-
+                      Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
+                    file: >-
+                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/AbstractRouteCollection.php
+                    line: 123
+                    trace:
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/AbstractRouteCollection.php
+                        line: 108
+                        function: requestMethodNotAllowed
+                        class: Illuminate\Routing\AbstractRouteCollection
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/AbstractRouteCollection.php
+                        line: 42
+                        function: getRouteForMethods
+                        class: Illuminate\Routing\AbstractRouteCollection
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/RouteCollection.php
+                        line: 162
+                        function: handleMatchedRoute
+                        class: Illuminate\Routing\AbstractRouteCollection
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                        line: 777
+                        function: match
+                        class: Illuminate\Routing\RouteCollection
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                        line: 764
+                        function: findRoute
+                        class: Illuminate\Routing\Router
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
+                        line: 753
+                        function: dispatchToRoute
+                        class: Illuminate\Routing\Router
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                        line: 200
+                        function: dispatch
+                        class: Illuminate\Routing\Router
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 180
+                        function: Illuminate\Foundation\Http\{closure}
+                        class: Illuminate\Foundation\Http\Kernel
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php
+                        line: 66
+                        function: Illuminate\Pipeline\{closure}
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 219
+                        function: handle
+                        class: Barryvdh\Debugbar\Middleware\InjectDebugbar
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
+                        line: 21
+                        function: Illuminate\Pipeline\{closure}
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
+                        line: 31
+                        function: handle
+                        class: >-
+                          Illuminate\Foundation\Http\Middleware\TransformsRequest
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 219
+                        function: handle
+                        class: >-
+                          Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
+                        line: 21
+                        function: Illuminate\Pipeline\{closure}
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
+                        line: 51
+                        function: handle
+                        class: >-
+                          Illuminate\Foundation\Http\Middleware\TransformsRequest
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 219
+                        function: handle
+                        class: Illuminate\Foundation\Http\Middleware\TrimStrings
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php
+                        line: 27
+                        function: Illuminate\Pipeline\{closure}
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 219
+                        function: handle
+                        class: Illuminate\Http\Middleware\ValidatePostSize
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
+                        line: 109
+                        function: Illuminate\Pipeline\{closure}
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 219
+                        function: handle
+                        class: >-
+                          Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
+                        line: 61
+                        function: Illuminate\Pipeline\{closure}
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 219
+                        function: handle
+                        class: Illuminate\Http\Middleware\HandleCors
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
+                        line: 58
+                        function: Illuminate\Pipeline\{closure}
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 219
+                        function: handle
+                        class: Illuminate\Http\Middleware\TrustProxies
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php
+                        line: 22
+                        function: Illuminate\Pipeline\{closure}
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 219
+                        function: handle
+                        class: >-
+                          Illuminate\Foundation\Http\Middleware\InvokeDeferredCallbacks
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php
+                        line: 26
+                        function: Illuminate\Pipeline\{closure}
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 219
+                        function: handle
+                        class: Illuminate\Http\Middleware\ValidatePathEncoding
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
+                        line: 137
+                        function: Illuminate\Pipeline\{closure}
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                        line: 175
+                        function: then
+                        class: Illuminate\Pipeline\Pipeline
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
+                        line: 144
+                        function: sendRequestThroughRouter
+                        class: Illuminate\Foundation\Http\Kernel
+                        type: '->'
+                      - file: >-
+                          /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
+                        line: 1219
+                        function: handle
+                        class: Illuminate\Foundation\Http\Kernel
+                        type: '->'
+                      - file: /var/www/html/public/index.php
+                        line: 20
+                        function: handleRequest
+                        class: Illuminate\Foundation\Application
+                        type: '->'
           headers: {}
         '401':
           description: Unauthorized - 認証が必要です
@@ -2505,8 +2756,6 @@ paths:
                 properties:
                   message:
                     type: string
-              example:
-                message: Unauthenticated.
           headers: {}
         '403':
           description: Forbidden - アクセス権限がありません
@@ -2517,8 +2766,6 @@ paths:
                 properties:
                   message:
                     type: string
-              example:
-                message: この学習内容を更新する権限がありません。
           headers: {}
         '404':
           description: Not Found - 学習内容が見つかりません
@@ -2529,8 +2776,6 @@ paths:
                 properties:
                   message:
                     type: string
-              example:
-                message: 学習内容が見つかりません。
           headers: {}
         '405':
           description: ''
@@ -2574,216 +2819,6 @@ paths:
                   - file
                   - line
                   - trace
-              example:
-                message: >-
-                  The PUT method is not supported for route
-                  api/learning-contents//complete. Supported methods: GET, HEAD.
-                exception: >-
-                  Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
-                file: >-
-                  /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/AbstractRouteCollection.php
-                line: 123
-                trace:
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/AbstractRouteCollection.php
-                    line: 108
-                    function: requestMethodNotAllowed
-                    class: Illuminate\Routing\AbstractRouteCollection
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/AbstractRouteCollection.php
-                    line: 42
-                    function: getRouteForMethods
-                    class: Illuminate\Routing\AbstractRouteCollection
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/RouteCollection.php
-                    line: 162
-                    function: handleMatchedRoute
-                    class: Illuminate\Routing\AbstractRouteCollection
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                    line: 777
-                    function: match
-                    class: Illuminate\Routing\RouteCollection
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                    line: 764
-                    function: findRoute
-                    class: Illuminate\Routing\Router
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/Router.php
-                    line: 753
-                    function: dispatchToRoute
-                    class: Illuminate\Routing\Router
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                    line: 200
-                    function: dispatch
-                    class: Illuminate\Routing\Router
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 180
-                    function: Illuminate\Foundation\Http\{closure}
-                    class: Illuminate\Foundation\Http\Kernel
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/barryvdh/laravel-debugbar/src/Middleware/InjectDebugbar.php
-                    line: 66
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Barryvdh\Debugbar\Middleware\InjectDebugbar
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
-                    line: 21
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php
-                    line: 31
-                    function: handle
-                    class: Illuminate\Foundation\Http\Middleware\TransformsRequest
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: >-
-                      Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php
-                    line: 21
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php
-                    line: 51
-                    function: handle
-                    class: Illuminate\Foundation\Http\Middleware\TransformsRequest
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\Foundation\Http\Middleware\TrimStrings
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php
-                    line: 27
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\Http\Middleware\ValidatePostSize
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php
-                    line: 109
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: >-
-                      Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php
-                    line: 61
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\Http\Middleware\HandleCors
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php
-                    line: 58
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\Http\Middleware\TrustProxies
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php
-                    line: 22
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: >-
-                      Illuminate\Foundation\Http\Middleware\InvokeDeferredCallbacks
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php
-                    line: 26
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 219
-                    function: handle
-                    class: Illuminate\Http\Middleware\ValidatePathEncoding
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php
-                    line: 137
-                    function: Illuminate\Pipeline\{closure}
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                    line: 175
-                    function: then
-                    class: Illuminate\Pipeline\Pipeline
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php
-                    line: 144
-                    function: sendRequestThroughRouter
-                    class: Illuminate\Foundation\Http\Kernel
-                    type: '->'
-                  - file: >-
-                      /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Application.php
-                    line: 1219
-                    function: handle
-                    class: Illuminate\Foundation\Http\Kernel
-                    type: '->'
-                  - file: /var/www/html/public/index.php
-                    line: 20
-                    function: handleRequest
-                    class: Illuminate\Foundation\Application
-                    type: '->'
           headers: {}
         '422':
           description: ''
@@ -2798,25 +2833,24 @@ paths:
                   - message
           headers: {}
       security: []
-  /api/learning-contents/{id}/reopen:
+  /api/learning-contents/{learningContentId}/reopen:
     put:
       summary: 学習内容再開
       deprecated: false
       description: |-
         完了した学習内容を再開します
-        すべてのセクションが完了した学習内容でないとエラーになります
+
+        ※すべてのセクションが完了した学習内容でないとエラーになります
       operationId: reopenLearningContent
       tags:
         - Learning Contents
       parameters:
-        - name: id
+        - name: learningContentId
           in: path
-          description: 学習内容ID
+          description: ''
           required: true
-          example: 1
           schema:
-            type: integer
-            example: 1
+            type: string
         - name: Accept
           in: header
           description: ''
@@ -2853,28 +2887,47 @@ paths:
                     properties:
                       message:
                         type: string
-              example:
-                data:
-                  id: 1
-                  user_id: 1
-                  technology_id: 1
-                  title: Laravel完全マスター
-                  description: Laravelの基礎から応用まで、実践的なWebアプリケーション開発を学習
-                  total_sections: 20
-                  completed_sections: 20
-                  status: in_progress
-                  completed_at: null
-                  created_at: '2025-09-13 12:30:46'
-                  updated_at: '2025-09-25 14:52:25'
-                  technology:
-                    id: 1
-                    name: Laravel
-                    icon: >-
-                      http://localhost:8000/assets/icons/technologies/laravel-icon.png
-                    category:
+              examples:
+                '1':
+                  summary: 成功例
+                  value:
+                    data:
                       id: 1
-                      name: Programming
-                message: 学習を再開しました。
+                      user_id: 1
+                      technology_id: 1
+                      title: Laravel完全マスター
+                      description: Laravelの基礎から応用まで、実践的なWebアプリケーション開発を学習
+                      total_sections: 20
+                      completed_sections: 20
+                      status: in_progress
+                      completed_at: null
+                      created_at: '2025-09-13 12:30:46'
+                      updated_at: '2025-09-25 14:52:25'
+                      technology:
+                        id: 1
+                        name: Laravel
+                        icon: >-
+                          http://localhost:8000/assets/icons/technologies/laravel-icon.png
+                        category:
+                          id: 1
+                          name: Programming
+                    message: 学習を再開しました。
+                '2':
+                  summary: 成功例
+                  value:
+                    message: Unauthenticated.
+                '3':
+                  summary: 成功例
+                  value:
+                    message: この学習内容を更新する権限がありません。
+                '4':
+                  summary: 成功例
+                  value:
+                    message: 学習内容が見つかりません。
+                '5':
+                  summary: 成功例
+                  value:
+                    message: 完了していない学習内容は再開できません。
           headers: {}
         '401':
           description: Unauthorized - 認証が必要です
@@ -2885,8 +2938,6 @@ paths:
                 properties:
                   message:
                     type: string
-              example:
-                message: Unauthenticated.
           headers: {}
         '403':
           description: Forbidden - アクセス権限がありません
@@ -2897,8 +2948,6 @@ paths:
                 properties:
                   message:
                     type: string
-              example:
-                message: この学習内容を更新する権限がありません。
           headers: {}
         '404':
           description: Not Found - 学習内容が見つかりません
@@ -2909,8 +2958,6 @@ paths:
                 properties:
                   message:
                     type: string
-              example:
-                message: 学習内容が見つかりません。
           headers: {}
         '405':
           description: ''
@@ -2929,8 +2976,6 @@ paths:
                 properties:
                   message:
                     type: string
-              example:
-                message: 完了していない学習内容は再開できません。
           headers: {}
       security: []
 components:
@@ -2984,7 +3029,7 @@ components:
           items:
             type: object
             properties: {}
-          description: 学習コンテンツに含まれるセクション一覧（whenLoadedで条件付き）
+          description: 学習内容に含まれるセクション一覧（whenLoadedで条件付き）
         technology:
           type: object
           properties:
@@ -3105,5 +3150,7 @@ components:
       in: cookie
       name: laravel_session
       description: Laravel Sanctum認証
-servers: []
+servers:
+  - url: http://localhost:8000
+    description: 開発環境
 security: []

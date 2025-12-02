@@ -116,7 +116,9 @@ paths:
     get:
       summary: 技術一覧取得
       deprecated: false
-      description: 技術の一覧を取得します。カテゴリーIDでフィルタリング可能です
+      description: |-
+        技術の一覧を取得します
+        ※カテゴリーIDでフィルタリング可能です
       operationId: getTechnologies
       tags:
         - Master Data
@@ -1084,5 +1086,7 @@ components:
       in: cookie
       name: laravel_session
       description: Laravel Sanctum認証
-servers: []
+servers:
+  - url: http://localhost:8000
+    description: 開発環境
 security: []
