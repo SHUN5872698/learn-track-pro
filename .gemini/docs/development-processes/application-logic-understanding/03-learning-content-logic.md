@@ -83,12 +83,16 @@ LearningContentControllerとSectionControllerの実装について教えてく�
 
 - トランザクション管理（store: 学習内容+セクション同時作成）
 - ステータス変更の条件判定（complete: 全セクション完了チェック、reopen: 完了状態チェック）
-- Eager Loading（N+1問題対策: `with(\\\\\\\['technology.category', 'sections'\\\\\\\])`）
+- Eager Loading（N+1問題対策）:
+
+```php
+with(['technology.category', 'sections'])
+```
 
 **SectionController**:
 
 - トランザクション管理（store/destroy/updateStatus/bulkUpdate）
-- `total_sections/completed_sections`の自動更新（increment/decrement）
+- total_sections/completed_sectionsの自動更新（increment/decrement）
 - セクション一括更新の複雑なロジック（order一時退避でユニーク制約回避）
 - 最低1セクション保持チェック（destroy/bulkUpdate）
 
@@ -96,9 +100,13 @@ LearningContentControllerとSectionControllerの実装について教えてく�
 
 **実装内容**:
 
-- `Gate::authorize('view', \\\\\\\$learningContent)`: 閲覧権限チェック
-- `Gate::authorize('update', \\\\\\\$learningContent)`: 更新権限チェック
-- ポリシー（LearningContentPolicy）で権限判定：`\\\\\\\$user-\\\\\\\>id === \\\\\\\$learningContent-\\\\\\\>user_id`
+```php
+Gate::authorize('view', $learningContent)  // 閲覧権限チェック
+Gate::authorize('update', $learningContent)  // 更新権限チェック
+
+// ポリシー（LearningContentPolicy）で権限判定
+$user->id === $learningContent->user_id
+```
 
 **判断基準**:
 
@@ -225,15 +233,23 @@ Controller内のトランザクション処理について教えてください�
 
 **destroy()（Section）**:
 
-- 最低1セクション保持チェック（sections()->count() > 1）
-- 違反時422エラー
+```php
+// 最低1セクション保持チェック
+sections()->count() > 1
+// 違反時422エラー
+```
 
 ### エラーレスポンス形式
 
 **422 Unprocessable Entity**:
 
 - FormRequest失敗時に自動返却
-- レスポンス形式: `\\\\\\\{"message": "...", "errors": \\\\\\\{"field": \\\\\\\["error"\\\\\\\]\\\\\\\}\\\\\\\}`
+- レスポンス形式:
+
+```json
+{"message": "...", "errors": {"field": ["error"]}}
+```
+
 - Controller内の手動エラーも422で統一
 
 ### 私の理解
@@ -264,7 +280,7 @@ LearningContentモデルとSectionモデルの実装について教えてくだ�
 
 - LearningContent → Section: hasMany（1対多）
 - Section → LearningContent: belongsTo（多対1）
-- マイグレーション: `onDelete('cascade')`で親削除時に子も自動削除
+- マイグレーション: onDelete('cascade')で親削除時に子も自動削除
 
 ### LearningContentと他モデルのリレーション
 
@@ -278,8 +294,13 @@ LearningContentモデルとSectionモデルの実装について教えてくだ�
 
 **使用箇所**:
 
-- index(): `with(\\\\\\\['technology.category', 'sections'\\\\\\\])`
-- show(): `load('technology.category', 'sections')`
+```php
+// index()
+with(['technology.category', 'sections'])
+
+// show()
+load('technology.category', 'sections')
+```
 
 **N+1問題を避ける理由**:
 
@@ -353,7 +374,7 @@ PUT /api/learning-contents/{learningContentId}/sections/bulkの実装につい�
 
 ### 既存セクション更新と新規作成の判別
 
-**判別方法**: `isset(\\\$sectionData\\\['id'\\\])`
+**判別方法**: `isset(\$sectionData\['id'\])`
 
 - idあり → 既存セクション更新
 - idなし（null） → 新規セクション作成
@@ -379,8 +400,8 @@ if ($remainingCount < 1) {
 
 **count()による再計算を採用**:
 
-- `total_sections`: `\\\$learningContent-\\\>sections()-\\\>count()`
-- `completed_sections`: `\\\$learningContent-\\\>sections()-\\\>where('status', 'completed')-\\\>count()`
+- `total_sections`: `$learningContent->sections()->count()`
+- `completed_sections`: `$learningContent->sections()->where('status', 'completed')->count()`
 
 **increment/decrementを使わない理由**:
 
