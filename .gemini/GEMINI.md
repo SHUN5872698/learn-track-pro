@@ -234,6 +234,20 @@ docker compose exec php-apache php artisan [コマンド]
 **アクション**:
 1. プロンプト [.gemini/prompts/move-documents-prompt.md](./prompts/move-documents-prompt.md) を読み込み、その指示に従ってファイルの移動を実行します。
 
+### `workflow:create-github-issue`
+**目的**: 課題内容をGitHub Issueとして作成し、適切なラベルを付与します。
+**アクション**:
+1. プロンプト [.gemini/prompts/create-github-issue-prompt.md](./prompts/create-github-issue-prompt.md) を読み込み、その指示に従ってIssueを作成します。
+2. 指定された参照ファイルを読み込み、課題の背景と該当コードを把握します。
+3. オプションが未指定の場合、参照ファイルからテンプレート・ラベル・優先度を自動判断します。
+4. GitHub MCPを使用してIssueを作成します。
+**引数**:
+- `<課題概要>`: Issue化する課題の概要（簡潔な説明でOK）
+- `参照ファイル`: 課題に関連するコードやドキュメントのパス
+- `--template`: （オプション）使用するテンプレート（bug_report / feature_request）
+- `--labels`: （オプション）付与するラベル（カンマ区切り）
+- `--priority`: （オプション）優先度（high / medium / low）
+
 ---
 
 # 6. 制約
