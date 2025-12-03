@@ -2,7 +2,7 @@ import api from '@/plugins/axios';
 
 const BASE_URL = '/api';
 
-// 指定した学習コンテンツのセクション一覧を取得
+// 指定した学習内容のセクション一覧を取得
 export const fetchSections = (learningContentId) => {
   return api.get(`${BASE_URL}/learning-contents/${learningContentId}/sections`);
 };

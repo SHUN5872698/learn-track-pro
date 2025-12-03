@@ -209,10 +209,26 @@ const showSectionsBorder = computed(() => {
   return errors.sections !== '';
 });
 
+// validationErrorsの配列生成
+const validationErrors = computed(() => {
+  const messages = [];
+  if (errors.technology_id) messages.push(errors.technology_id);
+  if (errors.title) messages.push(errors.title);
+  if (errors.description) messages.push(errors.description);
+  if (errors.sections) messages.push(errors.sections);
+  return messages;
+});
+
 // 文字数カウント
 const descriptionLength = computed(() => form.description?.length || 0);
 const descriptionIsOverLimit = computed(() => descriptionLength.value > MAX_TEXTAREA_LENGTH);
 const descriptionCounterText = computed(() => `${descriptionLength.value}/${MAX_TEXTAREA_LENGTH}文字`);
+
+// 学習内容の取得
+const getTechnologyName = computed(() => {
+  const tech = technologies.value.find((t) => t.id === form.technology_id);
+  return tech ? tech.name : '';
+});
 
 // ========================================
 // ライフサイクル
@@ -224,57 +240,34 @@ onMounted(async () => {
   }
 });
 
-// validationErrorsの配列生成
-const validationErrors = computed(() => {
-  const messages = [];
-  if (errors.technology_id) messages.push(errors.technology_id);
-  if (errors.title) messages.push(errors.title);
-  if (errors.description) messages.push(errors.description);
-  if (errors.sections) messages.push(errors.sections);
-  return messages;
-});
-
-// データ取得用
-const getTechnologyName = computed(() => {
-  const tech = technologies.value.find((t) => t.id === form.technology_id);
-  return tech ? tech.name : '';
-});
-
 // ========================================
 // メソッド
 // ========================================
 // イベントハンドラ
 // ウィザードナビゲーション
 const handleNext = () => {
-  // エラーをリセット
+  // バリデーション実行前に状態をリセット
   errors.technology_id = '';
   errors.title = '';
   errors.description = '';
   errors.sections = '';
-
-  // 修正フラグをリセット
   technologyModified.value = false;
   titleModified.value = false;
   descriptionModified.value = false;
 
   if (currentStep.value === 1) {
     // ステップ1（基本情報）のバリデーション
-
-    // すべてのバリデーションを実行
     const technologyResult = validateTechnology(form.technology_id);
     const titleResult = validateTitle(form.title);
     const descriptionResult = validateDescription(form.description);
-
-    // すべてのエラーを設定
+    // エラーを設定
     if (!technologyResult.isValid) errors.technology_id = technologyResult.message;
     if (!titleResult.isValid) errors.title = titleResult.message;
     if (!descriptionResult.isValid) errors.description = descriptionResult.message;
-
-    // 最後に一括チェック
+    // 一括チェック
     if (errors.technology_id || errors.title || errors.description) {
       return;
     }
-
     // 全て成功したら次のステップへ
     nextStep();
   } else if (currentStep.value === 2) {
@@ -284,8 +277,7 @@ const handleNext = () => {
       errors.sections = sectionsResult.message;
       return;
     }
-    // 成功したら次のステップへ
-    nextStep();
+    nextStep(); // 成功したら次のステップへ
   }
 };
 
@@ -301,11 +293,11 @@ const handleCancel = () => {
 };
 
 // API送信処理
-// 学習内容を作成
+// 学習記録とセクションの作成
 const handleSubmit = async () => {
-  // API側エラーをリセット
+  // NOTE: API側エラーリセットは必ずボタン非活性化解除前に実行すること
   apiError.value = '';
-  // ボタンの無効化
+  // ボタンの無効化（二重送信防止）
   isSubmitting.value = true;
 
   try {
@@ -337,7 +329,6 @@ const handleSubmit = async () => {
       apiError.value = 'エラーが発生しました。';
     }
   } finally {
-    // フォーム送信状態をリセット
     isSubmitting.value = false;
   }
 };

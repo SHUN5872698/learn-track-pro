@@ -126,11 +126,11 @@ const isSubmitting = ref(false);
 // ========================================
 // 算出プロパティ
 // ========================================
-// ルートパラメータから学習コンテンツIDとセクションIDを取得
+// ルートパラメータから学習内容IDとセクションIDを取得
 const learningContentId = computed(() => parseInt(route.params.id, 10));
 const sectionId = computed(() => parseInt(route.params.sectionId, 10));
 
-// 算出プロパティで現在の学習コンテンツとセクション情報を取得
+// 算出プロパティで現在の学習内容とセクション情報を取得
 const learningContent = computed(() => learningContents.value.find((c) => c.id === learningContentId.value));
 const section = computed(() => sections.value.find((s) => s.id === sectionId.value));
 
@@ -161,7 +161,7 @@ onMounted(async () => {
     return;
   }
   await withLoading('section-records-init', async () => {
-    // 学習コンテンツを取得
+    // 学習内容を取得
     if (learningContents.value.length === 0) {
       await fetchContents();
     }
@@ -210,7 +210,7 @@ const confirmDelete = async () => {
   const recordId = recordToDelete.value.id;
   // モーダルを先に閉じることで表示崩れを防止
   isModalOpen.value = false;
-  // ボタンの無効化
+  // ボタンの無効化（二重送信防止）
   isSubmitting.value = true;
   try {
     // 削除処理API
@@ -223,9 +223,7 @@ const confirmDelete = async () => {
   } catch (error) {
     console.error('削除処理に失敗しました:', error);
   } finally {
-    // フォーム送信状態をリセット
     isSubmitting.value = false;
-    // 初期化
     recordToDelete.value = null;
   }
 };

@@ -6,14 +6,14 @@ import { useLearningContentStore } from '@/stores/learningContent';
 export const useSectionStore = defineStore('sections', {
   // ストアの状態を定義
   state: () => ({
-    sections: [], // セクションのリスト
+    sections: [], // セクション一覧
     loading: false, // APIリクエスト中のローディング状態
-    error: null, // エラーメッセージ
+    error: null, // API/コンソール用エラーメッセージ（単一文字列：ウィザード全体のエラーのみ扱う）
   }),
 
   // 状態から派生した値（キャッシュされる）
   getters: {
-    // 指定された学習コンテンツIDに紐づくセクションをフィルタリングして取得
+    // 指定された学習内容IDに紐づくセクションをフィルタリングして取得
     sectionsByContentId: (state) => (contentId) => {
       return state.sections.filter((section) => section.learning_content_id === contentId);
     },
@@ -25,14 +25,15 @@ export const useSectionStore = defineStore('sections', {
 
   // 状態を変更するアクション
   actions: {
-    // 指定された学習コンテンツIDのセクションをAPIから非同期でフェッチ
+    // 指定された学習内容IDのセクションをAPIから非同期でフェッチ
     async fetchSections(learningContentId) {
       this.loading = true;
       this.error = null;
       try {
         const response = await api.fetchSections(learningContentId);
-        // 特定のコンテンツIDのセクションを置き換える
+        // 取得するコンテンツID以外のセクションを退避（＝キャッシュとして残す）
         const otherSections = this.sections.filter((s) => s.learning_content_id !== learningContentId);
+        // 退避したセクション + APIから取得した最新のセクション で配列を再構築
         this.sections = [...otherSections, ...response.data.data];
       } catch (error) {
         this.error = 'セクションの読み込みに失敗しました。';
@@ -48,7 +49,7 @@ export const useSectionStore = defineStore('sections', {
       try {
         const response = await api.createSection(data);
         this.sections.push(response.data.data);
-        // 学習コンテンツの統計情報を更新
+        // 学習内容の統計情報を更新
         const learningContentStore = useLearningContentStore();
         await learningContentStore.fetchContents(); // 更新された統計情報を取得するために再フェッチ
       } catch (error) {
@@ -84,7 +85,7 @@ export const useSectionStore = defineStore('sections', {
         if (!sectionToDelete) return;
         await api.deleteSection(id);
         this.sections = this.sections.filter((s) => s.id !== id);
-        // 学習コンテンツの統計情報を更新
+        // 学習内容の統計情報を更新
         const learningContentStore = useLearningContentStore();
         await learningContentStore.fetchContents(); // 更新された統計情報を取得するために再フェッチ
       } catch (error) {
@@ -115,6 +116,7 @@ export const useSectionStore = defineStore('sections', {
           const contentStore = useLearningContentStore();
           const contentIndex = contentStore.contents.findIndex((c) => c.id === learningContentId);
 
+          // 進捗率の再計算
           if (contentIndex !== -1) {
             const content = contentStore.contents[contentIndex];
             content.completed_sections = completedCount;
@@ -136,11 +138,12 @@ export const useSectionStore = defineStore('sections', {
         // 一括更新後、そのコンテンツの全てのセクションを再フェッチするのが最善
         const response = await api.bulkUpdateSections(learningContentId, data);
 
-        // セクションを直接更新
+        // 取得するコンテンツID以外のセクションを退避（キャッシュとして残す）
         const otherSections = this.sections.filter((s) => s.learning_content_id !== learningContentId);
+        // 退避したセクション + APIから取得した最新のセクション で配列を再構築
         this.sections = [...otherSections, ...response.data.data];
 
-        // 統計情報を更新するために学習コンテンツも再フェッチ
+        // セクション構成の変更を親コンテンツの統計情報（総数など）に反映させるため再取得
         const learningContentStore = useLearningContentStore();
         await learningContentStore.fetchContents();
       } catch (error) {

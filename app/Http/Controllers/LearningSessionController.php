@@ -18,37 +18,35 @@ class LearningSessionController extends Controller
     use AuthorizesRequests;
 
     /**
-     * リソースの一覧を表示
+     * 学習記録の一覧を表示
      *
      * @param Request $request
-     * @return void
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Request $request)
     {
-        // 認証済みユーザーの学習セッションを、関連する学習コンテンツとセクションと共に取得
+        // 認証済みユーザーの学習記録を、関連する学習内容とセクション情報と共に取得
         $query = LearningSession::where('user_id', auth()->id())
             ->with(['learningContent', 'section']);
 
-        // learning_content_idによるフィルタリング
+        // フィルタリング
         if ($request->has('learning_content_id')) {
             $query->where('learning_content_id', $request->learning_content_id);
         }
-
-        // section_idによるフィルタリング
         if ($request->has('section_id')) {
             $query->where('section_id', $request->section_id);
         }
-
+        // 学習日時の降順で並び替え
         $sessions = $query->orderBy('studied_at', 'desc')->get();
 
         return LearningSessionResource::collection($sessions);
     }
 
     /**
-     * 新しく作成されたリソースをストレージに保存
+     * 新しく作成された学習記録を保存
      *
      * @param StoreLearningSessionRequest $request
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreLearningSessionRequest $request)
     {
@@ -57,10 +55,8 @@ class LearningSessionController extends Controller
         // 認証済みユーザーIDを割り当て
         $validated['user_id'] = Auth::id();
 
-        // 学習セッションを作成
         $session = LearningSession::create($validated);
 
-        // 作成成功レスポンスを返す
         return (new LearningSessionResource($session))
             ->additional(['message' => '学習記録を作成しました。'])
             ->response()
@@ -68,100 +64,93 @@ class LearningSessionController extends Controller
     }
 
     /**
-     * 指定されたリソースを表示
+     * 指定された学習記録を表示
      *
      * @param LearningSession $learningSession
-     * @return void
+     * @return \App\Http\Resources\LearningSessionResource
      */
     public function show(LearningSession $learningSession)
     {
-        // ユーザーが学習セッションを閲覧する権限があるか確認
+        // ユーザーが学習記録を閲覧する権限があるか確認
         $this->authorize('view', $learningSession);
-        // 関連する学習コンテンツの技術情報とセクションをEager Load
+        // 関連する学習内容の技術情報とセクションをEager Load
         $learningSession->load(['learningContent.technology', 'section']);
 
-        // 学習セッションの詳細を返す
         return new LearningSessionResource($learningSession);
     }
 
     /**
-     * 指定されたリソースをストレージで更新
+     * 指定された学習記録を更新
      *
      * @param Request $request
-     * @return void
+     * @return \App\Http\Resources\LearningSessionResource
      */
     public function update(UpdateLearningSessionRequest $request, LearningSession $learningSession)
     {
-        // ユーザーが学習セッションを更新する権限があるか確認
+        // ユーザーが学習記録を更新する権限があるか確認
         $this->authorize('update', $learningSession);
-        // バリデーション済みデータで学習セッションを更新
-        $learningSession->update($request->validated());
 
-        // 更新成功レスポンスを返す
+        $learningSession->update($request->validated());
         return (new LearningSessionResource($learningSession))
             ->additional(['message' => '学習記録を更新しました。']);
     }
 
     /**
-     * 指定されたリソースをストレージから削除
+     * 指定された学習記録を削除
      *
      * @param LearningSession $learningSession
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(LearningSession $learningSession)
     {
-        // ユーザーが学習セッションを削除する権限があるか確認
+        // ユーザーが学習記録を削除する権限があるか確認
         $this->authorize('delete', $learningSession);
-        // 学習セッションを削除
+        // 学習記録を削除
         $learningSession->delete();
-
-        // 削除成功レスポンスを返す
         return response()->json(['message' => '学習記録を削除しました。']);
     }
 
     /**
-     * 学習コンテンツごとのセッションを取得
+     * セクションごとの学習記録を取得
      *
      * @param LearningContent $learningContent
-     * @return void
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function byContent(LearningContent $learningContent)
     {
-        // ユーザーが学習コンテンツを閲覧する権限があるか確認
+        // ユーザーが学習内容を閲覧する権限があるか確認
         $this->authorize('view', $learningContent);
 
-        // 指定された学習コンテンツに紐づく学習セッションを、セクション情報と共に取得しページネーション
+        // 指定された学習内容に紐づく学習記録を、セクション情報と共に取得
+        // 学習日時の降順で並び替えて20件ずつページネーション
         $sessions = $learningContent->learningSessions()
             ->with(['section'])
             ->latest('studied_at')
             ->paginate(20);
-
-        // 学習セッションのコレクションを返す
         return LearningSessionResource::collection($sessions);
     }
 
     /**
-     * セクションごとのセッションを取得
+     * セクションごとの学習記録を取得
      *
      * @param Section $section
-     * @return void
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function bySection(Section $section)
     {
-        // ユーザーがセクションの学習コンテンツを更新する権限があるか確認
+        // ユーザーがセクションの学習内容を更新する権限があるか確認
         $this->authorize('update', $section->learningContent);
 
-        // 指定されたセクションに紐づく学習セッションを、最新の学習記録から取得しページネーション
+        // 指定されたセクションに紐づく学習記録を取得
+        // 学習日時の降順で並び替えて20件ずつページネーション
         $sessions = $section->learningSessions()
             ->latest('studied_at')
             ->paginate(20);
-
-        // 学習セッションのコレクションを返す
         return LearningSessionResource::collection($sessions);
     }
 
     /**
-     * 統計サマリーを取得
+     * 全体レポート用の統計データを取得
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -170,13 +159,14 @@ class LearningSessionController extends Controller
         $user = Auth::user();
         $today = \Carbon\Carbon::today();
 
-        // ユーザーの総学習時間を計算（未来の日付も含む）
+        // ユーザーの総学習時間（分）を計算（未来の日付も含む）
         $totalMinutes = $user->learningSessions()->sum('study_minutes');
 
-        // ユーザーが完了した学習コンテンツの数をカウント
+        // ユーザーが完了した学習内容数をカウント
         $completedCourses = $user->learningContents()->where('status', 'completed')->count();
 
         // 学習を行ったユニークな日付を取得（今日以前のみ）
+        // DATE関数で日付部分のみ抽出し、未来の日付や重複を除外して最新日時順で並び替え
         $studyDays = $user->learningSessions()
             ->selectRaw('DATE(studied_at) as date')
             ->whereDate('studied_at', '<=', $today)  // 未来の日付を除外
@@ -213,7 +203,6 @@ class LearningSessionController extends Controller
             // 今日も昨日も学習していない場合は連続日数は0
         }
 
-        // 統計サマリーデータをJSON形式で返す
         return response()->json([
             'total_study_minutes' => (int) $totalMinutes,
             'completed_courses_count' => $completedCourses,
@@ -235,6 +224,7 @@ class LearningSessionController extends Controller
         $user = Auth::user();
 
         // ユーザーの学習セッションから月ごとの総学習時間を集計
+        // DATE_FORMAT関数で年月形式に変換し、指定月数分のデータを取得
         $data = $user->learningSessions()
             ->selectRaw('DATE_FORMAT(studied_at, "%Y-%m") as month, SUM(study_minutes) as total_minutes')
             ->where('studied_at', '>=', now()->subMonths($months)->startOfMonth())
@@ -255,6 +245,7 @@ class LearningSessionController extends Controller
         $user = Auth::user();
 
         // ユーザーの学習セッションを基に、技術ごとの総学習時間を集計
+        // learning_contentsとtechnologiesテーブルをJOINして技術名を取得
         $data = DB::table('learning_sessions')
             ->join('learning_contents', 'learning_sessions.learning_content_id', '=', 'learning_contents.id')
             ->join('technologies', 'learning_contents.technology_id', '=', 'technologies.id')
@@ -264,7 +255,6 @@ class LearningSessionController extends Controller
             ->orderBy('total_minutes', 'desc')
             ->get();
 
-        // 技術ごとの統計データをJSON形式で返す
         return response()->json($data);
     }
 
@@ -281,6 +271,7 @@ class LearningSessionController extends Controller
         $user = Auth::user();
 
         // ユーザーの学習セッションから日ごとの総学習時間を集計
+        // DATE関数で日付部分のみ抽出し、指定日数分のデータを取得
         $data = $user->learningSessions()
             ->selectRaw('DATE(studied_at) as date, SUM(study_minutes) as total_minutes')
             ->where('studied_at', '>=', now()->subDays($days))
@@ -288,20 +279,20 @@ class LearningSessionController extends Controller
             ->orderBy('date', 'asc')
             ->get();
 
-        // 日ごとの統計データをJSON形式で返す
         return response()->json($data);
     }
 
     /**
      * 学習内容別の最新セッションを1件ずつ取得
      *
-     * @return void
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function latestByContent()
     {
         $userId = Auth::id();
 
         // 各学習内容の最新セッションを取得するサブクエリ
+        // 学習内容ごとにグループ化して最大IDを取得し、関連データをEager Load
         $latestSessions = LearningSession::select('learning_sessions.*')
             ->from('learning_sessions')
             ->whereIn('learning_sessions.id', function ($query) use ($userId) {
@@ -318,7 +309,7 @@ class LearningSessionController extends Controller
     }
 
     /**
-     * 特定の学習コンテンツの日ごとの統計を取得
+     * 特定の学習内容日ごとの統計を取得
      *
      * @param Request $request
      * @param int $contentId
@@ -326,14 +317,15 @@ class LearningSessionController extends Controller
      */
     public function dailyStatisticsByContent(Request $request, $contentId)
     {
-        // 学習コンテンツの所有者確認
-        $learningContent = \App\Models\LearningContent::findOrFail($contentId);
+        // 学習内容の所有者確認
+        $learningContent = LearningContent::findOrFail($contentId);
         $this->authorize('view', $learningContent);
 
         // リクエストから日数を取得（デフォルトは30日）
         $days = $request->input('days', 30);
 
-        // 指定された学習コンテンツの日ごとの総学習時間を集計
+        // 指定された学習内容日ごとの総学習時間を集計
+        // DATE関数で日付部分のみ抽出し、指定日数分のデータを取得
         $data = $learningContent->learningSessions()
             ->selectRaw('DATE(studied_at) as date, SUM(study_minutes) as total_minutes')
             ->where('studied_at', '>=', now()->subDays($days))

@@ -1,3 +1,8 @@
+# コミットの関心事の分離
+
+# 注意！！！
+- 当ファイルを読む際は必ず全文読み込んでください。断片的に読んでも良い作業はできません。
+
 ## 指示
 Gitのステージングされた変更を分析し、Conventional Commitsガイドラインに基づいた論理的な関心事の塊に分離します。
 
@@ -6,7 +11,8 @@ Gitのステージングされた変更を分析し、Conventional Commitsガイ
 **すべての判定基準はConventional Commits公式仕様に基づいています。**
 
 ### 最重要ルール
-- **必ず `git status -s && git diff --cached && git log -n 10 --pretty=format:'%s%n%b%n---' --no-merges` を実行し、ステージングされた変更内容を正確に把握すること。**
+- **必ず `.gemini/scripts/safe-commands.sh git-diff-staged` を実行し、ステージングされた変更内容を正確に把握すること。**
+  - このスクリプトは `git status -s && git diff --cached && git log -n 10` を自動承認で実行します
 - **変更の意図や背景（特にコード差分から直接読み取れない情報）がある場合は、ユーザーに確認すること。**
 
 ### 評価手順
@@ -155,12 +161,8 @@ Gitのステージングされた変更を分析し、Conventional Commitsガイ
 ## 最終アクション
 
 すべての評価が完了したら、分離された関心事の塊を上記の出力形式で**直ちに出力してください。**
-
 - 出力先ファイル: [.gemini/outputs/separated-concerns.md](../outputs/separated-concerns.md)
-
 **重要**:
 - このタスクは、ファイルへの出力をもって完全に完了します。
 - コミットメッセージの生成や、コミットを提案するような追加のアクションは一切行わないでください。
-- 出力後、必ず`.gitignore`や`.geminiignore`、`.git/info/exclude`の設定を無視して出力先ファイルを読み込み、内容が正しく書き込まれていることを確認してください。
-  - `read_many_files`ツールを使用し、`file_filtering_options={"respect_gemini_ignore": False, "respect_git_ignore": False}`を指定すること
-- 確認が取れたら「ファイルに出力しました」と報告して終了
+- ファイルに出力したら「ファイルに出力しました」と報告して終了

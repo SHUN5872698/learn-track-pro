@@ -50,7 +50,7 @@ class Technology extends Model
     }
 
     /**
-     * この技術を使用している学習コンテンツを取得
+     * この技術を使用している学習内容を取得
      *
      * @return HasMany
      */
@@ -64,6 +64,7 @@ class Technology extends Model
      *
      * @param DateTimeInterface $date
      * @return string
+     * @phpstan-param \DateTime|\Carbon\Carbon $date
      */
     protected function serializeDate(DateTimeInterface $date): string
     {

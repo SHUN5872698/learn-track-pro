@@ -16,12 +16,12 @@ export const useReportStore = defineStore('reports', {
     dailyData: [], // 日別学習時間データ
     technologyData: [], // 技術別学習時間データ
     loading: false, // APIリクエスト中のローディング状態
-    error: null, // エラーメッセージ
+    error: null, // API/コンソール用エラーメッセージ（単一文字列：ウィザード全体のエラーのみ扱う）
   }),
 
   // 状態を変更するアクション
   actions: {
-    // 統計サマリーデータをAPIから非同期でフェッチ
+    // 統計サマリーデータをAPIからフェッチ
     async fetchStatisticsSummary() {
       this.loading = true;
       try {
@@ -35,7 +35,7 @@ export const useReportStore = defineStore('reports', {
       }
     },
 
-    // 月別統計データをAPIから非同期でフェッチ
+    // 月別統計データをAPIからフェッチ
     async fetchMonthlyStatistics(months = 6) {
       this.loading = true;
       try {
@@ -49,7 +49,7 @@ export const useReportStore = defineStore('reports', {
       }
     },
 
-    // 日別統計データをAPIから非同期でフェッチ
+    // 日別統計データをAPIからフェッチ
     async fetchDailyStatistics(days = 30) {
       this.loading = true;
       try {
@@ -63,7 +63,7 @@ export const useReportStore = defineStore('reports', {
       }
     },
 
-    // 技術別統計データをAPIから非同期でフェッチ
+    // 技術別統計データをAPIからフェッチ
     async fetchTechnologyStatistics() {
       this.loading = true;
       try {

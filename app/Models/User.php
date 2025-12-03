@@ -60,7 +60,7 @@ class User extends Authenticatable
     }
 
     /**
-     * このユーザーが作成した学習コンテンツを取得
+     * このユーザーが作成した学習内容を取得
      *
      * @return HasMany
      */

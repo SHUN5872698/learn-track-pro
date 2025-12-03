@@ -181,11 +181,11 @@ const toastDuration = 2000; // 通知を表示させる時間
 const learningContents = computed(() => contentStore.contents);
 const sections = computed(() => sectionStore.sections);
 
-// ルートパラメータから学習コンテンツIDを取得し、整数に変換
+// ルートパラメータから学習内容IDを取得し、整数に変換
 const learningContentId = computed(() => parseInt(route.params.id, 10));
-// 算出プロパティで現在の学習コンテンツ情報を取得
+// 算出プロパティで現在の学習内容情報を取得
 const learningContent = computed(() => learningContents.value.find((c) => c.id === learningContentId.value));
-// 算出プロパティで現在の学習コンテンツに紐づくセクションをフィルタリング
+// 算出プロパティで現在の学習内容に紐づくセクションをフィルタリング
 const availableSections = computed(() => sections.value.filter((s) => s.learning_content_id === learningContentId.value));
 
 // ページ説明文の算出プロパティ
@@ -230,7 +230,7 @@ onMounted(async () => {
   await withLoading('study-edit-init', async () => {
     try {
       if (learningContents.value.length === 0) {
-        // 学習コンテンツとセクションのデータを取得
+        // 学習内容とセクションのデータを取得
         await contentStore.fetchContents();
       }
 
@@ -267,7 +267,7 @@ const handleClose = () => {
 // API送信処理
 // 学習記録の登録
 const handleSubmit = async () => {
-  // 状態をリセット
+  // バリデーション実行前に状態をリセット
   errors.section_id = '';
   errors.study_minutes = '';
   errors.studied_at = '';
@@ -298,7 +298,7 @@ const handleSubmit = async () => {
     return;
   }
 
-  // ボタンの無効化
+  // ボタンの無効化（二重送信防止）
   isSubmitting.value = true;
 
   // 学習記録の登録
@@ -327,7 +327,6 @@ const handleSubmit = async () => {
       apiError.value = 'エラーが発生しました。もう一度お試しください。';
     }
   } finally {
-    // フォーム送信状態をリセット
     isSubmitting.value = false;
   }
 };

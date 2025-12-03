@@ -15,11 +15,11 @@ import { useReportStore } from '@/stores/reports';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null,
-    isLoggedIn: false,
-    loading: false,
-    errors: {},
-    initialized: false,
+    user: null, // ログインユーザー情報
+    isLoggedIn: false, // 認証状態
+    loading: false, // APIリクエスト中のローディング状態
+    errors: {}, // フロントエンド用バリデーションエラーメッセージ（複数文字列：個別フィールドのエラーのみ扱う）
+    initialized: false, // 初期化完了フラグ
   }),
 
   getters: {

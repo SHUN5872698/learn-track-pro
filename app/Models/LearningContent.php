@@ -59,7 +59,7 @@ class LearningContent extends Model
     }
 
     /**
-     * この学習コンテンツを作成したユーザーを取得
+     * この学習内容を作成したユーザーを取得
      *
      * @return BelongsTo
      */
@@ -69,7 +69,7 @@ class LearningContent extends Model
     }
 
     /**
-     * この学習コンテンツが使用している技術を取得
+     * この学習内容が使用している技術を取得
      *
      * @return BelongsTo
      */
@@ -79,7 +79,7 @@ class LearningContent extends Model
     }
 
     /**
-     * この学習コンテンツに含まれるセクションを取得
+     * この学習内容に含まれるセクションを取得
      *
      * @return HasMany
      */
@@ -89,7 +89,7 @@ class LearningContent extends Model
     }
 
     /**
-     * この学習コンテンツの学習記録を取得
+     * この学習内容の学習記録を取得
      *
      * @return HasMany
      */
@@ -103,6 +103,7 @@ class LearningContent extends Model
      *
      * @param DateTimeInterface $date
      * @return string
+     * @phpstan-param \DateTime|\Carbon\Carbon $date
      */
     protected function serializeDate(DateTimeInterface $date): string
     {

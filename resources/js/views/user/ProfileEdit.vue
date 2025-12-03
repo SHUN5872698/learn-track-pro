@@ -178,7 +178,7 @@ const handleCancel = () => {
 // API送信処理
 // プロフィール情報の更新
 const handleSubmit = async () => {
-  // 状態をリセット
+  // バリデーション実行前に状態をリセット
   errors.name = '';
   errors.email = '';
   errors.avatar = '';
@@ -201,7 +201,7 @@ const handleSubmit = async () => {
     return;
   }
 
-  // ボタンの無効化
+  // ボタンの無効化（二重送信防止）
   isSubmitting.value = true;
   // プロフィール情報の更新
   try {
@@ -230,7 +230,6 @@ const handleSubmit = async () => {
       apiError.value = 'エラーが発生しました。';
     }
   } finally {
-    // フォーム送信状態をリセット
     isSubmitting.value = false;
   }
 };

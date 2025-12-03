@@ -1,5 +1,5 @@
 <template>
-  <!-- 学習コンテンツカードコンポーネント -->
+  <!-- 学習内容カードコンポーネント -->
   <div @click="navigateToDetail" class="p-6 transition-all duration-300 transform border shadow-lg cursor-pointer bg-white/70 backdrop-blur-md rounded-2xl hover:shadow-xl animate-fade-in border-white/20 hover:scale-105">
     <!-- カードヘッダー -->
     <div class="flex items-start justify-between mb-4">
@@ -106,7 +106,7 @@ import { useMasterDataStore } from '@/stores/masterData';
 // Props定義
 // ========================================
 const props = defineProps({
-  content: Object, // 表示する学習コンテンツデータ
+  content: Object, // 表示する学習内容データ
 });
 
 // ========================================
@@ -152,7 +152,7 @@ const STATUS_CONFIGS = {
   },
 };
 
-// 学習コンテンツの現在のステータスに基づいて、表示用のテキスト、クラス、アイコンを動的に決定
+// 学習内容の現在のステータスに基づいて、表示用のテキスト、クラス、アイコンを動的に決定
 const statusDisplay = computed(() => {
   if (!props.content) return { text: '', class: '', icon: null };
 
@@ -167,10 +167,10 @@ const statusDisplay = computed(() => {
   };
 });
 
-// 現在の学習コンテンツのIDがアクティブなメニューIDと一致するかどうかで、メニューの開閉状態を判断
+// 現在の学習内容のIDがアクティブなメニューIDと一致するかどうかで、メニューの開閉状態を判断
 const isMenuOpen = computed(() => activeMenuId.value === props.content.id);
 
-// 学習コンテンツのステータスや進捗に応じて、三点リーダーメニューの項目を動的に生成
+// 学習内容のステータスや進捗に応じて、三点リーダーメニューの項目を動的に生成
 const menuItems = computed(() => {
   // 全てのコンテンツに共通する基本メニュー項目
   const baseItems = [
@@ -284,7 +284,7 @@ const formatDate = (dateString) => {
   }).format(date);
 };
 
-// 学習コンテンツの詳細ページへ遷移
+// 学習内容の詳細ページへ遷移
 const navigateToDetail = () => {
   // 現在開いているメニューとクリックしたコンテンツが同じ場合は何もしない
   if (activeMenuId.value === props.content.id) return;
@@ -310,13 +310,13 @@ const closeMenu = () => {
   setActiveMenu(null); // アクティブなメニューをリセットして閉じる
 };
 
-// 学習コンテンツ編集ページへ遷移し、メニューを閉じる
+// 学習内容編集ページへ遷移し、メニューを閉じる
 const handleEdit = () => {
   router.push(`/learning/${props.content.id}/edit`); // 編集ページへルーティング
   closeMenu(); // メニューを閉じる
 };
 
-// 学習コンテンツ詳細ページへ遷移し、メニューを閉じる
+// 学習内容詳細ページへ遷移し、メニューを閉じる
 const handleDetails = () => {
   closeMenu(); // メニューを閉じる
   router.push(`/learning/${props.content.id}`); // 詳細ページへルーティング
@@ -334,13 +334,13 @@ const handleDelete = () => {
   isModalOpen.value = true; // 削除確認モーダルを表示
 };
 
-// 学習コンテンツを完了状態にし、メニューを閉じる
+// 学習内容を完了状態にし、メニューを閉じる
 const handleComplete = () => {
   completeContent(props.content.id); // コンテンツを完了状態に更新
   closeMenu(); // メニューを閉じる
 };
 
-// 学習コンテンツを再開状態にし、メニューを閉じる
+// 学習内容を再開状態にし、メニューを閉じる
 const handleReopen = () => {
   reopenContent(props.content.id); // コンテンツを再開状態に更新
   closeMenu(); // メニューを閉じる
@@ -349,7 +349,7 @@ const handleReopen = () => {
 // 削除確認モーダルで「削除」がクリックされた時の処理
 const confirmDelete = async () => {
   console.log('削除が確認されました:', props.content.title);
-  // ボタンの無効化
+  // ボタンの無効化（二重送信防止）
   isSubmitting.value = true;
   try {
     await deleteLearningContent(props.content.id); // 実際の削除処理

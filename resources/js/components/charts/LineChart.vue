@@ -26,6 +26,7 @@ const props = defineProps({
 // ========================================
 // 算出プロパティ
 // ========================================
+// データの最大値に応じてY軸のスケール（目盛り間隔・最大値）を動的に調整
 const chartOptions = computed(() => {
   // データの最大値を取得（エラー防止を追加）
   const allData = props.data?.datasets?.flatMap((d) => d.data) || [0];
@@ -35,7 +36,8 @@ const chartOptions = computed(() => {
   let stepSize;
   let suggestedMax;
 
-  // 学習時間に応じてY軸の目盛りを動的に調整し、グラフの可読性を高める
+  // 学習時間に応じてY軸の目盛りを動的に調整
+  // 日別データは短時間の学習が多いため、BarChartより細かい単位（15分・30分刻み）で変動を可視化する
   if (maxValue <= 60) {
     // 1時間以下
     stepSize = 15; // 15分刻み

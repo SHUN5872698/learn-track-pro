@@ -26,15 +26,17 @@ const props = defineProps({
 // ========================================
 // 算出プロパティ
 // ========================================
+// データの最大値に応じてY軸のスケール（目盛り間隔・最大値）を動的に調整
 const chartOptions = computed(() => {
   // データの最大値を取得（エラー防止を追加）
   const maxValue = props.data?.datasets?.[0]?.data ? Math.max(...props.data.datasets[0].data, 0) : 0;
 
-  // 最大値に基づいてstepSizeを決定（キリの良い数字）
+  // 最大値に基づいてstepSizeを決定
   let stepSize;
   let suggestedMax;
 
-  // 学習時間に応じてY軸の目盛りを動的に調整し、グラフの可読性を高める
+  // 学習時間に応じてY軸の目盛りを動的に調整
+  // Chart.jsのデフォルトでは中途半端な目盛り（1.5時間など）が表示される
   if (maxValue <= 300) {
     // 5時間以下
     stepSize = 60; // 1時間刻み

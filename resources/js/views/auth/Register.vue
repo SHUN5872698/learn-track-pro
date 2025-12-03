@@ -177,7 +177,7 @@ const validationErrors = computed(() => {
 // API送信処理
 // ユーザー登録実行
 const handleRegister = async () => {
-  // 状態をリセット
+  // バリデーション実行前に状態をリセット
   errors.name = '';
   errors.email = '';
   errors.password = '';
@@ -232,7 +232,6 @@ const handleRegister = async () => {
       apiError.value = 'エラーが発生しました。';
     }
   } finally {
-    // フォーム送信状態をリセット
     isSubmitting.value = false;
   }
 };

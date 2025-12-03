@@ -35,7 +35,7 @@
         </div>
       </div>
       <div v-else class="text-center text-slate-500">
-        <p>学習コンテンツが見つかりません。</p>
+        <p>学習内容が見つかりません。</p>
       </div>
     </template>
 
@@ -59,8 +59,9 @@
           <Pagination :total-items="allContentSessionsRecords.length" :items-per-page="recordItemsPerPage" :current-page="recordCurrentPage" @update:currentPage="recordCurrentPage = $event" />
         </div>
 
+        <!-- 学習記録が存在しない（未着手）場合の表示 -->
         <div v-else class="py-10 text-center text-slate-500">
-          <p>この学習コンテンツの学習記録はまだありません。</p>
+          <p>この学習内容の学習記録はまだありません。</p>
         </div>
 
         <!-- アクションボタン -->
@@ -124,7 +125,7 @@ const { isLoading, withLoading } = useLoading();
 // ========================================
 // 日別統計データを格納するリアクティブな参照
 const dailyStatisticsData = ref([]);
-// 特定の学習コンテンツに紐づくセッションデータを格納するリアクティブな参照
+// 特定の学習内容に紐づくセッションデータを格納するリアクティブな参照
 const contentSessions = ref([]);
 
 // ページネーション
@@ -140,9 +141,9 @@ const recordToDelete = ref(null);
 // ========================================
 // 算出プロパティ
 // ========================================
-// ルートパラメータから学習コンテンツIDを取得
+// ルートパラメータから学習内容IDを取得
 const contentId = computed(() => parseInt(route.params.id, 10));
-// 取得したコンテンツIDに基づいて、学習コンテンツの情報を算出
+// 取得したコンテンツIDに基づいて、学習内容の情報を算出
 const learningContent = computed(() => learningContents.value.find((c) => c.id === contentId.value));
 
 // 学習記録一覧（contentSessionsを使うように変更）
@@ -197,7 +198,9 @@ const dailyStudyData = computed(() => {
   // Chart.jsのデータ形式に変換（シンプルに）
   const chartData = {
     labels: apiData.map((item) => {
-      const date = new Date(item.date + 'T00:00:00'); // タイムゾーン問題を回避
+      // タイムゾーン問題を回避: "YYYY-MM-DD"に"T00:00:00"を付与してローカルタイムとして解釈させる
+      // これを行わないと、ブラウザによってはUTCと解釈され、前日の日付になってしまう可能性がある
+      const date = new Date(item.date + 'T00:00:00');
       const isToday = item.date === today;
       const label = date.toLocaleDateString('ja-JP', {
         month: 'numeric',
@@ -213,7 +216,7 @@ const dailyStudyData = computed(() => {
         tension: 0.3,
         fill: true,
         data: apiData.map((item) => Number(item.total_minutes || 0)),
-        // 今日のポイントを視覚的に区別
+        // 今日のポイントを視覚的に区別（オレンジ色）し、ユーザーが現在位置を把握しやすくする
         pointBackgroundColor: apiData.map((item) => (item.date === today ? '#f59e0b' : '#7c3aed')),
         pointRadius: apiData.map((item) => (item.date === today ? 6 : 3)),
       },
@@ -233,14 +236,14 @@ onMounted(async () => {
   }
 
   await withLoading('study-progress-init', async () => {
-    // 学習コンテンツがまだロードされていない場合、ロードをトリガー
+    // 学習内容がまだロードされていない場合、ロードをトリガー
     if (learningContents.value.length === 0) {
       await fetchContents();
     }
 
-    // 並列でAPIデータを取得
+    // 並列でAPIデータを取得: 独立したリクエストを同時に開始し、待ち時間を短縮
     await Promise.all([
-      // 日別統計データをAPIから取得
+      // 日別統計データをAPIから取得（直近30日分）
       axios
         .get(`/api/learning-contents/${contentId.value}/statistics/daily`, {
           params: { days: 30 },
@@ -291,14 +294,14 @@ const confirmDelete = async () => {
   const recordId = recordToDelete.value.id;
   // モーダルを先に閉じることで表示崩れを防止
   isModalOpen.value = false;
-  // ボタンの無効化
+  // ボタンの無効化（二重送信防止）
   isSubmitting.value = true;
 
   try {
     // 削除処理API
     await deleteStudySession(recordId);
 
-    // 並列でAPIデータを再取得
+    // 並列でAPIデータを再取得: 削除により統計情報が変化するため、関連データをリフレッシュして整合性を保つ
     await Promise.all([
       // 日別統計データをAPIから取得
       axios
@@ -320,9 +323,7 @@ const confirmDelete = async () => {
   } catch (error) {
     console.error('削除処理に失敗しました:', error);
   } finally {
-    // フォーム送信状態をリセット
     isSubmitting.value = false;
-    // 初期化
     recordToDelete.value = null;
   }
 };

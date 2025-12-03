@@ -19,10 +19,12 @@ return new class extends Migration
             $table->enum('status', ['not_started', 'in_progress', 'completed'])->default('not_started');
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
-            
+
             // インデックス追加
             $table->index(['learning_content_id', 'order']); // 複合インデックス
             $table->index('status');
+
+            // ユニーク制約
             $table->unique(['learning_content_id', 'order']);
         });
     }

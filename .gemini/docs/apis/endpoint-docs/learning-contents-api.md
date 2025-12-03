@@ -3,12 +3,48 @@
 ```bash
 GET    /api/learning-contents                 # 学習内容一覧
 POST   /api/learning-contents                 # 学習内容作成
-GET    /api/learning-contents/{id}            # 学習内容詳細
-PUT    /api/learning-contents/{id}            # 学習内容編集
-DELETE /api/learning-contents/{id}            # 学習内容削除
-PUT    /api/learning-contents/{id}/complete   # 完了にする
-PUT    /api/learning-contents/{id}/reopen     # 学習を再開
+GET    /api/learning-contents/{learningContentId}            # 学習内容詳細
+PUT    /api/learning-contents/{learningContentId}            # 学習内容編集
+DELETE /api/learning-contents/{learningContentId}            # 学習内容削除
+PUT    /api/learning-contents/{learningContentId}/complete   # 完了にする
+PUT    /api/learning-contents/{learningContentId}/reopen     # 学習を再開
 
+```
+
+---
+
+## カスタムスクリプト
+
+### Post-processor: 環境変数更新
+
+**学習内容作成（POST /api/learning-contents）**
+
+```jsx
+// 学習内容作成成功時にIDを環境変数に保存
+const response = pm.response.json();
+
+if (pm.response.code === 201 && response.data && response.data.id) {
+    pm.environment.set('learning_content_id', response.data.id);
+    console.log("✅ learning_content_id 設定:", response.data.id);
+    
+    // セクションIDも同時に取得
+    if (response.data.sections && response.data.sections.length > 0) {
+        pm.environment.set('section_id', response.data.sections[0].id);
+        console.log("✅ section_id 設定:", response.data.sections[0].id);
+    }
+}
+```
+
+**学習内容削除（DELETE /api/learning-contents/{learning_content_id}）**
+
+```jsx
+// 学習内容削除成功時に関連する環境変数を初期化
+if (pm.response.code === 200 || pm.response.code === 204) {
+    pm.environment.unset('learning_content_id');
+    pm.environment.unset('section_id');
+    console.log("🗑️ learning_content_id 初期化");
+    console.log("🗑️ section_id 初期化（関連セクションも削除されるため）");
+}
 ```
 
 ---
@@ -383,7 +419,7 @@ PUT    /api/learning-contents/{id}/reopen     # 学習を再開
 ## 3. 学習内容詳細取得
 
 - **Method**: GET
-- **URL**: `/api/learning-contents/{id}`
+- **URL**: `/api/learning-contents/{learningContentId}`
 
 **Mock Response 200（例: id=2の場合）**:
 
@@ -556,7 +592,7 @@ PUT    /api/learning-contents/{id}/reopen     # 学習を再開
 ## 4. 学習内容編集
 
 - **Method**: PUT
-- **URL**: `/api/learning-contents/{id}`
+- **URL**: `/api/learning-contents/{learningContentId}`
 
 **Request Body (JSON)**:
 
@@ -604,7 +640,7 @@ PUT    /api/learning-contents/{id}/reopen     # 学習を再開
 ## 5. 学習内容削除
 
 - **Method**: DELETE
-- **URL**: `/api/learning-contents/{id}`
+- **URL**: `/api/learning-contents/{learningContentId}`
 
 **Mock Response 200**:
 
@@ -620,7 +656,7 @@ PUT    /api/learning-contents/{id}/reopen     # 学習を再開
 ## 6. 学習内容完了
 
 - **Method**: PUT
-- **URL**: `/api/learning-contents/{id}/complete`
+- **URL**: `/api/learning-contents/{learningContentId}/complete`
 
 **Mock Response 200（例: id=5の場合）**:
 
@@ -657,7 +693,7 @@ PUT    /api/learning-contents/{id}/reopen     # 学習を再開
 ## 7. 学習内容再開
 
 - **Method**: PUT
-- **URL**: `/api/learning-contents/{id}/reopen`
+- **URL**: `/api/learning-contents/{learningContentId}/reopen`
 
 **Mock Response 200（例: id=1の場合）**:
 

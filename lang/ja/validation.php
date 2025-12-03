@@ -155,7 +155,7 @@ return [
         'sections' => "セクション",
         'sections.*.title' => "セクションのタイトル",
         'startImmediately' => "すぐに学習を開始する",
-        'learning_content_id' => "学習コンテンツ",
+        'learning_content_id' => "学習内容",
         'section_id' => "セクション",
         'study_minutes' => "学習時間",
         'studied_at' => "学習日",

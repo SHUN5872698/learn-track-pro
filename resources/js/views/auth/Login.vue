@@ -145,7 +145,7 @@ const validationErrors = computed(() => {
 // API送信処理
 // ログインを実行
 const handleLogin = async () => {
-  // 状態をリセット
+  // バリデーション実行前に状態をリセット
   errors.email = '';
   errors.password = '';
   apiError.value = '';
@@ -190,7 +190,6 @@ const handleLogin = async () => {
       apiError.value = 'エラーが発生しました。';
     }
   } finally {
-    // フォーム送信状態をリセット
     isSubmitting.value = false;
   }
 };

@@ -4,11 +4,9 @@
     <!-- v-if="show" で全体の表示/非表示を切り替え -->
     <Transition enter-active-class="transition-opacity duration-300 ease-out" enter-from-class="opacity-0" enter-to-class="opacity-100" leave-active-class="transition-opacity duration-300 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
       <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <!-- オーバーレイ -->
         <div class="absolute inset-0 bg-black/30"></div>
 
         <!-- 通知パネル本体 -->
-        <!-- オーバーレイより手前 (relative z-10) に配置し、中央に表示 -->
         <Transition appear enter-active-class="transition-all duration-300 ease-out" enter-from-class="scale-90 opacity-0" enter-to-class="scale-100 opacity-100" leave-active-class="transition-all duration-200 ease-in" leave-from-class="scale-100 opacity-100" leave-to-class="scale-95 opacity-0">
           <div class="relative z-10 flex flex-col items-center w-full max-w-sm px-6 py-8 overflow-hidden text-center bg-white shadow-xl rounded-2xl">
             <!-- 成功アイコン -->
