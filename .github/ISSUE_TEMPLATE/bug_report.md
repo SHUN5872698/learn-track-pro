@@ -20,6 +20,12 @@ Steps to reproduce the behavior:
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
+**Current Code**
+If applicable, add the relevant code snippet that causes the issue.
+```
+// Paste the problematic code here
+```
+
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
@@ -35,4 +41,13 @@ If applicable, add screenshots to help explain your problem.
  - Version [e.g. 22]
 
 **Additional context**
-Add any other context about the problem here.
+- Target file: `path/to/file`
+- Discovery location: (Where was this issue found?)
+
+**Suggested Fix**
+If you have a proposed solution, describe it here with example code if applicable.
+```
+// Paste the suggested fix here
+```
+
+---
