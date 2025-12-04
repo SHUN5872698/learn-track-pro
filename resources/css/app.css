@@ -9,8 +9,12 @@ body {
 
 @layer components {
   /* ページヘッダー */
+  .gradient-text {
+    @apply bg-gradient-to-r from-violet-600 to-emerald-600 bg-clip-text text-transparent;
+  }
+
   .auth-header {
-    @apply mt-6 text-3xl font-bold text-center text-transparent bg-gradient-to-r from-violet-600 to-emerald-600 bg-clip-text;
+    @apply mt-6 text-3xl font-bold text-center gradient-text;
   }
 
   .section-header {

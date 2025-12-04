@@ -2,7 +2,9 @@
   <!-- 新規登録ページのメインコンポーネント -->
   <!-- アプリケーションロゴとタイトル -->
   <div>
-    <h2 class="auth-header">LearnTrack Pro</h2>
+    <h2 class="auth-header">
+      <span class="gradient-text">LearnTrack Pro</span>
+    </h2>
     <p class="mt-2 text-sm text-center text-gray-600">新しいアカウントを作成</p>
   </div>
 

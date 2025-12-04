@@ -8,7 +8,9 @@
 
       <!-- ロゴ -->
       <div class="flex-1 text-center md:text-left md:ml-20">
-        <h1 class="text-xl font-bold text-transparent md:text-2xl bg-gradient-to-r from-violet-600 to-emerald-600 bg-clip-text">LearnTrack Pro</h1>
+        <h1 class="text-xl font-bold md:text-2xl">
+          <span class="gradient-text">LearnTrack Pro</span>
+        </h1>
       </div>
 
       <!-- ユーザー情報 -->
