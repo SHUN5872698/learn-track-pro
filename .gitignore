@@ -24,7 +24,7 @@ Homestead.yaml
 Thumbs.db
 
 # Gemini
-.gemini/outputs/
+.gemini/outputs/commit-message/*
 .gemini/settings.json
 
 # MCP

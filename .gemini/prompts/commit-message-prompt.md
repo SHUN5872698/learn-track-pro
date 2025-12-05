@@ -16,13 +16,13 @@
 
 ## 複数コミットメッセージの生成（関心事が複数の場合）
 
-`.gemini/outputs/separated-concerns.md` に複数の関心事（separated concerns）が含まれている場合は、**それぞれの関心事に対して個別のコミットメッセージを生成**してください。
+`.gemini/outputs/commit-message/separated-concerns.md` に複数の関心事（separated concerns）が含まれている場合は、**それぞれの関心事に対して個別のコミットメッセージを生成**してください。
 
 - タイプ（docs, feat, fix, chore等）が**同じであっても異なっていても**、関心事が分かれている場合は必ず個別に生成すること。
   - 例: `docs` の変更が2つある場合 → コミットメッセージも2つ生成する。
 - それぞれの内容に合わせて適切なタイプを選択し生成すること。
 
-- 1つのファイル `.gemini/outputs/commit-message-for-docs.md` に、すべてのコミットメッセージを出力します。
+- 1つのファイル `.gemini/outputs/commit-message/commit-message-for-docs.md` に、すべてのコミットメッセージを出力します。
 - 各コミットメッセージの間は `---` で区切り、ヘッダーで区別できるようにしてください。
 
 ### 出力例（複数の場合）
@@ -197,8 +197,8 @@ Vue 3 Composition API向けのルールセットを追加し、コード品質�
 ## 最終アクション（絶対に実行）
 1. コミットメッセージを生成
 2. チェックリストで確認
-3. **必ず**`.gemini/outputs/commit-message-for-docs.md` に出力
-4. `run_shell_command`ツールで`cat .gemini/outputs/commit-message-for-docs.md`を実行し、内容が正しく書き込まれていることを確認
+3. **必ず**`.gemini/outputs/commit-message/commit-message-for-docs.md` に出力
+4. `run_shell_command`ツールで`cat .gemini/outputs/commit-message/commit-message-for-docs.md`を実行し、内容が正しく書き込まれていることを確認
 5. **確認した内容に基づいて以下の形式でチェック結果を報告**：
 
 ---

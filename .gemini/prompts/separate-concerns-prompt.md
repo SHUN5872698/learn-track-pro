@@ -161,7 +161,7 @@ Gitのステージングされた変更を分析し、Conventional Commitsガイ
 ## 最終アクション
 
 すべての評価が完了したら、分離された関心事の塊を上記の出力形式で**直ちに出力してください。**
-- 出力先ファイル: [.gemini/outputs/separated-concerns.md](../outputs/separated-concerns.md)
+- 出力先ファイル: [.gemini/outputs/commit-message/separated-concerns.md](../outputs/commit-message/separated-concerns.md)
 **重要**:
 - このタスクは、ファイルへの出力をもって完全に完了します。
 - コミットメッセージの生成や、コミットを提案するような追加のアクションは一切行わないでください。

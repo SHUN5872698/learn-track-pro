@@ -209,13 +209,13 @@ docker compose exec php-apache php artisan [コマンド]
 **目的**: Gitのステージングされた変更を分析し、Conventional Commits仕様に基づいた論理的な関心事の塊に分離します。
 **アクション**:
 1. プロンプト [.gemini/prompts/separate-concerns-prompt.md](./prompts/separate-concerns-prompt.md) を読み込み、その指示に従って関心の分離と出力を行います。
-2. **出力ファイルの読み込み**: `run_shell_command`ツールで`cat .gemini/outputs/separated-concerns.md`を実行して読み込むこと。
+2. **出力ファイルの読み込み**: `run_shell_command`ツールで`cat .gemini/outputs/commit-message/separated-concerns.md`を実行して読み込むこと。
 
 ### `workflow:generate-commit-message`
 **目的**: 指定された論理的な関心事の塊に基づき、Conventional Commits仕様に準拠したコミットメッセージを生成し、指定されたファイルに出力します。
 以下の「関心事の塊」セクションに、`workflow:separate-concerns`で分離された論理的な関心事の塊（タイプ、説明、関連ファイルを含む）を貼り付けてください。
 **アクション**:
-1. **出力ファイルの読み込み**: `run_shell_command`ツールで`cat .gemini/outputs/separated-concerns.md`を実行して読み込むこと。
+1. **出力ファイルの読み込み**: `run_shell_command`ツールで`cat .gemini/outputs/commit-message/separated-concerns.md`を実行して読み込むこと。
 2. プロンプト [.gemini/prompts/commit-message-prompt.md](./prompts/commit-message-prompt.md) を読み込み、その指示に従ってコミットメッセージの生成とファイル出力を実行します。
 
 ### `workflow:generate-tasks`
@@ -223,11 +223,6 @@ docker compose exec php-apache php artisan [コマンド]
 **アクション**:
 1. プロンプト [.gemini/prompts/generate-tasks-prompt.md](./prompts/generate-tasks-prompt.md) を読み込み、その指示に従ってタスクリストを生成します。
 2. 生成されたタスクリストを `.gemini/outputs/generated-tasks.md` ファイルに出力します。
-
-### `workflow:update-roadmap`
-**目的**: 特定のマイルストーンの進捗状況を更新します。
-**アクション**:
-1. プロンプト [.gemini/prompts/update-roadmap-prompt.md](./prompts/update-roadmap-prompt.md) を読み込み、その指示に従って `.gemini/docs/project-roadmap.md` を更新します。
 
 ### `workflow:move-documents`
 **目的**: 指定されたファイルを適切なディレクトリに移動させます。
@@ -247,6 +242,35 @@ docker compose exec php-apache php artisan [コマンド]
 - `--template`: （オプション）使用するテンプレート（bug_report / feature_request）
 - `--labels`: （オプション）付与するラベル（カンマ区切り）
 - `--priority`: （オプション）優先度（high / medium / low）
+
+### `workflow:verify-gemini-config`
+**目的**: GEMINI.mdに記載されている参照パス・設定が現在のリポジトリ構造と一致しているかを検証し、不整合を報告・修正します。
+**アクション**:
+1. プロンプト [.gemini/prompts/verify-gemini-config-prompt.md](./prompts/verify-gemini-config-prompt.md) を読み込み、その指示に従って検証と修正を行います。
+2. GEMINI.md内の参照ドキュメントパスを抽出します。
+3. 各パスが実際に存在するか検証します。
+4. 技術スタック情報が `composer.json`、`package.json` と一致するか検証します。
+5. 検証結果をサマリー形式で報告します。
+6. 不整合が検出された場合、修正を提案または自動適用します。
+**引数**:
+- `<対象パス>`: 検証するファイルのパス。省略時は `.gemini/GEMINI.md` を検証。
+- `--fix`: 不整合を自動修正します。
+- `--report-only`: 検証結果の報告のみ行い、修正は行いません。
+
+### `workflow:verify-docs`
+**目的**: ドキュメントの記載内容が絶対情報源および現在のコードベースと一致しているかをカテゴリごとに精査し、古くなった記載を発見・修正します。
+**アクション**:
+1. プロンプト [.gemini/prompts/verify-docs-prompt.md](./prompts/verify-docs-prompt.md) を読み込み、その指示に従って検証と修正を行います。
+2. `.GEMINI.md` を読み込み、絶対情報源として使用します。
+3. 指定されたカテゴリ（または全カテゴリ）のドキュメントを読み込みます。
+4. カテゴリ特有の検証観点で内容を精査し、絶対情報源およびコードベースと照合します。
+5. 検証結果を `.gemini/outputs/verify/<カテゴリ名>.md` に追記します。
+6. 不整合が検出された場合、修正を提案または自動適用します。
+7. 全カテゴリ完了時、[.gemini/outputs/verify/summary.md](./outputs/verify/summary.md) に最終サマリーを出力します。
+**引数**:
+- `<カテゴリパス>`: 検証するカテゴリのパス（例: .gemini/docs/apis/）。省略時は全カテゴリを段階的にチェック。
+- `--fix`: 不整合を自動修正します。
+- `--report-only`: 検証結果の報告のみ行い、修正は行いません。
 
 ---
 

@@ -50,7 +50,7 @@
 ## 最終アクション
 1. コミットメッセージを生成
 2. チェックリストで確認
-3. **必ず**`.gemini/outputs/commit-message-for-docs.md` に出力
+3. **必ず**`.gemini/outputs/commit-message/commit-message-for-docs.md` に出力
 4. `.gemini/scripts/safe-commands.sh cat-commit-message` を実行し、内容が正しく書き込まれていることを確認
 ```
 
