@@ -142,61 +142,59 @@
 
 ```mermaid
 flowchart TD
-    A[ログイン] --> B[学習内容一覧<br/>ダッシュボード]
+    %% 認証
+    Login[Login.vue<br/>ログイン] --> Dashboard[Dashboard.vue<br/>ダッシュボード]
+    Login --> Register[Register.vue<br/>新規登録]
+    Register --> Login
+    Register --> Dashboard
+    Login --> PwdReset[PasswordReset.vue<br/>パスワードリセット]
+    PwdReset --> PwdResetConfirm[PasswordResetConfirm.vue<br/>パスワード変更]
+    PwdResetConfirm --> Login
 
     %% 学習内容管理
-    B --> C[カードクリック]
-    C --> D[学習内容詳細画面]
+    Dashboard --> CreateBtn[新規作成ボタン]
+    CreateBtn --> ContentCreate[LearningContentCreate.vue<br/>学習内容追加]
 
-    B --> ADDREC[記録を追加クリック]
-    ADDREC --> REC[学習記録作成]
+    Dashboard --> CardClick[カードクリック]
+    CardClick --> ContentDetail[LearningContentDetail.vue<br/>学習内容詳細]
 
-    B --> T[三点リーダー]
-    T --> ED[編集選択]
-    T --> DE[詳細選択]
-    T --> DL[削除選択]
-    T --> CO[完了/再開選択]
-    T --> REP[レポート選択]
+    Dashboard --> Menu[三点メニュー]
+    Menu --> ContentEdit[LearningContentEdit.vue<br/>学習内容編集]
+    Menu --> ContentDetail
+    Menu --> DeleteModal[削除確認モーダル]
+    Menu --> Progress[StudyProgress.vue<br/>個別レポート]
 
-    ED --> G[学習内容編集画面]
-    DE --> D
-    DL --> DC[削除確認モーダル]
-    CO --> CS[完了/再開処理]
-    REP --> J[個別レポート]
+    Dashboard --> QuickAdd[記録を追加ボタン]
+    QuickAdd --> SessionCreate[StudySessionCreate.vue<br/>学習記録作成]
 
-    B --> O[新規作成ボタン]
-    O --> F[学習内容登録画面]
+    %% 学習内容詳細
+    ContentDetail --> ContentEdit
+    ContentDetail --> Progress
+    ContentDetail --> SectionClick[セクション]
+    SectionClick --> SectionRecords[SectionStudyRecords.vue<br/>学習記録一覧]
 
-    %% 詳細画面からの遷移
-    D --> SEC[セクションクリック]
-    SEC --> RLIST[セクション別記録一覧]
-    D --> J
+    %% 学習記録一覧
+    SectionRecords --> RecordAdd[記録を追加]
+    RecordAdd --> SessionCreate
+    SectionRecords --> RecordEdit[編集ボタン]
+    RecordEdit --> SessionEdit[StudySessionEdit.vue<br/>学習記録編集]
+    SectionRecords --> RecordDel[削除ボタン]
+    RecordDel --> RecordDeleteModal[削除確認モーダル]
 
-    RLIST --> REDIT[編集ボタン]
-    REDIT --> REDITED[学習記録編集]
+    %% レポート
+    Dashboard --> NavReport[レポート]
+    NavReport --> Reports[Reports.vue<br/>全体レポート]
+    Reports --> Progress
+    Reports --> SessionEdit
 
-    RLIST --> RDEL[削除ボタン]
-    RDEL --> RDELCONF[削除確認モーダル]
-
-    RLIST --> RADD[記録を追加]
-    RADD --> REC
-
-    %% レポート関連
-    B --> NAV_REPORT[サイドメニュー<br/>レポート]
-    NAV_REPORT --> I[全体レポート]
-    I --> J[個別レポート]
-    I --> REDITED
-    J --> REDITED
-
-    %% ユーザー管理
-    B --> USER[ヘッダー<br/>ユーザー名]
-    USER --> M[プロフィール]
-    M --> N[ユーザー編集]
+    %% ユーザー
+    Dashboard --> NavProfile[プロフィール]
+    NavProfile --> Profile[Profile.vue<br/>プロフィール詳細]
+    Profile --> ProfileEdit[ProfileEdit.vue<br/>プロフィール編集]
 
     %% ログアウト
-    B --> LOGOUT[サイドメニュー<br/>ログアウト]
-    LOGOUT --> A
-
+    Dashboard --> Logout[ログアウト]
+    Logout --> Login
 ```
 
 ---
