@@ -16,43 +16,43 @@ LearnTrack ProのAPIテスト環境（Apidog）の構築・運用に関する包
 
 ### 1. 認証・ユーザー関連API
 
-- [認証・ユーザー関連API](https://www.notion.so/API-28a9d86c12e88029a8b0f5076ae4cd50?pvs=21)
 - [auth-user-api.md](./auth-user-api.md)
+- [Notion](https://www.notion.so/API-28a9d86c12e88029a8b0f5076ae4cd50?pvs=21)
 - **エンドポイント**: `/sanctum/csrf-cookie`, `/fortify/register`, `/fortify/login`, `/fortify/logout`, `/api/user`
 - **ポイント**: CSRF保護、セッション認証、プロフィール更新
 
 ### 2. マスターデータAPI
 
-- [マスターデータAPI](https://www.notion.so/API-28a9d86c12e880de9bb5c896c4339848?pvs=21)
 - [master-data-api.md](./master-data-api.md)
+- [Notion](https://www.notion.so/API-28a9d86c12e880de9bb5c896c4339848?pvs=21)
 - **エンドポイント**: `/api/categories`, `/api/technologies`
 - **ポイント**: カテゴリー・技術スタックの取得
 
 ### 3. 学習内容管理API
 
-- [学習内容管理API](https://www.notion.so/API-28a9d86c12e880d78bc8d04755d4714c?pvs=21)
 - [learning-contents-api.md](./learning-contents-api.md)
+- [Notion](https://www.notion.so/API-28a9d86c12e880d78bc8d04755d4714c?pvs=21)
 - **エンドポイント**: `/api/learning-contents`
 - **ポイント**: CRUD操作、完了・再開処理
 
 ### 4. セクション管理API
 
-- [**セクション管理API**](https://www.notion.so/API-28a9d86c12e88041b2aec3bf8541859f?pvs=21)
 - [sections-api.md](./sections-api.md)
+- [Notion](https://www.notion.so/API-28a9d86c12e88041b2aec3bf8541859f?pvs=21)
 - **エンドポイント**: `/api/learning-contents/{id}/sections`, `/api/sections`
 - **ポイント**: 一括更新、順序管理
 
 ### 5. 学習記録API
 
-- [学習記録API](https://www.notion.so/API-28a9d86c12e8809aa196dcd5a7bff5c0?pvs=21)
 - [learning-sessions-api.md](./learning-sessions-api.md)
+- [Notion](https://www.notion.so/API-28a9d86c12e8809aa196dcd5a7bff5c0?pvs=21)
 - **エンドポイント**: `/api/learning-sessions`
 - **ポイント**: 学習時間の記録と管理
 
 ### 6. レポート・統計API
 
-- [レポート・統計API](https://www.notion.so/API-28a9d86c12e8808f8669dc4bc3bca1a5?pvs=21)
 - [reports-api.md](./reports-api.md)
+- [Notion](https://www.notion.so/API-28a9d86c12e8808f8669dc4bc3bca1a5?pvs=21)
 - **エンドポイント**: `/api/reports/*`
 - **ポイント**: 統計データの集計と取得
 
@@ -474,10 +474,18 @@ if (pm.response.code === 200 || pm.response.code === 204) {
 
 ### 詳細なトラブルシューティング
 
-- 認証関連 → [認証・ユーザー関連API](https://www.notion.so/API-28a9d86c12e88029a8b0f5076ae4cd50?pvs=21)
-- 学習内容関連 → [学習内容管理API](https://www.notion.so/API-28a9d86c12e880d78bc8d04755d4714c?pvs=21)
-- セクション関連 → [**セクション管理API**](https://www.notion.so/API-28a9d86c12e88041b2aec3bf8541859f?pvs=21)
-- 学習記録関連 → [学習記録API](https://www.notion.so/API-28a9d86c12e8809aa196dcd5a7bff5c0?pvs=21)
+- 認証関連
+  -  [auth-user-api.md](./auth-user-api.md)
+  -  [Notion](https://www.notion.so/API-28a9d86c12e88029a8b0f5076ae4cd50?pvs=21)
+- 学習内容関連
+  -  [learning-contents-api.md](./learning-contents-api.md)
+  -  [Notion](https://www.notion.so/API-28a9d86c12e880d78bc8d04755d4714c?pvs=21)
+- セクション関連
+  -  [sections-api.md](./sections-api.md)
+  -  [Notion](https://www.notion.so/API-28a9d86c12e88041b2aec3bf8541859f?pvs=21)
+- 学習記録関連
+  -  [learning-sessions-api.md](./learning-sessions-api.md)
+  -  [Notion](https://www.notion.so/API-28a9d86c12e8809aa196dcd5a7bff5c0?pvs=21)
 
 ---
 

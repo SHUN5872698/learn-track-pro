@@ -15,45 +15,45 @@
 
 ### 1. 基盤・認証
 
-- [認証・ユーザー関連ロジック理解](https://www.notion.so/2b19d86c12e880f885d5f2c47147a693?pvs=21)
-    - [01-auth-user-logic.md](./01-auth-user-logic.md)
-    - **概要**: Laravel Fortify + SanctumによるSPA認証、ユーザー管理の実装。
-    - **ポイント**: セッション認証の仕組み、フロントエンドでの認証状態管理（Pinia + localStorage）、セキュリティ対策（CSRF, XSS）。
+- [01-auth-user-logic.md](./01-auth-user-logic.md)
+- [Notion](https://www.notion.so/2b19d86c12e880f885d5f2c47147a693?pvs=21)
+- **概要**: Laravel Fortify + SanctumによるSPA認証、ユーザー管理の実装。
+- **ポイント**: セッション認証の仕組み、フロントエンドでの認証状態管理（Pinia + localStorage）、セキュリティ対策（CSRF, XSS）。
 
 ### 2. マスターデータ
 
-- [マスターデータロジック理解](https://www.notion.so/2b19d86c12e880e185bdca040c9f566e?pvs=21)
-    - [02-master-data-logic.md](./02-master-data-logic.md)
-    - **概要**: カテゴリー・技術スタックなどの静的データ管理。
-    - **ポイント**: Service層を省略したシンプルな設計、Piniaでのキャッシュ戦略、Eager Loadingによるパフォーマンス最適化。
+- [02-master-data-logic.md](./02-master-data-logic.md)
+- [Notion](https://www.notion.so/2b19d86c12e880e185bdca040c9f566e?pvs=21)
+- **概要**: カテゴリー・技術スタックなどの静的データ管理。
+- **ポイント**: Service層を省略したシンプルな設計、Piniaでのキャッシュ戦略、Eager Loadingによるパフォーマンス最適化。
 
 ### 3. 学習内容管理（Core）
 
-- [学習内容管理ロジック理解](https://www.notion.so/2b19d86c12e880f4b96bfbc7c99cecdd?pvs=21)
-    - [03-learning-content-logic.md](./03-learning-content-logic.md)
-    - **概要**: 学習教材（LearningContent）のCRUD処理。
-    - **ポイント**: ウィザード形式のUI実装、Controllerへのロジック集約の理由、トランザクション管理。
+- [03-learning-content-logic.md](./03-learning-content-logic.md)
+- [Notion](https://www.notion.so/2b19d86c12e880f4b96bfbc7c99cecdd?pvs=21)
+- **概要**: 学習教材（LearningContent）のCRUD処理。
+- **ポイント**: ウィザード形式のUI実装、Controllerへのロジック集約の理由、トランザクション管理。
 
 ### 4. セクション管理
 
-- [セクション管理ロジック理解](https://www.notion.so/2b19d86c12e88045b7fad1ef9c3bbcc7?pvs=21)
-    - [04-section-logic.md](./04-section-logic.md)
-    - **概要**: 学習内容内のセクション（章・節）管理。
-    - **ポイント**: 親リソースとの整合性担保、一括更新（Bulk Update）の複雑なロジック、順序管理。
+- [04-section-logic.md](./04-section-logic.md)
+- [Notion](https://www.notion.so/2b19d86c12e88045b7fad1ef9c3bbcc7?pvs=21)
+- **概要**: 学習内容内のセクション（章・節）管理。
+- **ポイント**: 親リソースとの整合性担保、一括更新（Bulk Update）の複雑なロジック、順序管理。
 
 ### 5. 学習記録（Core）
 
-- [学習記録ロジック理解](https://www.notion.so/2b19d86c12e880e1b068d54af9a1c786?pvs=21)
-    - [05-learning-session-logic.md](./05-learning-session-logic.md)
-    - **概要**: 日々の学習時間の記録と管理。
-    - **ポイント**: カスタムモーダル（DatePicker/TimeInput）のUI/UX設計、楽観的更新によるUX向上、データ整合性。
+- [05-learning-session-logic.md](./05-learning-session-logic.md)
+- [Notion](https://www.notion.so/2b19d86c12e880e1b068d54af9a1c786?pvs=21)
+- **概要**: 日々の学習時間の記録と管理。
+- **ポイント**: カスタムモーダル（DatePicker/TimeInput）のUI/UX設計、楽観的更新によるUX向上、データ整合性。
 
 ### 6. レポート・統計
 
-- [レポート・統計ロジック理解](https://www.notion.so/2b19d86c12e880f1a127faa817bff0d4?pvs=21)
-    - [06-report-statistics-logic.md](./06-report-statistics-logic.md)
-    - **概要**: 学習データの集計と可視化（Chart.js）。
-    - **ポイント**: 動的なグラフ生成ロジック、パフォーマンスを考慮した集計処理、フロントエンドでのデータ加工。
+- [06-report-statistics-logic.md](./06-report-statistics-logic.md)
+- [Notion](https://www.notion.so/2b19d86c12e880f1a127faa817bff0d4?pvs=21)
+- **概要**: 学習データの集計と可視化（Chart.js）。
+- **ポイント**: 動的なグラフ生成ロジック、パフォーマンスを考慮した集計処理、フロントエンドでのデータ加工。
 
 ---
 
@@ -165,11 +165,21 @@ graph TB
 
 各詳細ドキュメントに「私の理解」セクションがあります。理解が曖昧な場合は以下を参照してください：
 
-- 認証フローが分からない → [認証・ユーザー関連ロジック理解](https://www.notion.so/2b19d86c12e880f885d5f2c47147a693?pvs=21) の Backend理解
-- Store/Composable の責務分離が分からない → [学習内容管理ロジック理解](https://www.notion.so/2b19d86c12e880f4b96bfbc7c99cecdd?pvs=21) の Frontend理解
-- トランザクション管理が分からない → [学習内容管理ロジック理解](https://www.notion.so/2b19d86c12e880f4b96bfbc7c99cecdd?pvs=21) の 質問2
-- 一括更新ロジックが分からない → [セクション管理ロジック理解](https://www.notion.so/2b19d86c12e88045b7fad1ef9c3bbcc7?pvs=21) の 質問1
-- 楽観的更新の判断が分からない → [セクション管理ロジック理解](https://www.notion.so/2b19d86c12e88045b7fad1ef9c3bbcc7?pvs=21) の 質問5
+- 認証フローが分からない - 認証・ユーザー関連ロジック理解(Backend理解)
+  - [01-auth-user-logic.md](./01-auth-user-logic.md)
+  - [Notion](https://www.notion.so/2b19d86c12e880f885d5f2c47147a693?pvs=21)
+- Store/Composable の責務分離が分からない - 学習内容管理ロジック理解(Frontend理解)
+  - [03-learning-content-logic.md](./03-learning-content-logic.md)
+  - [Notion](https://www.notion.so/2b19d86c12e880f4b96bfbc7c99cecdd?pvs=21)
+- トランザクション管理が分からない - 学習内容管理ロジック理解(質問2)
+  - [03-learning-content-logic.md](./03-learning-content-logic.md)
+  - [Notion](https://www.notion.so/2b19d86c12e880f4b96bfbc7c99cecdd?pvs=21)
+- 一括更新ロジックが分からない - セクション管理ロジック理解(質問1)
+  - [04-section-logic.md](./04-section-logic.md)
+  - [Notion](https://www.notion.so/2b19d86c12e88045b7fad1ef9c3bbcc7?pvs=21)
+- 楽観的更新の判断が分からない - セクション管理ロジック理解(質問5)
+  - [04-section-logic.md](./04-section-logic.md)
+  - [Notion](https://www.notion.so/2b19d86c12e88045b7fad1ef9c3bbcc7?pvs=21)
 
 ---
 
@@ -177,9 +187,15 @@ graph TB
 
 ### 関連ドキュメント
 
-- [要件定義書](https://www.notion.so/2479d86c12e881878bb9c8dc6f9c8b3c?pvs=21) - プロジェクト概要と機能要件
-- [テーブル定義書](https://www.notion.so/2479d86c12e881b7b449dd88e5e6b809?pvs=21) - データベース設計
-- [**Vue.js コーディング規約**](https://www.notion.so/Vue-js-26b9d86c12e880719990cf73d40cc720?pvs=21) - フロントエンド実装規約
+- 要件定義書 - プロジェクト概要と機能要件
+  - [requirements-specification.md](../../project-infos/requirements-specification.md)
+  - [Notion](https://www.notion.so/2479d86c12e881878bb9c8dc6f9c8b3c?pvs=21)
+- テーブル定義書 - データベース設計
+  - [database-schema-definition.md](../../databases/database-schema-definition.md)
+  - [Notion](https://www.notion.so/2479d86c12e881b7b449dd88e5e6b809?pvs=21)
+- Vue.js コーディング規約 - フロントエンド実装規約
+  - [vue-coding-standards.md](../../development-processes/vue-coding-standards.md)
+  - [Notion](https://www.notion.so/Vue-js-26b9d86c12e880719990cf73d40cc720?pvs=21)
 
 ### 関連タスク
 

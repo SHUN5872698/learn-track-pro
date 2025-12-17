@@ -24,8 +24,8 @@ LearnTrack Proの全機能に関する手動テスト手順書です。
 
 ### 1. 認証機能
 
-- [認証機能手動テストリスト](https://www.notion.so/28a9d86c12e880be877fe9f3ad278ef4?pvs=21)
-  - [authentication-manual-tests.md](./authentication-manual-tests.md)
+- [authentication-manual-tests.md](./authentication-manual-tests.md)
+- [Notion](https://www.notion.so/28a9d86c12e880be877fe9f3ad278ef4?pvs=21)
 
 **テスト範囲**:
 
@@ -41,8 +41,8 @@ LearnTrack Proの全機能に関する手動テスト手順書です。
 
 ### 2. 学習内容管理
 
-- [学習内容管理手動テストリスト](https://www.notion.so/28a9d86c12e8809abd88cae6ab2080b5?pvs=21)
-  - [learning-content-manual-tests.md](./learning-content-manual-tests.md)
+- [learning-content-manual-tests.md](./learning-content-manual-tests.md)
+- [Notion](https://www.notion.so/28a9d86c12e8809abd88cae6ab2080b5?pvs=21)
 
 **テスト範囲**:
 
@@ -59,8 +59,8 @@ LearnTrack Proの全機能に関する手動テスト手順書です。
 
 ### 3. 学習記録
 
-- [学習記録手動テストリスト](https://www.notion.so/28a9d86c12e880fc97bcf38d1c9924c3?pvs=21)
-  - [learning-session-manual-tests.md](./learning-session-manual-tests.md)
+- [learning-session-manual-tests.md](./learning-session-manual-tests.md)
+- [Notion](https://www.notion.so/28a9d86c12e880fc97bcf38d1c9924c3?pvs=21)
 
 **テスト範囲**:
 
@@ -75,8 +75,8 @@ LearnTrack Proの全機能に関する手動テスト手順書です。
 
 ### 4. レポート・統計機能
 
-- [レポート・統計機能手動テストリスト](https://www.notion.so/28a9d86c12e880e98099fe5f4882845e?pvs=21)
-  - [reports-manual-tests.md](./reports-manual-tests.md)
+- [reports-manual-tests.md](./reports-manual-tests.md)
+- [Notion](https://www.notion.so/28a9d86c12e880e98099fe5f4882845e?pvs=21)
 
 **テスト範囲**:
 
@@ -159,18 +159,26 @@ graph TD
 
 各詳細ドキュメントに「APIエラーハンドリング」セクションがあります。テスト中に問題が発生した場合は以下を参照してください：
 
-- 認証エラー → [認証機能手動テストリスト](https://www.notion.so/28a9d86c12e880be877fe9f3ad278ef4?pvs=21) のAPIエラーハンドリング
-- 学習内容の操作エラー → [学習内容管理手動テストリスト](https://www.notion.so/28a9d86c12e8809abd88cae6ab2080b5?pvs=21) のAPIエラーハンドリング
-- 学習記録の操作エラー → [学習記録手動テストリスト](https://www.notion.so/28a9d86c12e880fc97bcf38d1c9924c3?pvs=21) のAPIエラーハンドリング
-- レポート表示エラー → [レポート・統計機能手動テストリスト](https://www.notion.so/28a9d86c12e880e98099fe5f4882845e?pvs=21) のAPIエラーハンドリング
+- 認証エラー
+  - [authentication-manual-tests.md](./authentication-manual-tests.md)
+  - [Notion](https://www.notion.so/28a9d86c12e880be877fe9f3ad278ef4?pvs=21)
+- 学習内容の操作エラー
+  - [learning-content-manual-tests.md](./learning-content-manual-tests.md)
+  - [Notion](https://www.notion.so/28a9d86c12e8809abd88cae6ab2080b5?pvs=21)
+- 学習記録の操作エラー
+  - [learning-session-manual-tests.md](./learning-session-manual-tests.md)
+  - [Notion](https://www.notion.so/28a9d86c12e880fc97bcf38d1c9924c3?pvs=21)
+- レポート表示エラー
+  - [reports-manual-tests.md](./reports-manual-tests.md)
+  - [Notion](https://www.notion.so/28a9d86c12e880e98099fe5f4882845e?pvs=21)
 
 ---
 
 ## 参考資料
 
 ### 関連ドキュメント
-
-- [APIエラーハンドリング手動テストリスト](https://www.notion.so/API-c4c56afcb55b45d9af6f9b96e1771e4a?pvs=21)
-    - [api-error-handling-manual-test-list.md](../api-error-handling-manual-test-list.md)
+APIエラーハンドリング手動テストリスト
+- [api-error-handling-manual-test-list.md](../api-error-handling-manual-test-list.md)
+- [Notion](https://www.notion.so/API-c4c56afcb55b45d9af6f9b96e1771e4a?pvs=21)
 
 ---
