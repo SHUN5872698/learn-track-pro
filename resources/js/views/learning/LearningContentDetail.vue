@@ -22,7 +22,7 @@
     <template #section-header>
       <h2 class="section-header">{{ learningContent ? learningContent.title : '' }}</h2>
       <div v-if="learningContent">
-        <!-- 1. 技術とステータス情報（修正：モバイルで縦並び） -->
+        <!-- 技術とステータス情報：モバイルで縦並び -->
         <div class="flex flex-col my-1 space-y-2 section-subtext md:flex-row md:items-center md:space-y-0 md:space-x-4">
           <div class="flex items-center space-x-1">
             <span>技術:</span>
@@ -60,7 +60,7 @@
         <div class="w-full h-3 rounded-full bg-slate-200">
           <div class="h-3 transition-all duration-500 rounded-full shadow-sm bg-gradient-to-r from-violet-500 to-emerald-500" :style="{ width: learningContent.progress + '%' }"></div>
         </div>
-        <!-- 進捗バーの下にセクション数と総学習時間を表示（修正：モバイルで縦並び） -->
+        <!-- 進捗バーの下にセクション数と総学習時間を表示：モバイルで縦並び -->
         <div class="flex flex-col items-start gap-2 mt-3 text-xs md:flex-row md:items-center md:justify-between md:text-sm text-slate-600">
           <div class="flex items-center space-x-1">
             <span class="font-medium text-violet-600"> {{ learningContent.completed_sections }} </span>
@@ -77,7 +77,7 @@
       <div>
         <h3 class="section-subheader">セクション一覧</h3>
 
-        <!-- 完了状態切り替えのヒント（セクション一覧の直下） -->
+        <!-- 完了状態切り替えのヒント -->
         <div class="flex items-center mb-4 text-xs md:text-sm text-slate-500">
           <LightBulbIcon class="w-5 h-5 mr-2 text-yellow-500" />
           <span>チェックマークをクリックすると完了状態を切り替えられます。</span>
@@ -118,14 +118,14 @@
                   </div>
                 </button>
 
-                <!-- 3. セクション情報（修正：truncateでテキスト切り詰め） -->
+                <!-- セクション情報 -->
                 <div @click="goToSectionRecords(section.id)" class="flex flex-col flex-1 min-w-0 cursor-pointer md:flex-row md:items-center">
                   <span class="font-medium truncate text-slate-800" :class="{ 'line-through text-gray-500': normalizeStatus(section.status) === 'completed' }" :title="section.order + '. ' + section.title"> {{ section.order }} . {{ section.title }} </span>
                   <span class="ml-0 text-xs md:ml-2 md:text-sm text-slate-500 whitespace-nowrap"> ({{ normalizeStatus(section.status) === 'completed' ? '完了' : '学習中' }}) </span>
                 </div>
               </div>
 
-              <!-- 記録件数：モバイルで左寄せ、デスクトップで右寄せ -->
+              <!-- 記録件数：モバイルで左寄せ -->
               <div class="pl-10 text-xs md:pl-0 md:ml-4 md:text-sm text-slate-500 whitespace-nowrap">[ {{ getRecordCountForSection(section.id) }} 件の記録]</div>
             </li>
           </ul>
@@ -142,7 +142,7 @@
       <p>学習内容が見つかりません。</p>
     </div>
 
-    <!-- 4. アクションボタン（修正：モバイルで縦並び） -->
+    <!-- アクションボタン（モバイルで縦並び） -->
     <template #actions>
       <div class="flex flex-col w-full space-y-2 md:flex-row md:space-y-0 md:space-x-2 md:w-auto">
         <BackButton to="/dashboard" class="w-full md:w-auto" />
