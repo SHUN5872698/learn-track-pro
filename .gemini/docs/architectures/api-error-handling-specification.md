@@ -393,6 +393,12 @@ graph TD
     style G fill:#ff6b6b
 ```
 
-**詳細テスト結果**:
+## 参考資料
 
-全テスト項目の詳細は[APIエラーハンドリング手動テストリスト](https://www.notion.so/API-c4c56afcb55b45d9af6f9b96e1771e4a?pvs=21)を参照
+### 関連ドキュメント
+
+- APIエラーハンドリング手動テストリスト- 全テスト項目の詳細
+    - [api-error-handling-manual-test-list.md](..//tests/api-error-handling-manual-test-list.md)
+    - [APIエラーハンドリング手動テストリスト](https://www.notion.so/API-c4c56afcb55b45d9af6f9b96e1771e4a?pvs=21)
+
+---

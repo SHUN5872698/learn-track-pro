@@ -317,4 +317,12 @@ const showSectionBorder = computed(() => {
 - `.error-container`: エラー表示
 - `.form-label`, `.form-input-base`: フォーム関連
 
-詳細：[レスポンシブ対応の実装方針] ← 開発ドキュメント管理DBへのリンク
+---
+
+## 参考資料
+
+- レスポンシブ対応の実装方針（TailwindCSS）
+    - [responsive-design-strategy.md](../decisions/responsive-design-strategy.md)
+    - [レスポンシブ対応の実装方針（TailwindCSS）](https://www.notion.so/TailwindCSS-5b4ad8e1bfaf462c912191cc8eea9467?pvs=21)
+
+---

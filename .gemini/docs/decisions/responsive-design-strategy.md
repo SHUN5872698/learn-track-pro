@@ -6,8 +6,6 @@ LearnTrack ProのレスポンシブWebデザイン実装方針を定義するド
 
 **対象**: Vue 3 + TailwindCSS
 
-**関連**:[**Vue.js コーディング規約**](https://www.notion.so/Vue-js-26b9d86c12e880719990cf73d40cc720?pvs=21) 
-
 ---
 
 ## 基本方針
@@ -405,9 +403,16 @@ const formattedDateFull = computed(() => {
 
 ## 関連ドキュメント
 
-- [**Vue.js コーディング規約**](https://www.notion.so/Vue-js-26b9d86c12e880719990cf73d40cc720?pvs=21)  - レスポンシブデザイン統合版
-- [レスポンシブ対応](https://www.notion.so/28e9d86c12e880f88022ee69a4511e2f?pvs=21)  - 実装タスク詳細
-- [機能拡張ロードマップ](https://www.notion.so/2499d86c12e880b9ba25d1cc7e8d71f3?pvs=21)  - Phase全体の計画
-- [Playwright MCP活用プロンプト](https://www.notion.so/Playwright-MCP-2809d86c12e88042bc4ce592287e1c46?pvs=21)  - 検証自動化
+- Vue.js コーディング規約 - レスポンシブデザイン統合版
+  - [vue-coding-standards.md](../development-processes/vue-coding-standards.md)
+  - [Notion](https://www.notion.so/Vue-js-26b9d86c12e880719990cf73d40cc720?pvs=21)
+- 機能拡張ロードマップ - Phase全体の計画
+  - [feature-expansion-roadmap.md](../project-infos/feature-expansion-roadmap.md)
+  - [Notion](https://www.notion.so/2499d86c12e880b9ba25d1cc7e8d71f3?pvs=21)
+- Playwright MCP活用プロンプト - 検証自動化
+  - [playwright-mcp-usage.md](../../prompts/playwright-mcp-usage.md)
+  - [Notion](https://www.notion.so/Playwright-MCP-2809d86c12e88042bc4ce592287e1c46?pvs=21)
+- レスポンシブ対応  - 実装タスク詳細
+  - [Notion](https://www.notion.so/28e9d86c12e880f88022ee69a4511e2f?pvs=21)
 
 ---

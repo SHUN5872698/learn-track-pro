@@ -494,7 +494,9 @@ if (pm.response.code === 200 || pm.response.code === 204) {
 ### 関連ドキュメント
 
 - [OpenAPI Specプロンプト集](https://www.notion.so/OpenAPI-Spec-2689d86c12e8804e8675f773fe7feb09?pvs=21) - Apidog設計時の参考
-- [テーブル定義書](https://www.notion.so/2479d86c12e881b7b449dd88e5e6b809?pvs=21) - データベース設計
+- テーブル定義書 - データベース設計
+  - [database-schema-definition.md](../../databases/database-schema-definition.md)
+  - [Notion](https://www.notion.so/2479d86c12e881b7b449dd88e5e6b809?pvs=21)
 
 ### 外部リンク
 

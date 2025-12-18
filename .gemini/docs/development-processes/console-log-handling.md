@@ -377,7 +377,9 @@ Viteのビルド時自動削除（terser使用）を採用
 
 ### 関連ドキュメント
 
-- [機能拡張ロードマップ](https://www.notion.so/2499d86c12e880b9ba25d1cc7e8d71f3?pvs=21)
+- 機能拡張ロードマップ
+  - [feature-expansion-roadmap.md](../project-infos/feature-expansion-roadmap.md)
+  - [Notion](https://www.notion.so/2499d86c12e880b9ba25d1cc7e8d71f3?pvs=21)
 
 ### Vite公式ドキュメント
 
