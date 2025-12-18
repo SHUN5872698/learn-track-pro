@@ -16,7 +16,7 @@ APIファーストアプローチによるMVP完成後の追加機能拡張計�
 
 ## ~~Phase 1: UI/UXレイアウト改善（完了）~~
 
-- ‣
+- [textarea入力文字数表示](https://www.notion.so/textarea-28d9d86c12e880a8aa35d930d883b23c?pvs=21)
 
 ---
 
@@ -29,12 +29,14 @@ APIファーストアプローチによるMVP完成後の追加機能拡張計�
 
 ## ~~Phase 3: デプロイ作業（完了）~~
 
-- ‣
+2025年10月23日 → 2025年11月10日 
+
+- [VPS環境構築](https://www.notion.so/VPS-2959d86c12e880c4a611cfb965506ffa?pvs=21)
 - [本番環境構築手順書（Xserver VPS）](https://www.notion.so/Xserver-VPS-2a49d86c12e88056b9cacad877bb91e9?pvs=21)
 
 ---
 
-## Phase 4: アプリケーションロジック理解（取組中）
+## ~~Phase 4: アプリケーションロジック理解~~
 
 **目的**: 転職面接で実装意図とデータフローを説明できるようにする
 
@@ -140,7 +142,7 @@ APIファーストアプローチによるMVP完成後の追加機能拡張計�
 
 必須度: ★★★☆☆
 
-理由: 学習管理アプリとしての完成度向上、StudyPlusにない差別化機能
+理由: 学習管理アプリの機能を充実させるため
 
 仕様概要:
 
@@ -218,14 +220,12 @@ Phase 2完了（レスポンシブ対応）
 
 ### 目的
 
-[Vue.jsにおけるコーディング規約の戦略的価値：保守性と開発速度を両立させる設計指針](https://www.notion.so/Vue-js-2ac9d86c12e880c1bb89cc54698af02b?pvs=21) 
-
-CI/CDに実践する前に導入すべき内容、課題の中から検討する
+- [Vue.jsにおけるコーディング規約の戦略的価値：保守性と開発速度を両立させる設計指針](https://www.notion.so/Vue-js-2ac9d86c12e880c1bb89cc54698af02b?pvs=21) 
+  - CI/CDに実践する前に導入すべき内容、課題の中から検討する
 
 ### 対象範囲（やりたいこと）
 
-[**属性が複数ある要素は、1行に1属性ずつ記述に変更**](https://www.notion.so/Vue-js-2ac9d86c12e880c1bb89cc54698af02b?pvs=21)
-
-[**ESLintによる自動検証の導入**](https://www.notion.so/Vue-js-2ac9d86c12e880c1bb89cc54698af02b?pvs=21)
+- [属性が複数ある要素は、1行に1属性ずつ記述に変更](https://www.notion.so/Vue-js-2ac9d86c12e880c1bb89cc54698af02b?pvs=21)
+ - [ESLintによる自動検証の導入](https://www.notion.so/Vue-js-2ac9d86c12e880c1bb89cc54698af02b?pvs=21)
 
 ---
