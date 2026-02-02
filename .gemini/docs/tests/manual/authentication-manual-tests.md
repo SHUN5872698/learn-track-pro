@@ -272,14 +272,14 @@
 
 **コンポーネント:**
 
-- **resources/js/views/user/Profile.vue**: ユーザーのプロフィール情報（名前、メールアドレス、アバター、登録日など）を表示します。
-- **resources/js/components/common/UserAvatar.vue**: ユーザーのアバター画像またはイニシャルを表示します。
+- **resources/js/views/user/Profile.vue**: ユーザーのプロフィール情報（名前、メールアドレス、プロフィール画像、登録日など）を表示します。
+- **resources/js/components/common/UserAvatar.vue**: ユーザーのプロフィール画像またはイニシャルを表示します。
 - **resources/js/layouts/DetailLayout.vue**: プロフィールページのレイアウトを提供します。
 
 ### **6.1 正常なプロフィール表示**
 
 - [x]  ログイン後、サイドバーまたはヘッダーのユーザー名クリックでプロフィールページ (`/profile`) にアクセスしてください。
-- [x]  自分の名前、メールアドレス、登録日、アバター画像（設定していれば）が正しく表示されることを確認してください。
+- [x]  自分の名前、メールアドレス、登録日、プロフィール画像（設定していれば）が正しく表示されることを確認してください。
 
 ### **6.2 未認証時のアクセス**
 
@@ -311,7 +311,7 @@
 **コンポーネント:**
 
 - **resources/js/views/user/ProfileEdit.vue**: プロフィール編集フォームのUIを提供し、入力値のバリデーションとプロフィール更新処理のトリガーを行います。
-- **resources/js/components/common/UserAvatar.vue**: ユーザーのアバター画像またはイニシャルを表示します。
+- **resources/js/components/common/UserAvatar.vue**: ユーザーのプロフィール画像またはイニシャルを表示します。
 - **resources/js/components/common/BaseButton.vue**: フォームの「保存」ボタンとして使用されます。
 - **resources/js/layouts/DetailLayout.vue**: プロフィール編集ページのレイアウトを提供します。
 - **resources/js/components/common/SuccessToast.vue**: プロフィール更新成功時のトースト通知を表示します。
@@ -363,8 +363,8 @@
 
 **コントローラー:**
 
-- **app/Http/Controllers/UserController.php**: `avatarUpload` - アバター画像のアップロードを処理します。
-- **app/Http/Requests/User/AvatarUploadRequest.php**: アバター画像アップロードのサーバーサイドバリデーションルールを定義します。
+- **app/Http/Controllers/UserController.php**: `avatarUpload` - プロフィール画像のアップロードを処理します。
+- **app/Http/Requests/User/AvatarUploadRequest.php**: プロフィール画像アップロードのサーバーサイドバリデーションルールを定義します。
 
 **サービス:**
 
@@ -372,17 +372,17 @@
 
 **Piniaストア:**
 
-- **resources/js/stores/auth.js**: `uploadAvatar` - アバター画像アップロードAPIを呼び出し、ストアのユーザー情報を更新します。
+- **resources/js/stores/auth.js**: `uploadAvatar` - プロフィール画像アップロードAPIを呼び出し、ストアのユーザー情報を更新します。
 
 **Composables:**
 
-- **resources/js/composables/useUser.js**: `uploadAvatar` - アバター画像アップロード処理を`authStore`に委譲します。
+- **resources/js/composables/useUser.js**: `uploadAvatar` - プロフィール画像アップロード処理を`authStore`に委譲します。
 
 **コンポーネント:**
 
-- **resources/js/views/user/ProfileEdit.vue**: アバター画像変更ボタンを提供し、モーダルを表示します。
+- **resources/js/views/user/ProfileEdit.vue**: プロフィール画像変更ボタンを提供し、モーダルを表示します。
 - **resources/js/components/common/AvatarUploadModal.vue**: 画像選択、プレビュー、アップロード実行を行うモーダルUI。
-- **resources/js/components/common/UserAvatar.vue**: アップロードされたアバターを表示します。
+- **resources/js/components/common/UserAvatar.vue**: アップロードされたプロフィール画像を表示します。
 
 **バリデーション:**
 
@@ -396,7 +396,7 @@
 - [x]  「適用する」ボタンをクリックし、アップロード処理が開始されることを確認してください。
 - [x]  アップロード成功後、モーダルが自動的に閉じることを確認してください
 - [x]  「更新完了」トーストは表示されないことを確認してください
-- [x]  プロフィール編集画面、およびサイドバー（ヘッダー）のアバター画像が新しいものに更新されていることを確認してください。
+- [x]  プロフィール編集画面、およびサイドバー（ヘッダー）のプロフィール画像が新しいものに更新されていることを確認してください。
 
 ### **8.2 バリデーションエラー（クライアントサイド）**
 
@@ -415,6 +415,6 @@
 
 ### **8.5 既存画像の削除**
 
-- [x]  新しいアバターをアップロードした後、サーバーの `storage/app/public/images/avatars/` 内から古い画像ファイルが削除されていることを確認してください。
+- [x]  新しいプロフィール画像をアップロードした後、サーバーの `storage/app/public/images/avatars/` 内から古い画像ファイルが削除されていることを確認してください。
 
 ---

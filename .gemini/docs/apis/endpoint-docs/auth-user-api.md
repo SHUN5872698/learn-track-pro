@@ -465,7 +465,7 @@ is_authenticated: false
 
     ```json
     {
-        "message": "アバターを更新しました",
+        "message": "プロフィール画像を更新しました",
         "avatar_url": "http://localhost:8000/storage/images/avatars/6sqtdecJTDsVboyPrfz79ps1zaXflNXhefP13JN0.jpg"
     }
     ```

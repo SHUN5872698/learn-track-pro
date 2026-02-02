@@ -58,7 +58,7 @@ tree -L 5 --dirsfirst \
 │   │   │   └── UserController.php                # ユーザー関連のHTTPリクエストを処理
 │   │   ├── Requests/                             # フォームリクエストのバリデーションルールを定義
 │   │   │   ├── User/                             # ユーザー関連のリクエスト
-│   │   │   │   ├── AvatarUploadRequest.php       # アバターアップロード時のバリデーション
+│   │   │   │   ├── AvatarUploadRequest.php       # プロフィール画像アップロード時のバリデーション
 │   │   │   │   └── ProfileRequest.php            # プロフィール更新時のバリデーション
 │   │   │   ├── BulkUpdateSectionsRequest.php     # セクション一括更新時のバリデーション
 │   │   │   ├── StoreLearningContentRequest.php   # 学習内容作成時のバリデーション
@@ -90,7 +90,7 @@ tree -L 5 --dirsfirst \
 │   │   └── FortifyServiceProvider.php            # Fortify関連のサービスプロバイダ
 │   └── Services/                                 # アプリケーションのビジネスロジックを含むサービス層
 │       └── User/                                 # ユーザー関連のサービス
-│           └── AvatarService.php                 # ユーザーのアバター関連ビジネスロジック
+│           └── AvatarService.php                 # ユーザーのプロフィール画像関連ビジネスロジック
 ├── bootstrap/                                    # フレームワークのブートストラップ処理
 │   ├── app.php                                   # アプリケーションインスタンスの生成と設定
 │   └── providers.php                             # アプリケーションで利用するサービスプロバイダのリスト
@@ -151,7 +151,7 @@ tree -L 5 --dirsfirst \
 ├── tests/                                        # アプリケーションの自動テスト
 │   ├── Feature/                                  # アプリケーションの機能テスト
 │   │   ├── Api/                                  # APIテスト
-│   │   │   └── AvatarUploadTest.php              # APIのアバターアップロード機能テスト
+│   │   │   └── AvatarUploadTest.php              # APIのプロフィール画像アップロード機能テスト
 │   │   └── ExampleTest.php                       # 機能テストの例
 │   ├── Unit/                                     # アプリケーションのユニットテスト
 │   │   └── ExampleTest.php                       # ユニットテストの例

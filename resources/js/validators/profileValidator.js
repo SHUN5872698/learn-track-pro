@@ -14,7 +14,7 @@ export const PROFILE_VALIDATION_RULES = {
   AVATAR_MAX_LENGTH: 500,
 };
 
-// アバターファイル
+// プロフィール画像ファイル
 export const AVATAR_FILE_RULES = {
   MAX_SIZE: 2 * 1024 * 1024, // 2MB
   ALLOWED_TYPES: ['image/jpeg', 'image/png', 'image/webp'],
@@ -36,12 +36,12 @@ export const PROFILE_ERROR_MESSAGES = {
   EMAIL_INVALID_FORMAT: '有効なメールアドレスを入力してください',
   EMAIL_MAX_LENGTH: `メールアドレスは${PROFILE_VALIDATION_RULES.EMAIL_MAX_LENGTH}文字以内で入力してください`,
 
-  // アバターURL
+  // プロフィール画像URL
   AVATAR_INVALID_URL: '有効なURLを入力してください',
   AVATAR_INVALID_IMAGE: '画像のURLを入力してください',
 };
 
-// アバターファイル
+// プロフィール画像ファイル
 export const AVATAR_FILE_ERROR_MESSAGES = {
   FILE_REQUIRED: '画像ファイルを選択してください',
   FILE_TOO_LARGE: `画像ファイルは${AVATAR_FILE_RULES.MAX_SIZE / 1024 / 1024}MB以下にしてください`,
@@ -105,7 +105,7 @@ export const validateEmail = (email) => {
 };
 
 /**
- * アバターURLのバリデーション
+ * プロフィール画像URLのバリデーション
  * @param {string} avatarUrl - 検証するURL
  * @returns {Object} { isValid: boolean, message: string }
  */
@@ -159,7 +159,7 @@ export const validateProfile = (profileData) => {
     isValid = false;
   }
 
-  // アバターURLのバリデーション
+  // プロフィール画像URLのバリデーション
   const avatarResult = validateAvatarUrl(profileData.avatar);
   if (!avatarResult.isValid) {
     errors.avatar = avatarResult.message;
@@ -170,7 +170,7 @@ export const validateProfile = (profileData) => {
 };
 
 /**
- * アバター画像ファイルのバリデーション
+ * プロフィール画像ファイルのバリデーション
  * @param {File} file - 検証するファイルオブジェクト
  * @returns {Object} { isValid: boolean, message: string }
  */

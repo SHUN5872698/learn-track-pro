@@ -57,7 +57,7 @@ resources/js/
 │   │   │   └── DeleteButton.vue             # 削除ボタン
 │   │   ├── AppHeader.vue                    # アプリケーションヘッダー
 │   │   ├── AppSidebar.vue                   # アプリケーションサイドバー
-│   │   ├── AvatarUploadModal.vue            # アバターアップロード用モーダル
+│   │   ├── AvatarUploadModal.vue            # プロフィール画像アップロード用モーダル
 │   │   ├── BaseButton.vue                   # 基本ボタンコンポーネント
 │   │   ├── ConfirmModal.vue                 # 確認モーダルコンポーネント
 │   │   ├── DatePickerModal.vue              # 日付選択モーダルコンポーネント
@@ -67,7 +67,7 @@ resources/js/
 │   │   ├── SectionSelector.vue              # セクション選択ドロップダウン
 │   │   ├── SuccessToast.vue                 # 完了通知アラート
 │   │   ├── TimeInputModal.vue               # 時間入力モーダルコンポーネント
-│   │   └── UserAvatar.vue                   # ユーザーアバターコンポーネント
+│   │   └── UserAvatar.vue                   # ユーザープロフィール画像コンポーネント
 │   │
 │   ├── layout/                              # レイアウト関連コンポーネント
 │   │   ├── DetailBreadcrumb.vue             # 詳細画面のパンくずリスト

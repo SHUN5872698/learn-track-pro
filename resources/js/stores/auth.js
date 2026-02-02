@@ -304,7 +304,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    // アバター画像アップロード
+    // プロフィール画像アップロード
     async uploadAvatar(file) {
       this.setAuthLoading(true);
       this.clearAuthErrors();
@@ -322,7 +322,7 @@ export const useAuthStore = defineStore('auth', {
           },
         });
 
-        // 成功後、ストアのユーザー情報（アバターURL）を即時更新
+        // 成功後、ストアのユーザー情報（プロフィール画像URL）を即時更新
         if (this.user) {
           this.user.avatar = response.data.avatar_url;
         }
@@ -338,9 +338,9 @@ export const useAuthStore = defineStore('auth', {
         if (error?.response?.status === 422) {
           this.setAuthErrors(error.response.data.errors);
         } else {
-          console.error('❌ Pinia: アバターアップロード失敗', error);
+          console.error('❌ Pinia: プロフィール画像アップロード失敗', error);
           this.setAuthErrors({
-            general: [error?.response?.data?.message || error?.message || 'アバターの更新に失敗しました'],
+            general: [error?.response?.data?.message || error?.message || 'プロフィール画像の更新に失敗しました'],
           });
         }
         // エラーを呼び出し元にスローして、UI側で検知できるようにする

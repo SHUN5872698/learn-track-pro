@@ -636,9 +636,9 @@ paths:
                 type: object
                 properties: {}
               example:
-                message: アバターを更新しました
+                message: プロフィール画像を更新しました
                 avatar_url: >-
-                  http://localhost:8000/storage/images/avatars/6sqtdecJTDsVboyPrfz79ps1zaXflNXhefP13JN0.jpg
+                  http://localhost:8000/storage/images/avatars/nsRRl8mH4vE7FLtFbIuM1Hw6lMwXDvk8vFcAqrfG.jpg
           headers: {}
         '401':
           description: ''

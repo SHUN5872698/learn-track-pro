@@ -26,14 +26,14 @@ export const useUser = () => {
     }
   };
 
-  // アバターアップロード機能
+  // プロフィール画像アップロード機能
   const uploadAvatar = async (file) => {
     try {
       const result = await authStore.uploadAvatar(file);
       return result;
     } catch (error) {
       console.error('Failed to upload avatar:', error);
-      return { success: false, message: 'アバターの更新に失敗しました。' };
+      return { success: false, message: 'プロフィール画像の更新に失敗しました。' };
     }
   };
 
