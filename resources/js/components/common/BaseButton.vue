@@ -30,7 +30,7 @@ const props = defineProps({
   variant: {
     type: String,
     default: 'primary',
-    validator: (value) => ['primary', 'secondary', 'info', 'danger', 'ghost', 'icon', 'icon-danger', 'icon-primary'].includes(value),
+    validator: (value) => ['primary', 'secondary', 'info', 'danger', 'ghost', 'icon', 'icon-danger', 'icon-primary', 'icon-dark'].includes(value),
   },
   // ボタンの大きさを定義
   size: {
@@ -120,11 +120,16 @@ const variantClasses = computed(() => ({
   icon: 'text-slate-400 hover:text-slate-600 hover:bg-slate-200',
   'icon-danger': 'text-red-500 hover:bg-red-100',
   'icon-primary': 'text-violet-600 hover:bg-violet-100',
+  'icon-dark': 'text-white hover:text-white/80',
 }));
 
 // sizeプロパティとiconOnlyの有無に基づいて異なるパディングとフォントサイズを適用
 const sizeClasses = computed(() => {
   if (props.iconOnly) {
+    // NOTE:icon-darkは暗い背景用のため、paddingを適用しない
+    if (props.variant === 'icon-dark') {
+      return { sm: '', md: '', lg: '' };
+    }
     return {
       sm: 'p-1.5',
       md: 'p-2',
@@ -154,7 +159,19 @@ const tooltipClasses = computed(() => {
 });
 
 // 全てのクラス定義を結合し、最終的なボタンのスタイルを決定
-const buttonClasses = computed(() => [baseClasses, variantClasses.value[props.variant], sizeClasses.value[props.size], shapeClasses.value, { 'w-full': props.fullWidth, 'relative group': props.tooltip }]);
+const buttonClasses = computed(() => [
+  baseClasses,
+  variantClasses.value[props.variant],
+  sizeClasses.value[props.size],
+  shapeClasses.value,
+  {
+    'w-full': props.fullWidth,
+    'relative group': props.tooltip,
+    // NOTE: icon-darkは暗い背景用のため、フォーカスリングを無効化
+    // baseClassesの`focus:ring-2/focus:ring-offset-2`を確実に上書きするため!importantを使用
+    '!ring-0 !ring-offset-0 bg-transparent': props.variant === 'icon-dark',
+  },
+]);
 
 // ========================================
 // メソッド
@@ -174,4 +191,6 @@ ghost: 目立たせたくない補助的アクション（透明）
 icon: アイコンボタン
 icon-danger: 削除アイコンボタン
 icon-primary: 保存、更新、作成アイコンボタン
+icon-dark: 暗い背景上のアイコンボタン（白、padding無し、フォーカスリング無効化）
+           ※ !importantでbaseClassesのフォーカススタイルを上書き
 -->
