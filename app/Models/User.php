@@ -80,7 +80,7 @@ class User extends Authenticatable
     }
 
     /**
-     * アバター画像の有無を判定
+     * プロフィール画像の有無を判定
      *
      * @return bool
      */
@@ -90,7 +90,7 @@ class User extends Authenticatable
     }
 
     /**
-     * アバターのURLを取得
+     * プロフィール画像のURLを取得
      *
      * @return string|null
      */
@@ -104,7 +104,7 @@ class User extends Authenticatable
     }
 
     /**
-     * アバター未設定時に表示するイニシャルを生成
+     * プロフィール画像未設定時に表示するイニシャルを生成
      *
      * @return string
      */

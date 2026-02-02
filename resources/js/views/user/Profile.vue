@@ -5,7 +5,7 @@
     <div v-if="authStore.authUser">
       <h2 class="section-header">プロフィール</h2>
 
-      <!-- アバター部 -->
+      <!-- プロフィール画像部 -->
       <div class="flex justify-center mb-6">
         <UserAvatar :user="user" size="lg" />
       </div>

@@ -9,7 +9,7 @@ use Illuminate\Validation\ValidationException;
 class AvatarService
 {
     /**
-     * アバター画像をアップロード
+     * プロフィール画像をアップロード
      * @param UploadedFile $file
      * @param mixed $user
      * @return string
@@ -19,7 +19,7 @@ class AvatarService
         // マジックバイト検証
         $this->validateImageMimeType($file);
 
-        // 既存アバター削除
+        // 既存プロフィール画像削除
         if ($user->getRawOriginal('avatar')) {
             Storage::disk('public')->delete('images/avatars/' . $user->getRawOriginal('avatar'));
         }
@@ -42,6 +42,7 @@ class AvatarService
     private function validateImageMimeType(UploadedFile $file): void
     {
         $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        // ファイルの実データを読み込み、MIMEタイプを取得
         $mimeType = $finfo->file($file->getPathname());
 
         $allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];

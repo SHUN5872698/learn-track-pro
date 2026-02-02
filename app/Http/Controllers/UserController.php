@@ -39,7 +39,7 @@ class UserController extends Controller
     }
 
     /**
-     * アバター画像アップロード
+     * プロフィール画像アップロード
      *
      * @param AvatarUploadRequest $request
      * @param AvatarService $avatarService
@@ -51,7 +51,7 @@ class UserController extends Controller
         $avatarUrl = $avatarService->upload($request->file('avatar'), $user);
 
         return response()->json([
-            'message' => 'アバターを更新しました',
+            'message' => 'プロフィール画像を更新しました',
             'avatar_url' => $avatarUrl,
         ]);
     }

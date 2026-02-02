@@ -303,5 +303,51 @@ export const useAuthStore = defineStore('auth', {
         this.setAuthLoading(false);
       }
     },
+
+    // アバター画像アップロード
+    async uploadAvatar(file) {
+      this.setAuthLoading(true);
+      this.clearAuthErrors();
+
+      try {
+        // ファイルを送信するためにFormDataオブジェクトを作成
+        const formData = new FormData();
+        // 'avatar'というキー名でバックエンドと合わせる
+        formData.append('avatar', file);
+
+        // APIエンドポイントにFormDataをPOST
+        const response = await axios.post('/api/user/avatar', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        // 成功後、ストアのユーザー情報（アバターURL）を即時更新
+        if (this.user) {
+          this.user.avatar = response.data.avatar_url;
+        }
+
+        // 呼び出し元のコンポーネントに成功データ（メッセージと新しいURL）を返す
+        return {
+          success: true,
+          message: response.data.message,
+          avatar_url: response.data.avatar_url,
+        };
+      } catch (error) {
+        // バリデーションエラー(422)とそれ以外を分けてハンドリング
+        if (error?.response?.status === 422) {
+          this.setAuthErrors(error.response.data.errors);
+        } else {
+          console.error('❌ Pinia: アバターアップロード失敗', error);
+          this.setAuthErrors({
+            general: [error?.response?.data?.message || error?.message || 'アバターの更新に失敗しました'],
+          });
+        }
+        // エラーを呼び出し元にスローして、UI側で検知できるようにする
+        throw error;
+      } finally {
+        this.setAuthLoading(false);
+      }
+    },
   },
 });

@@ -26,6 +26,17 @@ export const useUser = () => {
     }
   };
 
+  // アバターアップロード機能
+  const uploadAvatar = async (file) => {
+    try {
+      const result = await authStore.uploadAvatar(file);
+      return result;
+    } catch (error) {
+      console.error('Failed to upload avatar:', error);
+      return { success: false, message: 'アバターの更新に失敗しました。' };
+    }
+  };
+
   // ユーザーのイニシャルを生成
   const getUserInitials = (name) => {
     if (!name) return '';
@@ -49,6 +60,7 @@ export const useUser = () => {
   return {
     user: user.value,
     updateUserProfile,
+    uploadAvatar,
     getUserInitials,
   };
 };
