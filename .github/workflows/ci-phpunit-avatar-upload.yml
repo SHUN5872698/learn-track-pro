@@ -1,0 +1,51 @@
+name: CI (PHPUnit - AvatarUploadTest)
+
+on:
+  pull_request:
+    paths:
+      - "**"
+      - ".github/workflows/ci-phpunit-avatar-upload.yml"
+  workflow_dispatch:
+
+# ワークフロー全体の権限は無効化（最小権限）
+permissions: {}
+
+jobs:
+  phpunit:
+    name: Run PHPUnit (AvatarUploadTest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      contents: read
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: composer:v2
+
+      # 依存関係定義の事前チェック
+      - name: Validate Composer files
+        run: composer validate --no-interaction
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      # Laravelが起動可能な最低限の設定を整える
+      - name: Generate app key
+        run: |
+          cp -n .env.example .env || true
+          php artisan key:generate
+
+      - name: Run tests (AvatarUploadTest only)
+        run: php artisan test --filter=AvatarUploadTest
