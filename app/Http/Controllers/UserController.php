@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\User\ProfileRequest;
+use App\Http\Requests\User\AvatarUploadRequest;
+use App\Services\User\AvatarService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -33,6 +35,24 @@ class UserController extends Controller
         return response()->json([
             'user' => $user,
             'message' => 'プロフィールを更新しました'
+        ]);
+    }
+
+    /**
+     * プロフィール画像アップロード
+     *
+     * @param AvatarUploadRequest $request
+     * @param AvatarService $avatarService
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function avatarUpload(AvatarUploadRequest $request, AvatarService $avatarService)
+    {
+        $user = $request->user();
+        $avatarUrl = $avatarService->upload($request->file('avatar'), $user);
+
+        return response()->json([
+            'message' => 'プロフィール画像を更新しました',
+            'avatar_url' => $avatarUrl,
         ]);
     }
 }

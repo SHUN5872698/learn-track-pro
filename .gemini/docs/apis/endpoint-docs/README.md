@@ -18,8 +18,8 @@ LearnTrack ProのAPIテスト環境（Apidog）の構築・運用に関する包
 
 - [auth-user-api.md](./auth-user-api.md)
 - [Notion](https://www.notion.so/API-28a9d86c12e88029a8b0f5076ae4cd50?pvs=21)
-- **エンドポイント**: `/sanctum/csrf-cookie`, `/fortify/register`, `/fortify/login`, `/fortify/logout`, `/api/user`
-- **ポイント**: CSRF保護、セッション認証、プロフィール更新
+- **エンドポイント**: `/sanctum/csrf-cookie`, `/fortify/register`, `/fortify/login`, `/fortify/logout`, `/api/user`, `/api/user/avatar`
+- **ポイント**: CSRF保護、セッション認証、プロフィール更新、プロフィール画像アップロード
 
 ### 2. マスターデータAPI
 
@@ -178,6 +178,7 @@ graph LR
 **適用範囲の重要事項**
 
 - XSRF-Tokenの取得エンドポイントを除く、すべての処理に適用が必須
+
 </aside>
 
 ### Pre-processor: 認証設定
@@ -420,19 +421,19 @@ if (pm.response.code === 200 || pm.response.code === 204) {
 **Phase 0（必須）**
 
 - ✅ **上限値+1テスト**: 最も重要な異常系テスト
-    - 全Create/Update APIで実施
-    - 422エラーと適切なエラーメッセージの確認
+  - 全Create/Update APIで実施
+  - 422エラーと適切なエラーメッセージの確認
 
 **Phase 1（推奨）**
 
 - **上限値ちょうどテスト**: 正常に登録できることを確認
-    - 主要なAPIで実施（ユーザー登録、学習内容作成、学習記録作成）
+  - 主要なAPIで実施（ユーザー登録、学習内容作成、学習記録作成）
 
 **Phase 2（オプション）**
 
 - **下限値テスト**: 最小値の動作確認
-    - パスワード（8文字/7文字）
-    - 学習時間（1分/0分）
+  - パスワード（8文字/7文字）
+  - 学習時間（1分/0分）
 
 ---
 
@@ -475,17 +476,17 @@ if (pm.response.code === 200 || pm.response.code === 204) {
 ### 詳細なトラブルシューティング
 
 - 認証関連
-  -  [auth-user-api.md](./auth-user-api.md)
-  -  [Notion](https://www.notion.so/API-28a9d86c12e88029a8b0f5076ae4cd50?pvs=21)
+  - [auth-user-api.md](./auth-user-api.md)
+  - [Notion](https://www.notion.so/API-28a9d86c12e88029a8b0f5076ae4cd50?pvs=21)
 - 学習内容関連
-  -  [learning-contents-api.md](./learning-contents-api.md)
-  -  [Notion](https://www.notion.so/API-28a9d86c12e880d78bc8d04755d4714c?pvs=21)
+  - [learning-contents-api.md](./learning-contents-api.md)
+  - [Notion](https://www.notion.so/API-28a9d86c12e880d78bc8d04755d4714c?pvs=21)
 - セクション関連
-  -  [sections-api.md](./sections-api.md)
-  -  [Notion](https://www.notion.so/API-28a9d86c12e88041b2aec3bf8541859f?pvs=21)
+  - [sections-api.md](./sections-api.md)
+  - [Notion](https://www.notion.so/API-28a9d86c12e88041b2aec3bf8541859f?pvs=21)
 - 学習記録関連
-  -  [learning-sessions-api.md](./learning-sessions-api.md)
-  -  [Notion](https://www.notion.so/API-28a9d86c12e8809aa196dcd5a7bff5c0?pvs=21)
+  - [learning-sessions-api.md](./learning-sessions-api.md)
+  - [Notion](https://www.notion.so/API-28a9d86c12e8809aa196dcd5a7bff5c0?pvs=21)
 
 ---
 

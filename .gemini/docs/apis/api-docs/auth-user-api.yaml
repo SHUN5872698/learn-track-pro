@@ -582,6 +582,156 @@ paths:
                 $ref: '#/components/schemas/ValidationError'
           headers: {}
       security: []
+  /api/user/avatar:
+    post:
+      summary: プロフィール画像更新
+      deprecated: false
+      description: ''
+      operationId: updateUserAvatar
+      tags:
+        - User Management
+      parameters:
+        - name: Accept
+          in: header
+          description: Accept header
+          required: false
+          example: application/json
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: Content-Type header
+          required: false
+          example: multipart/form-data
+          schema:
+            type: string
+        - name: Referer
+          in: header
+          description: Referer header
+          required: false
+          example: '{{frontend_url}}'
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  format: binary
+                  type: string
+                  description: アップロードする画像ファイル
+                  example: ''
+              required:
+                - avatar
+            examples: {}
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              example:
+                message: プロフィール画像を更新しました
+                avatar_url: >-
+                  http://localhost:8000/storage/images/avatars/nsRRl8mH4vE7FLtFbIuM1Hw6lMwXDvk8vFcAqrfG.jpg
+          headers: {}
+        '401':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              example:
+                message: Unauthenticated.
+          headers: {}
+        '419':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  exception:
+                    type: string
+                  file:
+                    type: string
+                  line:
+                    type: integer
+                  trace:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        file:
+                          type: string
+                        line:
+                          type: integer
+                        function:
+                          type: string
+                        class:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                        - file
+                        - line
+                        - function
+                        - class
+                        - type
+                required:
+                  - message
+                  - exception
+                  - file
+                  - line
+                  - trace
+          headers: {}
+        '422':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                '3':
+                  summary: ファイルなし
+                  value:
+                    message: avatarは必須項目です。
+                    errors:
+                      avatar:
+                        - avatarは必須項目です。
+                '4':
+                  summary: サイズ超過
+                  value:
+                    message: avatarのアップロードに失敗しました。
+                    errors:
+                      avatar:
+                        - avatarのアップロードに失敗しました。
+                '5':
+                  summary: 非対応形式
+                  value:
+                    message: avatarには、以下のファイルタイプを指定してください。jpeg, png, webp
+                    errors:
+                      avatar:
+                        - avatarには、以下のファイルタイプを指定してください。jpeg, png, webp
+                '6':
+                  summary: マジックバイト検証失敗
+                  value:
+                    message: avatarには、画像を指定してください。 (その他、1エラーあり)
+                    errors:
+                      avatar:
+                        - avatarには、画像を指定してください。
+                        - avatarには、以下のファイルタイプを指定してください。jpeg, png, webp
+          headers: {}
+      security: []
   /api/user/password:
     put:
       summary: パスワード変更
@@ -775,7 +925,7 @@ paths:
         '302':
           description: ''
           content:
-            '*/*':
+            text/html:
               schema:
                 type: object
                 properties: {}
@@ -971,7 +1121,7 @@ paths:
         '302':
           description: ''
           content:
-            '*/*':
+            text/html:
               schema:
                 type: object
                 properties: {}
@@ -1044,6 +1194,7 @@ components:
             items:
               type: string
           properties: {}
+  responses: {}
   securitySchemes:
     sanctum11:
       type: apiKey

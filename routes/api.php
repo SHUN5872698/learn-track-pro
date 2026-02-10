@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/', [UserController::class, 'me']);
         Route::put('/profile', [UserController::class, 'profile']);
+        Route::post('/avatar', [UserController::class, 'avatarUpload']);
     });
 
     // ----------------------------------------

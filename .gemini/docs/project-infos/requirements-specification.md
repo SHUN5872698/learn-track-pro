@@ -7,9 +7,9 @@
 - ターゲット: 企業の採用担当者および技術者
 - 開発期間: 2025年9月3日〜10月11日（6週間）
 - 最終完成期限: 2025年10月11日（金）
-    - 当初予定: 2025年10月7日（火）
-    - **実績: 4日間遅延**
-    - MVP完成日: 2025年10月7日（火）
+  - 当初予定: 2025年10月7日（火）
+  - **実績: 4日間遅延**
+  - MVP完成日: 2025年10月7日（火）
 - 事前準備期間: 23日間（2025年8月11日〜9月2日）
 - 開発手法: APIファーストアプローチ with AI駆動開発（GeminiCLI + Claude）
 - 現在の状態: MVP完成、改善フェーズ
@@ -82,28 +82,28 @@
 
 - 学習内容登録（技術選択、タイトル、説明）
 - セクション管理（作成、編集、削除、並び替え）
-    - **学習内容作成時に最低1つのセクション登録が必須**
-    - 削除は2つ以上ある場合のみ可能
+  - **学習内容作成時に最低1つのセクション登録が必須**
+  - 削除は2つ以上ある場合のみ可能
 - 進捗率計算・表示（完了セクション数 / 総セクション数）
 - 学習内容一覧表示
-    - カード形式での表示
-    - 更新日時順の並び替え（デフォルト）
-    - 三点メニューからの操作（編集・詳細・削除・完了/再開）
+  - カード形式での表示
+  - 更新日時順の並び替え（デフォルト）
+  - 三点メニューからの操作（編集・詳細・削除・完了/再開）
 - 学習内容詳細表示
 - 学習内容編集（基本情報タブ/セクション管理タブ）
 - 学習内容削除（確認モーダル付き、カスケード削除）
 - 学習内容の完了/再開機能
-    - 全セクション完了時に完了可能
-    - 三点メニューから操作
-    - 完了後も再開可能
+  - 全セクション完了時に完了可能
+  - 三点メニューから操作
+  - 完了後も再開可能
 
 ### 3.1.3 学習記録機能
 
 - 手動記録入力
-    - 学習日選択（日付ピッカー）
-    - 学習時間入力（時間・分の選択）
-    - 学習メモ（任意）
-    - 調子評価（1-5段階、任意）
+  - 学習日選択（日付ピッカー）
+  - 学習時間入力（時間・分の選択）
+  - 学習メモ（任意）
+  - 調子評価（1-5段階、任意）
 
 ### 3.1.4 基本レポート機能
 
@@ -142,59 +142,73 @@
 
 ```mermaid
 flowchart TD
-    %% 認証
-    Login[Login.vue<br/>ログイン] --> Dashboard[Dashboard.vue<br/>ダッシュボード]
-    Login --> Register[Register.vue<br/>新規登録]
-    Register --> Login
-    Register --> Dashboard
-    Login --> PwdReset[PasswordReset.vue<br/>パスワードリセット]
-    PwdReset --> PwdResetConfirm[PasswordResetConfirm.vue<br/>パスワード変更]
-    PwdResetConfirm --> Login
+    subgraph "認証"
+        Login[Login.vue<br/>ログイン] --> Dashboard
+        Login --> Register[Register.vue<br/>新規登録]
+        Register --> Login
+        Register --> Dashboard
+        Login --> PwdReset[PasswordReset.vue<br/>パスワードリセット]
+        PwdReset --> PwdResetConfirm[PasswordResetConfirm.vue<br/>パスワード変更]
+        PwdResetConfirm --> Login
+    end
 
-    %% 学習内容管理
-    Dashboard --> CreateBtn[新規作成ボタン]
-    CreateBtn --> ContentCreate[LearningContentCreate.vue<br/>学習内容追加]
+    subgraph "メイン"
+        Dashboard[Dashboard.vue<br/>ダッシュボード]
+        ContentDetail[LearningContentDetail.vue<br/>学習内容詳細]
+        Reports[Reports.vue<br/>全体レポート]
+        Profile[Profile.vue<br/>プロフィール詳細]
+    end
+    
+    subgraph "学習内容"
+        ContentCreate[LearningContentCreate.vue<br/>学習内容追加]
+        ContentEdit[LearningContentEdit.vue<br/>学習内容編集]
+        DeleteModal[学習内容 削除確認モーダル]
+    end
 
-    Dashboard --> CardClick[カードクリック]
-    CardClick --> ContentDetail[LearningContentDetail.vue<br/>学習内容詳細]
+    subgraph "学習記録"
+        SessionCreate[StudySessionCreate.vue<br/>学習記録作成]
+        SessionEdit[StudySessionEdit.vue<br/>学習記録編集]
+        SectionRecords[SectionStudyRecords.vue<br/>セクション別 学習記録一覧]
+        RecordDeleteModal[学習記録 削除確認モーダル]
+    end
+    
+    subgraph "レポート"
+        Progress[StudyProgress.vue<br/>個別レポート]
+    end
 
-    Dashboard --> Menu[三点メニュー]
-    Menu --> ContentEdit[LearningContentEdit.vue<br/>学習内容編集]
-    Menu --> ContentDetail
-    Menu --> DeleteModal[削除確認モーダル]
-    Menu --> Progress[StudyProgress.vue<br/>個別レポート]
+    subgraph "ユーザー"
+        ProfileEdit[ProfileEdit.vue<br/>プロフィール編集]
+    end
 
-    Dashboard --> QuickAdd[記録を追加ボタン]
-    QuickAdd --> SessionCreate[StudySessionCreate.vue<br/>学習記録作成]
+    %% ナビゲーション
+    Dashboard -- "サイドバー" --> Reports
+    Dashboard -- "サイドバー" --> Profile
+    Dashboard -- "ログアウト" --> Login
+    
+    %% ダッシュボードからのアクション
+    Dashboard -- "学習を追加" --> ContentCreate
+    Dashboard -- "カードクリック" --> ContentDetail
+    Dashboard -- "三点メニュー" --> ContentEdit
+    Dashboard -- "三点メニュー" --> ContentDetail
+    Dashboard -- "三点メニュー" --> DeleteModal
+    Dashboard -- "記録を追加" --> SessionCreate
 
-    %% 学習内容詳細
-    ContentDetail --> ContentEdit
-    ContentDetail --> Progress
-    ContentDetail --> SectionClick[セクション]
-    SectionClick --> SectionRecords[SectionStudyRecords.vue<br/>学習記録一覧]
+    %% 学習内容詳細からのアクション
+    ContentDetail -- "内容を編集" --> ContentEdit
+    ContentDetail -- "個別レポート" --> Progress
+    ContentDetail -- "セクションクリック" --> SectionRecords
 
-    %% 学習記録一覧
-    SectionRecords --> RecordAdd[記録を追加]
-    RecordAdd --> SessionCreate
-    SectionRecords --> RecordEdit[編集ボタン]
-    RecordEdit --> SessionEdit[StudySessionEdit.vue<br/>学習記録編集]
-    SectionRecords --> RecordDel[削除ボタン]
-    RecordDel --> RecordDeleteModal[削除確認モーダル]
+    %% セクション別学習記録からのアクション
+    SectionRecords -- "記録を追加" --> SessionCreate
+    SectionRecords -- "編集" --> SessionEdit
+    SectionRecords -- "削除" --> RecordDeleteModal
 
-    %% レポート
-    Dashboard --> NavReport[レポート]
-    NavReport --> Reports[Reports.vue<br/>全体レポート]
-    Reports --> Progress
-    Reports --> SessionEdit
-
-    %% ユーザー
-    Dashboard --> NavProfile[プロフィール]
-    NavProfile --> Profile[Profile.vue<br/>プロフィール詳細]
-    Profile --> ProfileEdit[ProfileEdit.vue<br/>プロフィール編集]
-
-    %% ログアウト
-    Dashboard --> Logout[ログアウト]
-    Logout --> Login
+    %% 全体レポートからのアクション
+    Reports -- "編集" --> SessionEdit
+    Reports -- "削除" --> RecordDeleteModal
+    
+    %% プロフィールからのアクション
+    Profile -- "編集" --> ProfileEdit
 ```
 
 ---
@@ -204,7 +218,7 @@ flowchart TD
 ### 5.1 RESTful エンドポイント
 
 1. 認証関連
-    
+
     ```bash
     # CSRF保護
     GET    /sanctum/csrf-cookie
@@ -219,8 +233,8 @@ flowchart TD
     # ユーザー情報管理（自前API）
     GET    /api/user
     PUT    /api/user/profile
+    POST   /api/user/avatar
     ```
-    
 
 2. マスターデータ
 
@@ -232,7 +246,7 @@ GET    /api/technologies?category_id={id}     # カテゴリー別技術一覧
 
 ```
 
-3. 学習内容管理
+1. 学習内容管理
 
 ```bash
 GET    /api/learning-contents                 # 学習内容一覧
@@ -246,7 +260,7 @@ PUT    /api/learning-contents/{id}/reopen     # 学習を再開
 ```
 
 1. セクション管理
-    
+
     ```bash
     GET    /api/learning-contents/{id}/sections                      # セクション一覧
     POST   /api/sections                                             # セクション追加
@@ -255,9 +269,9 @@ PUT    /api/learning-contents/{id}/reopen     # 学習を再開
     PUT    /api/learning-contents/{learningContentId}/sections/bulk  # セクション一括更新
     DELETE /api/sections/{id}                                        # セクション削除
     ```
-    
+
 2. 学習記録
-    
+
     ```bash
     GET    /api/learning-sessions                                       # 学習記録一覧
     POST   /api/learning-sessions                                       # 学習記録作成
@@ -267,9 +281,9 @@ PUT    /api/learning-contents/{id}/reopen     # 学習を再開
     GET    /api/sections/{sectionId}/sessions                           # セクション別学習記録
     GET    /api/learning-contents/{learningContentId}/sessions          # 学習内容別学習記録
     ```
-    
+
 3. レポート・統計
-    
+
     ```bash
     GET    /api/learning-sessions/statistics/summary                    # 統計サマリー
     GET    /api/learning-sessions/statistics/monthly                    # 月別統計
@@ -278,7 +292,6 @@ PUT    /api/learning-contents/{id}/reopen     # 学習を再開
     GET    /api/learning-sessions/statistics/latest-by-content          # 学習内容別最新記録取得
     GET    /api/learning-contents/{learningContentId}/statistics/daily  # 学習内容別日別統計取得
     ```
-    
 
 ---
 
@@ -532,28 +545,28 @@ sequenceDiagram
 
 - CI/CDパイプライン構築
 - AWSへのデプロイ
-    - 本番環境構築・デプロイ
-    - SSL証明書設定・独自ドメイン対応
-    - 監視・ログ設定
+  - 本番環境構築・デプロイ
+  - SSL証明書設定・独自ドメイン対応
+  - 監視・ログ設定
 
 ---
 
 ## 10. まとめ
 
-### 10.1 本プロジェクトは、プログラミング学習に特化した管理プラットフォームとして、以下を実現します：
+### 10.1 本プロジェクトは、プログラミング学習に特化した管理プラットフォームとして、以下を実現します
 
 1. 技術的成長: Laravel 12 + Vue.js 3 + Tailwind CSSの実践習得
 2. 差別化価値: StudyPlusにない「教材非依存」の学習管理
 3. 実用性: 手動入力による詳細な学習記録管理
 4. 転職活動: モダン技術習得とSPA認証実装の実績
 
-### 10.2 APIファーストアプローチとAI駆動開発により:
+### 10.2 APIファーストアプローチとAI駆動開発により
 
 - 効率的な開発プロセス
 - 高品質なコード生成
 - 段階的な機能拡張
 
-### 10.3 MVP完成により:
+### 10.3 MVP完成により
 
 - コア機能の完成
 - 改善フェーズへの移行

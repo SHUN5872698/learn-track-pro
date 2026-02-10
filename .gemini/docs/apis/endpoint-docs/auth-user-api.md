@@ -14,6 +14,7 @@ POST   /fortify/reset-password
 # ユーザー情報管理（自前API）
 GET    /api/user
 PUT    /api/user/profile
+POST   /api/user/avatar
 ```
 
 ---
@@ -82,7 +83,7 @@ is_authenticated: false
 ## 共通設定（全エンドポイント - XSRF-Token取得以外）
 
 - **Pre-processor**:
-    
+
     ```jsx
     const xsrfToken = pm.environment.get('XSRF_TOKEN');
     if (xsrfToken) {
@@ -94,9 +95,9 @@ is_authenticated: false
     }
     
     ```
-    
+
 - **Post-processor**:
-    
+
     ```jsx
     const newXsrfToken = pm.cookies.get('XSRF-TOKEN');
     if (newXsrfToken) {
@@ -108,7 +109,6 @@ is_authenticated: false
     }
     
     ```
-    
 
 ---
 
@@ -127,7 +127,7 @@ is_authenticated: false
 **Pre-processor**: なし（共通設定適用外）
 
 - **Post-processor**:
-    
+
     ```jsx
     const xsrfToken = pm.cookies.get('XSRF-TOKEN');
     if (xsrfToken) {
@@ -136,7 +136,6 @@ is_authenticated: false
     }
     
     ```
-    
 
 **Mock Response**: 204 No Content
 
@@ -153,8 +152,9 @@ is_authenticated: false
 | --- | --- |
 | Accept | application/json |
 | Content-Type | application/json |
+
 - **Request Body (JSON)**:
-    
+
     ```json
     {
         "name": "田中 太郎",
@@ -164,9 +164,9 @@ is_authenticated: false
     }
     
     ```
-    
+
 - **Mock Response 201**:
-    
+
     ```json
     {
         "id": 1,
@@ -178,9 +178,9 @@ is_authenticated: false
         "updated_at": "2025-08-21T10:00:00.000000Z",
     }
     ```
-    
+
 - **Mock Response 422**:メールアドレスの重複
-    
+
     ```json
     {
         "message": "The given data was invalid.",
@@ -191,9 +191,9 @@ is_authenticated: false
     }
     
     ```
-    
+
 - **Mock Response 422**:未入力
-    
+
     ```json
     {
         "message": "名前は必須項目です。 (その他、2エラーあり)",
@@ -210,9 +210,9 @@ is_authenticated: false
         }
     }
     ```
-    
+
 - **Mock Response 422**:バリデーションエラー
-    
+
     ```json
     {
         "message": "名前の文字数は、50文字以下である必要があります。 (その他、2エラーあり)",
@@ -229,7 +229,6 @@ is_authenticated: false
         }
     }
     ```
-    
 
 ---
 
@@ -244,8 +243,9 @@ is_authenticated: false
 | --- | --- |
 | Accept | application/json |
 | Content-Type | application/json |
+
 - **Request Body (JSON)**:
-    
+
     ```json
     {
         "email": "tanaka@example.com",
@@ -253,26 +253,26 @@ is_authenticated: false
     }
     
     ```
-    
+
 - **Post-processor（個別追加）**:
-    
+
     ```jsx
     if (pm.response.code === 200) {
         pm.environment.set('is_authenticated', 'true');
         console.log("✅ ログイン成功");
     }
     ```
-    
+
 - **Mock Response 200**:
-    
+
     ```json
     {
         "two_factor": false
     }
     ```
-    
+
 - **Mock Response 302**:
-    
+
     ```html
     <!DOCTYPE html>
     <html>
@@ -290,9 +290,9 @@ is_authenticated: false
     
     </html>
     ```
-    
+
 - **Mock Response 422**:
-    
+
     ```json
     {
         "message": "認証に失敗しました。",
@@ -303,7 +303,6 @@ is_authenticated: false
         }
     }
     ```
-    
 
 ---
 
@@ -319,8 +318,9 @@ is_authenticated: false
 | Accept | application/json |
 | Content-Type | application/json |
 | Referer | {{frontend_url}} |
+
 - **Post-processor（個別追加）**:
-    
+
     ```jsx
     if (pm.response.code === 204) {
         pm.environment.set('is_authenticated', 'false');
@@ -328,16 +328,15 @@ is_authenticated: false
     }
     
     ```
-    
+
 - **Mock Response**: 204 No Content
 - **Mock Response 419**:
-    
+
     ```json
     {
         "message": "Unauthenticated."
     }
     ```
-    
 
 ---
 
@@ -353,8 +352,9 @@ is_authenticated: false
 | Accept | application/json |
 | Content-Type | application/json |
 | Referer | {{frontend_url}} |
+
 - **Mock Response 200**:
-    
+
     ```json
     {
         "id": 26,
@@ -371,16 +371,15 @@ is_authenticated: false
         "initials": "田中"
     }
     ```
-    
+
 - **Mock Response 401**:
-    
+
     ```json
     {
         "message": "Unauthenticated."
     }
     
     ```
-    
 
 ---
 
@@ -396,8 +395,9 @@ is_authenticated: false
 | Accept | application/json |
 | Content-Type | application/json |
 | Referer | {{frontend_url}} |
+
 - **Request Body (JSON)**:
-    
+
     ```json
     {
         "name": "田中 次郎",
@@ -405,9 +405,9 @@ is_authenticated: false
     }
     
     ```
-    
+
 - **Mock Response 200**:
-    
+
     ```json
     {
         "user": {
@@ -427,9 +427,9 @@ is_authenticated: false
         "message": "プロフィールを更新しました"
     }
     ```
-    
+
 - **Mock Response 422**:
-    
+
     ```json
     {
         "message": "The given data was invalid.",
@@ -439,11 +439,122 @@ is_authenticated: false
     }
     
     ```
-    
 
 ---
 
-## ~~7. パスワード変更~~
+## 7. **プロフィール画像更新**
+
+- **Method**: POST
+- **URL**: `/api/user/avatar`
+
+**Headers**:
+
+| Key | Value |
+| --- | --- |
+| Accept | application/json |
+| Content-Type | multipart/form-data |
+| Referer | {{frontend_url}} |
+
+- **Request Body (Form Data)**
+
+    | Parameter | Type | Required | サンプル値 | Description |
+    | --- | --- | --- | --- | --- |
+    | avatar | file | ✅ | テストケースに追加 | プロフィール用のアップロード画像ファイル |
+
+- **Mock Response 200**:
+
+    ```json
+    {
+        "message": "プロフィール画像を更新しました",
+        "avatar_url": "http://localhost:8000/storage/images/avatars/6sqtdecJTDsVboyPrfz79ps1zaXflNXhefP13JN0.jpg"
+    }
+    ```
+
+- **401 Unauthorized（認証なし）**
+
+    ```json
+    {
+        "message": "Unauthenticated."
+    }
+    ```
+
+- **Mock Response 419:（トークン未取得）**
+
+    ```json
+    {
+        "message": "Unauthenticated."
+    }
+    ```
+
+- **422 Validation Error（ファイルなし）**
+
+    ```json
+    {
+        "message": "avatarは必須項目です。",
+        "errors": {
+            "avatar": [
+                "avatarは必須項目です。"
+            ]
+        }
+    }
+    ```
+
+- **422 Validation Error（サイズ超過）**
+
+    ```json
+    {
+        "message": "avatarのアップロードに失敗しました。",
+        "errors": {
+            "avatar": [
+                "avatarのアップロードに失敗しました。"
+            ]
+        }
+    }
+    ```
+
+- **422 Validation Error（非対応形式）**
+
+    ```json
+    {
+        "message": "avatarには、以下のファイルタイプを指定してください。jpeg, png, webp",
+        "errors": {
+            "avatar": [
+                "avatarには、以下のファイルタイプを指定してください。jpeg, png, webp"
+            ]
+        }
+    }
+    ```
+
+- **422 Validation Error（マジックバイト検証失敗）**
+
+    ```json
+    {
+        "message": "avatarには、画像を指定してください。 (その他、1エラーあり)",
+        "errors": {
+            "avatar": [
+                "avatarには、画像を指定してください。",
+                "avatarには、以下のファイルタイプを指定してください。jpeg, png, webp"
+            ]
+        }
+    }
+    ```
+
+- **自動テスト（一括テスト）**
+
+    | **名前** | **説明** | **ステップ** |
+    | --- | --- | --- |
+    | avatar | プロフィール画像のアップロードについて、認証なし、ログイン、正常系、異常系を一括実行して検証 | 1. トークン未取得でアップロード
+
+    1. CSRF Cookie取得
+    2. 未ログイン状態でアップロード
+    3. ログイン
+    4. 正常系
+    5. 異常系
+    6. セキュリティ（マジックバイト） |
+
+---
+
+## ~~8. パスワード変更~~
 
 - **Method**: PUT
 - **URL**: `/api/user/password`
@@ -455,8 +566,9 @@ is_authenticated: false
 | Accept | application/json |
 | Content-Type | application/json |
 | Referer | {{frontend_url}} |
+
 - **Request Body (JSON)**:
-    
+
     ```json
     {
         "current_password": "password123",
@@ -465,18 +577,18 @@ is_authenticated: false
     }
     
     ```
-    
+
 - **Mock Response 200**:
-    
+
     ```json
     {
         "message": "パスワードを変更しました。"
     }
     
     ```
-    
+
 - **Mock Response 422**:
-    
+
     ```json
     {
         "message": "The given data was invalid.",
@@ -487,11 +599,10 @@ is_authenticated: false
     }
     
     ```
-    
 
 ---
 
-## 8. パスワードリセット要求
+## 9. パスワードリセット要求
 
 - **Method**: POST
 - **URL**: `/fortify/forgot-password`
@@ -502,26 +613,27 @@ is_authenticated: false
 | --- | --- |
 | Accept | application/json |
 | Content-Type | application/json |
+
 - **Request Body (JSON)**:
-    
+
     ```json
     {
         "email": "tanaka@example.com"
     }
     
     ```
-    
+
 - **Mock Response 200**:
-    
+
     ```json
     {
         "message": "パスワードリセット用のメールを送信しました。"
     }
     
     ```
-    
+
 - **Mock Response 302**:ログイン中（guest middlewareによるリダイレクト）
-    
+
     ```json
     <!DOCTYPE html>
     <html>
@@ -536,9 +648,9 @@ is_authenticated: false
         </body>
     </html>
     ```
-    
+
 - **Mock Response 422**:
-    
+
     ```json
     {
         "message": "このメールアドレスに一致するユーザーがいません。",
@@ -549,11 +661,10 @@ is_authenticated: false
         }
     }
     ```
-    
 
 ---
 
-## 9. パスワードリセット実行
+## 10. パスワードリセット実行
 
 - **Method**: POST
 - **URL**: `/fortify/reset-password`
@@ -574,11 +685,12 @@ is_authenticated: false
 
 **メール内のURL形式**
 
-- http://localhost:5173/reset-password/{token}?email={メールアドレス}
+- <http://localhost:5173/reset-password/{token}?email={メールアドレス}>
 
 **例**
 
-- http://localhost:5173/reset-password/abc123def456ghi789?email=tanaka@example.com ←`abc123def456ghi789`部分をコピー
+- <http://localhost:5173/reset-password/abc123def456ghi789?email=tanaka@example.com> ←`abc123def456ghi789`部分をコピー
+
 </aside>
 
 **Headers**:
@@ -587,8 +699,9 @@ is_authenticated: false
 | --- | --- |
 | Accept | application/json |
 | Content-Type | application/json |
+
 - **Request Body (JSON)**:
-    
+
     ```json
     {
         "token": "{token}",
@@ -598,17 +711,17 @@ is_authenticated: false
     }
     
     ```
-    
+
 - **Mock Response 200**:
-    
+
     ```json
     {
         "message": "パスワードが再設定されました。"
     }
     ```
-    
+
 - **Mock Response 302**:ログイン中（guest middlewareによるリダイレクト）
-    
+
     ```json
     <!DOCTYPE html>
     <html>
@@ -623,9 +736,9 @@ is_authenticated: false
         </body>
     </html>
     ```
-    
+
 - **Mock Response 422**:
-    
+
     ```json
     // 未登録
     {
@@ -664,6 +777,5 @@ is_authenticated: false
     }
     
     ```
-    
 
 ---

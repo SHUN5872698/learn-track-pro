@@ -7,7 +7,7 @@
 ## 構造更新プロンプト
 
 ```markdown
-.gemini/docs/architectures/Vueアプリケーションディレクトリ構造.md
+.gemini/docs/architectures/vue-application-directory-structure.md
 
 ## 指示
 1. `tree ./resources/js/ -a -L 3 --dirsfirst -I 'node_modules|.DS_Store|.git|*.backup'`コマンドを実行してください。
@@ -21,7 +21,7 @@
 ```
 
 ```markdown
-.gemini/docs/architectures/Vueアプリケーションディレクトリ構造.md
+.gemini/docs/architectures/vue-application-directory-structure.md
 
 ## 指示
 - インポート関係図 `を、現在のディレクトリ構造と突き合わせて更新してください。
@@ -57,6 +57,7 @@ resources/js/
 │   │   │   └── DeleteButton.vue             # 削除ボタン
 │   │   ├── AppHeader.vue                    # アプリケーションヘッダー
 │   │   ├── AppSidebar.vue                   # アプリケーションサイドバー
+│   │   ├── AvatarUploadModal.vue            # プロフィール画像アップロード用モーダル
 │   │   ├── BaseButton.vue                   # 基本ボタンコンポーネント
 │   │   ├── ConfirmModal.vue                 # 確認モーダルコンポーネント
 │   │   ├── DatePickerModal.vue              # 日付選択モーダルコンポーネント
@@ -66,7 +67,7 @@ resources/js/
 │   │   ├── SectionSelector.vue              # セクション選択ドロップダウン
 │   │   ├── SuccessToast.vue                 # 完了通知アラート
 │   │   ├── TimeInputModal.vue               # 時間入力モーダルコンポーネント
-│   │   └── UserAvatar.vue                   # ユーザーアバターコンポーネント
+│   │   └── UserAvatar.vue                   # ユーザープロフィール画像コンポーネント
 │   │
 │   ├── layout/                              # レイアウト関連コンポーネント
 │   │   ├── DetailBreadcrumb.vue             # 詳細画面のパンくずリスト
@@ -157,7 +158,6 @@ resources/js/
 ├── App.vue                                  # ルートコンポーネント
 ├── bootstrap.js                             # アプリケーションの初期設定（Axiosなど）
 └── router.js                                # Vue Router設定
-
 ```
 
 ---
@@ -178,7 +178,6 @@ graph TD
         F[learning/useSections]
         G[learning/useLearningSessions]
         P[useSectionStatus]
-        L[useAuth]
         M[useStudySessionForm]
         O[useLearningContentForm]
         Q[useWizardForm]
@@ -198,6 +197,7 @@ graph TD
         I[api/learningContent]
         J[api/learningSession]
         K[api/sections]
+        API_Reports[api/reports]
     end
 
     subgraph Validators
@@ -209,59 +209,59 @@ graph TD
         W[plugins/axios]
     end
 
-    %% Views & Components → Composables
+    %% Views & Components Dependencies
     X --> A
-    X --> L
     X --> M
     X --> O
     X --> Q
-    X --> P
     X --> B
-    X --> C
-    
-    %% Views & Components → Stores直接アクセス
     X --> S
     X --> T
     X --> U
-    
-    %% Views & Components → Validators
+    X --> R
+    X --> LC
+    X --> LS
+    X --> SC
     X --> V
-    
-    %% Views & Components → Plugins
-    X --> W
 
-    %% Composables間の依存
+    %% Composables Dependencies
     A --> B
     A --> C
     A --> E
-    A --> F
-    A --> G
-    A --> P
-    L --> B
+    E --> P
+    F --> P
     M --> N
-    Q --> X
-
-    %% Composables → Stores
-    E --> LC
-    F --> SC
-    G --> LS
     B --> R
 
-    %% Stores → API
+    %% Composables to Stores
+    A --> LC
+    A --> SC
+    A --> S
+    A --> LS
+    E --> LC
+    E --> S
+    G --> LS
+    G --> LC
+    G --> SC
+    F --> SC
+
+    %% Stores to API / Plugins
+    R --> W
     LC --> I
     LS --> J
     SC --> K
+    T --> API_Reports
 
-    %% Plugins → Stores
-    W --> U
-
-    %% API → Plugins（axios使用）
+    %% API to Plugins
     I --> W
     J --> W
     K --> W
+    API_Reports --> W
+
+    %% Plugins to Stores
+    W --> U
 
     style A fill:#c9d1f3,stroke:#333,stroke-width:2px
-    style L fill:#d5e8d4,stroke:#333,stroke-width:2px
     style M fill:#d5e8d4,stroke:#333,stroke-width:2px
     style P fill:#c9d1f3,stroke:#333,stroke-width:2px
     style O fill:#d5e8d4,stroke:#333,stroke-width:2px
@@ -277,14 +277,19 @@ graph TD
 ## なぜこの構造が良いか
 
 1. 直感的な配置
+
 - ページはviews/
 - 部品はcomponents/
 - ロジックはcomposables/
+
 1. 適度な整理
+
 - 認証関連：views/auth/とcomponents/auth/
 - 学習関連：components/learning/
 - 機能ごとにまとまっているが、過度に複雑ではない
+
 1. 現実的な規模感
+
 - features/のような深い階層は避ける
 - MVPの規模に適している
 - 将来の拡張も可能

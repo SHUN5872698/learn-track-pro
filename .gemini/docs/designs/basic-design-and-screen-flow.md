@@ -392,9 +392,15 @@
 │                                                         │
 │ ┌─────────────────────────────────────────────────────┐ │
 │ │ ⚠️ 入力エラー                                         │ │
-│ │ • 名前は必須です                                       │ │
+│ │ • 名前は必須です                                      │ │
 │ │ • パスワードが一致しません                              │ │
 │ └─────────────────────────────────────────────────────┘ │
+│                                                         │
+│ プロフィール画像                                           │
+│ ┌────────┐                                              │
+│ │  📷    │  [画像を変更]                                  │
+│ │ avatar │  ※クリックでモーダルを表示                       │
+│ └────────┘                                              │
 │                                                         │
 │ 名前*                                                    │
 │ ┌─────────────────────────────────────────────────────┐ │
@@ -406,14 +412,33 @@
 │ │ taro.yamada@example.com                             │ │
 │ └─────────────────────────────────────────────────────┘ │
 │                                                         │
-│ アバター画像                                              │
-│ [📷] [画像を変更]                                         │
-│ ※画像アップロード機能は準備中です                            │
-│                                                         │
-│──────────────────────────────────────────────────────── │
-│                              [キャンセル]        [保存]    │
+│ [キャンセル]                                     [保存]    │
 └─────────────────────────────────────────────────────────┘
 
+```
+
+### モーダル
+
+```markdown
+#### プロフィール画像更新モーダル
+##### **AvatarUploadModal.vue**
+┌──────────────────────────────────────────────────┐
+│  プロフィール画像を変更                         [×]  │
+├──────────────────────────────────────────────────┤
+│                                                  │
+│               ┌────────────────┐                 │
+│               │   プレビュー    │                 │
+│               │      📷        │                 │
+│               └────────────────┘                 │
+│         ⚠️ エラーメッセージ表示エリア                 │
+│                                                  │
+│         推奨: 400x400px 以上の正                   │
+│         対応形式: JPEG, PNG, WebP（最大2MB）        │
+│                                                  │
+│                                                  │
+├──────────────────────────────────────────────────┤
+│                        [キャンセル] [適用する]      │
+└──────────────────────────────────────────────────┘
 ```
 
 ---
@@ -1211,63 +1236,77 @@
 
 ```mermaid
 flowchart TD
-    %% 認証
-    Login[Login.vue<br/>ログイン] --> Dashboard[Dashboard.vue<br/>ダッシュボード]
-    Login --> Register[Register.vue<br/>新規登録]
-    Register --> Login
-    Register --> Dashboard
-    Login --> PwdReset[PasswordReset.vue<br/>パスワードリセット]
-    PwdReset --> PwdResetConfirm[PasswordResetConfirm.vue<br/>パスワード変更]
-    PwdResetConfirm --> Login
+    subgraph "認証"
+        Login[Login.vue<br/>ログイン] --> Dashboard
+        Login --> Register[Register.vue<br/>新規登録]
+        Register --> Login
+        Register --> Dashboard
+        Login --> PwdReset[PasswordReset.vue<br/>パスワードリセット]
+        PwdReset --> PwdResetConfirm[PasswordResetConfirm.vue<br/>パスワード変更]
+        PwdResetConfirm --> Login
+    end
 
-    %% 学習内容管理
-    Dashboard --> CreateBtn[新規作成ボタン]
-    CreateBtn --> ContentCreate[LearningContentCreate.vue<br/>学習内容追加]
+    subgraph "メイン"
+        Dashboard[Dashboard.vue<br/>ダッシュボード]
+        ContentDetail[LearningContentDetail.vue<br/>学習内容詳細]
+        Reports[Reports.vue<br/>全体レポート]
+        Profile[Profile.vue<br/>プロフィール詳細]
+    end
+    
+    subgraph "学習内容"
+        ContentCreate[LearningContentCreate.vue<br/>学習内容追加]
+        ContentEdit[LearningContentEdit.vue<br/>学習内容編集]
+        DeleteModal[学習内容 削除確認モーダル]
+    end
 
-    Dashboard --> CardClick[カードクリック]
-    CardClick --> ContentDetail[LearningContentDetail.vue<br/>学習内容詳細]
+    subgraph "学習記録"
+        SessionCreate[StudySessionCreate.vue<br/>学習記録作成]
+        SessionEdit[StudySessionEdit.vue<br/>学習記録編集]
+        SectionRecords[SectionStudyRecords.vue<br/>セクション別 学習記録一覧]
+        RecordDeleteModal[学習記録 削除確認モーダル]
+    end
+    
+    subgraph "レポート"
+        Progress[StudyProgress.vue<br/>個別レポート]
+    end
 
-    Dashboard --> Menu[三点メニュー]
-    Menu --> ContentEdit[LearningContentEdit.vue<br/>学習内容編集]
-    Menu --> ContentDetail
-    Menu --> DeleteModal[削除確認モーダル]
-    Menu --> Progress[StudyProgress.vue<br/>個別レポート]
+    subgraph "ユーザー"
+        ProfileEdit[ProfileEdit.vue<br/>プロフィール編集]
+    end
 
-    Dashboard --> QuickAdd[記録を追加ボタン]
-    QuickAdd --> SessionCreate[StudySessionCreate.vue<br/>学習記録作成]
+    %% ナビゲーション
+    Dashboard -- "サイドバー" --> Reports
+    Dashboard -- "サイドバー" --> Profile
+    Dashboard -- "ログアウト" --> Login
+    
+    %% ダッシュボードからのアクション
+    Dashboard -- "学習を追加" --> ContentCreate
+    Dashboard -- "カードクリック" --> ContentDetail
+    Dashboard -- "三点メニュー" --> ContentEdit
+    Dashboard -- "三点メニュー" --> ContentDetail
+    Dashboard -- "三点メニュー" --> DeleteModal
+    Dashboard -- "記録を追加" --> SessionCreate
 
-    %% 学習内容詳細
-    ContentDetail --> ContentEdit
-    ContentDetail --> Progress
-    ContentDetail --> SectionClick[セクション]
-    SectionClick --> SectionRecords[SectionStudyRecords.vue<br/>学習記録一覧]
+    %% 学習内容詳細からのアクション
+    ContentDetail -- "内容を編集" --> ContentEdit
+    ContentDetail -- "個別レポート" --> Progress
+    ContentDetail -- "セクションクリック" --> SectionRecords
 
-    %% 学習記録一覧
-    SectionRecords --> RecordAdd[記録を追加]
-    RecordAdd --> SessionCreate
-    SectionRecords --> RecordEdit[編集ボタン]
-    RecordEdit --> SessionEdit[StudySessionEdit.vue<br/>学習記録編集]
-    SectionRecords --> RecordDel[削除ボタン]
-    RecordDel --> RecordDeleteModal[削除確認モーダル]
+    %% セクション別学習記録からのアクション
+    SectionRecords -- "記録を追加" --> SessionCreate
+    SectionRecords -- "編集" --> SessionEdit
+    SectionRecords -- "削除" --> RecordDeleteModal
 
-    %% レポート
-    Dashboard --> NavReport[レポート]
-    NavReport --> Reports[Reports.vue<br/>全体レポート]
-    Reports --> Progress
-    Reports --> SessionEdit
-
-    %% ユーザー
-    Dashboard --> NavProfile[プロフィール]
-    NavProfile --> Profile[Profile.vue<br/>プロフィール詳細]
-    Profile --> ProfileEdit[ProfileEdit.vue<br/>プロフィール編集]
-
-    %% ログアウト
-    Dashboard --> Logout[ログアウト]
-    Logout --> Login
+    %% 全体レポートからのアクション
+    Reports -- "編集" --> SessionEdit
+    Reports -- "削除" --> RecordDeleteModal
+    
+    %% プロフィールからのアクション
+    Profile -- "編集" --> ProfileEdit
 ```
 
 ### Figma
 
-https://www.figma.com/design/3QfeLGfKLIqW8MUgVM8P40/%E7%94%BB%E9%9D%A2%E3%83%95%E3%83%AD%E3%83%BC?node-id=0-1&p=f&t=5xCCks9RSP20PNbD-0
+<https://www.figma.com/design/3QfeLGfKLIqW8MUgVM8P40/%E7%94%BB%E9%9D%A2%E3%83%95%E3%83%AD%E3%83%BC?node-id=0-1&p=f&t=5xCCks9RSP20PNbD-0>
 
 ---

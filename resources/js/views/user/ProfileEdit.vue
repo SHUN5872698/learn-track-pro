@@ -28,6 +28,15 @@
       <!-- プロフィール編集フォーム -->
       <form @submit.prevent="handleSubmit">
         <div class="space-y-6">
+          <!-- プロフィール画像表示と変更ボタン -->
+          <div>
+            <label for="avatar" class="form-label">プロフィール画像</label>
+            <div class="flex items-center space-x-4">
+              <UserAvatar :user="formData" size="md" />
+              <BaseButton type="button" variant="secondary" @click="isAvatarModalOpen = true">画像を変更</BaseButton>
+            </div>
+          </div>
+
           <!-- 名前入力フィールド -->
           <div>
             <label for="name" class="form-label">名前<span class="pl-1 text-red-500">*</span></label>
@@ -38,16 +47,6 @@
           <div>
             <label for="email-address" class="form-label">メールアドレス<span class="pl-1 text-red-500">*</span></label>
             <input id="email-address" name="email" type="email" autocomplete="off" class="form-input-base" :class="[showEmailBorder ? 'form-input-error' : 'form-input-normal']" placeholder="your@email.com" v-model="formData.email" @input="emailModified = true" />
-          </div>
-
-          <!-- アバター画像表示と変更ボタン -->
-          <div>
-            <label for="email-address" class="form-label">アバター画像</label>
-            <div class="flex items-center space-x-4">
-              <UserAvatar :user="formData" size="md" />
-              <BaseButton type="button" variant="secondary" :disabled="true">画像を変更</BaseButton>
-            </div>
-            <p class="mt-2 text-sm text-gray-500">※画像アップロード機能は準備中です</p>
           </div>
         </div>
       </form>
@@ -60,6 +59,7 @@
 
   <Teleport to="#app">
     <SuccessToast :show="showSuccessToast" title="更新完了" message="プロフィールを更新しました！" :duration="toastDuration" />
+    <AvatarUploadModal :is-open="isAvatarModalOpen" :user="formData" @close="isAvatarModalOpen = false" @updated="onAvatarUpdated" />
   </Teleport>
 </template>
 
@@ -81,6 +81,7 @@ import DetailLayout from '@/layouts/DetailLayout.vue';
 import BaseButton from '@/components/common/BaseButton.vue';
 import SuccessToast from '@/components/common/SuccessToast.vue';
 import UserAvatar from '@/components/common/UserAvatar.vue';
+import AvatarUploadModal from '@/components/common/AvatarUploadModal.vue';
 
 // バリデーション
 import { validateProfile } from '@/validators/profileValidator';
@@ -120,6 +121,7 @@ const emailModified = ref(false);
 const isSubmitting = ref(false);
 const imageError = ref(false);
 const showSuccessToast = ref(false);
+const isAvatarModalOpen = ref(false);
 
 // 定数
 const toastDuration = 2000; // 通知を表示させる時間
@@ -173,6 +175,11 @@ onMounted(async () => {
 // キャンセルボタンクリック時の処理: プロフィールページへ戻る
 const handleCancel = () => {
   router.push('/profile');
+};
+
+// プロフィール画像更新完了時の処理
+const onAvatarUpdated = (newAvatarUrl) => {
+  formData.avatar = newAvatarUrl;
 };
 
 // API送信処理

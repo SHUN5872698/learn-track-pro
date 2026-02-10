@@ -38,7 +38,7 @@ const imageError = ref(false);
 // ========================================
 // 算出プロパティ
 // ========================================
-// アバターコンテナの動的なクラスを生成
+// プロフィール画像コンテナの動的なクラスを生成
 const containerClasses = computed(() => {
   let sizeClass = '';
   switch (props.size) {
@@ -55,7 +55,7 @@ const containerClasses = computed(() => {
   return [`rounded-full overflow-hidden flex-shrink-0`, sizeClass];
 });
 
-// アバター画像の動的なクラスを生成
+// プロフィール画像の動的なクラスを生成
 const imageClasses = computed(() => {
   return [`object-cover w-full h-full`];
 });

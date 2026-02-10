@@ -6,6 +6,7 @@
 // ========================================
 // 定数定義
 // ========================================
+// ユーザー情報
 export const PROFILE_VALIDATION_RULES = {
   NAME_MIN_LENGTH: 1,
   NAME_MAX_LENGTH: 50,
@@ -13,6 +14,17 @@ export const PROFILE_VALIDATION_RULES = {
   AVATAR_MAX_LENGTH: 500,
 };
 
+// プロフィール画像ファイル
+export const AVATAR_FILE_RULES = {
+  MAX_SIZE: 2 * 1024 * 1024, // 2MB
+  ALLOWED_TYPES: ['image/jpeg', 'image/png', 'image/webp'],
+  ALLOWED_EXTENSIONS: ['.jpg', '.jpeg', '.png', '.webp'],
+};
+
+// ========================================
+// エラーメッセージ
+// ========================================
+// ユーザー情報
 export const PROFILE_ERROR_MESSAGES = {
   // 名前関連
   NAME_REQUIRED: '名前を入力してください',
@@ -24,9 +36,16 @@ export const PROFILE_ERROR_MESSAGES = {
   EMAIL_INVALID_FORMAT: '有効なメールアドレスを入力してください',
   EMAIL_MAX_LENGTH: `メールアドレスは${PROFILE_VALIDATION_RULES.EMAIL_MAX_LENGTH}文字以内で入力してください`,
 
-  // アバター関連
+  // プロフィール画像URL
   AVATAR_INVALID_URL: '有効なURLを入力してください',
   AVATAR_INVALID_IMAGE: '画像のURLを入力してください',
+};
+
+// プロフィール画像ファイル
+export const AVATAR_FILE_ERROR_MESSAGES = {
+  FILE_REQUIRED: '画像ファイルを選択してください',
+  FILE_TOO_LARGE: `画像ファイルは${AVATAR_FILE_RULES.MAX_SIZE / 1024 / 1024}MB以下にしてください`,
+  INVALID_TYPE: '対応形式: JPEG, PNG, WebP',
 };
 
 export const PROFILE_PATTERNS = {
@@ -86,7 +105,7 @@ export const validateEmail = (email) => {
 };
 
 /**
- * アバターURLのバリデーション
+ * プロフィール画像URLのバリデーション
  * @param {string} avatarUrl - 検証するURL
  * @returns {Object} { isValid: boolean, message: string }
  */
@@ -140,7 +159,7 @@ export const validateProfile = (profileData) => {
     isValid = false;
   }
 
-  // アバターURLのバリデーション
+  // プロフィール画像URLのバリデーション
   const avatarResult = validateAvatarUrl(profileData.avatar);
   if (!avatarResult.isValid) {
     errors.avatar = avatarResult.message;
@@ -148,6 +167,29 @@ export const validateProfile = (profileData) => {
   }
 
   return { isValid, errors };
+};
+
+/**
+ * プロフィール画像ファイルのバリデーション
+ * @param {File} file - 検証するファイルオブジェクト
+ * @returns {Object} { isValid: boolean, message: string }
+ */
+export const validateAvatarFile = (file) => {
+  if (!file) {
+    return { isValid: false, message: AVATAR_FILE_ERROR_MESSAGES.FILE_REQUIRED };
+  }
+
+  // サイズチェック
+  if (file.size > AVATAR_FILE_RULES.MAX_SIZE) {
+    return { isValid: false, message: AVATAR_FILE_ERROR_MESSAGES.FILE_TOO_LARGE };
+  }
+
+  // 形式チェック (MIMEタイプ)
+  if (!AVATAR_FILE_RULES.ALLOWED_TYPES.includes(file.type)) {
+    return { isValid: false, message: AVATAR_FILE_ERROR_MESSAGES.INVALID_TYPE };
+  }
+
+  return { isValid: true, message: '' };
 };
 
 /**

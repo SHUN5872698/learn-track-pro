@@ -12,10 +12,12 @@
 ## 指示
 1. 以下のコマンドを実行してください。
 ```
+
 tree -L 5 --dirsfirst \
 . \
 -I 'node_modules|vendor|lang|*.png|*.jpg|*.jpeg|*.gif|*.svg|*.ico|*.webp|components|composables|layouts|utils|validators|views|debugbar|sessions|cache|framework/views|app.js|App.vue|bootstrap.js|router.js|favicon.ico|robots.txt|index.php|api|stores'
 --prune
+
 ```
 1. `## 現在のディレクトリ構造`を、treeコマンドの結果と突き合わせて更新してください。
 2. 追加ファイルとディレクトリがない場合は報告してください。
@@ -25,6 +27,7 @@ tree -L 5 --dirsfirst \
 - 新しく追加した項目には、必ずそのファイルやディレクトリの役割を簡潔にコメントとして追記してください
 - 既存の項目もコメントが不足している場合は補足してください。ただし現在のコメントのように簡潔な内容を心がけてください
 ```
+
 ```
 
 ---
@@ -41,7 +44,9 @@ tree -L 5 --dirsfirst \
 │   │       ├── ResetUserPassword.php             # ユーザーパスワードリセットロジック
 │   │       ├── UpdateUserPassword.php            # ユーザーパスワード更新ロジック
 │   │       └── UpdateUserProfileInformation.php  # ユーザープロフィール情報更新ロジック
-│   │
+│   ├── Console/                                  # コンソールコマンド
+│   │   └── Commands/                             # カスタムArtisanコマンド
+│   │       └── CreateServiceCommand.php          # 新しいサービスを作成するArtisanコマンド
 │   ├── Http/                                     # HTTPリクエストを処理するコントローラー、ミドルウェア、リクエストクラス
 │   │   ├── Controllers/                          # アプリケーションのビジネスロジックをサービス層に委譲するThinコントローラー
 │   │   │   ├── CategoryController.php            # カテゴリー関連のHTTPリクエストを処理
@@ -53,6 +58,7 @@ tree -L 5 --dirsfirst \
 │   │   │   └── UserController.php                # ユーザー関連のHTTPリクエストを処理
 │   │   ├── Requests/                             # フォームリクエストのバリデーションルールを定義
 │   │   │   ├── User/                             # ユーザー関連のリクエスト
+│   │   │   │   ├── AvatarUploadRequest.php       # プロフィール画像アップロード時のバリデーション
 │   │   │   │   └── ProfileRequest.php            # プロフィール更新時のバリデーション
 │   │   │   ├── BulkUpdateSectionsRequest.php     # セクション一括更新時のバリデーション
 │   │   │   ├── StoreLearningContentRequest.php   # 学習内容作成時のバリデーション
@@ -68,7 +74,6 @@ tree -L 5 --dirsfirst \
 │   │       ├── LearningSessionResource.php       # 学習セッションデータのリソース変換
 │   │       ├── SectionResource.php               # セクションデータのリソース変換
 │   │       └── TechnologyResource.php            # 技術データのリソース変換
-│   │
 │   ├── Models/                                   # データベーステーブルと対話するためのEloquentモデル
 │   │   ├── Category.php                          # カテゴリーモデル
 │   │   ├── LearningContent.php                   # 学習内容モデル
@@ -76,20 +81,19 @@ tree -L 5 --dirsfirst \
 │   │   ├── Section.php                           # セクションモデル
 │   │   ├── Technology.php                        # 技術モデル
 │   │   └── User.php                              # ユーザーモデル
-│   │
 │   ├── Policies/                                 # モデルの認可ロジックを定義
 │   │   ├── LearningContentPolicy.php             # 学習内容の認可ポリシー
 │   │   └── LearningSessionPolicy.php             # 学習セッションの認可ポリシー
-│   │
-│   └── Providers/                                # サービスコンテナへのサービス登録やイベント登録を行うサービスプロバイダ
-│       ├── AppServiceProvider.php                # アプリケーション全体のサービスプロバイダ
-│       ├── AuthServiceProvider.php               # 認証・認可サービスプロバイダ
-│       └── FortifyServiceProvider.php            # Fortify関連のサービスプロバイダ
-│
+│   ├── Providers/                                # サービスコンテナへのサービス登録やイベント登録を行うサービスプロバイダ
+│   │   ├── AppServiceProvider.php                # アプリケーション全体のサービスプロバイダ
+│   │   ├── AuthServiceProvider.php               # 認証・認可サービスプロバイダ
+│   │   └── FortifyServiceProvider.php            # Fortify関連のサービスプロバイダ
+│   └── Services/                                 # アプリケーションのビジネスロジックを含むサービス層
+│       └── User/                                 # ユーザー関連のサービス
+│           └── AvatarService.php                 # ユーザーのプロフィール画像関連ビジネスロジック
 ├── bootstrap/                                    # フレームワークのブートストラップ処理
 │   ├── app.php                                   # アプリケーションインスタンスの生成と設定
 │   └── providers.php                             # アプリケーションで利用するサービスプロバイダのリスト
-│
 ├── config/                                       # アプリケーションの各種設定ファイル
 │   ├── app.php                                   # アプリケーションの基本設定
 │   ├── auth.php                                  # 認証ガードやユーザープロバイダの設定
@@ -104,12 +108,10 @@ tree -L 5 --dirsfirst \
 │   ├── sanctum.php                               # Laravel SanctumのAPI認証設定
 │   ├── services.php                              # 外部サービス（Mailgun, AWSなど）の認証情報
 │   └── session.php                               # セッション設定
-│
 ├── database/                                     # データベース関連ファイル
 │   ├── factories/                                # テストデータ生成のためのモデルファクトリー
 │   │   └── UserFactory.php                       # ユーザーモデルのファクトリー
-│   │
-│   ├── migrations/                                                      # データベーススキーマの変更を管理するマイグレーションファイル
+│   ├── migrations/                               # データベーススキーマの変更を管理するマイグレーションファイル
 │   │   ├── 0001_01_01_000000_create_users_table.php                     # ユーザーテーブル作成マイグレーション
 │   │   ├── 0001_01_01_000001_create_cache_table.php                     # キャッシュテーブル作成マイグレーション
 │   │   ├── 0001_01_01_000002_create_jobs_table.php                      # ジョブテーブル作成マイグレーション
@@ -120,47 +122,40 @@ tree -L 5 --dirsfirst \
 │   │   ├── 2025_09_12_101355_create_learning_contents_table.php         # 学習内容テーブル作成マイグレーション
 │   │   ├── 2025_09_12_101358_create_sections_table.php                  # セクションテーブル作成マイグレーション
 │   │   └── 2025_09_12_112014_create_learning_sessions_table.php         # 学習セッションテーブル作成マイグレーション
-│   │
 │   ├── seeders/                                  # データベースに初期データやテストデータを投入するシーダー
 │   │   ├── CategorySeeder.php                    # カテゴリーデータのシーダー
 │   │   ├── DatabaseSeeder.php                    # 全てのシーダーを呼び出すメインシーダー
+│   │   ├── JavaLearningDemoSeeder.php            # Java学習デモデータのシーダー
 │   │   ├── LearningContentSeeder.php             # 学習内容データのシーダー
 │   │   ├── LearningSessionSeeder.php             # 学習セッションデータのシーダー
 │   │   ├── SectionSeeder.php                     # セクションデータのシーダー
 │   │   ├── TechnologySeeder.php                  # 技術データのシーダー
 │   │   └── UserSeeder.php                        # ユーザーデータのシーダー
-│   └── database.sqlite                           # SQLiteデータベースファイル
-│
+│   └── database.sqlite                           # 開発環境で使用するSQLiteデータベースファイル
 ├── public/                                       # 公開アセット
 │   ├── hot                                       # Vite開発サーバーのホットリロードファイル
 │   └── storage -> /var/www/html/storage/app/public # シンボリックリンクで公開されるストレージ
-│
 ├── resources/                                    # フロントエンドのアセットやビューファイル
 │   ├── css/                                      # CSSスタイルシート
 │   │   └── app.css                               # アプリケーションのメインCSSファイル
-│   │
 │   └── js/                                       # JavaScriptファイル ※詳細は別ドキュメントに記載
 │       └── plugins/                              # Vueプラグイン
 │           └── axios.js                          # Axiosのカスタム設定とインターセプター
-│
 ├── routes/                                       # アプリケーションのルーティング定義
 │   ├── api.php                                   # APIルート定義
 │   ├── console.php                               # Artisanコマンドラインルート定義
 │   └── web.php                                   # Webルート定義
-│
 ├── storage/                                      # アプリケーションが生成するファイル（ログ、キャッシュなど）
 │   └── logs/                                     # アプリケーションのログファイル
 │       └── laravel.log                           # Laravelのメインログファイル
-│
 ├── tests/                                        # アプリケーションの自動テスト
 │   ├── Feature/                                  # アプリケーションの機能テスト
+│   │   ├── Api/                                  # APIテスト
+│   │   │   └── AvatarUploadTest.php              # APIのプロフィール画像アップロード機能テスト
 │   │   └── ExampleTest.php                       # 機能テストの例
-│   │
 │   ├── Unit/                                     # アプリケーションのユニットテスト
 │   │   └── ExampleTest.php                       # ユニットテストの例
-│   │
 │   └── TestCase.php                              # テストケースの基底クラス
-│
 ├── artisan                                       # Laravel Artisan CLIの実行スクリプト
 ├── composer.json                                 # Composerのプロジェクト設定ファイル
 ├── composer.lock                                 # Composerの依存関係ロックファイル
