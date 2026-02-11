@@ -243,7 +243,6 @@ flowchart TD
 GET    /api/categories                        # カテゴリー一覧
 GET    /api/technologies                      # 技術一覧
 GET    /api/technologies?category_id={id}     # カテゴリー別技術一覧
-
 ```
 
 1. 学習内容管理
@@ -256,7 +255,6 @@ PUT    /api/learning-contents/{id}            # 学習内容編集
 DELETE /api/learning-contents/{id}            # 学習内容削除
 PUT    /api/learning-contents/{id}/complete   # 完了にする
 PUT    /api/learning-contents/{id}/reopen     # 学習を再開
-
 ```
 
 1. セクション管理
