@@ -205,7 +205,7 @@ final class LearningContentService
 ### クラス・ファイル
 
 - モデル：単数形PascalCase（例：User, LearningContent）
-- コントローラー：複数形 + Controller（例：UsersController）
+- コントローラー：単数形 + Controller（例：UserController）
 - サービス：機能名 + Service（例：AuthenticationService）
 - リポジトリ：モデル名 + Repository（例：UserRepository）
 - リクエスト：アクション + モデル + Request（例：StoreLearningContentRequest）
