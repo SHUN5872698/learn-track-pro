@@ -183,11 +183,10 @@ docker compose exec php-apache composer update
 # Artisanコマンドの汎用形式
 docker compose exec php-apache php artisan [コマンド]
 ```
-
 ## ディレクトリ構造
-
 - **Laravel:** `.gemini/docs/architectures/laravel-directory-structure.md`
 - **Vue.js:** `.gemini/docs/architectures/vue-application-directory-structure.md`
+- **AgentSkills:** `.agents/skills/` （Antigravity実行時にDynamic Loadingで自動適用）
 
 ## ワークフロー
 
