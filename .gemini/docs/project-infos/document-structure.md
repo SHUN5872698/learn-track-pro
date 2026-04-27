@@ -1,15 +1,31 @@
 ## treeコマンド
 
 ```bash
+# .gemini/docs/
 tree -L 3 --dirsfirst .gemini/docs/ -I 'テンプレート'
+
+# agents
+tree -L 4 --dirsfirst .agents/ -I 'テンプレート'
 ```
 
-## カテゴリ構成
+---
 
-`.gemini/docs/`
+## 対象ディレクトリ
+
+本ドキュメントでは以下のディレクトリ構造を管理する。
+
+- `.gemini/docs/` — AIエージェント向けプロジェクトドキュメント
+- `.agents/skills/` — Antigravity AgentSkills（実行時にDynamic Loadingされる）
+
+---
+
+## docs（.gemini/docs/）
+
+### カテゴリ構成
 
 ```bash
 .gemini/docs/
+├── agents/                 # AgentSkils関連リファレンス（実装レポート等）
 ├── apis/                   # API仕様、エンドポイント、リクエスト/レスポンス例
 ├── architectures/          # システム設計、コンポーネント図、ディレクトリ構造
 ├── cookbooks/              # プロジェクト固有の開発手順やレシピ
@@ -24,16 +40,23 @@ tree -L 3 --dirsfirst .gemini/docs/ -I 'テンプレート'
 └── tests/                  # テスト戦略、テスト項目書
 ```
 
-### NotionDB独自カテゴリ
+#### NotionDB独自カテゴリ
 
 ```bash
 ├── Other/                   # Notion AI活用のためのコンテキストドキュメント
 └── Prompt/                  # プロンプトとレスポンスの作成履歴
 ```
 
----
+### agents
 
-## apis
+`.gemini/docs/agents/` — 人間向けリファレンス（実装レポート等）
+
+```bash
+.gemini/docs/agents/
+└── code-review-implementation-report.md  # コードレビューSkill実装レポート
+```
+
+### apis
 
 ```bash
 .gemini/docs/apis/
@@ -57,7 +80,7 @@ tree -L 3 --dirsfirst .gemini/docs/ -I 'テンプレート'
 
 ---
 
-## architectures
+### architectures
 
 ```bash
 .gemini/docs/architectures/
@@ -67,18 +90,14 @@ tree -L 3 --dirsfirst .gemini/docs/ -I 'テンプレート'
 └── vue-application-directory-structure.md      # Vue.jsアプリディレクトリ構造詳細
 ```
 
----
-
-## databases
+### databases
 
 ```bash
 .gemini/docs/databases/
 └── database-schema-definition.md # データベーススキーマ定義書
 ```
 
----
-
-## decisions
+### decisions
 
 ```bash
 .gemini/docs/decisions/
@@ -86,18 +105,14 @@ tree -L 3 --dirsfirst .gemini/docs/ -I 'テンプレート'
 └── responsive-design-strategy.md # レスポンシブデザイン戦略
 ```
 
----
-
-## designs
+### designs
 
 ```bash
 .gemini/docs/designs/
 └── basic-design-and-screen-flow.md # 基本設計および画面遷移図
 ```
 
----
-
-## development-processes
+### development-processes
 
 ```bash
 .gemini/docs/development-processes/
@@ -114,9 +129,7 @@ tree -L 3 --dirsfirst .gemini/docs/ -I 'テンプレート'
 └── vue-coding-standards.md           # Vue.jsコーディング規約
 ```
 
----
-
-## project-infos
+### project-infos
 
 ```bash
 .gemini/docs/project-infos/
@@ -126,27 +139,21 @@ tree -L 3 --dirsfirst .gemini/docs/ -I 'テンプレート'
 └── requirements-specification.md    # 要件定義書
 ```
 
----
-
-## tasks
+### tasks
 
 ```bash
 .gemini/docs/tasks/
 └── preparation-task-list.md # 開発準備・初期タスクリスト
 ```
 
----
-
-## securities
+### securities
 
 ```bash
 .gemini/docs/securities/
 └── docker-mysql-security-design.md # Docker環境におけるMySQLセキュリティ設計
 ```
 
----
-
-## tests
+### tests
 
 ```bash
 .gemini/docs/tests/
@@ -159,6 +166,19 @@ tree -L 3 --dirsfirst .gemini/docs/ -I 'テンプレート'
 ├── units/                                 # ユニットテスト
 │   └── avatar-upload-unit-test.md         # プロフィール画像アップロードユニットテスト
 └── api-error-handling-manual-test-list.md # APIエラーハンドリング手動テスト一覧
+```
+
+## skills（.agents/skills/）
+
+### code-review
+
+```bash
+.agents/skills/code-review/
+├── SKILL.md                          # 指示書（description + 手順 + 分類 + 各ファイルへの参照）
+├── resources/
+│   └── review-checklist.md           # レビュー基準チェックリスト（Laravel + Vue.js）
+└── examples/
+    └── review-output-style.md        # 出力フォーマット + トーン見本
 ```
 
 ---
